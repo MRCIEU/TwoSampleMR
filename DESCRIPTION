@@ -1,0 +1,16 @@
+Package: TwoSampleMR
+Title: It does what it says on the tin
+Version: 0.1
+Authors@R: c(person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
+                  role = c("aut", "cre")),
+			 person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
+                  role = c("aut", "cre")))
+Description: See title
+Depends: ggplot2,
+         meta,
+         biomaRt,
+         plyr,
+         RMySQL
+
+License: Artistic-2.0
+LazyData: true
