@@ -1,135 +1,28 @@
-## Part 1
-## Get effects for exposure and outcome relative to the same allele
-## Get standard errors
-## Get pairwise R^2
-
-
-# Read in table of exposure SNP, a1, a2, beta, se, a2, eaf, sample size, units
-read_exposure_data <- function(filename, exposure)
-{
-	exposure_dat <- read.table(filename, header=T, stringsAsFactors=FALSE)
-
-	# Check all the columns are there as expected
-	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(exposure_dat)))
-
-	# Do some checks
-	stopifnot(all(is.numeric(exposure_dat$beta)))
-	stopifnot(all(is.numeric(exposure_dat$se)))
-	stopifnot(all(is.numeric(exposure_dat$eaf)))
-	stopifnot(all(exposure_dat$eaf > 0))
-	stopifnot(all(exposure_dat$eaf < 1))
-	exposure_dat$exposure <- exposure
-
-	exposure_dat$keep <- TRUE
-
-	exposure_dat$effect.allele <- topupper(exposure_dat$effect.allele)
-	exposure_dat$other.allele <- topupper(exposure_dat$other.allele)
-	exposure_dat$SNP <- tolower(exposure_dat$SNP)
-	exposure_dat$SNP <- gsub("[[:space:]]", "", exposure_dat$SNP)
-
-	# Check for missing values 
-	i1 <- !is.na(exposure_dat$eaf)
-	i2 <- !is.na(exposure_dat$effect.allele)
-	i3 <- !is.na(exposure_dat$other.allele)
-	i4 <- !is.na(exposure_dat$beta)
-	i5 <- !is.na(exposure_dat$se)
-	exposure_dat$keep <- i1 & i2 & i3 & i4 & i5
-	if(any(!exposure_dat$keep))
-	{
-		message("Warning: The following SNP(s) are missing required information. They will be excluded. Sorry. We did all we could.")
-		message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")
-		
-		print(subset(exposure_dat, !keep))
-	}
-	exposure_dat <- subset(exposure_dat, keep)
-
-	# Get SNP positions
-	bm <- ensembl_get_position(exposure_dat$SNP)
-	missing <- exposure_dat$SNP[exposure_dat$SNP %in% bm$refsnp_id]
-	if(length(missing) > 0)
-	{
-		message("Warning: The following SNP(s) were not present in ensembl GRCh37. They will be excluded. Sorry. This it's Matt's fault.")
-		message("Atenção: O SNP (s) seguinte não estavam presentes no GRCh37 Ensembl. Eles serão excluídos. Desculpe. Isso é culpa do Matt.")
-		print(missing)
-	}
-
-	i6 <- exposure_dat$effect.allele %in% c("A", "C", "T", "G")
-	i7 <- exposure_dat$other.allele %in% c("A", "C", "T", "G")
-
-
-	exposure_dat <- exposure_dat[,names(exposure_dat)!="chr_name"]
-	exposure_dat <- exposure_dat[,names(exposure_dat)!="chrom_start"]
-	exposure_dat <- merge(exposure_dat, bm, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
-
-	names(exposure_dat)[names(exposure_dat) == "effect_allele"] <- "effect_allele.exposure"
-	names(exposure_dat)[names(exposure_dat) == "other_allele"] <- "other_allele.exposure"
-	names(exposure_dat)[names(exposure_dat) == "beta"] <- "beta.exposure"
-	names(exposure_dat)[names(exposure_dat) == "se"] <- "se.exposure"
-	names(exposure_dat)[names(exposure_dat) == "eaf"] <- "eaf.exposure"
-
-	return(exposure_dat)
-}
-
-
-
-
-# Get position in ensembl
-# This is optional - a nice gift to the user. Not a priority
-ensembl_get_position<-function(snp)
-{
-	library(biomaRt)
-	Mart <- useMart(host="grch37.ensembl.org", biomart="ENSEMBL_MART_SNP",dataset="hsapiens_snp")
-	Attr<-listAttributes(Mart)
-	ensembl<-getBM(attributes=c("refsnp_id","chr_name","chrom_start"),filters="snp_filter",values=snp,mart=Mart)
-	ensembl<-ensembl[nchar(ensembl$chr_name)<=2,]
-	ensembl
-}
-ensembl_get_position(c("rs10454492", "rs10572"))
-
-
-
-
-
-# Search for SNPs in mysql
-extract_outcome_data <- function(exposure_dat, outcomes, user, password, dbname, host)
-{
-	# This function will 
-	# connect to the database
-	# run a query to find all SNPs for all specified outcomes 
-	# return a dataframe of each SNP in each outcome
-
-	# outcome_dat column names:
-	# SNP, beta.outcome, se.outcome, eaf.outcome, effect_allele.outcome, other_allele.outcome, outcome
-
-	return(outcome_dat)
-}
-
-
-
-# Effect allele is the one that increases the exposure
-harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, build_plus_strand_same)
+harmonise_exposure_outcome <- function(exposure_dat, outcome_dat)
 {
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
 	fix.tab <- ddply(res.tab, .(outcome), function(x)
 	{
 		x <- mutate(x)
-		return(harmonise_function(x, build_plus_strand_same))
+		hx <- harmonise_function(x)
+		hx$outcome <- x$outcome[1]
+		return(harmonise_function(x))
 	})
 	return(fix.tab)
 }
-	
 
-harmonise_function <- function(res.tab, build_plus_strand_same)
+
+harmonise_function <- function(res.tab)
 	# don't have eaf for some studies, e.g these studies 
 	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
 	eaf.outcome.notmiss.study<-T
 	if(all(is.na(res.tab$eaf.outcome))){
 		eaf.outcome.notmiss.study<-F 
 	}
-		
-		
+
+
 	if(sum(grep("\\.y",names(res.tab)))) stop(paste("some column names are identical in the instruments file and the outcome database; ",names(res.tab)[grep(".y",names(res.tab))]," present in both files",sep=""))
-	
+
 	res.tab$beta.exposure<-as.numeric(res.tab$beta.exposure)
 	res.tab$beta.outcome<-as.numeric(res.tab$beta.outcome)
 	res.tab$eaf.exposure<-as.numeric(res.tab$eaf.exposure)
@@ -318,28 +211,8 @@ harmonise_function <- function(res.tab, build_plus_strand_same)
 		fix.tab<-rbind(fix.tab,ea.diff.tab1)
 		fix.tab<-rbind(fix.tab,ea.diff.tab2)
 	}
-		dim(fix.tab)
+	dim(fix.tab)
 
-	if(build_plus_strand_same){ #if the build and coding strand are same, can use this script to ensure effect alleles are the same; handy if eaf is missing for dsease or trait GWAS, e.g. diagram has no eaf but I know it is coded using same ref strand as so youns metabolomic GWAS
-		#for non-palindromic SNPs, where strand is same between two databases, recode disease GWAS effect allele to the trait effect allele
-		pos.eadiff<-which(with(res.tab, effect_allele.outcome != effect_allele.exposure & effect_allele.outcome==other_allele.exposure))
-		pos.easame<-which(with(res.tab, effect_allele.outcome == effect_allele.exposure & effect_allele.outcome!=other_allele.exposure))
-		ea.diff.tab2<-res.tab[pos.eadiff,]	
-		effect.allele<-ea.diff.tab2$effect_allele.exposure
-		other.allele<-ea.diff.tab2$other_allele.exposure
-		ea.diff.tab2$effect_allele.outcome<-effect.allele #recode effect allele
-		ea.diff.tab2$other_allele.outcome<-other.allele #recode other allele
-		if(eaf.outcome.notmiss.study){ #don't have eaf for studies listed in database 
-			ea.diff.tab2$eaf.outcome <-1-ea.diff.tab2$eaf.outcome #recode eaf
-		}
-		ea.diff.tab2$beta.outcome<-ea.diff.tab2$beta.outcome*-1 #recode odds ratio
-		res.tab_same.ea<-res.tab[pos.easame,]
-		fix.tab<-rbind(res.tab_same.ea,ea.diff.tab2)
-	}
-	#		coordinates in cardiogram are b36 (hg18), + strand 
-	#		coordinates in diagram are b36 (hg18), forward strand 
-	#		coordinates in ilcco are b37 (hg19) forward strand 
-	#		coordinates in 1000genomes are hg19/GRCh37
 	return(fix.tab)
 }
 
