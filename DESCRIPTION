@@ -11,6 +11,5 @@ Depends: ggplot2,
          biomaRt,
          plyr,
          RMySQL
-
 License: Artistic-2.0
 LazyData: true

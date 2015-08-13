@@ -1,44 +1,57 @@
 
 #' Perform all Mendelian randomization tests
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
 #' @param bootstrap Number of bootstraps to estimate standard error. If NULL then don't use bootstrap
-#' @param alpha Quantiles to use for calculating confidence intervals using bootstraps. Default 0.05
 #'
 #' @export
-#' @return
-mr <- function(b_exp, b_out, se_exp, se_out, bootstrap=1000)
+#' @return List with the following elements:
+#'         mr: Table of MR results
+#'         extra: Table of extra results
+mr <- function(dat, bootstrap=1000)
 {
-	# Perform each analysis
+	require(plyr)
+	res <- dlply(dat, .(outcome, exposure), function(x)
+	{
+		b_exp <- x$effect.exposure
+		b_out <- x$effect.outcome
+		se_exp <- x$se.exposure
+		se_out <- x$se.outcome
 
-	res <- list()
+		res <- list()
 
-	res[[1]] <- mr_meta_fixed_simple(b_exp, b_out, se_exp, se_out)
-	res[[2]] <- mr_meta_fixed(b_exp, b_out, se_exp, se_out)
-	res[[3]] <- mr_meta_random(b_exp, b_out, se_exp, se_out)
-	res[[4]] <- mr_two_sample_ml(b_exp, b_out, se_exp, se_out)
-	res[[5]] <- mr_eggers_regression(b_exp, b_out, se_exp, se_out, bootstrap=NULL)
-	res[[6]] <- mr_weighted_median(b_exp, b_out, se_exp, se_out, bootstrap)
-	res[[7]] <- mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, bootstrap)
-	res[[8]] <- mr_ivw(b_exp, b_out, se_exp, se_out)
+		res[[1]] <- mr_meta_fixed_simple(b_exp, b_out, se_exp, se_out)
+		res[[2]] <- mr_meta_fixed(b_exp, b_out, se_exp, se_out)
+		res[[3]] <- mr_meta_random(b_exp, b_out, se_exp, se_out)
+		res[[4]] <- mr_two_sample_ml(b_exp, b_out, se_exp, se_out)
+		res[[5]] <- mr_eggers_regression(b_exp, b_out, se_exp, se_out)
+		res[[6]] <- mr_weighted_median(b_exp, b_out, se_exp, se_out, bootstrap)
+		res[[7]] <- mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, bootstrap)
+		res[[8]] <- mr_ivw(b_exp, b_out, se_exp, se_out)
 
-	mr_tab <- data.frame(
-		Test = sapply(res, function(x) x$testname),
-		b = sapply(res, function(x) x$b),
-		se = sapply(res, function(x) x$se),
-		pval = sapply(res, function(x) x$pval)
-	)
+		mr_tab <- data.frame(
+			Exposure = x$exposure[1],
+			Outcome = x$outcome[1],
+			Test = sapply(res, function(x) x$testname),
+			b = sapply(res, function(x) x$b),
+			se = sapply(res, function(x) x$se),
+			pval = sapply(res, function(x) x$pval)
+		)
 
-	extra_tab <- data.frame(
-		Test = c("Egger regression intercept"),
-		b = res[[3]]$b_i,
-		se = res[[3]]$se_i,
-		pval = res[[3]]$pval_i
-	)
+		extra_tab <- data.frame(
+			Exposure = x$exposure[1],
+			Outcome = x$outcome[1],
+			Test = c("Egger regression intercept"),
+			b = res[[5]]$b_i,
+			se = res[[5]]$se_i,
+			pval = res[[5]]$pval_i
+		)
 
+		l <- list(mr_tab=mr_tab, extra_tab=extra_tab)
+		return(l)
+	})
+	mr_tab <- rbind.fill(lapply(res, function(x) x$mr_tab))
+	extra_tab <- rbind.fill(lapply(res, function(x) x$extra_tab))
 	return(list(mr=mr_tab, extra=extra_tab))
 }
 
@@ -60,7 +73,7 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out)
 {
 	b <- sum(b_exp*b_out / se_out^2) / sum(b_exp^2/se_out^2)
 	se <- sqrt(1 / sum(b_exp^2/se_out^2))
-	pval <- pt(abs(b) / se, df = length(b)-1, low=FALSE)
+	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
 	return(list(b=b, se=se, pval=pval, testname="Fixed effects meta analysis (simple SE)"))
 }
 
@@ -133,7 +146,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out)
 
 	b <- opt$par[length(b_exp)+1]
 	se <- sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1])
-	pval <- pt(abs(b) / se, df = length(b)-1, low=FALSE)
+	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
 	return(list(b=b, se=se, pval=pval, testname="Wald ratio (random)"))
 }
 
@@ -193,7 +206,7 @@ mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, bootstrap=NULL, a
 		se_i <- boots$boots$se[boots$boots$param == "intercept" & boots$boots$stat == "b" & boots$boots$what == "bootstrap"]
 		testname <- "Egger regression (bootstrapped SE)"
 	}
-	return(list(b = b, se = se, pval = pval, b_i = b_i, se_i = se_i, pval_i = pval_i, mod = smod, dat = dat, testname))
+	return(list(b = b, se = se, pval = pval, b_i = b_i, se_i = se_i, pval_i = pval_i, mod = smod, dat = dat, testname=testname))
 }
 
 
@@ -297,7 +310,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, nboot=1000)
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj)
-	pval <- pt(abs(b/se), df = length(b)-1, low=FALSE)
+	pval <- pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
 	return(list(b=b, se=se, pval=pval, testname="Weighted median"))
 }
 
@@ -379,11 +392,13 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, penk=20, 
 {
 	betaIV <- b_out/b_exp # ratio estimates
 	betaIVW <- sum(b_out*b_exp*se_out^-2)/sum(b_exp^2*se_out^-2) # IVW estimate
+	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
+	weights <- 1/VBj
 	penalty <- pchisq(weights*(betaIV-betaIVW)^2, df=1, lower.tail=FALSE)
 	pen.weights <- weights*pmin(1, penalty*penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
-	se <- weighted_median_bootstrap(b_exp, b_out, se_out, se.BetaXG, pen.weights)
-	pval <- pt(abs(b/se), df=length(b)-1, low=FALSE)
+	se <- weighted_median_bootstrap(b_exp, b_out, se_out, se_exp, pen.weights)
+	pval <- pt(abs(b/se), df=length(b_exp)-1, low=FALSE)
 	return(list(b = b, se = se, pval=pval, testname="Penalized weighted median"))
 }
 
@@ -407,8 +422,8 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out)
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error 
-	pval <- pt(abs(b/se), df = length(b)-1, low=FALSE)
-	Q.ivw <- ivw.res$sigma^2*(n.snps-2) 
+	pval <- pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
+	Q.ivw <- ivw.res$sigma^2*(length(b_exp)-2) 
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, testname="Inverse variance weighted regression"))

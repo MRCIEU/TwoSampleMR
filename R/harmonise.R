@@ -50,6 +50,7 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat)
 #' @export
 #' @return Data frame
 harmonise_function <- function(res.tab)
+{
 	# don't have eaf for some studies, e.g these studies 
 	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
 	eaf.outcome.notmiss.study<-T
