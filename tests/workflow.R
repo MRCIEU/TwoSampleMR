@@ -1,7 +1,11 @@
 # system.file("data/telomere_length.txt", package="meffil")
 
 exposure_dat <- read_exposure_data("inst/data/telomere_length.txt", "Telomere length")
-outcome_dat <- read_outcome_data("inst/data/cardiogram.txt", "Cardiogram")
+
+outcome_dat <- rbind(
+	read_outcome_data("inst/data/cardiogram.txt", "Cardiogram"),
+	read_outcome_data("inst/data/bladdercancer.txt", "Bladder cancer")
+)
 
 # exposure_dat <- ld_pruning(exposure_dat)
 # outcome_dat <- extract_outcome_data(exposure_dat, c("cardiogram", "bladder cancer"))

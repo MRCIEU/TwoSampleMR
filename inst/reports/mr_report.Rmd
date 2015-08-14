@@ -1,0 +1,13 @@
+```{r init, echo=FALSE}
+
+library(knitr)
+library(Cairo)
+opts_chunk$set(warning=FALSE, echo=FALSE, message=FALSE, results="asis", fig.width=12, fig.height=12, dev="CairoPNG")
+
+```
+
+# Two sample MR report
+- study: `r study`
+- author: `r author`
+- date: `r format(Sys.time(), '%d %B, %Y')`
+
