@@ -13,8 +13,8 @@ mr <- function(dat, bootstrap=1000)
 	require(plyr)
 	res <- dlply(dat, .(outcome, exposure), function(x)
 	{
-		b_exp <- x$effect.exposure
-		b_out <- x$effect.outcome
+		b_exp <- x$beta.exposure
+		b_out <- x$beta.outcome
 		se_exp <- x$se.exposure
 		se_out <- x$se.outcome
 

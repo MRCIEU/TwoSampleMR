@@ -15,15 +15,15 @@ read_exposure_data <- function(filename, exposure)
 
 	exposure_dat$keep <- TRUE
 
-	exposure_dat$effect.allele <- toupper(exposure_dat$effect.allele)
-	exposure_dat$other.allele <- toupper(exposure_dat$other.allele)
+	exposure_dat$effect_allele <- toupper(exposure_dat$effect_allele)
+	exposure_dat$other_allele <- toupper(exposure_dat$other_allele)
 	exposure_dat$SNP <- tolower(exposure_dat$SNP)
 	exposure_dat$SNP <- gsub("[[:space:]]", "", exposure_dat$SNP)
 
 	# Check for missing values 
 	i1 <- !is.na(exposure_dat$eaf)
-	i2 <- !is.na(exposure_dat$effect.allele)
-	i3 <- !is.na(exposure_dat$other.allele)
+	i2 <- !is.na(exposure_dat$effect_allele)
+	i3 <- !is.na(exposure_dat$other_allele)
 	i4 <- !is.na(exposure_dat$beta)
 	i5 <- !is.na(exposure_dat$se)
 	exposure_dat$keep <- i1 & i2 & i3 & i4 & i5
@@ -38,7 +38,7 @@ read_exposure_data <- function(filename, exposure)
 
 	# Get SNP positions
 	bm <- ensembl_get_position(exposure_dat$SNP)
-	missing <- exposure_dat$SNP[exposure_dat$SNP %in% bm$refsnp_id]
+	missing <- exposure_dat$SNP[! exposure_dat$SNP %in% bm$refsnp_id]
 	if(length(missing) > 0)
 	{
 		message("Warning: The following SNP(s) were not present in ensembl GRCh37. They will be excluded. Sorry. This it's Matt's fault.")
@@ -46,8 +46,8 @@ read_exposure_data <- function(filename, exposure)
 		print(missing)
 	}
 
-	i6 <- exposure_dat$effect.allele %in% c("A", "C", "T", "G")
-	i7 <- exposure_dat$other.allele %in% c("A", "C", "T", "G")
+	i6 <- exposure_dat$effect_allele %in% c("A", "C", "T", "G")
+	i7 <- exposure_dat$other_allele %in% c("A", "C", "T", "G")
 
 
 	exposure_dat <- exposure_dat[,names(exposure_dat)!="chr_name"]
@@ -82,5 +82,12 @@ read_outcome_data <- function(filename, outcome)
 
 	# Check all the columns are there as expected
 	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(outcome_dat)))
+	names(outcome_dat)[names(outcome_dat) == "effect_allele"] <- "effect_allele.outcome"
+	names(outcome_dat)[names(outcome_dat) == "other_allele"] <- "other_allele.outcome"
+	names(outcome_dat)[names(outcome_dat) == "beta"] <- "beta.outcome"
+	names(outcome_dat)[names(outcome_dat) == "se"] <- "se.outcome"
+	names(outcome_dat)[names(outcome_dat) == "eaf"] <- "eaf.outcome"
+	outcome_dat$outcome <- outcome
 
+	return(outcome_dat)
 }
