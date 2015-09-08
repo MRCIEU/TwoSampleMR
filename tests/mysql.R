@@ -1,53 +1,56 @@
-
-
-
 mysql -u epxjz -h epi-franklin.epi.bris.ac.uk -p
-password is: wv-92n_YjB
+wv-92n_YjB
 
 
-
-
-
-The database is called epxjz_2sampleMR.
-
-use epxjz_2sampleMR;
-
-mydb <- dbConnect(MySQL(), user='epxjz', password='wv-92n_YjB', dbname='epxjz_2sampleMR', host='gh13047@epi-franklin.epi.bris.ac.uk')
-
-
+mydb <- dbConnect(MySQL(), user='mruser', password='TMG_F1WnTL', dbname='mrbase', host='epi-franklin.epi.bris.ac.uk')
 dbListTables(mydb)
-
-This will return a list of the tables in our connection. 
-
-dbListFields(mydb, 'mrbase_assoc_info')
+dbListFields(mydb, 'assoc')
 
 
+rs <- dbSendQuery(mydb, "select * from snps")
+d <- dbFetch(rs, n=10)
 
-rs <- dbSendQuery(mydb, "select * from mrbase_file_info")
-d <- dbFetch(rs, n=-1)
 
-
-load("inst/data/tel.RData")
+load("~/repo/mr_base/inst/data/tel.RData")
 snps <- as.character(unique(tel$SNP))
 te <- paste("+", paste(snps, collapse=" +"), sep="")
 
 query <- paste("SELECT * FROM mrbase_assoc_info WHERE MATCH (snp_id) AGAINST ('", te, "' IN BOOLEAN MODE);", sep="")
 
-query <- "SELECT * FROM mrbase_assoc_info WHERE snp_id='rs10936599'"
+query <- "SELECT * FROM assoc WHERE name='rs10936599'"
 rs <- dbSendQuery(mydb, query)
 d <- fetch(rs, n=10)
 dim(d)
 
 
-SELECT COUNT(*) FROM mrbase_assoc_info;
-SELECT COUNT(*) FROM mrbase_assoc_info where snp_id='rs10900000';
 
-SELECT COUNT(*) FROM mrbase_GWAScat_assoc_info
+use mrbase;
+
+describe assoc;
+describe snps;
+describe study;
+
+SELECT COUNT(*) FROM study;
+SELECT COUNT(*) FROM snps;
+# SELECT COUNT(*) FROM assoc;
+# 1.7 billion rows
+
+SELECT * FROM study limit 10;
+SELECT * FROM snps WHERE name='rs10900000';
+SELECT * FROM assoc WHERE snp=207707;
 
 
-SELECT * FROM mrbase_assoc_info WHERE snp_id='rs10900000' LIMIT 10;
-SELECT * FROM mrbase_file_info WHERE file_name LIKE '%data%' LIMIT 10;
+SELECT a.*, b.*, c.*
+FROM assoc a, snps b, study c
+WHERE a.snp=b.id AND a.study=c.id
+AND (b.name='rs10900000' OR b.name='rs10000010' OR b.name='rs10000092')
+AND (c.filename='cardiogramplusc4d_180814_update_data.txt.uniform.af.txt' OR c.filename='All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz.uniform.af.txt')
+ORDER BY filename;
 
-SELECT * FROM mrbase_assoc_info WHERE snp_id LIKE 'rs109%' LIMIT 10;
 
-rsid_study
+SELECT a.*, b.*, c.*
+FROM assoc a, snps b, study c
+WHERE a.snp=b.id AND a.study=c.id
+AND b.name IN ('rs10900000', 'rs10000010', 'rs10000092')
+AND c.filename IN ('cardiogramplusc4d_180814_update_data.txt.uniform.af.txt', 'All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz.uniform.af.txt')
+ORDER BY filename;
