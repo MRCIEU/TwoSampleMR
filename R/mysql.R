@@ -41,15 +41,15 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 		"AND b.name IN ('", snps, "')",
 		"AND c.filename IN ('", outcomes, "')",
 		"ORDER BY filename;")
-
+	message(query)
 	out <- dbSendQuery(mydb, query)
 	d <- fetch(out, n=-1)
 
-	d <- subset(d, select=c(name, beta, se, n, p, freq, effect, other, filename,))
+	d <- subset(d, select=c(name, beta, se, n, p, freq, effect, other, filename))
 	names(d) <- c("SNP", "beta.outcome", "se.outcome", "samplesize.outcome", "pval.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome", "outcome")
 
-	index <- d$se.outcome==0
-	d$se[index] <- d$beta.outcome[index] / pt(d$pval.outcome[index] / 2, df = d$n[index], low=FALSE)
-	return(outcome_dat)
+	# index <- d$se.outcome==0
+	# d$se[index] <- d$beta.outcome[index] / pt(d$pval.outcome[index] / 2, df = d$n[index], low=FALSE)
+	return(d)
 }
 
