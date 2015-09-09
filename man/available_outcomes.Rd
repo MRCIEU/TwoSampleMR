@@ -5,7 +5,7 @@
 \title{Get list of studies with available GWAS summary statistics}
 \usage{
 available_outcomes(user = "mruser", password = "TMG_F1WnTL",
-  dbname = "mrbase", host = "epi-franklin.epi.bris.ac.uk")
+  dbname = "mrbase", host = "127.0.0.1", port = "3306")
 }
 \arguments{
 \item{user="mruser"}{User name}

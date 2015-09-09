@@ -4,18 +4,20 @@
 \alias{mr_report}
 \title{Generate MR report}
 \usage{
-mr_report(mr_results, output_file = "mr_report.md", author = "Analyst",
-  study = "Two Sample MR", ...)
+mr_report(mr_results, dat, output_path = ".", output_type = "html",
+  author = "Analyst", study = "Two Sample MR",
+  path = system.file("reports", package = "meffil"), ...)
 }
 \arguments{
 \item{mr_results}{Output from \code{mr}}
 
-\item{output_file}{Markdown or HTML output file.  An HTML file
-is specified using the .htm, .html, .HTM or .HTML file extension.
-When html is specified, a similarly named markdown file is also
-generated.
+\item{dat}{Output from \code{harmonise_exposure_outcome}}
+
+\item{output_path}{Directory in which reports should be saved}
+
+\item{output_type}{Choose "html" or "md". Default is "html".
 All output files including cache and figures will appear in the
-same folder as \code{output_filename}.}
+folder specified in \code{output_path}.}
 
 \item{author}{Author name}
 
@@ -24,6 +26,7 @@ same folder as \code{output_filename}.}
 \item{...}{Extra options to be passed to knitr}
 }
 \description{
-Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results
+Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
+A separate report is produced for each exposure - outcome pair that was analysed
 }
 

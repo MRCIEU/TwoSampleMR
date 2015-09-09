@@ -5,8 +5,8 @@
 \title{Extract SNP effects from GWAS summary statistics}
 \usage{
 extract_outcome_data(exposure_dat, outcomes, user = "mruser",
-  password = "TMG_F1WnTL", dbname = "mrbase",
-  host = "epi-franklin.epi.bris.ac.uk")
+  password = "TMG_F1WnTL", dbname = "mrbase", host = "127.0.0.1",
+  port = "3306")
 }
 \arguments{
 \item{exposure_dat}{Output from \code{read_exposure_data}}
