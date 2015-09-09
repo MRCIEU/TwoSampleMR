@@ -6,7 +6,7 @@
 #' @param host="epi-franklin.epi.bris.ac.uk" Host
 #' @export
 #' @return Dataframe of study details
-available_outcomes <- function(user="mruser", password="TMG_F1WnTL", dbname="mrbase", host="epi-franklin.epi.bris.ac.uk")
+available_outcomes <- function(user="mruser", password="TMG_F1WnTL", dbname="mrbase", host="127.0.0.1", port="3306")
 {
 	mydb <- dbConnect(MySQL(), user=user, password=password, dbname=dbname, host=host)
 	query <- "SELECT * from study;"
@@ -27,7 +27,7 @@ available_outcomes <- function(user="mruser", password="TMG_F1WnTL", dbname="mrb
 #' @param host="epi-franklin.epi.bris.ac.uk" Host
 #' @export
 #' @return Dataframe of summary statistics for 
-extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password="TMG_F1WnTL", dbname="mrbase", host="epi-franklin.epi.bris.ac.uk")
+extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password="TMG_F1WnTL", dbname="mrbase", host="127.0.0.1", port="3306")
 {
 	snps <- paste(exposure_dat$SNP, collapse="', '")
 	outcomes <- paste(outcomes, collapse="', '")
@@ -41,7 +41,6 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 		"AND b.name IN ('", snps, "')",
 		"AND c.filename IN ('", outcomes, "')",
 		"ORDER BY filename;")
-	message(query)
 	out <- dbSendQuery(mydb, query)
 	d <- fetch(out, n=-1)
 

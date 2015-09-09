@@ -20,6 +20,7 @@
 knit_report <- function(input_filename, output_filename, ...)
 {
 	require(knitr)
+    require(markdown)
     output_filename <- normalizePath(output_filename)
 
     output_dir <- dirname(output_filename)
@@ -48,25 +49,56 @@ knit_report <- function(input_filename, output_filename, ...)
 
 #' Generate MR report
 #'
-#' Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results
+#' Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
+#' A separate report is produced for each exposure - outcome pair that was analysed
 #'
 #' @param mr_results Output from \code{mr}
-#' @param output_file Markdown or HTML output file.  An HTML file
-#' is specified using the .htm, .html, .HTM or .HTML file extension.
-#' When html is specified, a similarly named markdown file is also
-#' generated.
+#' @param dat Output from \code{harmonise_exposure_outcome}
+#' @param output_path Directory in which reports should be saved
+#' @param output_type Choose "html" or "md". Default is "html".
 #' All output files including cache and figures will appear in the
-#' same folder as \code{output_filename}.
+#' folder specified in \code{output_path}.
 #' @param author Author name
 #' @param study Study title
 #' @param ... Extra options to be passed to knitr
 #'
 #' @export
 #' @return NULL
-mr_report <- function(mr_results, output_file = "mr_report.md", author = "Analyst", study = "Two Sample MR", ...)
+mr_report <- function(mr_results, dat, output_path = ".", output_type = "html", author = "Analyst", study = "Two Sample MR", path=system.file("reports", package="meffil"), ...)
 {
-    message("Writing report as html file to", output_file)
-    path <- system.file("reports", package="meffil")
-    knit_report(file.path(path, "mr_report.Rmd"), output_file, ...)
+    message("Writing report as html file to ", output_path)
+
+    combinations <- unique(paste(dat$exposure, dat$outcome, sep="@@@@@@"))
+    combinations <- as.data.frame(do.call(rbind, strsplit(combinations, split="@@@@@@")))
+    names(combinations) <- c("exposure", "outcome")
+
+    plots <- mr_scatter_plot(mr_results, dat)
+    combinations <- expand.grid(exposure=unique(dat$exposure), outcome=unique(dat$outcome))
+
+    maintab <- lapply(1:nrow(combinations), function(i) {
+        mrres <- subset(mr_results$mr, Exposure==combinations$exposure[i] & Outcome==combinations$outcome[i], select=c(Test, b, se, pval))
+        names(mrres) <- c("Test", "Effect", "SE", "p-value")
+        return(mrres)
+    })
+
+    eggertab <- lapply(1:nrow(combinations), function(i) {
+
+        egger <- subset(mr_results$extra, Exposure==combinations$exposure[i] & Outcome==combinations$outcome[i], select=c(b, se, pval))
+        names(egger) <- c("Effect", "SE", "p-value")
+        return(egger)
+    })
+
+    # return(list(maintab, eggertab, plots))
+
+    for(i in 1:nrow(combinations))
+    {
+        title <- paste(combinations$exposure[i], "against", combinations$outcome[i])
+        p <- plots[[i]]
+        mt <- maintab[[i]]
+        et <- eggertab[[i]]
+        output_file <- paste("TwoSampleMR", gsub(" ", "_", title), output_type, sep=".")
+        knit_report(file.path(path, "mr_report.Rmd"), output_file, ...)
+    }
+
 
 }

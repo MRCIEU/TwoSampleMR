@@ -2,12 +2,48 @@
 
 library(knitr)
 library(Cairo)
-opts_chunk$set(warning=FALSE, echo=FALSE, message=FALSE, results="asis", fig.width=12, fig.height=12, dev="CairoPNG")
+library(plyr)
+library(ggplot2)
+opts_chunk$set(warning=FALSE, echo=FALSE, message=FALSE, results='asis', fig.width=12, fig.height=12, dev="svg", fig.path=paste('figure/', gsub(" ", "_", title), '_', sep=""))
 
 ```
 
 # Two sample MR report
-- study: `r study`
-- author: `r author`
-- date: `r format(Sys.time(), '%d %B, %Y')`
 
+---
+
+## `r title`
+
+Author: **`r author`** <br/>
+Date: **`r format(Sys.time(), '%d %B, %Y')`**
+
+---
+
+
+Results from two sample MR:
+
+```{r chunk1 }
+
+kable(mt, row.names=FALSE)
+
+```
+
+--- 
+
+Test for directional horizontal pleiotropy using MR Egger regression is performed by testing for significance of the intercept:
+
+```{r chunk2 }
+
+kable(et, row.names=FALSE)
+
+```
+
+--- 
+
+Plot of results
+
+```{r chunk3}
+
+print(p)
+
+```
