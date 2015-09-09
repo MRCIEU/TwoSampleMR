@@ -1,6 +1,14 @@
-read_exposure_data <- function(filename, exposure)
+#' Read in summary statistics for exposure trait
+#'
+#' @param filename Filename
+#' @param exposure Name of exposure trait
+#' @param quote Character used for quotes
+#' @param sep Character used to delimit columns
+#' @export
+#' @return Data frame of exposure summary stats
+read_exposure_data <- function(filename, exposure, quote='"', sep=" ")
 {
-	exposure_dat <- read.table(filename, header=T, stringsAsFactors=FALSE)
+	exposure_dat <- read.csv(filename, header=T, stringsAsFactors=FALSE, quote=quote, sep=sep)
 
 	# Check all the columns are there as expected
 	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(exposure_dat)))
@@ -64,7 +72,7 @@ read_exposure_data <- function(filename, exposure)
 }
 
 
-ensembl_get_position<-function(snp)
+ensembl_get_position <- function(snp)
 {
 	library(biomaRt)
 	Mart <- useMart(host="grch37.ensembl.org", biomart="ENSEMBL_MART_SNP",dataset="hsapiens_snp")
@@ -75,10 +83,17 @@ ensembl_get_position<-function(snp)
 }
 
 
-
-read_outcome_data <- function(filename, outcome)
+#' Read in summary statistics for outcome trait
+#'
+#' @param filename Filename
+#' @param outcome Name of exposure trait
+#' @param quote Character used for quotes
+#' @param sep Character used to delimit columns
+#' @export
+#' @return Data frame of exposure summary stats
+read_outcome_data <- function(filename, outcome, quote='"', sep=" ")
 {
-	outcome_dat <- read.table(filename, header=T, stringsAsFactors=FALSE)
+	outcome_dat <- read.csv(filename, header=T, stringsAsFactors=FALSE, quote=quote, sep=sep)
 
 	# Check all the columns are there as expected
 	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(outcome_dat)))

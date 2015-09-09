@@ -13,6 +13,8 @@ outcome_dat <- rbind(
 # exposure_dat <- ld_pruning(exposure_dat)
 
 ao <- available_outcomes()
+outcome_dat <- extract_outcome_data(exposure_dat, "GIANT_2015_HIPadjBMI_COMBINED_AllAncestries.txt.gz.uniform.af.txt")
+
 outcome_dat <- extract_outcome_data(exposure_dat, ao$filename[1:4])
 
 dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
