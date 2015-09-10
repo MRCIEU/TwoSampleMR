@@ -20,6 +20,13 @@ outcome_dat <- extract_outcome_data(exposure_dat, ao$filename[1:4])
 dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
 mr_results <- mr(dat)
 
+mrs <- mr_leaveoneout(dat)
+
 mr_report(mr_results, dat, path="inst/reports", output_path=".")
 
+
+ggplot(mrs[[3]], aes(x=SNP, y=b)) + 
+geom_point() + 
+geom_errorbar(aes(ymin=b-se, ymax=b+se),width=0, colour=grey) +
+coord_flip()
 

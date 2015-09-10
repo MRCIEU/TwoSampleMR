@@ -55,6 +55,22 @@ mr <- function(dat, bootstrap=1000)
 	return(list(mr=mr_tab, extra=extra_tab))
 }
 
+mr_sensitivity_analysis <- function(dat)
+{
+	res <- dlply(dat, .(outcome, exposure), function(x)
+	{
+		b_exp <- x$beta.exposure
+		b_out <- x$beta.outcome
+		se_exp <- x$se.exposure
+		se_out <- x$se.outcome
+
+		res <- list()
+
+		res[[1]] <- mr_leaveoneout(b_exp, b_out, se_exp, se_out)
+
+	})
+}
+
 
 #' Perform 2 sample IV using simple standard error
 #'
@@ -428,3 +444,26 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out)
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, testname="Inverse variance weighted regression"))
 }
+
+
+
+mr_leaveoneout <- function(dat, method=mr_meta_fixed_simple)
+{
+	res <- dlply(dat, .(exposure, outcome), function(x)
+	{
+		nsnp <- nrow(x)
+		l <- lapply(1:nsnp, function(i)
+		{
+			with(x, method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i]))
+		})
+
+		d <- data.frame(
+			SNP = x$SNP,
+			b = sapply(l, function(x) x$b),
+			se = sapply(l, function(x) x$se)
+		)
+		return(d)
+	})
+	return(res)
+}
+

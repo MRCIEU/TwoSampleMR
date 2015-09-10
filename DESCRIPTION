@@ -12,7 +12,6 @@ Depends: ggplot2,
          plyr,
          RMySQL,
          knitr,
-         markdown,
-         Cairo
+         markdown
 License: Artistic-2.0
 LazyData: true
