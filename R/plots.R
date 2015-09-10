@@ -33,3 +33,24 @@ mr_scatter_plot <- function(mr_results, dat)
 	})
 	mrres
 }
+
+
+#' Plot results from leaveoneout analysis
+#'
+#' <full description>
+#'
+#' @param leaveoneout_results Output from \code{mr_leaveoneout}
+#'
+#' @export
+#' @return List of plots
+mr_leaveoneout_plot <- function(leaveoneout_results)
+{
+	res <- llply(leaveoneout_results, function(d)
+	{
+		ggplot(d, aes(x=b, y=SNP)) +
+		geom_errorbar(aes(ymin=b-se, ymax=b+se))
+		geom_point() +
+		coord_flip()
+	})
+	res
+}

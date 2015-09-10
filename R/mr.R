@@ -447,6 +447,13 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out)
 
 
 
+#' Leave one out sensitivity analysis
+#'
+#' @param dat Output from \code{harmonise_exposure_outcome}
+#' @param method=mr_meta_fixed_simple Choose which method to use
+#'
+#' @export
+#' @return List of data frames
 mr_leaveoneout <- function(dat, method=mr_meta_fixed_simple)
 {
 	res <- dlply(dat, .(exposure, outcome), function(x)
