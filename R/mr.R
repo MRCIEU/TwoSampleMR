@@ -153,7 +153,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out)
 {
 	if(length(b_exp)<2)
 	{
-		return(list(b=NA, se=NA, pval=NA, testname="Wald ratio (random)"))
+		return(list(b=NA, se=NA, pval=NA, testname="Maximum likelihood"))
 	}
 	loglikelihood <- function(param) {
 		return(1/2*sum((b_exp-param[1:length(b_exp)])^2/se_exp^2)+1/2*sum((b_out-param[length(b_exp)+1]*param[1:length(b_exp)])^2/se_out^2))
@@ -166,13 +166,13 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out)
 	if(class(opt)=="try-error")
 	{
 		message("mr_two_sample_ml failed to converge")
-		return(list(b=NA, se=NA, pval=NA, testname="Wald ratio (random)"))
+		return(list(b=NA, se=NA, pval=NA, testname="Maximum likelihood"))
 	}
 
 	b <- opt$par[length(b_exp)+1]
 	se <- sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1])
 	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
-	return(list(b=b, se=se, pval=pval, testname="Wald ratio (random)"))
+	return(list(b=b, se=se, pval=pval, testname="Maximum likelihood"))
 }
 
 
@@ -483,7 +483,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out)
 #' @return List of data frames
 mr_leaveoneout <- function(dat, method=mr_meta_fixed_simple)
 {
-	res <- dlply(dat, .(exposure, outcome), function(x)
+	res <- ddply(dat, .(exposure, outcome), function(x)
 	{
 		nsnp <- nrow(x)
 		if(nsnp > 1)
@@ -496,15 +496,54 @@ mr_leaveoneout <- function(dat, method=mr_meta_fixed_simple)
 
 			d <- data.frame(
 				SNP = c(x$SNP, "All"),
-				b = sapply(l, function(x) x$b),
-				se = sapply(l, function(x) x$se)
+				b = sapply(l, function(y) y$b),
+				se = sapply(l, function(y) y$se),
+				p = sapply(l, function(y) y$pval),
+				n = x$samplesize.outcome[1]
 			)
 
 		} else {
-			d <- NULL
+			a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome))
+			d <- data.frame(
+				SNP = "All",
+				b = a$b,
+				se = a$se,
+				p = a$pval,
+				n = x$samplesize.outcome[1]
+			)
 		}
 		return(d)
 	})
 	return(res)
 }
 
+
+#' Perform 2 sample MR on each SNP individually
+#'
+#' @param dat Output from \code{harmonise_exposure_outcome}
+#' @param method=mr_two_sample_ml Function to use for MR analysis
+#'
+#' @export
+#' @return List of data frames
+mr_singlesnp <- function(dat, method=mr_meta_fixed_simple)
+{
+	res <- ddply(dat, .(exposure, outcome), function(x)
+	{
+		nsnp <- nrow(x)
+		l <- lapply(1:nsnp, function(i)
+		{
+			with(x, method(beta.exposure[i], beta.outcome[i], se.exposure[i], se.outcome[i]))
+		})
+		l[[nsnp+1]] <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome))
+
+		d <- data.frame(
+			SNP = c(x$SNP, "All"),
+			b = sapply(l, function(y) y$b),
+			se = sapply(l, function(y) y$se),
+			p = sapply(l, function(y) y$pval),
+			n = x$samplesize.outcome[1]
+		)
+		return(d)
+	})
+	return(res)
+}

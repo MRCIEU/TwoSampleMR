@@ -37,3 +37,29 @@ geom_point() +
 geom_errorbar(aes(ymin=b-se, ymax=b+se),width=0, colour=grey) +
 coord_flip()
 
+
+
+
+
+
+exposure_dat <- read_exposure_data("inst/data/telomere_length.txt", "Telomere length")
+
+outcome_dat <- rbind(
+	read_outcome_data("inst/data/cardiogram.txt", "Cardiogram"),
+	read_outcome_data("inst/data/bladdercancer.txt", "Bladder cancer")
+)
+
+ao <- available_outcomes()
+outcome_dat <- extract_outcome_data(exposure_dat, ao$filename[1:7])
+dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
+mr_results <- mr(dat)
+mrs <- mr_leaveoneout(dat)
+
+m <- mr_singlesnp(dat)
+
+p <- mr_leaveoneout_plot(mrs)
+
+mr_scatter_plot
+mr_leaveoneout_plot
+mr_funnel_plot
+

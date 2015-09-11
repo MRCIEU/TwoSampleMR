@@ -13,6 +13,6 @@ mr_leaveoneout_plot(leaveoneout_results)
 List of plots
 }
 \description{
-<full description>
+Plot results from leaveoneout analysis
 }
 
