@@ -58,8 +58,11 @@ mrs <- mr_leaveoneout(dat)
 m <- mr_singlesnp(dat)
 
 p <- mr_leaveoneout_plot(mrs)
+p1 <- mr_forest_plot(m)
 
-mr_scatter_plot
+
+
+a <- mr_scatter_plot(mr_results,dat)
 mr_leaveoneout_plot
 mr_funnel_plot
 
