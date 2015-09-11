@@ -37,7 +37,7 @@ mr <- function(dat, bootstrap=1000)
 			se = sapply(res, function(x) x$se),
 			pval = sapply(res, function(x) x$pval)
 		)
-
+# return(mr_tab)
 		extra_tab <- data.frame(
 			Exposure = x$exposure[1],
 			Outcome = x$outcome[1],
@@ -151,14 +151,23 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, Cov=0)
 
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out)
 {
+	if(length(b_exp)<2)
+	{
+		return(list(b=NA, se=NA, pval=NA, testname="Wald ratio (random)"))
+	}
 	loglikelihood <- function(param) {
 		return(1/2*sum((b_exp-param[1:length(b_exp)])^2/se_exp^2)+1/2*sum((b_out-param[length(b_exp)+1]*param[1:length(b_exp)])^2/se_out^2))
 	}
-	opt <- optim(
+	opt <- try(optim(
 		c(b_exp, sum(b_exp*b_out/se_out^2)/sum(b_exp^2/se_out^2)),
 		loglikelihood, 
 		hessian=TRUE, 
-		control = list(maxit=25000))
+		control = list(maxit=25000)), silent=TRUE)
+	if(class(opt)=="try-error")
+	{
+		message("mr_two_sample_ml failed to converge")
+		return(list(b=NA, se=NA, pval=NA, testname="Wald ratio (random)"))
+	}
 
 	b <- opt$par[length(b_exp)+1]
 	se <- sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1])
@@ -192,6 +201,24 @@ mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, bootstrap=NULL, a
 	stopifnot(length(b_exp) == length(b_out))
 	stopifnot(length(se_exp) == length(se_out))
 	stopifnot(length(b_exp) == length(se_out))
+
+	# print(b_exp)
+
+	if(length(b_exp) < 2)
+	{
+		return(list(
+			b = NA,
+			se = NA,
+			pval = NA,
+			b_i = NA,
+			se_i = NA,
+			pval_i = NA,
+			mod = NA,
+			smod = NA,
+			dat = NA,
+			testname = "Egger regression"
+		))
+	}
 
 	sign0 <- function(x)
 	{
@@ -459,16 +486,23 @@ mr_leaveoneout <- function(dat, method=mr_meta_fixed_simple)
 	res <- dlply(dat, .(exposure, outcome), function(x)
 	{
 		nsnp <- nrow(x)
-		l <- lapply(1:nsnp, function(i)
+		if(nsnp > 1)
 		{
-			with(x, method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i]))
-		})
+			l <- lapply(1:nsnp, function(i)
+			{
+				with(x, method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i]))
+			})
+			l[[nsnp+1]] <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome))
 
-		d <- data.frame(
-			SNP = x$SNP,
-			b = sapply(l, function(x) x$b),
-			se = sapply(l, function(x) x$se)
-		)
+			d <- data.frame(
+				SNP = c(x$SNP, "All"),
+				b = sapply(l, function(x) x$b),
+				se = sapply(l, function(x) x$se)
+			)
+
+		} else {
+			d <- NULL
+		}
 		return(d)
 	})
 	return(res)

@@ -49,8 +49,7 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 	d <- fetch(out, n=-1)
 	d <- subset(d, select=c(name, beta, se, n, p, freq, effect, other, filename))
 	names(d) <- c("SNP", "beta.outcome", "se.outcome", "samplesize.outcome", "pval.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome", "outcome")
-	# index <- d$se.outcome==0
-	# d$se[index] <- d$beta.outcome[index] / pt(d$pval.outcome[index] / 2, df = d$n[index], low=FALSE)
+
 	d$SNP <- as.character(d$SNP)
 	d$beta.outcome <- as.numeric(d$beta.outcome)
 	d$se.outcome <- as.numeric(d$se.outcome)
@@ -60,6 +59,9 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 	d$effect_allele.outcome <- as.character(d$effect_allele.outcome)
 	d$other_allele.outcome <- as.character(d$other_allele.outcome)
 	d$outcome <- as.character(d$outcome)
+
+	index <- d$se.outcome==0
+	d$se.outcome[index] <- abs(d$beta.outcome[index]) / qt(d$pval.outcome[index] / 2, df = d$samplesize.outcome[index], low=FALSE)
 
 	dbClearResult(dbListResults(mydb)[[1]])
 	dbDisconnect(mydb)

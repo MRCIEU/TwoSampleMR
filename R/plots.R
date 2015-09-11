@@ -24,6 +24,8 @@ mr_scatter_plot <- function(mr_results, dat)
 
 		ggplot(data=d, aes(x=beta.exposure, y=beta.outcome)) +
 			geom_errorbar(aes(ymin=beta.outcome-se.outcome, ymax=beta.outcome+se.outcome), colour="grey", width=0) +
+			geom_errorbarh(aes(xmin=beta.exposure-se.exposure, xmax=beta.exposure+se.exposure), colour="grey", width=0) +
+
 			geom_point() +
 			geom_abline(data=mrres, aes(intercept=a, slope=b, colour=Test), show.legend=TRUE) +
 			scale_colour_brewer(type="qual") +
@@ -47,10 +49,17 @@ mr_leaveoneout_plot <- function(leaveoneout_results)
 {
 	res <- llply(leaveoneout_results, function(d)
 	{
-		ggplot(d, aes(x=b, y=SNP)) +
-		geom_errorbar(aes(ymin=b-se, ymax=b+se))
+		if(is.null(d))
+		{
+			return(ggplot(NULL))
+		}
+		d1 <- subset(d, SNP=="All")
+		d2 <- subset(d, SNP!="All")
+		ggplot(d2, aes(y=SNP, x=b)) +
+		geom_errorbarh(aes(xmin=b-se, xmax=b+se), height=0) +
 		geom_point() +
-		coord_flip()
+		geom_vline(xintercept=0) +
+		geom_vline(xintercept=d1$b, linetype="dashed")
 	})
 	res
 }

@@ -1,4 +1,4 @@
-ssh -L 3306:localhost:3306 mruser@epi-franklin.epi.bris.ac.uk
+ssh -L 3306:localhost:3306 gh13047@epi-franklin.epi.bris.ac.uk
 
 
 # system.file("data/telomere_length.txt", package="meffil")
@@ -15,12 +15,19 @@ outcome_dat <- rbind(
 ao <- available_outcomes()
 outcome_dat <- extract_outcome_data(exposure_dat, "GIANT_2015_HIPadjBMI_COMBINED_AllAncestries.txt.gz.uniform.af.txt")
 
-outcome_dat <- extract_outcome_data(exposure_dat, ao$filename[1:4])
+outcome_dat <- extract_outcome_data(exposure_dat, ao$filename[1:7])
 
 dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
+
+d <- subset(dat, outcome=="CD.gwas_ichip_meta_release.txt.gz.uniform.af.txt")
 mr_results <- mr(dat)
 
+m <- mr(d)
+
 mrs <- mr_leaveoneout(dat)
+
+p <- mr_leaveoneout_plot(mrs)
+
 
 mr_report(mr_results, dat, path="inst/reports", output_path=".")
 
