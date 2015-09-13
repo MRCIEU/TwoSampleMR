@@ -4,7 +4,7 @@
 \alias{mr}
 \title{Perform all Mendelian randomization tests}
 \usage{
-mr(dat, bootstrap = 1000)
+mr(dat, bootstrap = 1000, alpha = 0.05, method_list = mr_method_list())
 }
 \arguments{
 \item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}

@@ -8,7 +8,7 @@
 #' @return List with the following elements:
 #'         mr: Table of MR results
 #'         extra: Table of extra results
-mr <- function(dat, bootstrap=1000)
+mr <- function(dat, bootstrap=1000, alpha=0.05, method_list=mr_method_list())
 {
 	require(plyr)
 	res <- dlply(dat, .(outcome, exposure), function(x)
@@ -17,17 +17,21 @@ mr <- function(dat, bootstrap=1000)
 		b_out <- x$beta.outcome
 		se_exp <- x$se.exposure
 		se_out <- x$se.outcome
+		p_out <- x$pval.outcome
 
-		res <- list()
-
-		res[[1]] <- mr_meta_fixed_simple(b_exp, b_out, se_exp, se_out)
-		res[[2]] <- mr_meta_fixed(b_exp, b_out, se_exp, se_out)
-		res[[3]] <- mr_meta_random(b_exp, b_out, se_exp, se_out)
-		res[[4]] <- mr_two_sample_ml(b_exp, b_out, se_exp, se_out)
-		res[[5]] <- mr_eggers_regression(b_exp, b_out, se_exp, se_out)
-		res[[6]] <- mr_weighted_median(b_exp, b_out, se_exp, se_out, bootstrap)
-		res[[7]] <- mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, bootstrap)
-		res[[8]] <- mr_ivw(b_exp, b_out, se_exp, se_out)
+		res <- lapply(method_list, function(meth)
+		{
+			if(meth %in% c("mr_weighted_median", "mr_penalised_weighted_median"))
+			{
+				get(meth)(b_exp, b_out, se_exp, se_out, bootstrap)
+			}
+			else if(meth == "fishers_combined_test")
+			{
+				get(meth)(p_out)
+			} else {
+				get(meth)(b_exp, b_out, se_exp, se_out)	
+			}
+		})
 
 		mr_tab <- data.frame(
 			Exposure = x$exposure[1],
@@ -37,14 +41,18 @@ mr <- function(dat, bootstrap=1000)
 			se = sapply(res, function(x) x$se),
 			pval = sapply(res, function(x) x$pval)
 		)
-# return(mr_tab)
+
+		mregger <- res[[which(method_list == "mr_eggers_regression")[1]]]
+		mreggerb <- res[[which(method_list == "mr_eggers_regression_bootstrap")[1]]]
+		if(is.null(mregger)) mregger <- mr_eggers_regression(b_exp, b_out, se_exp, se_out)
+		if(is.null(mreggerb)) mreggerb <- mr_eggers_regression_bootstrap(b_exp, b_out, se_exp, se_out, bootstrap)
 		extra_tab <- data.frame(
 			Exposure = x$exposure[1],
 			Outcome = x$outcome[1],
-			Test = c("Egger regression intercept"),
-			b = res[[5]]$b_i,
-			se = res[[5]]$se_i,
-			pval = res[[5]]$pval_i
+			Test = c("Egger regression intercept", "... Using bootstrap"),
+			b = c(mregger$b_i, mreggerb$b_i),
+			se = c(mregger$se_i, mreggerb$se_i),
+			pval = c(mregger$pval_i, mreggerb$pval_i)
 		)
 
 		l <- list(mr_tab=mr_tab, extra_tab=extra_tab)
@@ -55,20 +63,25 @@ mr <- function(dat, bootstrap=1000)
 	return(list(mr=mr_tab, extra=extra_tab))
 }
 
-mr_sensitivity_analysis <- function(dat)
+
+#' Get list of available MR methods
+#'
+#' @export
+#' @return character vector of method names
+mr_method_list <- function()
 {
-	res <- dlply(dat, .(outcome, exposure), function(x)
-	{
-		b_exp <- x$beta.exposure
-		b_out <- x$beta.outcome
-		se_exp <- x$se.exposure
-		se_out <- x$se.outcome
-
-		res <- list()
-
-		res[[1]] <- mr_leaveoneout(b_exp, b_out, se_exp, se_out)
-
-	})
+	c(
+		"mr_meta_fixed_simple",
+		"mr_meta_fixed",
+		"mr_meta_random",
+		"mr_two_sample_ml",
+		"mr_eggers_regression",
+		"mr_eggers_regression_bootstrap",
+		"mr_weighted_median",
+		"mr_penalised_weighted_median",
+		"mr_ivw",
+		"fishers_combined_test"
+	)
 }
 
 
@@ -149,6 +162,19 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, Cov=0)
 
 
 
+#' Maximum likelihood MR method
+#'
+#' @param b_exp Vector of genetic effects on exposure
+#' @param b_out Vector of genetic effects on outcome
+#' @param se_exp Standard errors of genetic effects on exposure
+#' @param se_out Standard errors of genetic effects on outcome
+#'
+#' @export
+#' @return List with the following elements:
+#'         b: causal effect estimate
+#'         se: standard error
+#'         pval: p-value
+#'         testname: Name of test
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out)
 {
 	if(length(b_exp)<2)
@@ -184,7 +210,6 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out)
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
 #' @param bootstrap Number of bootstraps to estimate standard error. If NULL then don't use bootstrap
-#' @param alpha Quantiles to use for calculating confidence intervals using bootstraps. Default 0.05
 #'
 #' @export
 #' @return List of with the following elements:
@@ -196,7 +221,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out)
 #'         pval_i: p-value of intercept
 #'         mod: Summary of regression
 #'         dat: Original data used for MR Egger regression
-mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, bootstrap=NULL, alpha=0.05)
+mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, bootstrap=NULL)
 {
 	stopifnot(length(b_exp) == length(b_out))
 	stopifnot(length(se_exp) == length(se_out))
@@ -241,17 +266,28 @@ mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, bootstrap=NULL, a
 	pval_i <- coefficients(smod)[1,4]
 
 	testname <- "Egger regression"
-
-	if(!is.null(bootstrap))
-	{
-		boots <- eggers_regression_bootstrap(b_exp, b_out, se_exp, se_out, bootstrap)
-		se <- boots$boots$se[boots$boots$param == "slope" & boots$boots$stat == "b" & boots$boots$what == "bootstrap"]
-		se_i <- boots$boots$se[boots$boots$param == "intercept" & boots$boots$stat == "b" & boots$boots$what == "bootstrap"]
-		testname <- "Egger regression (bootstrapped SE)"
-	}
-	return(list(b = b, se = se, pval = pval, b_i = b_i, se_i = se_i, pval_i = pval_i, mod = smod, dat = dat, testname=testname))
+ 	return(list(b = b, se = se, pval = pval, b_i = b_i, se_i = se_i, pval_i = pval_i, mod = smod, dat = dat, testname=testname))
 }
 
+
+
+
+linreg <- function(x, y, w=rep(x,1))
+{
+	xp <- w*x
+	yp <- w*y
+	t(xp) %*% yp / (t(xp)%*%xp)
+
+	bhat <- cov(x*w,y*w, use="pair") / var(x*w, na.rm=T)
+	ahat <- mean(y, na.rm=T) - mean(x, na.rm=T) * bhat
+	yhat <- ahat + bhat * x
+	se <- sqrt(sum((yp - yhat)^2) / (sum(!is.na(yhat)) - 2) / t(x)%*%x )
+
+	sum(w * (y-yhat)^2)
+	se <- sqrt(sum(w*(y-yhat)^2) /  (sum(!is.na(yhat)) - 2) / (sum(w*x^2)))
+	pval <- pt(abs(bhat / se), df=sum(!is.na(yhat)), low=FALSE)
+	return(list(ahat=ahat,bhat=bhat,se=se, pval=pval))
+}
 
 
 #' Run bootstrap to generate standard errors for MR
@@ -261,19 +297,39 @@ mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, bootstrap=NULL, a
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
 #' @param nboot Number of bootstraps. Default 1000
-#' @param alpha Quantile to use for confidence intervals. Default 0.05
 #'
 #' @export
-#' @return A list with the following elements:
-#'         boots: data frame of bootstrap results
-#'         res: data frame of summary results from each bootstrap
-#'         data: data frame of input summary stats
-eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, nboot = 1000, alpha = 0.05)
+#' @return List of with the following elements:
+#'         b: MR estimate
+#'         se: Standard error of MR estimate
+#'         pval: p-value of MR estimate
+#'         b_i: Estimate of horizontal pleiotropy (intercept)
+#'         se_i: Standard error of intercept
+#'         pval_i: p-value of intercept
+#'         mod: Summary of regression
+#'         dat: Original data used for MR Egger regression
+mr_eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, nboot = 1000)
 {
+	if(length(b_exp) < 2)
+	{
+		return(list(
+			b = NA,
+			se = NA,
+			pval = NA,
+			b_i = NA,
+			se_i = NA,
+			pval_i = NA,
+			mod = NA,
+			smod = NA,
+			dat = NA,
+			testname = "Egger regression"
+		))
+	}
+
 	require(reshape2)
 	require(plyr)
 	# Do bootstraps
-	res <- array(0, c(n+1, 4))
+	res <- array(0, c(nboot+1, 2))
 	pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style=3) 
 	for (i in 1:nboot)
 	{
@@ -287,48 +343,20 @@ eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, nboot = 10
 		xs <- abs(xs)
 
 		#weighted regression with given formula
-		r <- summary(lm(ys ~ xs, weights=1/se_out^2))
+		# r <- summary(lm(ys ~ xs, weights=1/se_out^2))
+		r <- linreg(xs, ys, 1/se_out^2)
 
 		#collect coefficient from given line.
-		res[i, 1] <- r$coefficients[1,1]
-		res[i, 2] <- r$coefficients[1,2]
-		res[i, 3] <- r$coefficients[2,1]
-		res[i, 4] <- r$coefficients[2,2]
+		res[i, 1] <- r$ahat
+		res[i, 2] <- r$bhat
+		# res[i, 1] <- r$coefficients[1,1]
+		# res[i, 2] <- r$coefficients[2,1]
+
 	}
 	cat("\n")
 
-	# Run original analysis
-	b_out <- b_out*sign(b_exp)
-	b_exp <- abs(b_exp)
-	dat <- data.frame(b_out, b_exp, se_out, se_exp)
-	orig <- coefficients(summary(lm(b_out ~ b_exp, weights=1/se_out^2)))
-	res[n+1, ] <- c(orig[1,1], orig[1,2], orig[2,1], orig[2,2])
-	res <- as.data.frame(res)
-	res$what <- "bootstrap"
-	res$what[n+1] <- "original"
-
-	datl <- melt(res, measure.vars=c("V1", "V2", "V3", "V4"))
-	datl$param <- "slope"
-	datl$param[datl$variable %in% c("V1", "V2")] <- "intercept"
-	datl$stat <- "b"
-	datl$stat[datl$variable %in% c("V2", "V4")] <- "se"
-
-	qu <- ddply(datl, .(param, stat, what), summarise, 
-		m=mean(value),
-		se=sd(value),
-		qupper=quantile(value, alpha),
-		qlower=quantile(value, 1-alpha),
-		pval=sum(value < 0)/length(value))
-
-	res <- as.data.frame(res)
-	names(res) <- c("b_i", "se_i", "b", "se")
-
-	return(list(boots=qu, res=res, data=dat))
+	return(list(b = mean(res[,2], na.rm=T), se = sd(res[,2], na.rm=T), pval = sum(sign(mean(res[,2],na.rm=T)) * res[,2] < 0)/nboot, b_i = mean(res[,1], na.rm=T), se_i = sd(res[,1], na.rm=T), pval_i = sum(sign(mean(res[,1],na.rm=T)) * res[,1] < 0)/nboot, testname="Egger regression (bootstrap)"))
 }
-
-
-
-
 
 
 #' Weighted median method
@@ -546,4 +574,20 @@ mr_singlesnp <- function(dat, method=mr_meta_fixed_simple)
 		return(d)
 	})
 	return(res)
+}
+
+
+#' Fisher's combined test
+#'
+#' @param pval Vector of outcome p-values
+#' @export
+#' @return List with the following elements:
+#'         b: MR estimate
+#'         se: Standard error
+#'         pval: p-value
+#'         testname: Name of the test
+fishers_combined_test <- function(pval)
+{
+	p <- pchisq(-2 * sum(log(pval)), df=2*length(pval))
+	return(list(b=NA, se=NA, pval=p, testname="Fisher's combiend test"))
 }

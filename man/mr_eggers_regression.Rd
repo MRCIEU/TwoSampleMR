@@ -4,8 +4,7 @@
 \alias{mr_eggers_regression}
 \title{Egger's regression for Mendelian randomization}
 \usage{
-mr_eggers_regression(b_exp, b_out, se_exp, se_out, bootstrap = NULL,
-  alpha = 0.05)
+mr_eggers_regression(b_exp, b_out, se_exp, se_out, bootstrap = NULL)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}
@@ -17,8 +16,6 @@ mr_eggers_regression(b_exp, b_out, se_exp, se_out, bootstrap = NULL,
 \item{se_out}{Standard errors of genetic effects on outcome}
 
 \item{bootstrap}{Number of bootstraps to estimate standard error. If NULL then don't use bootstrap}
-
-\item{alpha}{Quantiles to use for calculating confidence intervals using bootstraps. Default 0.05}
 }
 \value{
 List of with the following elements:

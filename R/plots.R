@@ -13,6 +13,10 @@ mr_scatter_plot <- function(mr_results, dat)
 {
 	mrres <- dlply(dat, .(exposure, outcome), function(d)
 	{
+		if(nrow(d) < 2)
+		{
+			return(blank_plot("Insufficient number of SNPs"))
+		}
 		mrres <- subset(mr_results$mr, Exposure == d$exposure[1] & Outcome == d$outcome[1])
 		egger <- subset(mr_results$extra, Exposure == d$exposure[1] & Outcome == d$outcome[1])
 
@@ -46,7 +50,7 @@ mr_leaveoneout_plot <- function(leaveoneout_results)
 	{
 		if(nrow(d) == 1)
 		{
-			return(NULL)
+			return(blank_plot("Insufficient number of SNPs"))
 		}
 		d1 <- subset(d, SNP=="All")
 		d2 <- subset(d, SNP!="All")
@@ -61,6 +65,13 @@ mr_leaveoneout_plot <- function(leaveoneout_results)
 	res
 }
 
+
+blank_plot <- function(message)
+{
+	ggplot(data.frame(a=0,b=0,n=message)) + geom_text(aes(x=a,y=b,label=n)) + labs(x=NULL,y=NULL) + theme(axis.text=element_blank(), axis.ticks=element_blank())
+}
+
+
 #' Forest plot
 #'
 #' @param singlesnp_results from \code{mr_singlesnp}
@@ -71,7 +82,11 @@ mr_forest_plot <- function(singlesnp_results)
 {
 	res <- dlply(singlesnp_results, .(exposure, outcome), function(d)
 	{
-		if(nrow(d) < 3) return(NULL)
+		if(nrow(d) < 3) {
+			return(
+				blank_plot("Insufficient number of SNPs")
+			)
+		}
 		d$up <- d$b + 1.96 * d$se
 		d$lo <- d$b - 1.96 * d$se
 		d$tot <- 3
