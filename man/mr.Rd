@@ -4,12 +4,14 @@
 \alias{mr}
 \title{Perform all Mendelian randomization tests}
 \usage{
-mr(dat, bootstrap = 1000, alpha = 0.05, method_list = mr_method_list())
+mr(dat, nboot = 1000, method_list = mr_method_list())
 }
 \arguments{
 \item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
 
-\item{bootstrap}{Number of bootstraps to estimate standard error. If NULL then don't use bootstrap}
+\item{nboot}{Number of bootstraps to estimate standard error. Default is 1000.}
+
+\item{method_list}{List of methods to use in analysis. See \code{mr_method_list()} for details.}
 }
 \value{
 List with the following elements:

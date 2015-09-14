@@ -4,7 +4,7 @@
 \alias{mr_weighted_median}
 \title{Weighted median method}
 \usage{
-mr_weighted_median(b_exp, b_out, se_exp, se_out, nboot = 1000)
+mr_weighted_median(b_exp, b_out, se_exp, se_out, nboot = 1000, ...)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

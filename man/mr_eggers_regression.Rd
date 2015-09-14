@@ -4,7 +4,7 @@
 \alias{mr_eggers_regression}
 \title{Egger's regression for Mendelian randomization}
 \usage{
-mr_eggers_regression(b_exp, b_out, se_exp, se_out, bootstrap = NULL)
+mr_eggers_regression(b_exp, b_out, se_exp, se_out, bootstrap = NULL, ...)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

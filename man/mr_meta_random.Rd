@@ -4,7 +4,7 @@
 \alias{mr_meta_random}
 \title{Perform 2 sample IV using random effects meta analysis and delta method for standard errors}
 \usage{
-mr_meta_random(b_exp, b_out, se_exp, se_out, Cov = 0)
+mr_meta_random(b_exp, b_out, se_exp, se_out, Cov = 0, ...)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

@@ -4,7 +4,7 @@
 \alias{fishers_combined_test}
 \title{Fisher's combined test}
 \usage{
-fishers_combined_test(pval)
+fishers_combined_test(pval, ...)
 }
 \arguments{
 \item{pval}{Vector of outcome p-values}

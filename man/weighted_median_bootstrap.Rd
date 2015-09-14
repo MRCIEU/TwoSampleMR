@@ -4,7 +4,8 @@
 \alias{weighted_median_bootstrap}
 \title{Calculate standard errors for weighted median method using bootstrap}
 \usage{
-weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, weights, nboot = 1000)
+weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, weights, nboot = 1000,
+  ...)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

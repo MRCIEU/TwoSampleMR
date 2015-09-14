@@ -4,7 +4,8 @@
 \alias{mr_eggers_regression_bootstrap}
 \title{Run bootstrap to generate standard errors for MR}
 \usage{
-mr_eggers_regression_bootstrap(b_exp, b_out, se_exp, se_out, nboot = 1000)
+mr_eggers_regression_bootstrap(b_exp, b_out, se_exp, se_out, nboot = 1000,
+  ...)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

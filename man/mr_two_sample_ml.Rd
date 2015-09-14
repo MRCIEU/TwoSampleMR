@@ -4,7 +4,7 @@
 \alias{mr_two_sample_ml}
 \title{Maximum likelihood MR method}
 \usage{
-mr_two_sample_ml(b_exp, b_out, se_exp, se_out)
+mr_two_sample_ml(b_exp, b_out, se_exp, se_out, ...)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

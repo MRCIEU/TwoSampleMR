@@ -4,7 +4,7 @@
 \alias{mr_meta_fixed_simple}
 \title{Perform 2 sample IV using simple standard error}
 \usage{
-mr_meta_fixed_simple(b_exp, b_out, se_exp, se_out)
+mr_meta_fixed_simple(b_exp, b_out, se_exp, se_out, ...)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}
