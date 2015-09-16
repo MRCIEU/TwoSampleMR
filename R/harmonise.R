@@ -26,18 +26,19 @@
 #'
 #' @param exposure_dat Output from \code{read_exposure_data}
 #' @param outcome_dat Output from \code{extract_outcome_data}
+#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
 #'
 #' @export
 #' @return Data frame with harmonised effects and alleles
-harmonise_exposure_outcome <- function(exposure_dat, outcome_dat)
+harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 {
+	stopifnot(action %in% 1:3)
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
+	if(action==1) return(res.tab)
 	fix.tab <- ddply(res.tab, .(outcome), function(x)
 	{
 		x <- mutate(x)
-		hx <- harmonise_function(x)
-		hx$outcome <- x$outcome[1]
-		return(harmonise_function(x))
+		return(harmonise_function(x, action))
 	})
 	return(fix.tab)
 }
@@ -49,8 +50,10 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat)
 #'
 #' @export
 #' @return Data frame
-harmonise_function <- function(res.tab)
+harmonise_function <- function(res.tab, action)
 {
+	if(action==1)
+	return(res.tab)
 	# don't have eaf for some studies, e.g these studies 
 	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
 	eaf.outcome.notmiss.study<-T
@@ -124,6 +127,12 @@ harmonise_function <- function(res.tab)
 
 	pos.amb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome==strand2[i]))))
 	pos.unamb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome!=strand2[i]))))
+
+	print(pos.amb)
+
+	# Get the palidromic SNP names
+	palindromic_snp_names <- res.tab$SNP[pos.amb]
+
 	
 	if(eaf.outcome.notmiss.study){ #don't have eaf for some studies
 		#For ambiguous/palindromic SNPs, correct effect allele in disease GWAS to be same as effect allele in trait GWAS (allele that increases the trait, using EAF columns to infer the effect allele
@@ -250,6 +259,12 @@ harmonise_function <- function(res.tab)
 		fix.tab<-rbind(fix.tab,ea.diff.tab2)
 	}
 	dim(fix.tab)
+
+	if(action == 3)
+	{
+		print(palindromic_snp_names)
+		return(subset(fix.tab, !SNP %in% palindromic_snp_names))
+	}
 
 	return(fix.tab)
 }

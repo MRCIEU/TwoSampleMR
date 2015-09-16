@@ -4,7 +4,7 @@
 \alias{harmonise_function}
 \title{Harmonisation function}
 \usage{
-harmonise_function(res.tab)
+harmonise_function(res.tab, action)
 }
 \arguments{
 \item{res.tab}{Data frame of exposure and outcome summary stats}
