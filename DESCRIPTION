@@ -1,10 +1,13 @@
 Package: TwoSampleMR
 Title: It does what it says on the tin
 Version: 0.1
-Authors@R: c(person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
+Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
-			 person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
-                  role = c("aut", "cre")))
+             person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
+                  role = c("aut")),
+             person("Jie", "Zheng", email = "Jie.Zheng@bristol.ac.uk",
+                  role = c("aut"))
+			 )
 Description: See title
 Depends: ggplot2,
          meta,
