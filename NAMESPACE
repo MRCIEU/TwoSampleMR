@@ -3,6 +3,7 @@
 export(available_outcomes)
 export(extract_outcome_data)
 export(fishers_combined_test)
+export(format_exposure_dat)
 export(harmonise_exposure_outcome)
 export(harmonise_function)
 export(mr)

@@ -9,7 +9,18 @@
 read_exposure_data <- function(filename, exposure, quote='"', sep=" ")
 {
 	exposure_dat <- read.csv(filename, header=T, stringsAsFactors=FALSE, quote=quote, sep=sep)
+	format_exposure_dat(exposure_dat, exposure)
 
+}
+
+
+#' Format exposure_dat into the right shape
+#'
+#' @param exposure_dat Data frame
+#' @param exposure Name of exposure trait
+#' @export
+format_exposure_dat <- function(exposure_dat, exposure)
+{
 	# Check all the columns are there as expected
 	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(exposure_dat)))
 
@@ -43,16 +54,18 @@ read_exposure_data <- function(filename, exposure, quote='"', sep=" ")
 		print(subset(exposure_dat, !keep))
 	}
 	exposure_dat <- subset(exposure_dat, keep)
+	stopifnot(nrow(exposure_dat) > 0)
 
 	# Get SNP positions
 	bm <- ensembl_get_position(exposure_dat$SNP)
 	missing <- exposure_dat$SNP[! exposure_dat$SNP %in% bm$refsnp_id]
 	if(length(missing) > 0)
 	{
-		message("Warning: The following SNP(s) were not present in ensembl GRCh37. They will be excluded. Sorry. This it's Matt's fault.")
+		message("Warning: The following SNP(s) were not present in ensembl GRCh37. They will be excluded. Sorry. This is Matt's fault.")
 		message("Atenção: O SNP (s) seguinte não estavam presentes no GRCh37 Ensembl. Eles serão excluídos. Desculpe. Isso é culpa do Matt.")
 		print(missing)
 	}
+	stopifnot(nrow(exposure_dat) > 0)
 
 	i6 <- exposure_dat$effect_allele %in% c("A", "C", "T", "G")
 	i7 <- exposure_dat$other_allele %in% c("A", "C", "T", "G")
@@ -70,7 +83,6 @@ read_exposure_data <- function(filename, exposure, quote='"', sep=" ")
 
 	return(exposure_dat)
 }
-
 
 ensembl_get_position <- function(snp)
 {
