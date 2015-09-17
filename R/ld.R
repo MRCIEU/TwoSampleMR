@@ -39,7 +39,7 @@ ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump
 	if(is.null(plink_bin))
 	{
 		require(Eur1000Genomes)
-		plink_bin <- system.file("exe/plink1.90", package="Eur1000Genomes"))
+		plink_bin <- system.file("exe/plink1.90", package="Eur1000Genomes")
 	} else {
 		stopifnot(file.exists(plink_bin))
 	}
@@ -59,7 +59,7 @@ ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump
 	{
 		message("Removing the following SNPs due to LD with other SNPs:", paste(y$SNP, collapse="\n"), sep="\n")
 	}
-	return(subset(dat, SNP %in% res$SNP))
+	return(subset(dat, SNP %in% res$SNP, select=-c(p.exposure)))
 }
 
 
