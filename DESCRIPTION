@@ -16,5 +16,6 @@ Depends: ggplot2,
          RMySQL,
          knitr,
          markdown
+Suggests: Eur1000Genomes
 License: Artistic-2.0
 LazyData: true

@@ -4,16 +4,15 @@
 \alias{ld_pruning_all}
 \title{Perform clumping on the chosen SNPs}
 \usage{
-ld_pruning_all(dat, refdat = "data_maf0.01", clump_kb = 10000,
-  clump_r2 = 0.1, clump_p1 = 1, clump_p2 = 1, plink_bin = "plink1.90",
-  tempdir = ".")
+ld_pruning_all(dat, refdat = NULL, clump_kb = 10000, clump_r2 = 0.1,
+  clump_p1 = 1, clump_p2 = 1, plink_bin = "plink1.90", tempdir = ".")
 }
 \arguments{
 \item{dat}{Output from \code{read_exposure_data}}
 
-\item{tempdir}{= "." Where to print results}
+\item{refdat}{Path to binary plink files to use for LD referencing. If NULL (default) then looks for data provided by the Eur1000Genomes R package.}
 
-\item{refdat="data_maf0.01"}{Location of reference genotype data}
+\item{tempdir}{= "." Where to print results}
 
 \item{clump_kb=10000}{Clumping window}
 
