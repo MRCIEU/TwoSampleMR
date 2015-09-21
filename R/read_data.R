@@ -25,11 +25,11 @@ format_exposure_dat <- function(exposure_dat, exposure)
 	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(exposure_dat)))
 
 	# Do some checks
-	stopifnot(all(is.numeric(exposure_dat$beta)))
-	stopifnot(all(is.numeric(exposure_dat$se)))
-	stopifnot(all(is.numeric(exposure_dat$eaf)))
-	stopifnot(all(exposure_dat$eaf > 0))
-	stopifnot(all(exposure_dat$eaf < 1))
+	stopifnot(all(is.numeric(exposure_dat$beta), na.rm=TRUE))
+	stopifnot(all(is.numeric(exposure_dat$se), na.rm=TRUE))
+	stopifnot(all(is.numeric(exposure_dat$eaf), na.rm=TRUE))
+	stopifnot(all(exposure_dat$eaf > 0, na.rm=TRUE))
+	stopifnot(all(exposure_dat$eaf < 1, na.rm=TRUE))
 	exposure_dat$exposure <- exposure
 
 	exposure_dat$keep <- TRUE
