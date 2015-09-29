@@ -37,13 +37,24 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 
 	mydb <- dbConnect(MySQL(), user=user, password=password, dbname=dbname, host=host)
 
+	# query <- paste(
+	# 	"SELECT a.*, b.*, c.* ",
+	# 	"FROM assoc a, snps b, study c ",
+	# 	"WHERE a.snp=b.id AND a.study=c.id ",
+	# 	"AND b.name IN ('", snps, "') ",
+	# 	"AND c.filename IN ('", outcomes, "') ",
+	# 	"ORDER BY filename;", sep="")
+
 	query <- paste(
 		"SELECT a.*, b.*, c.* ",
-		"FROM assoc a, snps b, study c ",
-		"WHERE a.snp=b.id AND a.study=c.id ",
-		"AND b.name IN ('", snps, "') ",
+		"FROM assoc a ", 
+		"LEFT JOIN snps b ON a.snp=b.id ", 
+		"LEFT JOIN study c ON a.study=c.id ",
+		"WHERE b.name IN ('", snps, "') ",
 		"AND c.filename IN ('", outcomes, "') ",
 		"ORDER BY filename;", sep="")
+
+
 
 	out <- dbSendQuery(mydb, query)
 	d <- fetch(out, n=-1)
