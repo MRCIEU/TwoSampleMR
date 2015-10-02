@@ -4,6 +4,7 @@ ssh -L 3306:localhost:3306 gh13047@epi-franklin.epi.bris.ac.uk
 # From GWAS catalog and mysql
 load("../mr_base_shiny/data/gwas_catalog.RData")
 bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units), select=c(SNP, Effect, eaf, Allele, other_allele, SE))
+bmi <- subset(gwas_catalog, Phenotype=="Body mass index", select=c(SNP, Effect, eaf, Allele, other_allele, SE))
 names(bmi) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se")
 
 exposure_dat <- format_exposure_dat(bmi, "BMI")
