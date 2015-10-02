@@ -41,9 +41,9 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 		"SELECT a.*, b.*, c.* ",
 		"FROM assoc a, snps b, study c ",
 		"WHERE a.snp=b.id AND a.study=c.id ",
+		"AND a.study IN ('", outcomes, "') ",
 		"AND b.name IN ('", snps, "') ",
-		"AND c.filename IN ('", outcomes, "') ",
-		"ORDER BY filename;", sep="")
+		"ORDER BY a.study;", sep="")
 
 	out <- dbSendQuery(mydb, query)
 	d <- fetch(out, n=-1)
