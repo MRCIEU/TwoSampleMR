@@ -47,9 +47,11 @@ SELECT COUNT(*) FROM snps;
 # 1.7 billion rows
 
 SELECT * FROM study limit 10;
-SELECT * FROM snps WHERE name='rs10900000';
+SELECT * FROM snps WHERE name='rs13078807';
 SELECT * FROM assoc WHERE snp=207707;
 
+SELECT * FROM assoc limit 10;
+SELECT * FROM assoc WHERE snp=2223704;
 
 SELECT a.*, b.*, c.*
 FROM assoc a, snps b, study c

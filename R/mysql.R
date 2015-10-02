@@ -63,8 +63,19 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 	index <- d$se.outcome==0
 	d$se.outcome[index] <- abs(d$beta.outcome[index]) / qt(d$pval.outcome[index] / 2, df = d$samplesize.outcome[index], low=FALSE)
 
+	d <- cleanup_outcome_data(d)
+
 	dbClearResult(dbListResults(mydb)[[1]])
 	dbDisconnect(mydb)
 	return(d)
 }
 
+
+
+cleanup_outcome_data <- function(d)
+{
+	d$se.outcome[d$se.outcome <= 0] <- NA
+	d$eaf.outcome[d$eaf.outcome <= 0 | d$eaf.outcome >= 1] <- NA
+	d$beta.outcome[d$beta.outcome == -9] <- NA
+	return(d)
+}
