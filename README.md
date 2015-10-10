@@ -142,3 +142,14 @@ Single SNP sensitivity analysis:
 A report of the analysis can be generated like this:
 
     mr_report(mr_results, dat, path="inst/reports", output_path=".")
+
+
+## To do
+
+- Create a proper helper function for this and integrate GWAS catalog into this repository.
+- Provide functionality for the LD pruning based on access to the remote server (it currently requires local access to the 1000 genomes reference data)
+- Integrate Charles's forest plots
+- Spruce up the report
+- Perhaps restructure the MR results so that generation of graphs etc is a bit more uniform
+- Improve documentation
+- Create a better template structure for all the different MR analyses so that it's very simple to implement a new MR function. Currently it's quite easy but could be better
