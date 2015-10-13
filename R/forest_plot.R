@@ -19,12 +19,12 @@
 #### Skip to line ~220 for the main function, forest_Plotter(), that is used to implement each of these methods.
 
 library(ggplot2)
-library(xlsx)
+# library(xlsx)
 library(plyr)
 library(gtable)
 
 ### 1. Read in a set of meta-analysis data that are in the first sheet of an xlsx file (that has a header)
-read_external <- function(filename, isxlsx) {
+read_external <- function(filename, isxlsx = FALSE) {
     # This is just a wrapper for the read.xlsx function
     if (isxlsx) {
         MA_data <-
