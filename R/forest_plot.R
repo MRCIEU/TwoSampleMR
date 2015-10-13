@@ -27,10 +27,7 @@ library(gtable)
 read_external <- function(filename, isxlsx = FALSE) {
     # This is just a wrapper for the read.xlsx function
     if (isxlsx) {
-        MA_data <-
-            read.xlsx(
-                file = filename, sheetIndex = 1, stringsAsFactors = FALSE
-            )
+        print('No XLSX files')
     } else {
         MA_data <- read.delim(file = filename, as.is = TRUE)
     }
