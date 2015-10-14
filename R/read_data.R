@@ -118,3 +118,10 @@ read_outcome_data <- function(filename, outcome, quote='"', sep=" ")
 
 	return(outcome_dat)
 }
+
+
+
+newfunction <- function()
+{
+	print("hello")
+}
