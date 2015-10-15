@@ -24,7 +24,7 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 #'
 #' @export
 #' @return Data frame of only independent SNPs
-ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, plink_bin=NULL, tempdir = ".")
+ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, plink_bin=NULL, tempdir = ".",user_P=F)
 {
 	if(is.null(refdat))
 	{
@@ -44,11 +44,11 @@ ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump
 		stopifnot(file.exists(plink_bin))
 	}
 
-	dat$p.exposure <- pnorm(abs(dat$beta.exposure / dat$se.exposure), lower.tail=FALSE)
+	if(!user_P) dat$pval.exposure <- pnorm(abs(dat$beta.exposure / dat$se.exposure), lower.tail=FALSE)
 	snpcode <- paste("chr", dat$chr_name, ":", dat$chrom_start, sep="")
 	res <- plink_clump(
 		snpcode,
-		dat$p.exposure,
+		dat$pval.exposure,
 		refdat,
 		clump_kb, clump_r2, clump_p1, clump_p2, plink_bin, tempdir)
 
@@ -59,7 +59,5 @@ ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump
 	{
 		message("Removing the following SNPs due to LD with other SNPs:", paste(y$SNP, collapse="\n"), sep="\n")
 	}
-	return(subset(dat, SNP %in% res$SNP, select=-c(p.exposure)))
+	return(subset(dat, SNP %in% res$SNP, select=-c(pval.exposure)))
 }
-
-
