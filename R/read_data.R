@@ -19,10 +19,11 @@ read_exposure_data <- function(filename, exposure, quote='"', sep=" ")
 #' @param exposure_dat Data frame
 #' @param exposure Name of exposure trait
 #' @export
-format_exposure_dat <- function(exposure_dat, exposure)
+format_exposure_dat <- function(exposure_dat, exposure,pval_only=F)
 {
 	# Check all the columns are there as expected
 	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(exposure_dat)))
+	if(pval_only) stopifnot("P_value" %in% names(exposure_dat))
 
 	# Do some checks
 	stopifnot(all(is.numeric(exposure_dat$beta), na.rm=TRUE))
@@ -31,9 +32,14 @@ format_exposure_dat <- function(exposure_dat, exposure)
 	stopifnot(all(exposure_dat$eaf > 0, na.rm=TRUE))
 	stopifnot(all(exposure_dat$eaf < 1, na.rm=TRUE))
 	exposure_dat$exposure <- exposure
+	if(pval_only)
+	{
+		stopifnot(all(is.numeric(exposure_dat$P_value), na.rm=TRUE))
+		stopifnot(all(exposure_dat$P_value >= 0, na.rm=TRUE))
+		stopifnot(all(exposure_dat$P_value < 1, na.rm=TRUE))
+	}
 
 	exposure_dat$keep <- TRUE
-
 	exposure_dat$effect_allele <- toupper(exposure_dat$effect_allele)
 	exposure_dat$other_allele <- toupper(exposure_dat$other_allele)
 	exposure_dat$SNP <- tolower(exposure_dat$SNP)
@@ -45,15 +51,28 @@ format_exposure_dat <- function(exposure_dat, exposure)
 	i3 <- !is.na(exposure_dat$other_allele)
 	i4 <- !is.na(exposure_dat$beta)
 	i5 <- !is.na(exposure_dat$se)
-	#exposure_dat$keep <- i1 & i2 & i3 & i4 & i5
-	#if(any(!exposure_dat$keep))
-	#{
-	#	message("Warning: The following SNP(s) are missing required information. They will be excluded. Sorry. We did all we could.")
-	#	message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")
-	#	
-	#	print(subset(exposure_dat, !keep))
-	#}
-	#exposure_dat <- subset(exposure_dat, keep)
+	i6 <- !is.na(exposure_dat$P_value)
+	
+	if(pval_only)
+	{
+		exposure_dat$keep <- i6
+		if(any(!exposure_dat$keep))
+		{
+			message("Warning: The following SNP(s) are missing required p_value information. They will be excluded. Sorry. We did all we could.")
+			print(subset(exposure_dat, !keep))
+		}
+	}else{
+		exposure_dat$keep <- i1 & i2 & i3 & i4 & i5
+		if(any(!exposure_dat$keep))
+		{
+			message("Warning: The following SNP(s) are missing required information. They will be excluded. Sorry. We did all we could.")
+			message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")
+			
+			print(subset(exposure_dat, !keep))
+		}		
+	}
+	exposure_dat <- subset(exposure_dat, keep)
+
 	stopifnot(nrow(exposure_dat) > 0)
 
 	# Get SNP positions
@@ -80,6 +99,7 @@ format_exposure_dat <- function(exposure_dat, exposure)
 	names(exposure_dat)[names(exposure_dat) == "beta"] <- "beta.exposure"
 	names(exposure_dat)[names(exposure_dat) == "se"] <- "se.exposure"
 	names(exposure_dat)[names(exposure_dat) == "eaf"] <- "eaf.exposure"
+	names(exposure_dat)[names(exposure_dat) == "P_value"] <- "pval.exposure"
 
 	return(exposure_dat)
 }
