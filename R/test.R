@@ -1,1 +1,3 @@
-print("why does nothing work?!")
+poop<-function(){
+	print("why does nothing work?!")
+}
