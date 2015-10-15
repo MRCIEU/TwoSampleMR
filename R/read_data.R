@@ -45,15 +45,15 @@ format_exposure_dat <- function(exposure_dat, exposure)
 	i3 <- !is.na(exposure_dat$other_allele)
 	i4 <- !is.na(exposure_dat$beta)
 	i5 <- !is.na(exposure_dat$se)
-	exposure_dat$keep <- i1 & i2 & i3 & i4 & i5
-	if(any(!exposure_dat$keep))
-	{
-		message("Warning: The following SNP(s) are missing required information. They will be excluded. Sorry. We did all we could.")
-		message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")
-		
-		print(subset(exposure_dat, !keep))
-	}
-	exposure_dat <- subset(exposure_dat, keep)
+	#exposure_dat$keep <- i1 & i2 & i3 & i4 & i5
+	#if(any(!exposure_dat$keep))
+	#{
+	#	message("Warning: The following SNP(s) are missing required information. They will be excluded. Sorry. We did all we could.")
+	#	message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")
+	#	
+	#	print(subset(exposure_dat, !keep))
+	#}
+	#exposure_dat <- subset(exposure_dat, keep)
 	stopifnot(nrow(exposure_dat) > 0)
 
 	# Get SNP positions
@@ -123,5 +123,5 @@ read_outcome_data <- function(filename, outcome, quote='"', sep=" ")
 
 newfunction <- function()
 {
-	print("hello")
+	print("hello / bom dia!")
 }
