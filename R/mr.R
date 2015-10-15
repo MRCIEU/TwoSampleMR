@@ -69,14 +69,14 @@ mr <- function(dat, nboot=1000, method_list=mr_method_list())
 		# )
 
 		# l <- list(mr_tab=mr_tab, extra_tab=extra_tab)
-		l <- mr_tab
-		return(l)
+		# return(l)
+		return(mr_tab)
 	})
-	mr_tab <- rbind.fill(lapply(res, function(x) x$mr_tab))
-	extra_tab <- rbind.fill(lapply(res, function(x) x$extra_tab))
-	# return(list(mr=mr_tab, extra=extra_tab))
-	return(mr=mr_tab)
-}
+	mr_tab <- rbind.fill(lapply(res, function(x) x))
+	# mr_tab <- rbind.fill(lapply(res, function(x) x$mr_tab))
+# 	# extra_tab <- rbind.fill(lapply(res, function(x) x$extra_tab))
+# 	# return(list(mr=mr_tab, extra=extra_tab))
+# 	return(mr_tab)
 }
 
 
