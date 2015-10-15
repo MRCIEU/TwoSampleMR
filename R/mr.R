@@ -12,15 +12,17 @@
 mr <- function(dat, nboot=1000, method_list=mr_method_list())
 {
 	require(plyr)
-	res <- dlply(dat, .(outcome, exposure), function(x)
+	res <-dlply(dat, .(outcome, exposure), function(x)
+	#x<-dlply(dat, .(outcome, exposure))
 	{
 		x <- mutate(x)
+
 		keep_mr <- rep(TRUE, nrow(x))
 		keep_pval <- rep(TRUE, nrow(x))
-		keep_mr[!is.finite(x$beta.exposure)] <- FALSE
-		keep_mr[!is.finite(x$beta.outcome)] <- FALSE
-		keep_mr[!is.finite(x$se.exposure)] <- FALSE
-		keep_mr[!is.finite(x$se.outcome)] <- FALSE
+		keep_mr[!is.finite(x$beta.exposure)] <- FALSE #
+		keep_mr[!is.finite(x$beta.outcome)] <- FALSE #
+		keep_mr[!is.finite(x$se.exposure)] <- FALSE #
+		keep_mr[!is.finite(x$se.outcome)] <- FALSE #
 		keep_pval[!is.finite(x$pval.outcome) & x$pval.outcome > 0 & x$pval.outcome <= 1] <- FALSE
 
 		b_exp <- x$beta.exposure[keep_mr]
@@ -52,26 +54,29 @@ mr <- function(dat, nboot=1000, method_list=mr_method_list())
 			pval = sapply(res, function(x) x$pval)
 		)
 
-		mregger <- res[[which(method_list == "mr_eggers_regression")[1]]]
-		mreggerb <- res[[which(method_list == "mr_eggers_regression_bootstrap")[1]]]
-		if(is.null(mregger)) mregger <- mr_eggers_regression(b_exp, b_out, se_exp, se_out)
-		if(is.null(mreggerb)) mreggerb <- mr_eggers_regression_bootstrap(b_exp, b_out, se_exp, se_out, nboot)
-		extra_tab <- data.frame(
-			Exposure = x$exposure[1],
-			Outcome = x$outcome[1],
-			Test = c("Egger regression intercept", "... Using bootstrap"),
-			"n SNPs" = c(mregger$nsnp, mreggerb$nsnp),
-			b = c(mregger$b_i, mreggerb$b_i),
-			se = c(mregger$se_i, mreggerb$se_i),
-			pval = c(mregger$pval_i, mreggerb$pval_i)
-		)
+		# mregger <- res[[which(method_list == "mr_eggers_regression")[1]]]
+		# mreggerb <- res[[which(method_list == "mr_eggers_regression_bootstrap")[1]]]
+		# if(is.null(mregger)) mregger <- mr_eggers_regression(b_exp, b_out, se_exp, se_out)
+		# if(is.null(mreggerb)) mreggerb <- mr_eggers_regression_bootstrap(b_exp, b_out, se_exp, se_out, nboot)
+		# extra_tab <- data.frame(
+		# 	Exposure = x$exposure[1],
+		# 	Outcome = x$outcome[1],
+		# 	Test = c("Egger regression intercept", "... Using bootstrap"),
+		# 	"n SNPs" = c(mregger$nsnp, mreggerb$nsnp),
+		# 	b = c(mregger$b_i, mreggerb$b_i),
+		# 	se = c(mregger$se_i, mreggerb$se_i),
+		# 	pval = c(mregger$pval_i, mreggerb$pval_i)
+		# )
 
-		l <- list(mr_tab=mr_tab, extra_tab=extra_tab)
+		# l <- list(mr_tab=mr_tab, extra_tab=extra_tab)
+		l <- mr_tab
 		return(l)
 	})
 	mr_tab <- rbind.fill(lapply(res, function(x) x$mr_tab))
 	extra_tab <- rbind.fill(lapply(res, function(x) x$extra_tab))
-	return(list(mr=mr_tab, extra=extra_tab))
+	# return(list(mr=mr_tab, extra=extra_tab))
+	return(mr=mr_tab)
+}
 }
 
 
