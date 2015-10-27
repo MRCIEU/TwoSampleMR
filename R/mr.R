@@ -13,17 +13,17 @@ mr <- function(dat, nboot=1000, method_list=mr_method_list())
 {
 	require(plyr)
 	res <-dlply(dat, .(outcome, exposure), function(x)
-	#x<-dlply(dat, .(outcome, exposure))
+	# x<-dlply(dat, .(outcome, exposure))
 	{
 		x <- mutate(x)
 
 		keep_mr <- rep(TRUE, nrow(x))
-		keep_pval <- rep(TRUE, nrow(x))
+		keep_pval <- rep(FALSE, nrow(x))
 		keep_mr[!is.finite(x$beta.exposure)] <- FALSE #
 		keep_mr[!is.finite(x$beta.outcome)] <- FALSE #
 		keep_mr[!is.finite(x$se.exposure)] <- FALSE #
 		keep_mr[!is.finite(x$se.outcome)] <- FALSE #
-		keep_pval[!is.finite(x$pval.outcome) & x$pval.outcome > 0 & x$pval.outcome <= 1] <- FALSE
+		keep_pval[is.finite(x$pval.outcome) & x$pval.outcome > 0 & x$pval.outcome <= 1] <- TRUE
 
 		b_exp <- x$beta.exposure[keep_mr]
 		b_out <- x$beta.outcome[keep_mr]
