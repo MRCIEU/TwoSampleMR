@@ -144,18 +144,78 @@ A report of the analysis can be generated like this:
     mr_report(mr_results, dat, path="inst/reports", output_path=".")
 
 
-## To do
-
-- Create a proper helper function for this and integrate GWAS catalog into this repository.
-- Provide functionality for the LD pruning based on access to the remote server (it currently requires local access to the 1000 genomes reference data)
-- Integrate Charles's forest plots
-- Spruce up the report
-- Perhaps restructure the MR results so that generation of graphs etc is a bit more uniform
-- Improve documentation
-- Create a better template structure for all the different MR analyses so that it's very simple to implement a new MR function. Currently it's quite easy but could be better
-- Add in additional MR functions that allow for correlated SNPS, using Steve Burgess' likelihood and GLM approaches; these extensions will require a function that generates a correlation matrix; will also require an LD pruning step that ensures no SNP-pairs have a correlation >0.9
-- MR in in non-European populations; LD pruning and corrMR functions assume European ancestry 
 
 
+# Working on MR base
 
-- Move to do list to issues tracker
+The `TwoSampleMR` package is sitting here:
+
+[https://scmv-ieugit.epi.bris.ac.uk/gh13047/mr_base](https://scmv-ieugit.epi.bris.ac.uk/gh13047/mr_base)
+
+The following people currently have access as 'Masters' on this repository:
+
+- Gib Hemani
+- Tom Gaunt
+- Hash Shihab
+- Chris Zheng
+- Charles Laurin
+- Philip Haycock
+- Kaitlin Wade
+- Katherine Tansey
+
+
+## R package development
+
+We talked about how to develop within an R package, but have a look at this link for more information or a general guide:
+
+[http://r-pkgs.had.co.nz/](http://r-pkgs.had.co.nz/)
+
+It has lots of information about how to write packages, using the `R/devtools` library. Quick synopsis below on.
+
+
+In terminal:
+
+```bash
+
+cd /path/to/mr_base
+
+```
+
+then in R, to load the package
+
+```r
+library(devtools)
+load_all()
+```
+
+If you make changes to the source code then running `load_all()` will update the loaded package to register the changes. To install:
+
+```r
+install()
+```
+
+
+## Using git
+
+### Getting started
+
+There are some good interactive starter guides:
+
+- [https://try.github.io/](https://try.github.io/)
+- [http://rogerdudler.github.io/git-guide/](http://rogerdudler.github.io/git-guide/)
+
+Here are some instructions on how to set up the authentication:
+
+[https://help.github.com/articles/set-up-git/](https://help.github.com/articles/set-up-git/)
+
+As you can see there are two options - using the password or using SSH keys. I've never tried it with the password, maybe Hash has some pointers if you are struggling with this. 
+
+### Working practice
+
+Because potentially a few of us are going to be working on this together here are some guidelines:
+
+- If you are working on something then assign the issue to yourself
+- Try to work on that issue on a specific branch
+- Try to use commits relatively frequently and at meaningful points of development
+- Avoid pushing commits if the R package won't build. e.g. make sure that the package can always be loaded/installed at the 
+
