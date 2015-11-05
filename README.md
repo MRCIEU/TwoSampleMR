@@ -155,3 +155,7 @@ A report of the analysis can be generated like this:
 - Create a better template structure for all the different MR analyses so that it's very simple to implement a new MR function. Currently it's quite easy but could be better
 - Add in additional MR functions that allow for correlated SNPS, using Steve Burgess' likelihood and GLM approaches; these extensions will require a function that generates a correlation matrix; will also require an LD pruning step that ensures no SNP-pairs have a correlation >0.9
 - MR in in non-European populations; LD pruning and corrMR functions assume European ancestry 
+
+
+
+- Move to do list to issues tracker
