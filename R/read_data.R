@@ -19,38 +19,92 @@ read_exposure_data <- function(filename, exposure, quote='"', sep=" ")
 #' @param exposure_dat Data frame
 #' @param exposure Name of exposure trait
 #' @export
-format_exposure_dat <- function(exposure_dat, exposure,pval_only=F)
+format_exposure_dat <- function(exposure_dat, exposure, pval_only=FALSE)
 {
 	# Check all the columns are there as expected
-	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(exposure_dat)))
-	if(pval_only) stopifnot("P_value" %in% names(exposure_dat))
+	stopifnot(
+		all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(exposure_dat)) |
+		all(c("SNP", "P_value") %in% names(exposure_dat))
+	)
 
-	# Do some checks
-	stopifnot(all(is.numeric(exposure_dat$beta), na.rm=TRUE))
-	stopifnot(all(is.numeric(exposure_dat$se), na.rm=TRUE))
-	stopifnot(all(is.numeric(exposure_dat$eaf), na.rm=TRUE))
-	stopifnot(all(exposure_dat$eaf > 0, na.rm=TRUE))
-	stopifnot(all(exposure_dat$eaf < 1, na.rm=TRUE))
-	exposure_dat$exposure <- exposure
-	if(pval_only)
+	mrcols <- c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele")
+	pcols <- c("SNP", "P_value")
+	allcols <- c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele", "P_value")
+
+	if(all(allcols %in% names(exposure_dat)))
+	{
+		type <- "all"
+	} else if(all(mrcols) %in% names(exposure_dat)) {
+		type <- "mr"
+	} else if(all(pcols) %in% names(exposure_dat)) {
+		type <- "pval"
+	} else {
+		stop(
+			"Error: Unexpected columns.\n\n"
+			"For MR the data must have: \n",
+			paste(mrcols, collapse=" "), "\n\n",
+			"For p-value based tests the data must have: \n",
+			paste(pcols, collapse=" "), "\n\n",
+			"For all tests the data must have: \n",
+			paste(allcols, collapse=" "), "\n"
+		)
+	}
+
+	exposure_dat$SNP <- tolower(exposure_dat$SNP)
+	exposure_dat$SNP <- gsub("[[:space:]]", "", exposure_dat$SNP)
+
+
+	if(type %in% c("all", "mr"))
+	{
+		# Do some checks
+		stopifnot(all(is.numeric(exposure_dat$beta), na.rm=TRUE))
+		stopifnot(all(is.numeric(exposure_dat$se), na.rm=TRUE))
+		stopifnot(all(is.numeric(exposure_dat$eaf), na.rm=TRUE))
+		stopifnot(all(exposure_dat$eaf > 0, na.rm=TRUE))
+		stopifnot(all(exposure_dat$eaf < 1, na.rm=TRUE))
+		exposure_dat$exposure <- exposure
+		exposure_dat$effect_allele <- toupper(exposure_dat$effect_allele)
+		exposure_dat$other_allele <- toupper(exposure_dat$other_allele)
+
+		exposure_dat$keep <- apply(exposure_dat, 1, function(x) any(is.na(x)))
+		if(any(!exposure_dat$keep))
+		{
+			message("Warning: The following SNP(s) are missing required information for the MR tests. They will be excluded. Sorry. We did all we could.")
+			message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")			
+			print(subset(exposure_dat, !keep))
+		}
+	}
+
+	if(type %in% c("all", "pval"))
 	{
 		stopifnot(all(is.numeric(exposure_dat$P_value), na.rm=TRUE))
 		stopifnot(all(exposure_dat$P_value >= 0, na.rm=TRUE))
 		stopifnot(all(exposure_dat$P_value < 1, na.rm=TRUE))
 	}
 
-	exposure_dat$keep <- TRUE
-	exposure_dat$effect_allele <- toupper(exposure_dat$effect_allele)
-	exposure_dat$other_allele <- toupper(exposure_dat$other_allele)
-	exposure_dat$SNP <- tolower(exposure_dat$SNP)
-	exposure_dat$SNP <- gsub("[[:space:]]", "", exposure_dat$SNP)
 
 	# Check for missing values 
+
+	column_set1 <- c(
+		"eaf",
+		"effect_allele",
+		"other_allele",
+		"beta",
+		"se"
+	)
+	column_set2 <- "P_value"
+
+	apply(exposure_dat[,columns_to_check], 1, function(x) )
+
 	i1 <- !is.na(exposure_dat$eaf)
 	i2 <- !is.na(exposure_dat$effect_allele)
 	i3 <- !is.na(exposure_dat$other_allele)
 	i4 <- !is.na(exposure_dat$beta)
 	i5 <- !is.na(exposure_dat$se)
+
+
+
+
 	i6 <- !is.na(exposure_dat$P_value)
 	
 	if(pval_only)
@@ -63,13 +117,6 @@ format_exposure_dat <- function(exposure_dat, exposure,pval_only=F)
 		}
 	}else{
 		exposure_dat$keep <- i1 & i2 & i3 & i4 & i5
-		if(any(!exposure_dat$keep))
-		{
-			message("Warning: The following SNP(s) are missing required information. They will be excluded. Sorry. We did all we could.")
-			message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")
-			
-			print(subset(exposure_dat, !keep))
-		}		
 	}
 	exposure_dat <- subset(exposure_dat, keep)
 
