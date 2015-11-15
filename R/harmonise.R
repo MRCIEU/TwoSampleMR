@@ -47,6 +47,7 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 #' Harmonisation function
 #'
 #' @param res.tab Data frame of exposure and outcome summary stats
+#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
 #'
 #' @export
 #' @return Data frame
