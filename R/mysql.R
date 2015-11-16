@@ -21,6 +21,7 @@ available_outcomes <- function(user="mruser", password="TMG_F1WnTL", dbname="mrb
 
 #' Extract SNP effects from GWAS summary statistics
 #'
+#' Any SNPs that have no beta or p value will be removed from the outcome results
 #' 
 #' @param exposure_dat Output from \code{read_exposure_data}
 #' @param outcomes List of study names to search for, obtained from \code{available_outcomes}
@@ -85,6 +86,8 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 	d$effect_allele.outcome <- as.character(d$effect_allele.outcome)
 	d$other_allele.outcome <- as.character(d$other_allele.outcome)
 	d$outcome <- as.character(d$outcome)
+
+	d$eaf.outcome[is.na(d$eaf.outcome)] <- 0.5
 
 	d <- cleanup_outcome_data(d)
 

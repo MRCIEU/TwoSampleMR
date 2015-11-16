@@ -38,7 +38,8 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 	fix.tab <- ddply(res.tab, .(outcome), function(x)
 	{
 		x <- mutate(x)
-		return(harmonise_function(x, action))
+		x <- harmonise_function(x, action)
+		x$keep_mr[is.na(x$beta.outcome) | is.na(x$se.outcome)] <- FALSE
 	})
 	return(fix.tab)
 }
