@@ -40,6 +40,7 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 		x <- mutate(x)
 		x <- harmonise_function(x, action)
 		x$keep_mr[is.na(x$beta.outcome) | is.na(x$se.outcome)] <- FALSE
+		return(x)
 	})
 	return(fix.tab)
 }
