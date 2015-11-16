@@ -83,12 +83,19 @@ format_exposure_dat <- function(exposure_dat, exposure)
 		badp <- !is.numeric(exposure_dat$P_value) | exposure_dat$P_value >= 0 | exposure_dat$P_value < 1 | !is.finite(exposure_dat$P_value)
 		message("P-values have been provided but the following SNPs have issues with the p-values:\n")
 		print(exposure_dat$SNP[badp])
-		if(c("beta", "se") %in% names(exposure_dat))
+		if(all(c("beta", "se") %in% names(exposure_dat)))
 		{
 			goodp <- badp & is.finite(exposure_dat$beta) & is.finite(exposure_dat$se)
 			exposure_dat$P_value[goodp] <- pnorm(abs(exposure_dat$beta[goodp]) / exposure_dat$se[goodp], lower.tail=FALSE)
 		}
+	} else if(all(c("beta", "se") %in% names(exposure_dat))) {
+		exposure_dat$P_value <- pnorm(abs(exposure_dat$beta) / exposure_dat$se, lower.tail=FALSE)
+	} else {
+		exposure_dat$P_value <- 0.99
 	}
+
+	exposure_dat$P_value[!is.finite(exposure_dat$P_value)] <- 0.99
+
 
 	# Get SNP positions
 	bm <- ensembl_get_position(exposure_dat$SNP)
@@ -103,8 +110,8 @@ format_exposure_dat <- function(exposure_dat, exposure)
 
 
 
-	exposure_dat <- exposure_dat[,names(exposure_dat)!="chr_name"]
-	exposure_dat <- exposure_dat[,names(exposure_dat)!="chrom_start"]
+	exposure_dat <- exposure_dat[,names(exposure_dat)!="chr_name", drop=FALSE]
+	exposure_dat <- exposure_dat[,names(exposure_dat)!="chrom_start", drop=FALSE]
 	exposure_dat <- merge(exposure_dat, bm, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
 
 	names(exposure_dat)[names(exposure_dat) == "effect_allele"] <- "effect_allele.exposure"

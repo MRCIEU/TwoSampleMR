@@ -44,14 +44,6 @@ ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump
 		stopifnot(file.exists(plink_bin))
 	}
 
-	if(! "pval.exposure" %in% names(dat))
-	{
-		dat$pval.exposure <- pnorm(abs(dat$beta.exposure / dat$se.exposure), lower.tail=FALSE)
-	}
-
-	badp <- any(dat$pval.exposure > 1 | dat$pval.exposure <= 0 | is.na(dat$pval.exposure))
-	dat$pval.exposure[badp] <- 0.99
-
 	snpcode <- paste("chr", dat$chr_name, ":", dat$chrom_start, sep="")
 	res <- plink_clump(
 		snpcode,
