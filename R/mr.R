@@ -25,6 +25,11 @@ mr <- function(dat, nboot=1000, method_list=mr_method_list())
 		keep_mr[!is.finite(x$se.outcome)] <- FALSE #
 		keep_pval[is.finite(x$pval.outcome) & x$pval.outcome > 0 & x$pval.outcome <= 1] <- TRUE
 
+		print(sum(keep_mr))
+		print(sum(keep_pval))
+
+		if(sum(keep_mr) == 0) return(NULL)
+
 		b_exp <- x$beta.exposure[keep_mr]
 		b_out <- x$beta.outcome[keep_mr]
 		se_exp <- x$se.exposure[keep_mr]
@@ -580,7 +585,7 @@ mr_leaveoneout <- function(dat, method=mr_meta_fixed_simple)
 #'
 #' @export
 #' @return List of data frames
-mr_singlesnp <- function(dat, method=mr_meta_fixed_simple)
+mr_singlesnp <- function(dat, method=mr_meta_fixed)
 {
 	res <- ddply(dat, .(exposure, outcome), function(x)
 	{

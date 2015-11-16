@@ -11,17 +11,18 @@ mr_forest_plot <- function() {}
 #' @return List of plots
 mr_scatter_plot <- function(mr_results, dat)
 {
+	dat <- subset(dat, paste(outcome, exposure) %in% paste(mr_results$Outcome, mr_results$Exposure))
 	mrres <- dlply(dat, .(exposure, outcome), function(d)
 	{
 		if(nrow(d) < 2)
 		{
 			return(blank_plot("Insufficient number of SNPs"))
 		}
-		mrres <- subset(mr_results$mr, Exposure == d$exposure[1] & Outcome == d$outcome[1])
-		egger <- subset(mr_results$extra, Exposure == d$exposure[1] & Outcome == d$outcome[1])
+		mrres <- subset(mr_results, Exposure == d$exposure[1] & Outcome == d$outcome[1])
+		# egger <- subset(mr_results$extra, Exposure == d$exposure[1] & Outcome == d$outcome[1])
 
 		mrres$a <- 0
-		mrres$a[mrres$Test == "Egger regression"] <- egger$b[1]
+		# mrres$a[mrres$Test == "Egger regression"] <- egger$b[1]
 
 		ggplot(data=d, aes(x=beta.exposure, y=beta.outcome)) +
 			geom_errorbar(aes(ymin=beta.outcome-se.outcome, ymax=beta.outcome+se.outcome), colour="grey", width=0) +
