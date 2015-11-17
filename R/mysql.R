@@ -60,9 +60,10 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 		effect_allelel_freq,
 		effect_allele,
 		other_allele,
-		trait
+		trait,
+		consortium
 	))
-	names(d) <- c("SNP", "beta.outcome", "se.outcome", "samplesize.outcome", "pval.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome", "outcome")
+	names(d) <- c("SNP", "beta.outcome", "se.outcome", "samplesize.outcome", "pval.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome", "outcome","consortium")
 
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
 	d <- subset(d, !rem)

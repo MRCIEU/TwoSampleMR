@@ -12,7 +12,7 @@
 mr <- function(dat, nboot=1000, method_list=mr_method_list())
 {
 	require(plyr)
-	res <-dlply(dat, .(outcome, exposure), function(x)
+	res <-dlply(dat, .(consortium,outcome, exposure), function(x)
 	# x<-dlply(dat, .(outcome, exposure))
 	{
 		x <- mutate(x)
@@ -50,6 +50,7 @@ mr <- function(dat, nboot=1000, method_list=mr_method_list())
 			}
 		})
 		mr_tab <- data.frame(
+			consortium = x$consortium[1],
 			Exposure = x$exposure[1],
 			Outcome = x$outcome[1],
 			Test = sapply(res, function(x) x$testname),
