@@ -33,7 +33,7 @@ ao <- available_outcomes()
 outcome_dat <- extract_outcome_data(exposure_dat, ao$id[1:7])
 dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
 mr_results <- mr(dat)
-
+mrs <- mr_singlesnp(dat)
 
 
 

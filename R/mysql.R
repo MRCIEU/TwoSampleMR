@@ -42,7 +42,7 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 
     message("Extracting data")
 	query <- paste(
-		"SELECT a.*, b.*, c.* ",
+		"SELECT a.effect_allele, a.other_allele, a.effect_allelel_freq, a.beta, a.se, a.p, a.n, b.name, c.* ",
 		"FROM assoc a, snp b, study c ",
 		"WHERE a.snp=b.id AND a.study=c.id ",
 		"AND a.study IN ('", outcomes, "') ",
@@ -51,47 +51,41 @@ extract_outcome_data <- function(exposure_dat, outcomes, user="mruser", password
 
 	out <- dbSendQuery(mydb, query)
 	d <- fetch(out, n=-1)
-	d <- subset(d, select=c(
-		name,
-		beta,
-		se,
-		n,
-		p,
-		effect_allelel_freq,
-		effect_allele,
-		other_allele,
-		trait,
-		consortium
-	))
-	names(d) <- c("SNP", "beta.outcome", "se.outcome", "samplesize.outcome", "pval.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome", "outcome","consortium")
+
+	d <- data.frame(
+		SNP = as.character(d$name),
+		beta.outcome = as.numeric(d$beta),
+		se.outcome = as.numeric(d$se),
+		samplesize.outcome = as.numeric(d$n),
+		ncase.outcome = as.numeric(d$ncase),
+		ncontrol.outcome = as.numeric(d$ncontrol),
+		pval.outcome = as.numeric(d$p),
+		eaf.outcome = as.numeric(d$effect_allelel_freq),
+		effect_allele.outcome = as.character(d$effect_allele),
+		other_allele.outcome = as.character(d$other_allele),
+		outcome = as.character(d$trait),
+		consortium.outcome = as.character(d$consortium),
+		year.outcome = as.numeric(d$year),
+		pmid.outcome = as.numeric(d$pmid),
+		id.outcome = as.numeric(d$id)
+	)
+
+	d$displayname.outcome <- paste0(d$outcome, "; ", d$consortium.outcome, " (", d$year.outcome, ")")
+
+	d$eaf.outcome[is.na(d$eaf.outcome)] <- 0.5
 
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
 	d <- subset(d, !rem)
 
 	# For any that have missing SE but available beta and pval, infer SE
-	index <- (is.na(d$se.outcome) | d$se.outcome == 0) & (!is.na(d$beta.outcome) & !is.na(d$pval.outcome))
-	if(any(index))
-	{
-		message("Inferring SE")
-		d$se.outcome[index] <- get_se(d$beta.outcome[index], d$pval.outcome[index])
-	}
-
-
-	message("Formatting")
-	d$SNP <- as.character(d$SNP)
-	d$beta.outcome <- as.numeric(d$beta.outcome)
-	d$se.outcome <- as.numeric(d$se.outcome)
-	d$samplesize.outcome <- as.numeric(d$samplesize.outcome)
-	d$pval.outcome <- as.numeric(d$pval.outcome)
-	d$eaf.outcome <- as.numeric(d$eaf.outcome)
-	d$effect_allele.outcome <- as.character(d$effect_allele.outcome)
-	d$other_allele.outcome <- as.character(d$other_allele.outcome)
-	d$outcome <- as.character(d$outcome)
-
-	d$eaf.outcome[is.na(d$eaf.outcome)] <- 0.5
+	# index <- (is.na(d$se.outcome) | d$se.outcome == 0) & (!is.na(d$beta.outcome) & !is.na(d$pval.outcome))
+	# if(any(index))
+	# {
+	# 	message("Inferring SE")
+	# 	d$se.outcome[index] <- get_se(d$beta.outcome[index], d$pval.outcome[index])
+	# }
 
 	d <- cleanup_outcome_data(d)
-
 	dbClearResult(dbListResults(mydb)[[1]])
 	dbDisconnect(mydb)
 	return(d)

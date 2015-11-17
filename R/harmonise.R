@@ -35,11 +35,11 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 	stopifnot(action %in% 1:3)
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
 	if(action==1) return(res.tab)
-	fix.tab <- ddply(res.tab, .(outcome), function(x)
+	fix.tab <- ddply(res.tab, .(id.outcome), function(x)
 	{
 		x <- mutate(x)
 		x <- harmonise_function(x, action)
-		x$keep_mr[is.na(x$beta.outcome) | is.na(x$se.outcome)] <- FALSE
+		x$mr_keep[is.na(x$beta.outcome) | is.na(x$se.outcome)] <- FALSE
 		return(x)
 	})
 	return(fix.tab)
@@ -65,7 +65,7 @@ harmonise_function <- function(res.tab, action)
 	}
 
 
-	if(sum(grep("\\.y",names(res.tab)))) stop(paste("some column names are identical in the instruments file and the outcome database; ",names(res.tab)[grep(".y",names(res.tab))]," present in both files",sep=""))
+	# if(sum(grep("\\.y",names(res.tab)))) stop(paste("some column names are identical in the instruments file and the outcome database; ",names(res.tab)[grep(".y",names(res.tab))]," present in both files",sep=""))
 
 	res.tab$beta.exposure<-as.numeric(res.tab$beta.exposure)
 	res.tab$beta.outcome<-as.numeric(res.tab$beta.outcome)
