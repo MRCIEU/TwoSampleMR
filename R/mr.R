@@ -93,6 +93,7 @@ mr <- function(dat, nboot=1000, method_list=mr_method_list())
 mr_method_list <- function()
 {
 	c(
+		"mr_wald_ratio",
 		"mr_meta_fixed_simple",
 		"mr_meta_fixed",
 		"mr_meta_random",
@@ -104,6 +105,33 @@ mr_method_list <- function()
 		"mr_ivw",
 		"fishers_combined_test"
 	)
+}
+
+
+#' Perform 2 sample IV using Wald ratio
+#'
+#' @param b_exp Vector of genetic effects on exposure
+#' @param b_out Vector of genetic effects on outcome
+#' @param se_exp Standard errors of genetic effects on exposure
+#' @param se_out Standard errors of genetic effects on outcome
+#'
+#' @export
+#' @return List with the following elements:
+#'         b: causal effect estimate
+#'         se: standard error
+#'         pval: p-value
+#'         testname: Name of test
+mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out)
+{
+	if(length(b_exp) > 1)
+	{
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA, testname="Wald ratio"))
+	}
+	b <- b_out / b_exp
+	se <- se_out / b_exp
+	# sqrt((segd^2/gp^2) + (gd^2/gp^4)*segp^2 - 2*(gd/gp^3)) #full delta method with cov set to 0
+	pval <- pnorm(abs(b)/se,lower.tail=F)*2
+	return(list(b=b, se=se, pval=pval, nsnp=1, testname="Wald ratio"))
 }
 
 
@@ -586,7 +614,7 @@ mr_leaveoneout <- function(dat, method=mr_meta_fixed_simple)
 #'
 #' @export
 #' @return List of data frames
-mr_singlesnp <- function(dat, method=mr_meta_fixed)
+mr_singlesnp <- function(dat, method=mr_wald_ratio)
 {
 	res <- ddply(dat, .(exposure, outcome), function(x)
 	{
@@ -608,6 +636,7 @@ mr_singlesnp <- function(dat, method=mr_meta_fixed)
 	})
 	return(res)
 }
+
 
 
 #' Fisher's combined test
