@@ -35,7 +35,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 	mr_tab <- rbind.fill(lapply(res, function(x) x))
 
 	ao <- available_outcomes()
-	ao <- subset(ao, select=c(id, trait, trait_strict, consortium, ethnic, gender, ncase, ncontrol, sample_size, pmid, unit, sd, year))
+	ao <- subset(ao, select=c(id, trait, trait_strict, consortium, ethnic, gender, ncase, ncontrol, sample_size, pmid, unit, sd, year, cat, subcat))
 
 	mr_tab$ord <- 1:nrow(mr_tab)
 	mr_tab <- merge(mr_tab, ao, by.x="Study.ID", by.y="id")
