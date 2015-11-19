@@ -22,6 +22,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 
 		mr_tab <- data.frame(
 			Study.ID = x$id.outcome[1],
+			Exposure = x$exposure[1],
 			Test = sapply(res, function(x) x$testname),
 			n.SNPs = sapply(res, function(x) x$nsnp),
 			b = sapply(res, function(x) x$b),
