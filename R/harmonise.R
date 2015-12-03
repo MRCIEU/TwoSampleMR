@@ -73,7 +73,7 @@ harmonise_function <- function(res.tab, action)
 	res.tab$eaf.outcome[res.tab$eaf.outcome=="NR"]<-NA
 	res.tab$eaf.outcome[res.tab$eaf.outcome=="NR "]<-NA
 	res.tab$eaf.outcome<-as.numeric(res.tab$eaf.outcome)
-	res.tab$eaf.outcome[which(res.tab$eaf.outcome==1)]<-NA
+	# res.tab$eaf.outcome[which(res.tab$eaf.outcome==1)]<-NA
 	 	    
 	#res.tab$p.value.outcome<-as.numeric(res.tab$p.value.outcome)
 	#code mSNP effect so that effect allele is the allele that increases the trait
