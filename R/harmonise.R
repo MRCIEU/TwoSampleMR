@@ -73,8 +73,8 @@ harmonise_function <- function(res.tab, action)
 	res.tab$eaf.outcome[res.tab$eaf.outcome=="NR"]<-NA
 	res.tab$eaf.outcome[res.tab$eaf.outcome=="NR "]<-NA
 	res.tab$eaf.outcome<-as.numeric(res.tab$eaf.outcome)
-	res.tab<-res.tab[res.tab$eaf.outcome!=1,] # exclude SNPS where eaf is 1 in outcome database
-	    
+	res.tab$eaf.outcome[which(res.tab$eaf.outcome==1)]<-NA
+	 	    
 	#res.tab$p.value.outcome<-as.numeric(res.tab$p.value.outcome)
 	#code mSNP effect so that effect allele is the allele that increases the trait
 	#res.tab[,c("SNP","beta.exposure","beta.outcome","effect_allele.exposure","other_allele.exposure","effect_allele","other_allele","eaf.exposure","eaf.outcome","info_s1","RSQ_s2","RSQ_s3","info_s4","q_p.value")]
@@ -95,7 +95,7 @@ harmonise_function <- function(res.tab, action)
 	strand1<-c("G","C","T","A")
 	strand2<-c("C","G","A","T")
 
-	#When only the effect allele in outcome database is known, infer other allele from effect_allele.exposure and other_allele.exposure for the exposure 
+	#When only the effect allele in outcome database is known, infer other allele from effect_allele.exposure and other_allele.exposure  
 	if(all(is.na(res.tab$other_allele.outcome))){
 		for(outcome in res.tab$outcome){
 			pos.keep<-which(res.tab$outcome==outcome & is.na(res.tab$other_allele.outcome))
@@ -141,8 +141,8 @@ harmonise_function <- function(res.tab, action)
 		#For ambiguous/palindromic SNPs, correct effect allele in disease GWAS to be same as effect allele in trait GWAS (allele that increases the trait, using EAF columns to infer the effect allele
 		#if the effect allele frequencies are different (eaf.outcome versus eaf.exposure) then effect alleles are different
 		amb.tab<-res.tab[pos.amb,]
-		length(unique(res.tab$snp)) #number of SNPs
-		length(unique(amb.tab$snp)) #number of ambiguous/palindromic SNPs
+		length(unique(res.tab$SNP)) #number of SNPs
+		length(unique(amb.tab$SNP)) #number of ambiguous/palindromic SNPs
 		#exclude ambiguous SNPs where eaf is 0.42-0.58 because the effect allele cannot be reliably inferred
 		res.tab[,c("eaf.outcome","eaf.exposure")]
 		amb.tab.keep<-amb.tab[which(amb.tab$eaf.outcome<0.42 | amb.tab$eaf.outcome>0.58),] #keep ambiguous snps if eaf.outcome NOT 0.42-0.58
