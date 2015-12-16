@@ -1,7 +1,9 @@
 get_plink_exe <- function()
 {
-	os <- Sys.info()['sysname']
-	plink_bin <- system.file(paste0("exe/plink_", os), package="Eur1000Genomes")
+    os <- Sys.info()['sysname']
+    a <- paste0("exe/plink_", os)
+    if(os == "Windows") a <- paste0(a, ".exe")
+    plink_bin <- system.file(a, package="Eur1000Genomes")
 	if(!file.exists(plink_bin))
 	{
 		stop("No plink2 executable available for OS '", os, "'. Please provide your own plink2 executable file using the plink_bin argument.")
