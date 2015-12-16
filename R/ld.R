@@ -1,3 +1,15 @@
+get_plink_exe <- function()
+{
+	os <- Sys.info()['sysname']
+	plink_bin <- system.file(paste0("exe/plink_", os), package="Eur1000Genomes")
+	if(!file.exists(plink_bin))
+	{
+		stop("No plink2 executable available for OS '", os, "'. Please provide your own plink2 executable file using the plink_bin argument.")
+	}
+	return(plink_bin)
+}
+
+
 plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump_p2, plink_bin, tempdir)
 {
 	# Make textfile
@@ -5,7 +17,8 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 	write.table(data.frame(SNP=snps, P=pvals), file=fn, row=F, col=T, qu=F)
 
 	fun2 <- paste(plink_bin, " --bfile ", refdat, " --clump ", fn, " --clump-p1 ", clump_p1, " --clump-p2 ", clump_p2, " --clump-r2 ", clump_r2, " --clump-kb ", clump_kb, " --out ", fn, sep="")
-	system(fun2)
+	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
+	system(shQuote(fun2, type=shell))
 	a <- read.table(paste(fn, ".clumped", sep=""), he=T)
 	unlink(paste(fn, "*", sep=""))
 	return(a)
@@ -39,7 +52,7 @@ ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump
 	if(is.null(plink_bin))
 	{
 		require(Eur1000Genomes)
-		plink_bin <- system.file("exe/plink1.90", package="Eur1000Genomes")
+		plink_bin <- get_plink_exe()
 	} else {
 		stopifnot(file.exists(plink_bin))
 	}
