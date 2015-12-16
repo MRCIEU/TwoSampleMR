@@ -13,12 +13,21 @@ get_plink_exe <- function()
 plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump_p2, plink_bin, tempdir)
 {
 	# Make textfile
+	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
 	fn <- tempfile(tmpdir = tempdir)
 	write.table(data.frame(SNP=snps, P=pvals), file=fn, row=F, col=T, qu=F)
 
-	fun2 <- paste(plink_bin, " --bfile ", refdat, " --clump ", fn, " --clump-p1 ", clump_p1, " --clump-p2 ", clump_p2, " --clump-r2 ", clump_r2, " --clump-kb ", clump_kb, " --out ", fn, sep="")
-	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
-	system(shQuote(fun2, type=shell))
+	fun2 <- paste0(
+		shQuote(plink_bin, type=shell),
+		" --bfile ", shQuote(refdat, type=shell),
+		" --clump ", shQuote(fn, type=shell), 
+		" --clump-p1 ", clump_p1, 
+		" --clump-p2 ", clump_p2, 
+		" --clump-r2 ", clump_r2, 
+		" --clump-kb ", clump_kb, 
+		" --out ", shQuote(fn, type=shell)
+	)
+	system(fun2)
 	a <- read.table(paste(fn, ".clumped", sep=""), he=T)
 	unlink(paste(fn, "*", sep=""))
 	return(a)
@@ -37,8 +46,9 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 #'
 #' @export
 #' @return Data frame of only independent SNPs
-ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, plink_bin=NULL, tempdir = ".")
+ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, plink_bin=NULL, tempdir = getwd())
 {
+	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
 	if(is.null(refdat))
 	{
 		require(Eur1000Genomes)
@@ -58,6 +68,7 @@ ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump
 	}
 
 	snpcode <- paste("chr", dat$chr_name, ":", dat$chrom_start, sep="")
+
 	res <- plink_clump(
 		snpcode,
 		dat$pval.exposure,
