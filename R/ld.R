@@ -1,10 +1,34 @@
+get_plink_exe <- function()
+{
+    os <- Sys.info()['sysname']
+    a <- paste0("exe/plink_", os)
+    if(os == "Windows") a <- paste0(a, ".exe")
+    plink_bin <- system.file(a, package="Eur1000Genomes")
+	if(!file.exists(plink_bin))
+	{
+		stop("No plink2 executable available for OS '", os, "'. Please provide your own plink2 executable file using the plink_bin argument.")
+	}
+	return(plink_bin)
+}
+
+
 plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump_p2, plink_bin, tempdir)
 {
 	# Make textfile
+	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
 	fn <- tempfile(tmpdir = tempdir)
 	write.table(data.frame(SNP=snps, P=pvals), file=fn, row=F, col=T, qu=F)
 
-	fun2 <- paste(plink_bin, " --bfile ", refdat, " --clump ", fn, " --clump-p1 ", clump_p1, " --clump-p2 ", clump_p2, " --clump-r2 ", clump_r2, " --clump-kb ", clump_kb, " --out ", fn, sep="")
+	fun2 <- paste0(
+		shQuote(plink_bin, type=shell),
+		" --bfile ", shQuote(refdat, type=shell),
+		" --clump ", shQuote(fn, type=shell), 
+		" --clump-p1 ", clump_p1, 
+		" --clump-p2 ", clump_p2, 
+		" --clump-r2 ", clump_r2, 
+		" --clump-kb ", clump_kb, 
+		" --out ", shQuote(fn, type=shell)
+	)
 	system(fun2)
 	a <- read.table(paste(fn, ".clumped", sep=""), he=T)
 	unlink(paste(fn, "*", sep=""))
@@ -24,8 +48,9 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 #'
 #' @export
 #' @return Data frame of only independent SNPs
-ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, plink_bin=NULL, tempdir = ".")
+ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, plink_bin=NULL, tempdir = getwd())
 {
+	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
 	if(is.null(refdat))
 	{
 		require(Eur1000Genomes)
@@ -39,12 +64,13 @@ ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump
 	if(is.null(plink_bin))
 	{
 		require(Eur1000Genomes)
-		plink_bin <- system.file("exe/plink1.90", package="Eur1000Genomes")
+		plink_bin <- get_plink_exe()
 	} else {
 		stopifnot(file.exists(plink_bin))
 	}
 
 	snpcode <- paste("chr", dat$chr_name, ":", dat$chrom_start, sep="")
+
 	res <- plink_clump(
 		snpcode,
 		dat$pval.exposure,

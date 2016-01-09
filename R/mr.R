@@ -21,10 +21,8 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 		})
 
 		mr_tab <- data.frame(
-			Outcome = x$displayname.outcome[1],
-			Outcome.n.case = x$ncase[1],
-			Outcome.n.control = x$ncontrol[1],
-			Outcome.sample.size = x$samplesize.outcome[1],
+			Study.ID = x$id.outcome[1],
+			Exposure = x$exposure[1],
 			Test = sapply(res, function(x) x$testname),
 			n.SNPs = sapply(res, function(x) x$nsnp),
 			b = sapply(res, function(x) x$b),
@@ -35,6 +33,15 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 		return(mr_tab)
 	})
 	mr_tab <- rbind.fill(lapply(res, function(x) x))
+
+	ao <- available_outcomes()
+	ao <- subset(ao, select=c(id, trait, trait_strict, consortium, ethnic, gender, ncase, ncontrol, sample_size, pmid, unit, sd, year, cat, subcat))
+
+	mr_tab$ord <- 1:nrow(mr_tab)
+	mr_tab <- merge(mr_tab, ao, by.x="Study.ID", by.y="id")
+	mr_tab <- mr_tab[order(mr_tab$ord), ]
+	mr_tab <- subset(mr_tab, select=-c(ord))
+
 	return(mr_tab)
 }
 
