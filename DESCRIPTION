@@ -14,8 +14,12 @@ Depends: ggplot2,
          biomaRt,
          plyr,
          RMySQL,
+         jsonlite,
          knitr,
          markdown
-Suggests: Eur1000Genomes
+Suggests: Eur1000Genomes,
+    knitr,
+    rmarkdown
 License: Artistic-2.0
 LazyData: true
+VignetteBuilder: knitr
