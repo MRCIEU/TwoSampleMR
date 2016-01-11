@@ -35,7 +35,38 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 	return(a)
 }
 
-#' Perform clumping on the chosen SNPs
+
+#' Perform clumping on the chosen SNPs using through API
+#'
+#' @param dat Output from \code{read_exposure_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start) and p-value column (pval.exposure)
+#' @param clump_kb=10000 Clumping window 
+#' @param clump_r2=0.1 Clumping r2 cutoff
+#' @param clump_p1=1 Clumping sig level for index SNPs
+#' @param clump_p2=1 Clumping sig level for secondary SNPs
+#' @export
+#' @return Data frame of only independent SNPs
+ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1)
+{
+	snpcode <- paste0("chr", dat$chr_name, ":", dat$chrom_start)
+	snpfile <- upload_file_to_api(data.frame(SNP=snpcode, P=dat$pval.exposure), header=TRUE)
+	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/clump?snpfile=", snpfile, 
+		"&p1=", clump_p1,
+		"&p2=", clump_p2,
+		"&r2=", clump_r2,
+		"&kb=", clump_kb)
+	res <- read.table(url, header=TRUE)
+	index <- match(res$SNP, snpcode)
+	res$SNP <- dat$SNP[index]
+	y <- subset(dat, !SNP %in% res$SNP)
+	if(nrow(y) > 0)
+	{
+		message("Removing the following SNPs due to LD with other SNPs:", paste(y$SNP, collapse="\n"), sep="\n")
+	}
+	return(subset(dat, SNP %in% res$SNP, select=-c(pval.exposure)))
+}
+
+
+#' Perform clumping on the chosen SNPs using local data
 #'
 #' @param dat Output from \code{read_exposure_data}
 #' @param refdat Path to binary plink files to use for LD referencing. If NULL (default) then looks for data provided by the Eur1000Genomes R package.
@@ -48,7 +79,7 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 #'
 #' @export
 #' @return Data frame of only independent SNPs
-ld_pruning_all <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, plink_bin=NULL, tempdir = getwd())
+ld_pruning_local <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, plink_bin=NULL, tempdir = getwd())
 {
 	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
 	if(is.null(refdat))
