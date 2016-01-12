@@ -28,8 +28,6 @@ To update the package just run the `install_github("MRCIEU/TwoSampleMR")` comman
 
 ## Using the package
 
-### Overview
-
 Load library
 
     library(TwoSampleMR)
@@ -49,11 +47,11 @@ Get the available outcome studies
 
 Extract the outcome associations, e.g. for Celiac disease and T2D
     
-    outcome_dat <- extract_outcome_data(exposure_dat, c(6, 13))    
+    outcome_dat <- extract_outcome_data(exposure_dat, c(6, 13))
 
 Harmonise the exposure and outcome data
     
-    dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat, action = 2)
+    dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
 
 Perform the MR
     
@@ -61,17 +59,23 @@ Perform the MR
 
 Plot the different methods
 
-    mr_scatter_plot(mr_results, dat)
+    p <- mr_scatter_plot(mr_results, dat)
+    p[[1]]
+    p[[2]]
 
 Leave one out analysis
 
     l <- mr_leaveoneout(dat)
-    mr_leaveoneout_plot(l)
+    p <- mr_leaveoneout_plot(l)
+    p[[1]]
+    p[[2]]
 
 Forest plot
 
     s <- mr_singlesnp(dat)
-    mr_forest_plot(s)
+    p <- mr_forest_plot(s)
+    p[[1]]
+    p[[2]]
 
 More details about each step are outlined in the vignette.
 
