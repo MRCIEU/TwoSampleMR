@@ -10,6 +10,8 @@ bibliography: mr_base.bib
 ---
 
 ```{r echo=FALSE}
+library(knitr)
+library(pander)
 opts_chunk$set(cache=TRUE, fig.width=7, fig.height=7)
 ```
 
@@ -38,7 +40,7 @@ The text file must have the following columns (in any order) with these exact co
 We provide three example files in the package, one for telomere length, one for bladder cancer, and one for coronary heart disease. After installing the package you can find their locations on your computer like this:
 
 ```{r }
-
+library(TwoSampleMR)
 tl_file <- system.file("data/telomere_length.txt", package="TwoSampleMR")
 bc_file <- system.file("data/bladdercancer.txt", package="TwoSampleMR")
 chd_file <- system.file("data/cardiogram.txt", package="TwoSampleMR")
