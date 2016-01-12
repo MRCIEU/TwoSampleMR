@@ -1,14 +1,17 @@
 ---
 title: "Using MR-Base"
-author: "Gibran hemani"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: library.bib
+bibliography: mr_base.bib
 ---
+
+```{r echo=FALSE}
+opts_chunk$set(cache=TRUE, fig.width=7, fig.height=7)
+```
 
 ## Introduction
 
@@ -16,15 +19,193 @@ Two sample Mendelian randomisation (2SMR) is a method to estimate the causal eff
 
 The general principles [@DaveySmith2003, @smith2014mendelian], and statistical methods [@Bowden2015] can be found elsewhere, here we will just outline how to use the R package.
 
-## 2SMR with your own exposure and outcome data
+## Exposure data
+
+You can read in exposure data from a text file, or from the GWAS catalog.
+
+### Text file
+
+The text file must have the following columns (in any order) with these exact column headers
+
+- `SNP` (rs IDs, required)
+- `beta` (numeric effect size, required for MR)
+- `se` (numeric standard error, required for MR)
+- `effect_allele` (the allele that has the beta effect, required for MR)
+- `other_allele` (the other allele, recommended for MR)
+- `eaf` (effect allele frequency, recommended for MR)
+- `P_value` (p-value of effect, not required for MR but used for other analyses. If `beta` and `se` are provided then this will be calculated for you.)
+
+We provide three example files in the package, one for telomere length, one for bladder cancer, and one for coronary heart disease. After installing the package you can find their locations on your computer like this:
+
+```{r }
+
+tl_file <- system.file("data/telomere_length.txt", package="TwoSampleMR")
+bc_file <- system.file("data/bladdercancer.txt", package="TwoSampleMR")
+chd_file <- system.file("data/cardiogram.txt", package="TwoSampleMR")
+
+```
+
+To read in the data:
+
+```{r }
+library(TwoSampleMR)
+library(pander)
+tl <- read_exposure_data(tl_file, "Telomere length")
+```
+
+The function looks up the rs IDs in biomart to validate them and retrieve chromosome and position information.
+
+### GWAS catalog
+
+The GWAS catalog ([http://www.ebi.ac.uk/gwas/](http://www.ebi.ac.uk/gwas/)) is a collection of `r data(gwas_catalog); nrow(gwas_catalog)` reported associations against `r length(unique(gwas_catalog$Phenotype))` traits. These have the potential to be used as instruments in 2SMR. We have downloaded the GWAS catalog and made important formatting changes in order to simplify usage of these data for MR. **Please note that the reformatting of this data may be unreliable**.
+
+To use the GWAS catalog:
+
+```{r }
+data(gwas_catalog)
+```
+
+and to extract, e.g. the instruments for BMI using the [@Speliotes2010] SNPs:
+
+```{r }
+bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units))
+bmi <- format_gwas_catalog(bmi)
+```
+
+### Data within R
+
+You can create the expoure data object using data already in R also. e.g.
+
+```{r }
+manual_exposure <- data.frame(
+	SNP = c("rs10150332", "rs10767664"),
+	beta = c(0.13, 0.19),
+	se = c(0.03061224, 0.03061224),
+	effect_allele = c("C", "A"),
+	other_allele = c("T", "T"),
+	eaf = c(0.21, 0.78),
+	P_value = c(3e-11, 5e-26)
+)
+manual_exposure <- format_exposure_dat(manual_exposure, "BMI")
+```
 
 
+## LD pruning
 
-## 2SMR with your own exposure data and querying MR-Base for outcome data
+For most 2SMR methods it is required that the instruments are in linkage equilibrium. To prune the SNPs we recommend using the clumping method which, when having to choose which of two SNPs to eliminate if they are in LD, will keep the one with the lowest p-value. There are two methods to do this, using either your own reference data and local computer, or using the MR-Base server remotely.
+
+### Using MR-Base
+
+This is currently limited to using European samples from 1000 genomes data only. You must provide a data frame that has a P-value column, SNP name, SNP position and SNP chromosome. The output from `read_exposure_data` has all of these.
+
+```{r }
+tl <- clump_data(tl)
+bmi <- clump_data(bmi)
+```
+
+This returns the same data frame with any SNPs in LD removed.
+
+### Local LD pruning
+
+You need to obtain the executable for [plink2](https://cog-genomics.org/plink2), and binary plink files for your reference data, e.g. 1000 genomes data. 
+
+```{r eval=FALSE}
+bmi <- clump_data(bmi, where="local", refdat="/path/to/reference_data", plink_bin="/path/to/plink2")
+```
+
+## Outcome data
+
+Ideally for every SNP in your exposure data you will have the corresponding summary statistics from a GWAS on the outcome trait. There are two ways in which this data can be entered into R: by performing a lookup in the MR-Base database, or manually using your own summary statistics.
+
+### MR-Base lookup
+
+To see a list of all the available GWAS studies in the database:
+
+```{r }
+ao <- available_outcomes()
+nrow(ao)
+pander(head(ao))
+```
+
+and to extract the BMI SNPs from the Celiac disease and T2D GWASs provide the relevant exposure data and outcome IDs:
+
+```{r }
+outcome_dat <- extract_outcome_data(bmi, c(13, 6))
+```
+
+The resulting data frame has the following columns:
+
+```{r }
+names(outcome_dat)
+```
+
+### Manual 
+
+Alternatively, create a data frame with the following columns:
+
+- `beta.outcome` (Numeric effect sizes, required)
+- `se.outcome` (Numeric standard errors, required)
+- `eaf.outcome` (Numeric frequency of the effect allele, recommended)
+- `effect_allele.outcome` (Effect allele, required)
+- `other_allele.outcome` (Other allele, recommended)
+- `outcome` (Name of the outcome, required)
 
 
+## Harmonising exposure and outcome data
 
-## Using the GWAS catalogue to obtain exposure data
+In order to ensure that the effect sizes in the exposure data correspond to the same allele effects in the outcome data it is necessary to check and harmonise these data. We provide a function that ensures all corresponding exposure and outcome alleles are on the same strand (where possible), and returns a harmonised dataset. 
+
+```{r }
+bmi_outcome <- harmonise_exposure_outcome(bmi, outcome_dat, action = 2)
+```
+
+The `action` argument specifies how strict to be when checking for the correct strand:
+
+- `1` means assume that all alleles are on the positive strand already (not recommended!)
+- `2` means flip alleles where possible, and use allele frequencies to infer the strand of palindromic SNPs.
+- `3` means flip alleles where possible but remove any palindromic SNPs
 
 
+## Performing 2SMR
 
+The data is now ready to perform 2-sample MR. To do this:
+
+```{r }
+mr_results <- mr(bmi_outcome)
+```
+
+This performs MR using the following different available methods:
+
+```{r }
+pander(mr_method_list())
+```
+
+### Sensitivity analysis
+
+To see how different methods compare:
+
+```{r }
+mr_scatter_plot(mr_results, bmi_outcome)[[2]]
+```
+
+To compare the effects of each of the SNPs we can generate a forest plot, e.g. for BMI on T2D:
+
+```{r }
+s <- mr_singlesnp(bmi_outcome)
+mr_forest_plot(s)[[2]]
+```
+
+And to perform a leave-one-out sensitivity analysis:
+
+```{r }
+l <- mr_leaveoneout(bmi_outcome)
+mr_leaveoneout_plot(l)[[2]]
+```
+
+
+### Enrichment
+
+You can also perform a Fisher's combined test to see if there is an enrichment of p-values in the outcome data (e.g. are the SNPs that influence the exposure also likely to influence the outcome, this is not an MR analysis).
+
+
+## References

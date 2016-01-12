@@ -17,9 +17,9 @@
 ### 8. Export results as a pdf/windows meta file and to screen
 
 
-library(ggplot2)
-library(plyr)
-library(gtable)
+# library(ggplot2)
+# library(plyr)
+# library(gtable)
 
 
 
@@ -51,8 +51,8 @@ library(gtable)
 #'
 #' @export
 
-mr_forest_plot <-
-    function(name, eff_Col = "b", exposure_Name="Exposure", outcome_Name="Outcome", forest_Title = '', outfile_Name = 'annot_FP.pdf', left_Col_Names=c("Exposure", "Outcome"), left_Col_Titles = NULL, right_Col_Names = c("p", "Outcome.n.case", "Outcome.n.control", "Outcome.sample.size"), right_Col_Titles =
+mr_forest_plot_grouped <-
+    function(name, eff_Col = "b", exposure_Name="exposure", outcome_Name="outcome", forest_Title = '', outfile_Name = 'annot_FP.pdf', left_Col_Names=c("Exposure", "Outcome"), left_Col_Titles = NULL, right_Col_Names = c("p", "Outcome.n.case", "Outcome.n.control", "Outcome.sample.size"), right_Col_Titles =
                  NULL, debug = FALSE,  log_ES = FALSE, decrease = TRUE,  returnRobj = TRUE, se_Col = "se") {
         # name = (character) name of the r object from mr_singlesnp()
         # inRobj = (logical) is the data to be used an internal R object y/n?

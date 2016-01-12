@@ -1,4 +1,3 @@
-mr_forest_plot <- function() {}
 
 
 #' Create scatter plot with lines showing the causal estimate for different MR tests
@@ -11,14 +10,14 @@ mr_forest_plot <- function() {}
 #' @return List of plots
 mr_scatter_plot <- function(mr_results, dat)
 {
-	dat <- subset(dat, paste(outcome, exposure) %in% paste(mr_results$Outcome, mr_results$Exposure))
-	mrres <- dlply(dat, .(exposure, outcome), function(d)
+	dat <- subset(dat, paste(id.outcome, exposure) %in% paste(mr_results$Study.ID, mr_results$Exposure))
+	mrres <- dlply(dat, .(exposure, id.outcome), function(d)
 	{
 		if(nrow(d) < 2)
 		{
 			return(blank_plot("Insufficient number of SNPs"))
 		}
-		mrres <- subset(mr_results, Exposure == d$exposure[1] & Outcome == d$outcome[1])
+		mrres <- subset(mr_results, Exposure == d$exposure[1] & Study.ID == d$id.outcome[1])
 		# egger <- subset(mr_results$extra, Exposure == d$exposure[1] & Outcome == d$outcome[1])
 
 		mrres$a <- 0
@@ -46,23 +45,44 @@ mr_scatter_plot <- function(mr_results, dat)
 #'
 #' @export
 #' @return List of plots
-mr_leaveoneout_plot <- function(leaveoneout_results)
+mr_leaveoneout_plot <- function(singlesnp_results)
 {
-	res <- dlply(leaveoneout_results, .(exposure, outcome), function(d)
+	res <- dlply(singlesnp_results, .(exposure, outcome), function(d)
 	{
-		if(nrow(d) == 1)
-		{
-			return(blank_plot("Insufficient number of SNPs"))
+		if(nrow(d) < 3) {
+			return(
+				blank_plot("Insufficient number of SNPs")
+			)
 		}
-		d1 <- subset(d, SNP=="All")
-		d2 <- subset(d, SNP!="All")
-		d2$up <- d2$b + 1.96 * d2$se
-		d2$lo <- d2$b - 1.96 * d2$se
-		ggplot(d2, aes(y=SNP, x=b)) +
-		geom_errorbarh(aes(xmin=lo, xmax=up), height=0) +
-		geom_point() +
-		geom_vline(xintercept=0) +
-		geom_vline(xintercept=d1$b, linetype="dashed")
+		d$up <- d$b + 1.96 * d$se
+		d$lo <- d$b - 1.96 * d$se
+		d$tot <- 1
+		d$tot[d$SNP != "All"] <- 0.01
+		d$SNP <- as.character(d$SNP)
+		nom <- d$SNP[d$SNP != "All"]
+		nom <- nom[order(d$b)]
+		d <- rbind(d, d[nrow(d),])
+		d$SNP[nrow(d)-1] <- ""
+		d$b[nrow(d)-1] <- NA
+		d$up[nrow(d)-1] <- NA
+		d$lo[nrow(d)-1] <- NA
+		d$SNP <- ordered(d$SNP, levels=c("All", "", nom))
+
+		ggplot(d, aes(y=SNP, x=b)) +
+		geom_vline(xintercept=0, linetype="dotted") +
+		# geom_errorbarh(aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=as.factor(tot), colour=as.factor(tot)), height=0) +
+		geom_errorbarh(aes(xmin=lo, xmax=up, size=as.factor(tot), colour=as.factor(tot)), height=0) +
+		geom_point(aes(colour=as.factor(tot))) +
+		geom_hline(aes(yintercept = which(levels(SNP) %in% "")), colour="grey") +
+		scale_colour_manual(values=c("black", "red")) +
+		scale_size_manual(values=c(0.3, 1)) +
+		# xlim(c(min(c(0, d$b), na.rm=T), max(c(0, d$b), na.rm=T))) +
+		theme(
+			legend.position="none", 
+			axis.text.y=element_text(size=8), 
+			axis.ticks.y=element_line(size=0),
+			axis.title.x=element_text(size=8)) +
+		labs(y="", x=paste0("MR leave-one-out sensitivity analysis for\n'", d$exposure[1], "' on '", d$outcome[1], "'"))
 	})
 	res
 }
@@ -91,10 +111,11 @@ mr_forest_plot <- function(singlesnp_results)
 		}
 		d$up <- d$b + 1.96 * d$se
 		d$lo <- d$b - 1.96 * d$se
-		d$tot <- 3
-		d$tot[d$SNP != "All"] <- 0.1
+		d$tot <- 1
+		d$tot[d$SNP != "All"] <- 0.01
 		d$SNP <- as.character(d$SNP)
 		nom <- d$SNP[d$SNP != "All"]
+		nom <- nom[order(d$b)]
 		d <- rbind(d, d[nrow(d),])
 		d$SNP[nrow(d)-1] <- ""
 		d$b[nrow(d)-1] <- NA
@@ -104,13 +125,19 @@ mr_forest_plot <- function(singlesnp_results)
 
 		ggplot(d, aes(y=SNP, x=b)) +
 		geom_vline(xintercept=0, linetype="dotted") +
-		geom_errorbarh(aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=tot, colour=as.factor(tot)), height=0) +
+		# geom_errorbarh(aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=as.factor(tot), colour=as.factor(tot)), height=0) +
+		geom_errorbarh(aes(xmin=lo, xmax=up, size=as.factor(tot), colour=as.factor(tot)), height=0) +
 		geom_point(aes(colour=as.factor(tot))) +
-		geom_hline(aes(yintercept = which(levels(SNP) %in% ""))) +
+		geom_hline(aes(yintercept = which(levels(SNP) %in% "")), colour="grey") +
 		scale_colour_manual(values=c("black", "red")) +
-		xlim(c(min(c(0, d$b), na.rm=T), max(c(0, d$b), na.rm=T))) +
-		theme(legend.position="none")
-
+		scale_size_manual(values=c(0.3, 1)) +
+		# xlim(c(min(c(0, d$b), na.rm=T), max(c(0, d$b), na.rm=T))) +
+		theme(
+			legend.position="none", 
+			axis.text.y=element_text(size=8), 
+			axis.ticks.y=element_line(size=0),
+			axis.title.x=element_text(size=8)) +
+		labs(y="", x=paste0("MR effect size for\n'", d$exposure[1], "' on '", d$outcome[1], "'"))
 	})
 	res
 }

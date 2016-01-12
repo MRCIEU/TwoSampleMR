@@ -45,7 +45,7 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 extract_outcome_data <- function(exposure_dat, outcomes, password=NULL)
 {
 	password <- get_password(password)
-	message("Extracting data for ", nrow(exposure_dat), " SNPs")
+	message("Extracting data for ", nrow(exposure_dat), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
 	snps <- unique(exposure_dat$SNP)
 	outcomes <- unique(outcomes)
 

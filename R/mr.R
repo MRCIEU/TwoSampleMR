@@ -9,7 +9,7 @@
 #' @return List with the following elements:
 #'         mr: Table of MR results
 #'         extra: Table of extra results
-mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list())
+mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list()$obj)
 {
 	require(plyr)
 	res <- dlply(subset(dat, mr_keep), .(id.outcome, exposure), function(x)
@@ -19,11 +19,11 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 			print(meth)
 			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
 		})
-
+		methl <- mr_method_list()
 		mr_tab <- data.frame(
 			Study.ID = x$id.outcome[1],
 			Exposure = x$exposure[1],
-			Test = sapply(res, function(x) x$testname),
+			Test = methl$name[methl$obj %in% method_list],
 			n.SNPs = sapply(res, function(x) x$nsnp),
 			b = sapply(res, function(x) x$b),
 			se = sapply(res, function(x) x$se),
@@ -52,18 +52,72 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 #' @return character vector of method names
 mr_method_list <- function()
 {
-	c(
-		"mr_wald_ratio",
-		"mr_meta_fixed_simple",
-		"mr_meta_fixed",
-		"mr_meta_random",
-		"mr_two_sample_ml",
-		"mr_eggers_regression",
-		"mr_eggers_regression_bootstrap",
-		"mr_weighted_median",
-		"mr_penalised_weighted_median",
-		"mr_ivw"
+	a <- list(
+		list(
+			obj="mr_wald_ratio",
+			name="Wald ratio",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_meta_fixed_simple",
+			name="Fixed effects meta analysis (simple SE)",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_meta_fixed",
+			name="Fixed effects meta analysis (delta method)",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_meta_random",
+			name="Random effects meta analysis (delta method)",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_two_sample_ml",
+			name="Maximum likelihood",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_eggers_regression",
+			name="MR Egger regression",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_eggers_regression_bootstrap",
+			name="MR Egger regression (bootstrap)",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_weighted_median",
+			name="Weighted median",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_penalised_weighted_median",
+			name="Penalised weighted median",
+			PubmedID="",
+			Description=""
+		),
+		list(
+			obj="mr_ivw",
+			name="Inverse variance weighted regression",
+			PubmedID="",
+			Description=""
+		)
 	)
+	a <- lapply(a, as.data.frame)
+	a <- rbind.fill(a)
+	a <- as.data.frame(lapply(a, as.character), stringsAsFactors=FALSE)
+	return(a)
 }
 
 
@@ -92,18 +146,17 @@ default_parameters <- function()
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
-#'         testname: Name of test
 mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(length(b_exp) > 1)
 	{
-		return(list(b=NA, se=NA, pval=NA, nsnp=NA, testname="Wald ratio"))
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 	}
 	b <- b_out / b_exp
 	se <- se_out / b_exp
 	# sqrt((segd^2/gp^2) + (gd^2/gp^4)*segp^2 - 2*(gd/gp^3)) #full delta method with cov set to 0
 	pval <- pnorm(abs(b)/se,lower.tail=F)*2
-	return(list(b=b, se=se, pval=pval, nsnp=1, testname="Wald ratio"))
+	return(list(b=b, se=se, pval=pval, nsnp=1))
 }
 
 
@@ -119,13 +172,12 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
-#'         testname: Name of test
 mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	b <- sum(b_exp*b_out / se_out^2) / sum(b_exp^2/se_out^2)
 	se <- sqrt(1 / sum(b_exp^2/se_out^2))
 	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), testname="Fixed effects meta analysis (simple SE)"))
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
 
@@ -142,7 +194,6 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
-#'         testname: Name of test
 mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	require(meta)
@@ -152,7 +203,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.fixed
 	se <- res$seTE.fixed
 	pval <- res$pval.fixed
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), testname="Fixed effects meta analysis (delta method)"))
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
 
@@ -169,7 +220,6 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
-#'         testname: Name of test
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	require(meta)
@@ -179,7 +229,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.random
 	se <- res$seTE.random
 	pval <- res$pval.random
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), testname="Random effects meta analysis (delta method)"))
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
 
@@ -196,12 +246,11 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
-#'         testname: Name of test
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(length(b_exp)<2)
 	{
-		return(list(b=NA, se=NA, pval=NA, nsnp=NA, testname="Maximum likelihood"))
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 	}
 	loglikelihood <- function(param) {
 		return(1/2*sum((b_exp-param[1:length(b_exp)])^2/se_exp^2)+1/2*sum((b_out-param[length(b_exp)+1]*param[1:length(b_exp)])^2/se_out^2))
@@ -214,13 +263,13 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 	if(class(opt)=="try-error")
 	{
 		message("mr_two_sample_ml failed to converge")
-		return(list(b=NA, se=NA, pval=NA, nsnp=NA, testname="Maximum likelihood"))
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 	}
 
 	b <- opt$par[length(b_exp)+1]
 	se <- sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1])
 	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), testname="Maximum likelihood"))
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
 
@@ -263,8 +312,7 @@ mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 			pval_i = NA,
 			mod = NA,
 			smod = NA,
-			dat = NA,
-			testname = "Egger regression"
+			dat = NA
 		))
 	}
 
@@ -288,8 +336,7 @@ mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 	se_i <- coefficients(smod)[1,2]
 	pval_i <- coefficients(smod)[1,4]
 
-	testname <- "Egger regression"
- 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), b_i = b_i, se_i = se_i, pval_i = pval_i, mod = smod, dat = dat, testname=testname))
+ 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), b_i = b_i, se_i = se_i, pval_i = pval_i, mod = smod, dat = dat))
 }
 
 
@@ -345,8 +392,7 @@ mr_eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramet
 			pval_i = NA,
 			mod = NA,
 			smod = NA,
-			dat = NA,
-			testname = "Egger regression (bootstrap)"
+			dat = NA
 		))
 	}
 	nboot <- parameters$nboot
@@ -354,10 +400,10 @@ mr_eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramet
 	require(plyr)
 	# Do bootstraps
 	res <- array(0, c(nboot+1, 2))
-	pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style=3) 
+	# pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style=3) 
 	for (i in 1:nboot)
 	{
-		setTxtProgressBar(pb, i)
+		# setTxtProgressBar(pb, i)
 		#sample from distributions of SNP betas
 		xs <- rnorm(length(b_exp),b_exp,se_exp)
 		ys <- rnorm(length(b_out),b_out,se_out)
@@ -379,7 +425,7 @@ mr_eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramet
 	}
 	cat("\n")
 
-	return(list(b = mean(res[,2], na.rm=T), se = sd(res[,2], na.rm=T), pval = sum(sign(mean(res[,2],na.rm=T)) * res[,2] < 0)/nboot, nsnp = length(b_exp), b_i = mean(res[,1], na.rm=T), se_i = sd(res[,1], na.rm=T), pval_i = sum(sign(mean(res[,1],na.rm=T)) * res[,1] < 0)/nboot, testname="Egger regression (bootstrap)"))
+	return(list(b = mean(res[,2], na.rm=T), se = sd(res[,2], na.rm=T), pval = sum(sign(mean(res[,2],na.rm=T)) * res[,2] < 0)/nboot, nsnp = length(b_exp), b_i = mean(res[,1], na.rm=T), se_i = sd(res[,1], na.rm=T), pval_i = sum(sign(mean(res[,1],na.rm=T)) * res[,1] < 0)/nboot))
 }
 
 
@@ -398,18 +444,17 @@ mr_eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramet
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-#'         testname: Name of the test
 mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp)) < 1)
-	return(list(b=NA, se=NA, pval=NA, nsnp=NA, testname="Weighted median"))
+	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
 	b_iv <- b_out / b_exp
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
 	pval <- pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), testname="Weighted median"))
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
 
@@ -485,11 +530,10 @@ weighted_median_bootstrap = function(b_exp, b_out, se_exp, se_out, weights, nboo
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-#'         testname: Name of the test
 mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp)) < 1)
-	return(list(b=NA, se=NA, pval=NA, nsnp=NA, testname="Penalized weighted median"))
+	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 	betaIV <- b_out/b_exp # ratio estimates
 	betaIVW <- sum(b_out*b_exp*se_out^-2)/sum(b_exp^2*se_out^-2) # IVW estimate
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
@@ -499,7 +543,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
 	se <- weighted_median_bootstrap(b_exp, b_out, se_out, se_exp, pen.weights, parameters$nboot)
 	pval <- pt(abs(b/se), df=length(b_exp)-1, low=FALSE)
-	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp), testname="Penalized weighted median"))
+	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
 }
 
 
@@ -516,11 +560,10 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-#'         testname: Name of the test
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp)) < 1)
-	return(list(b=NA, se=NA, pval=NA, nsnp=NA, testname="Inverse variance weighted regression"))
+	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
@@ -529,7 +572,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 	Q.ivw <- ivw.res$sigma^2*(length(b_exp)-2) 
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
-	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), testname="Inverse variance weighted regression"))
+	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp)))
 }
 
 
@@ -541,39 +584,47 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'
 #' @export
 #' @return List of data frames
-mr_leaveoneout <- function(dat, method=mr_meta_fixed_simple)
+mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_fixed_simple)
 {
-	res <- ddply(dat, .(exposure, id.outcome), function(x)
+	res <- ddply(subset(dat, mr_keep), .(exposure, id.outcome), function(x)
 	{
 		nsnp <- nrow(x)
 		if(nsnp > 1)
 		{
 			l <- lapply(1:nsnp, function(i)
 			{
-				with(x, method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i]))
+				with(x, method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i], parameters))
 			})
-			l[[nsnp+1]] <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome))
-
+			l[[nsnp+1]] <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
 			d <- data.frame(
-				SNP = c(x$SNP, "All"),
+				SNP = c(as.character(x$SNP), "All"),
 				b = sapply(l, function(y) y$b),
 				se = sapply(l, function(y) y$se),
 				p = sapply(l, function(y) y$pval),
-				n = x$samplesize.outcome[1]
+				Outcome.sample.size = x$samplesize.outcome[1],
+				Outcome.n.case = x$ncase.outcome[1],
+				Outcome.n.control = x$ncontrol.outcome[1]
 			)
+			d$id.outcome <- x$displayname.outcome[1]
 
 		} else {
-			a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome))
+			a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
 			d <- data.frame(
 				SNP = "All",
 				b = a$b,
 				se = a$se,
 				p = a$pval,
-				n = x$samplesize.outcome[1]
+				Outcome.sample.size = x$samplesize.outcome[1],
+				Outcome.n.case = x$ncase.outcome[1],
+				Outcome.n.control = x$ncontrol.outcome[1]
 			)
+			d$id.outcome <- x$displayname.outcome[1]
 		}
 		return(d)
 	})
+	res <- subset(res, select=c(exposure, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
+	names(res)[1] <- "exposure"
+	names(res)[2] <- "outcome"
 	return(res)
 }
 
@@ -608,8 +659,9 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method=mr_
 		d$id.outcome <- x$displayname.outcome[1]
 		return(d)
 	})
-		res <- subset(res, select=c(exposure, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
-		names(res)[2] <- "Outcome"
+	res <- subset(res, select=c(exposure, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
+	names(res)[1] <- "exposure"
+	names(res)[2] <- "outcome"
 	return(res)
 }
 
@@ -623,9 +675,20 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method=mr_
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-#'         testname: Name of the test
 fishers_combined_test <- function(pval)
 {
 	p <- pchisq(-2 * sum(log(pval)), df=2*length(pval), low=FALSE)
-	return(list(b=NA, se=NA, pval=p, nsnp=length(pval), testname="Fisher's combined test"))
+	return(list(pval=p, nsnp=length(pval)))
+}
+
+
+enrichment_test <- function(dat)
+{
+
+}
+
+
+mr_egger_sensitivity_analysis <- function(dat)
+{
+	
 }

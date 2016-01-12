@@ -80,9 +80,11 @@ format_exposure_dat <- function(exposure_dat, exposure)
 
 	if("P_value" %in% names(exposure_dat))
 	{
-		badp <- !is.numeric(exposure_dat$P_value) | exposure_dat$P_value >= 0 | exposure_dat$P_value < 1 | !is.finite(exposure_dat$P_value)
-		message("P-values have been provided but the following SNPs have issues with the p-values:\n")
-		print(exposure_dat$SNP[badp])
+		badp <- !is.numeric(exposure_dat$P_value) | exposure_dat$P_value <= 0 | exposure_dat$P_value >= 1 | !is.finite(exposure_dat$P_value)
+		if(any(badp))
+		{
+			message("P-values have been provided but the following SNPs have issues with the p-values:\n", paste(exposure_dat$SNP[badp], collapse="\n"))
+		}
 		if(all(c("beta", "se") %in% names(exposure_dat)))
 		{
 			goodp <- badp & is.finite(exposure_dat$beta) & is.finite(exposure_dat$se)
@@ -157,4 +159,42 @@ read_outcome_data <- function(filename, outcome, quote='"', sep=" ")
 	outcome_dat$outcome <- outcome
 
 	return(outcome_dat)
+}
+
+
+
+
+#' Get data selected from GWAS catalog into correct format
+#'
+#' Subset the GWAS catalogue to have the rows you require for instrumenting a particular exposure and then run this command.
+#' Be careful to avoid using different phenotypes, phenotype types, or units together.
+#' @param gwas_catalog_subset Subset of rows from \code{data(gwas_catalog)}
+#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' @param  traitname If specified, will name the exposure/outcome this variable. Otherwise (default) will name it based on the Phenotype columnin \code{gwas_catalog_subset}
+#' @export
+#' @return Data frame
+#' @examples \dontrun{
+#' data(gwas_catalog)
+#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
+#' bmi <- format_gwas_catalog(bmi)
+#'}
+format_gwas_catalog <- function(gwas_catalog_subset, type="exposure", traitname=NULL)
+{
+	stopifnot(type %in% c("exposure", "outcome"))
+	if(is.null(traitname))
+	{
+		ph <- paste(gwas_catalog_subset$Phenotype, gwas_catalog_subset[["Phenotype info"]])
+		if(length(unique(ph)) > 1)
+		{
+			warning("There is more than one Phenotype / Phenotype info combination. This can cause problems in MR. Using the first entry.")
+		}
+		traitname <- gwas_catalog_subset$Phenotype[1]
+	}
+	if(length(unique(gwas_catalog_subset$Units)) > 1)
+	{
+		warning("The effect sizes selected are in different units. This will cause problems in MR")
+	}
+	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "Allele", "other_allele", "SE", "P-value"))
+	names(gwas_catalog_subset) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se", "P_value")
+	format_exposure_dat(gwas_catalog_subset, traitname)
 }

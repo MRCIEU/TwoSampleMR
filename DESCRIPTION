@@ -9,18 +9,22 @@ Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut"))
 			 )
 Description: See title
-Depends: ggplot2,
-         meta,
-         biomaRt,
-         plyr,
-         RMySQL,
-         jsonlite,
-         knitr,
-         markdown,
-         RCurl
-Suggests: Eur1000Genomes,
+Depends:
+    ggplot2,
+    meta,
+    biomaRt,
+    plyr,
+    RMySQL,
+    jsonlite,
     knitr,
-    rmarkdown
+    markdown,
+    RCurl,
+    gtable
+Suggests:
+    Eur1000Genomes,
+    knitr,
+    rmarkdown,
 License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1
