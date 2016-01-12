@@ -3,143 +3,76 @@
 This package provides the following functionality to help perform two sample MR:
 
 - Extraction of user-specified SNP effects from a choice of GWAS summary statistics
-- Harmonisation of direction of effects between exposure and outcome results
 - LD pruning of exposure SNPs
+- Harmonisation of direction of effects between exposure and outcome results
 - Two sample MR analysis
 - Plots and automatically generated reports 
 
-
-## Accessing the MySQL server
-
-In order to gain access to the GWAS summary statistics database we have to create a tunnel to epifranklin. In a terminal session run:
-
-    ssh -L 3306:localhost:3306 gh13047@epi-franklin.epi.bris.ac.uk
-
-Replace gh13047 with your own username. Leave this terminal session open and perform all additional steps in a separate terminal window.
-
+It uses a database that hosts hundreds of GWAS results that can be queried as a resource for outcome data. It also provides LD pruning on a remote server for exposure SNP data provided by the user.
 
 ## Installing the TwoSampleMR R package
 
-First clone the git repository:
+The package is hosted on github, and this allows installation and update to be very easy. First make sure you have the `biomaRt` and `devtools` packages installed:
 
-    git clone git@scmv-ieugit.epi.bris.ac.uk:gh13047/mr_base.git
+    source("https://bioconductor.org/biocLite.R")
+    biocLite("biomaRt")
+    install.packages("devtools")
 
-Next, in an R session set your work directory to the `mr_base` directory that you just cloned and using the `R/devtools` library run:
+Then to install:
 
     library(devtools)
-    install()
+    install_github("MRCIEU/TwoSampleMR")
 
-This will install the package from the cloned repository. 
+To update the package just run the `install_github("MRCIEU/TwoSampleMR")` command again.
 
 
 ## Using the package
 
 ### Overview
 
-    library(TwoSampleMR)
-    
-    # Read the data
-    exposure_dat <- read_exposure_data("inst/data/telomere_length.txt", "Telomere length")
-    
-    # Get the available outcome studies
-    ao <- available_outcomes()
-    
-    # Extract the outcome associations
-    outcome_dat <- extract_outcome_data(exposure_dat, ao$id[1:7])
-    
-    # Harmonise the exposure and outcome data
-    dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
-    
-    # Perform the MR
-    mr_results <- mr(dat)
-    
-    # Make some plots
-    mr_scatter_plot(mr_results, dat)
-    mr_leaveoneout(dat)
-    mr_forest_plot(mr_singlesnp(dat))
-
-More details about each step are outlined below.
-
-
-### Reading in exposure data
-
-The simplest way to read in exposure data is to read it in from a text file. To see an example of what format the textfile should take, see the file located here:
-
-    mr_base/inst/data/telomere_length.txt
-
-To read in this data:
+Load library
 
     library(TwoSampleMR)
-    exposure_dat <- read_exposure_data("inst/data/telomere_length.txt", "Telomere length")
 
-This reads in the text file, checks that the data is as expected, and performs a lookup to extract chromosome and position info for each SNP.
+Read the data (e.g. telomere length example data)
 
-Alternatively you can create the data frame in R manually, and then use a helper function to perform the checks. For example, using the GWAS catalog data that is available here:
+    tl_file <- system.file("data/telomere_length.txt", package="TwoSampleMR")
+    exposure_dat <- read_exposure_data(tl_file, "Telomere length")
 
-    https://scmv-ieugit.epi.bris.ac.uk/gh13047/mr_base_shiny/tree/master/data
+Prune the SNPs in LD using clumping on the remote server:
 
-you can get the Speliotes et al 2010 SNPs by running:
+    exposure_dat <- clump_data(exposure_dat)
 
-    bmi <- subset(gwas_catalog, 
-        Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units), 
-        select=c(SNP, Effect, eaf, Allele, other_allele, SE)
-    )
-    names(bmi) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se")
-    exposure_dat <- format_exposure_dat(bmi, "BMI")
-
-**TO DO:** Create a proper helper function for this and integrate GWAS catalog into this repository.
-
-
-### Extracting outcome data from MySQL database
-
-To extract summary associations for the exposure SNPs first identify the GWASs against which the SNPs will be searched. The list of all available studies can be obtained in a dataframe by:
+Get the available outcome studies
 
     ao <- available_outcomes()
 
-To extract the exposure SNPs from GWAS results for study IDs 1-7 you would then do:
+Extract the outcome associations, e.g. for Celiac disease and T2D
+    
+    outcome_dat <- extract_outcome_data(exposure_dat, c(6, 13))    
 
-    outcome_dat <- extract_outcome_data(exposure_dat, ao$id[1:7])
+Harmonise the exposure and outcome data
+    
+    dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat, action = 2)
 
-Alternatively, outcome data can be read in from a file directly:
-
-    outcome_dat <- rbind(
-        read_outcome_data("inst/data/cardiogram.txt", "Cardiogram"),
-        read_outcome_data("inst/data/bladdercancer.txt", "Bladder cancer")
-    )
-
-### Harmonising the exposure and outcome data
-
-To harmonise effects for exposure and outcome do this:
-
-    dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
-
-
-### Perform MR
-
-This performs all MR analyses and sensitivity analyses:
-
+Perform the MR
+    
     mr_results <- mr(dat)
 
-
-### Plots
-
-Some plots can be created too. Leave one out analysis:
-
-    mr_leaveoneout(dat)
-
-Scatter plot:
+Plot the different methods
 
     mr_scatter_plot(mr_results, dat)
 
-Single SNP sensitivity analysis:
+Leave one out analysis
 
-    singlesnp <- mr_singlesnp(dat)
-    mr_forest_plot(singlesnp)
+    l <- mr_leaveoneout(dat)
+    mr_leaveoneout_plot(l)
 
+Forest plot
 
-### Generate report
+    s <- mr_singlesnp(dat)
+    mr_forest_plot(s)
 
-A report of the analysis can be generated like this:
+More details about each step are outlined in the vignette.
 
-    mr_report(mr_results, dat, path="inst/reports", output_path=".")
 
