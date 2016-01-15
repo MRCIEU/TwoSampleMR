@@ -80,6 +80,7 @@ format_exposure_dat <- function(exposure_dat, exposure)
 
 	if("P_value" %in% names(exposure_dat))
 	{
+		exposure_dat$P_value_origin <- "reported"
 		badp <- !is.numeric(exposure_dat$P_value) | exposure_dat$P_value <= 0 | exposure_dat$P_value >= 1 | !is.finite(exposure_dat$P_value)
 		if(any(badp))
 		{
@@ -89,14 +90,20 @@ format_exposure_dat <- function(exposure_dat, exposure)
 		{
 			goodp <- badp & is.finite(exposure_dat$beta) & is.finite(exposure_dat$se)
 			exposure_dat$P_value[goodp] <- pnorm(abs(exposure_dat$beta[goodp]) / exposure_dat$se[goodp], lower.tail=FALSE)
+			exposure_dat$P_value_origin[goodp] <- "inferred"
+		} else {
+			exposure_dat$P_value[badp] <- 0.99
+			exposure_dat$P_value_origin[badp] <- "unavailable"
 		}
 	} else if(all(c("beta", "se") %in% names(exposure_dat))) {
 		exposure_dat$P_value <- pnorm(abs(exposure_dat$beta) / exposure_dat$se, lower.tail=FALSE)
+		exposure_dat$P_value_origin <- "inferred"
 	} else {
 		exposure_dat$P_value <- 0.99
+		exposure_dat$P_value_origin <- "unavailable"
 	}
 
-	exposure_dat$P_value[!is.finite(exposure_dat$P_value)] <- 0.99
+	
 
 
 	# Get SNP positions
@@ -116,12 +123,16 @@ format_exposure_dat <- function(exposure_dat, exposure)
 	exposure_dat <- exposure_dat[,names(exposure_dat)!="chrom_start", drop=FALSE]
 	exposure_dat <- merge(exposure_dat, bm, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
 
-	names(exposure_dat)[names(exposure_dat) == "effect_allele"] <- "effect_allele.exposure"
-	names(exposure_dat)[names(exposure_dat) == "other_allele"] <- "other_allele.exposure"
-	names(exposure_dat)[names(exposure_dat) == "beta"] <- "beta.exposure"
-	names(exposure_dat)[names(exposure_dat) == "se"] <- "se.exposure"
-	names(exposure_dat)[names(exposure_dat) == "eaf"] <- "eaf.exposure"
+	if(domr)
+	{
+		names(exposure_dat)[names(exposure_dat) == "effect_allele"] <- "effect_allele.exposure"
+		names(exposure_dat)[names(exposure_dat) == "other_allele"] <- "other_allele.exposure"
+		names(exposure_dat)[names(exposure_dat) == "beta"] <- "beta.exposure"
+		names(exposure_dat)[names(exposure_dat) == "se"] <- "se.exposure"
+		names(exposure_dat)[names(exposure_dat) == "eaf"] <- "eaf.exposure"		
+	}
 	names(exposure_dat)[names(exposure_dat) == "P_value"] <- "pval.exposure"
+	names(exposure_dat)[names(exposure_dat) == "P_value_origin"] <- "pval_origin.exposure"
 
 	return(exposure_dat)
 }
