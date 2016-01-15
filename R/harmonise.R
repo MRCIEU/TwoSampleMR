@@ -26,19 +26,29 @@
 #'
 #' @param exposure_dat Output from \code{read_exposure_data}
 #' @param outcome_dat Output from \code{extract_outcome_data}
-#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
+#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended); 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis. If a single value is passed then this action is applied to all outcomes. But multiple values can be supplied as a vector, each element relating to a different outcome.
 #'
 #' @export
 #' @return Data frame with harmonised effects and alleles
 harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 {
-	stopifnot(action %in% 1:3)
+	stopifnot(all(action %in% 1:3))
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
-	if(action==1) return(res.tab)
+	ncombinations <- length(unique(res.tab$id.outcome))
+	if(length(action) == 1)
+	{
+		action <- rep(action, ncombinations)
+	} else if(length(action) != ncombinations) {
+		stop("Action argument must be of length 1 (where the same action will be used for all outcomes), or number of unique id.outcome values (where each outcome will use a different action value)")
+	}
+	d <- data.frame(id.outcome=unique(res.tab$id.outcome), action=action)
+	res.tab <- merge(res.tab, d, by="id.outcome")
+	if(all(action == 1)) return(res.tab)
 	fix.tab <- ddply(res.tab, .(id.outcome), function(x)
 	{
 		x <- mutate(x)
-		x <- harmonise_function(x, action)
+		message("Harmonising ", x$exposure[1], " and ", x$outcome[1], "(", x$id.outcome[1], ")")
+		x <- harmonise_function(x, x$action[1])
 		x$mr_keep[is.na(x$beta.outcome) | is.na(x$se.outcome)] <- FALSE
 		return(x)
 	})
@@ -46,25 +56,8 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 }
 
 
-#' Harmonisation function
-#'
-#' @param res.tab Data frame of exposure and outcome summary stats
-#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
-#'
-#' @export
-#' @return Data frame
-harmonise_function <- function(res.tab, action)
+harmonise_cleanup_variables <- function(res.tab)
 {
-	if(action==1)
-	return(res.tab)
-	# don't have eaf for some studies, e.g these studies 
-	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
-	eaf.outcome.notmiss.study<-T
-	if(all(is.na(res.tab$eaf.outcome))){
-		eaf.outcome.notmiss.study<-F 
-	}
-
-
 	# if(sum(grep("\\.y",names(res.tab)))) stop(paste("some column names are identical in the instruments file and the outcome database; ",names(res.tab)[grep(".y",names(res.tab))]," present in both files",sep=""))
 
 	res.tab$beta.exposure<-as.numeric(res.tab$beta.exposure)
@@ -75,35 +68,75 @@ harmonise_function <- function(res.tab, action)
 	res.tab$eaf.outcome<-as.numeric(res.tab$eaf.outcome)
 	# res.tab$eaf.outcome[which(res.tab$eaf.outcome==1)]<-NA
 	 	    
-	#res.tab$p.value.outcome<-as.numeric(res.tab$p.value.outcome)
-	#code mSNP effect so that effect allele is the allele that increases the trait
+	# res.tab$p.value.outcome<-as.numeric(res.tab$p.value.outcome)
+
+	# convert alleles to upper case
+	res.tab$effect_allele.exposure <- toupper(res.tab$effect_allele.exposure)
+	res.tab$other_allele.exposure <- toupper(res.tab$other_allele.exposure)
+	res.tab$effect_allele.outcome <- toupper(res.tab$effect_allele.outcome)
+	res.tab$other_allele.outcome <- toupper(res.tab$other_allele.outcome)
+	
+	return(res.tab)	
+}
+
+
+harmonise_make_snp_effects_positive <- function(res.tab)
+{
+	# code SNP effect so that effect allele is the allele that increases the trait
 	#res.tab[,c("SNP","beta.exposure","beta.outcome","effect_allele.exposure","other_allele.exposure","effect_allele","other_allele","eaf.exposure","eaf.outcome","info_s1","RSQ_s2","RSQ_s3","info_s4","q_p.value")]
-	
-	pos.change<-which(res.tab$beta.exposure<0)
-	res.tab$eaf.exposure[pos.change]<-1-res.tab$eaf.exposure[pos.change]
-	res.tab$beta.exposure[pos.change]<-res.tab$beta.exposure[pos.change]*-1
-	eff.allele.change<-res.tab$effect_allele.exposure[pos.change]
-	oth.allele.change<-res.tab$other_allele.exposure[pos.change]
-	res.tab$effect_allele.exposure[pos.change]<-oth.allele.change
-	res.tab$other_allele.exposure[pos.change]<-eff.allele.change
 
-	res.tab$effect_allele.exposure<-toupper(res.tab$effect_allele.exposure) #convert alleles to upper case
-	res.tab$other_allele.exposure<-toupper(res.tab$other_allele.exposure) #convert alleles to upper case
-	res.tab$effect_allele.outcome<-toupper(res.tab$effect_allele.outcome) #convert alleles to upper case
-	res.tab$other_allele.outcome<-toupper(res.tab$other_allele.outcome) #convert alleles to upper case
-	
-	strand1<-c("G","C","T","A")
-	strand2<-c("C","G","A","T")
+	pos.change <- which(res.tab$beta.exposure < 0)
+	res.tab$eaf.exposure[pos.change] <- 1 - res.tab$eaf.exposure[pos.change]
+	res.tab$beta.exposure[pos.change] <- res.tab$beta.exposure[pos.change] * -1
+	eff.allele.change <- res.tab$effect_allele.exposure[pos.change]
+	oth.allele.change <- res.tab$other_allele.exposure[pos.change]
+	res.tab$effect_allele.exposure[pos.change] <- oth.allele.change
+	res.tab$other_allele.exposure[pos.change] <- eff.allele.change
 
-	#When only the effect allele in outcome database is known, infer other allele from effect_allele.exposure and other_allele.exposure  
-	if(all(is.na(res.tab$other_allele.outcome))){
-		for(outcome in res.tab$outcome){
-			pos.keep<-which(res.tab$outcome==outcome & is.na(res.tab$other_allele.outcome))
-			res.tab.test<-res.tab[pos.keep,]
-			pos.all<-1:nrow(res.tab)
-			res.tab.excl<-res.tab[pos.all[!pos.all %in% pos.keep],]
+	return(res.tab)
+}
+
+#' Harmonisation function
+#'
+#' @param res.tab Data frame of exposure and outcome summary stats
+#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
+#'
+#' @export
+#' @return Data frame
+harmonise_function <- function(res.tab, action)
+{
+	if(action == 1)	return(res.tab)
+
+	# Don't have eaf for some studies, e.g these studies 
+	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
+	eaf.outcome.notmiss.study <- TRUE
+	if(all(is.na(res.tab$eaf.outcome)))
+	{
+		eaf.outcome.notmiss.study <- FALSE
+	}
 	
-			if(!all(is.na(res.tab.test$effect_allele.outcome))){ #this line is necessary because for some studies both effect_allele.outcome and other_allele.outcome are missing; the script witihn this if statement does not get executed if all effect_allele.outcomes are missing
+	# Make sure variables are correct class
+	res.tab <- harmonise_cleanup_variables(res.tab)
+
+	# Make effect alleles have positive effect
+	res.tab <- harmonise_make_snp_effects_positive(res.tab)
+
+	strand1 <- c("G","C","T","A")
+	strand2 <- c("C","G","A","T")
+
+	# When only the effect_allele.outcome is known, infer other_allele.outcome from effect_allele.exposure and other_allele.exposure
+	if(all(is.na(res.tab$other_allele.outcome)))
+	{
+		for(outcome in res.tab$outcome)
+		{
+			pos.keep <- which(res.tab$outcome == outcome & is.na(res.tab$other_allele.outcome))
+			res.tab.test <- res.tab[pos.keep,]
+			pos.all <- 1:nrow(res.tab)
+			res.tab.excl <- res.tab[pos.all[!pos.all %in% pos.keep],]
+	
+			if(!all(is.na(res.tab.test$effect_allele.outcome)))
+			{ 
+			#this line is necessary because for some studies both effect_allele.outcome and other_allele.outcome are missing; the script witihn this if statement does not get executed if all effect_allele.outcomes are missing
 				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]<-res.tab.test$other_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]
 				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]<-res.tab.test$effect_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]
 				#if other allele still missing then the strands are different; recode effect_allele.outcome to other strand
@@ -131,7 +164,7 @@ harmonise_function <- function(res.tab, action)
 	pos.amb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome==strand2[i]))))
 	pos.unamb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome!=strand2[i]))))
 
-	print(pos.amb)
+	# print(pos.amb)
 
 	# Get the palidromic SNP names
 	palindromic_snp_names <- res.tab$SNP[pos.amb]
@@ -265,7 +298,7 @@ harmonise_function <- function(res.tab, action)
 
 	if(action == 3)
 	{
-		print(palindromic_snp_names)
+		message("The following SNPs are palindromic and will be excluded:\n", paste(palindromic_snp_names, collapse="\n"))
 		return(subset(fix.tab, !SNP %in% palindromic_snp_names))
 	}
 
