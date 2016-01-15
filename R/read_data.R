@@ -43,6 +43,13 @@ format_exposure_dat <- function(exposure_dat, exposure)
 		)
 	}
 
+	dup <- duplicated(exposure_dat$SNP)
+	if(any(dup))
+	{
+		warning("Duplicated SNPs present in exposure data. Just keeping the first instance of the following:\n", paste(exposure_dat$SNP[dup], collapse="\n"))
+		exposure_dat <- exposure_dat[!dup,]
+	}
+
 	exposure_dat$SNP <- tolower(exposure_dat$SNP)
 	exposure_dat$SNP <- gsub("[[:space:]]", "", exposure_dat$SNP)
 
