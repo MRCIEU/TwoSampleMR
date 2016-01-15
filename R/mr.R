@@ -11,12 +11,11 @@
 #'         extra: Table of extra results
 mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list()$obj)
 {
-	require(plyr)
 	res <- dlply(subset(dat, mr_keep), .(id.outcome, exposure), function(x)
 	{
+		message("Performing MR analysis of '", x$exposure[1], "' on '", x$displayname.outcome[1], "'")
 		res <- lapply(method_list, function(meth)
 		{
-			print(meth)
 			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
 		})
 		methl <- mr_method_list()
@@ -196,10 +195,9 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         pval: p-value
 mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	require(meta)
 	ratio <- b_out / b_exp
 	ratio.se <- sqrt((se_out^2/b_exp^2) + (b_out^2/b_exp^4)*se_exp^2 - 2*(b_out/b_exp^3)*parameters$Cov)
-	res <- metagen(ratio, ratio.se)
+	res <- meta::metagen(ratio, ratio.se)
 	b <- res$TE.fixed
 	se <- res$seTE.fixed
 	pval <- res$pval.fixed
@@ -222,10 +220,9 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         pval: p-value
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	require(meta)
 	ratio <- b_out / b_exp
 	ratio.se <- sqrt((se_out^2/b_exp^2) + (b_out^2/b_exp^4)*se_exp^2 - 2*(b_out/b_exp^3)*parameters$Cov)
-	res <- metagen(ratio, ratio.se)
+	res <- meta::metagen(ratio, ratio.se)
 	b <- res$TE.random
 	se <- res$seTE.random
 	pval <- res$pval.random
@@ -396,8 +393,6 @@ mr_eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramet
 		))
 	}
 	nboot <- parameters$nboot
-	require(reshape2)
-	require(plyr)
 	# Do bootstraps
 	res <- array(0, c(nboot+1, 2))
 	# pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style=3) 
@@ -665,27 +660,6 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method=mr_
 	return(res)
 }
 
-
-
-#' Fisher's combined test
-#'
-#' @param pval Vector of outcome p-values
-#' @export
-#' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-fishers_combined_test <- function(pval)
-{
-	p <- pchisq(-2 * sum(log(pval)), df=2*length(pval), low=FALSE)
-	return(list(pval=p, nsnp=length(pval)))
-}
-
-
-enrichment_test <- function(dat)
-{
-
-}
 
 
 mr_egger_sensitivity_analysis <- function(dat)

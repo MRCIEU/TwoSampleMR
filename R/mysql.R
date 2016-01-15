@@ -113,7 +113,7 @@ format_d <- function(d)
 		return(d)
 	}
 
-	d$displayname.outcome <- paste0(d$outcome, "; ", d$consortium.outcome, " (", d$year.outcome, ")")
+	d$displayname.outcome <- paste0(d$outcome, " (", d$consortium.outcome, " ", d$year.outcome, ")")
 
 	d$eaf.outcome[is.na(d$eaf.outcome)] <- 0.5
 

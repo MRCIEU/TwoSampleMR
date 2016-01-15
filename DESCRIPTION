@@ -19,7 +19,8 @@ Depends:
     knitr,
     markdown,
     RCurl,
-    gtable
+    gtable,
+    reshape2
 Suggests:
     Eur1000Genomes,
     knitr,
