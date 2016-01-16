@@ -49,7 +49,7 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 		x <- mutate(x)
 		message("Harmonising ", x$exposure[1], " and ", x$outcome[1], "(", x$id.outcome[1], ")")
 		x <- harmonise_function(x, x$action[1])
-		x$mr_keep[is.na(x$beta.outcome) | is.na(x$se.outcome)] <- FALSE
+		# x$mr_keep[is.na(x$beta.outcome) | is.na(x$se.outcome)] <- FALSE
 		return(x)
 	})
 	return(fix.tab)
@@ -105,7 +105,10 @@ harmonise_make_snp_effects_positive <- function(res.tab)
 #' @return Data frame
 harmonise_function <- function(res.tab, action)
 {
-	if(action == 1)	return(res.tab)
+	if(action == 1)	
+	{
+		return(res.tab)
+	}
 
 	# Don't have eaf for some studies, e.g these studies 
 	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
@@ -305,4 +308,188 @@ harmonise_function <- function(res.tab, action)
 	return(fix.tab)
 }
 
+
+
+
+## Refactoring
+
+check_palindromic <- function(A1, A2)
+{
+	(A1 == "T" & A2 == "A") |
+	(A1 == "A" & A2 == "T") |
+	(A1 == "G" & A2 == "C") |
+	(A1 == "C" & A2 == "G")
+}
+
+flip_alleles <- function(A1)
+{
+	A2 <- A1
+	A2[A1 == "A"] <- "T"
+	A2[A1 == "T"] <- "A"
+	A2[A1 == "G"] <- "C"
+	A2[A1 == "C"] <- "G"
+	return(A2)
+}
+
+
+harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
+{
+
+	# Find SNPs with alleles that match in A and B
+	status1 <- (A1 == B1) & (A2 == B2)
+	to_swap <- (A1 == B2) & (A2 == B1)
+
+	# If B's alleles are the wrong way round then swap
+	Btemp <- B1[to_swap]
+	B1[to_swap] <- B2[to_swap]
+	B2[to_swap] <- Btemp
+	betaB[to_swap] <- betaB[to_swap] * -1
+	fB[to_swap] <- 1 - fB[to_swap]
+
+	# Check again
+	status1 <- (A1 == B1) & (A2 == B2)
+	palindromic <- check_palindromic(A1, A2)
+
+	# If NOT palindromic and alleles DON'T match then try flipping
+	i <- !palindromic & !status1
+	B1[i] <- flip_alleles(B1[i])
+	B2[i] <- flip_alleles(B2[i])
+	status1 <- (A1 == B1) & (A2 == B2)
+
+
+	# If still NOT palindromic and alleles DON'T match then try swapping
+	i <- !palindromic & !status1
+	to_swap <- (A1 == B2) & (A2 == B1)
+	Btemp <- B1[to_swap]
+	B1[to_swap] <- B2[to_swap]
+	B2[to_swap] <- Btemp
+	betaB[to_swap] <- betaB[to_swap] * -1
+	fB[to_swap] <- 1 - fB[to_swap]
+
+	# Any SNPs left with unmatching alleles need to be removed
+	status1 <- (A1 == B1) & (A2 == B2)
+	remove <- !status1
+
+	# Now deal with palindromic SNPs
+	# If the frequency is within tolerance then they are ambiguous and need to be flagged
+	minf <- 0.5 - tolerance
+	maxf <- 0.5 + tolerance
+	tempfA <- fA
+	tempfB <- fB
+	tempfA[is.na(tempfA)] <- 0.5
+	tempfB[is.na(tempfB)] <- 0.5
+	ambiguousA <- tempfA > minf & tempfA < maxf
+	ambiguousB <- tempfB > minf & tempfB < maxf
+
+	# If action = 2 (flip alleles based on frequency) then flip and swap
+	if(action == 2)
+	{
+		status2 <- ((tempfA < 0.5 & tempfB > 0.5) | (tempfA > 0.5 & tempfB < 0.5)) & palindromic
+		to_swap <- status2 & !remove
+		betaB[to_swap] <- betaB[to_swap] * -1
+		fB[to_swap] <- 1 - fB[to_swap]
+	}
+
+	d <- data.frame(SNP=SNP, A1=A1, A2=A2, B1=B1, B2=B2, betaA=betaA, betaB=betaB, fA=fA, fB=fB, remove=remove, palindromic=palindromic, ambiguous=(ambiguousA|ambiguousB) & palindromic)
+	return(d)
+}
+
+
+
+# if a is not palindromic
+# 	if a1 == b1
+# 		if fA and fB similar
+# 			b2 = a2
+# 		else
+# 			ambiguous
+
+# 	else if a2 == b1
+# 		if fA and 1-fB similar
+# 			b2 = a1
+# 			swap
+# 		else
+# 			ambiguous
+
+# 	else if a1 != b1 & a2 != b1
+# 		flip and return to top
+
+# else a is palindromic
+# 	remove
+
+
+harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, action)
+{
+	n <- length(A1)
+	B2 <- rep(NA, n)
+	ambiguous <- rep(FALSE, n)
+	palindromic <- check_palindromic(A1, A2)
+	remove <- palindromic
+
+	status1 <- A1 == B1
+	minf <- 0.5 - tolerance
+	maxf <- 0.5 + tolerance
+
+	tempfA <- fA
+	tempfB <- fB
+	tempfA[is.na(tempfA)] <- 0.5
+	tempfB[is.na(tempfB)] <- 0.5
+
+	freq_similar1 <- (tempfA < minf & tempfB < minf) | (tempfA > maxf & tempfB > maxf)
+	ambiguous[status1 & !freq_similar1] <- TRUE
+
+	B2[status1] <- A2[status1]
+
+	to_swap <- A2 == B1
+	freq_similar2 <- (tempfA < minf & tempfB > maxf) | (tempfA > maxf & tempfB < minf)
+
+	ambiguous[to_swap & !freq_similar2] <- TRUE
+	B2[to_swap] <- B1[to_swap]
+	B1[to_swap] <- A1[to_swap]
+	betaB[to_swap] <- betaB[to_swap] * -1
+	fB[to_swap] <- 1 - fB[to_swap]
+
+	to_flip <- A1 != B1 & A2 != B1
+
+	ambiguous[to_flip] <- TRUE
+
+	B1[to_flip] <- flip_alleles(B1[to_flip])
+	status1 <- A1 == B1
+	B2[status1] <- A2[status1]
+
+	to_swap <- A2 == B1
+	B2[to_swap] <- B1[to_swap]
+	B1[to_swap] <- A1[to_swap]
+	betaB[to_swap] <- betaB[to_swap] * -1
+	fB[to_swap] <- 1 - fB[to_swap]
+
+
+	d <- data.frame(SNP=SNP, A1=A1, A2=A2, B1=B1, B2=B2, betaA=betaA, betaB=betaB, fA=fA, fB=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
+
+	return(d)
+
+}
+
+
+harmonise_function_refactored <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
+{
+	i22 <- !is.na(A1) & !is.na(A2) & !is.na(B1) & !is.na(B2)
+	i21 <- !is.na(A1) & !is.na(A2) & !is.na(B1) & is.na(B2)
+
+	d22 <- harmonise_22(SNP[i22], A1[i22], A2[i22], B1[i22], B2[i22], betaA[i22], betaB[i22], fA[i22], fB[i22], tolerance, action)
+	d21 <- harmonise_21(SNP[i21], A1[i21], A2[i21], B1[i21], B2[i21], betaA[i21], betaB[i21], fA[i21], fB[i21], tolerance, action)
+	d <- rbind(d21, d22)
+	if(action == 3)
+	{
+		d <- subset(d, !palindromic | !remove | !ambiguous)
+	}
+	if(action == 2)
+	{
+		d <- subset(d, !remove | !ambiguous)
+	}
+	if(action == 1)
+	{
+		d <- subset(d, !remove)
+	}
+	return(d)
+}
 

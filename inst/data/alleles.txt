@@ -1,0 +1,13 @@
+SNP A1 A2 B1 B2 betaA betaB trueBetaB fA fB note
+a A G A G 1 1 0.5 0.5 1 fine
+b A G G A 1 1 0.5 0.5 -1 to_swap
+c A G T A 1 1 0.5 0.5 0 incompatible
+d A T A T 1 1 0.2 0.8 -1 to_flip_and_swap
+e A T A T 1 1 0.2 0.2 1 fine
+f A T A T 1 1 0.5 0.5 1 palindromic
+g A T T A 1 1 0.5 0.5 -1 palindromic_to_swap
+h C G G C 1 1 0.2 0.2 1 to_flip
+i G T A C 1 1 0.5 0.5 -1 to_flip_and_swap
+j G T C A 1 1 0.5 0.5 1 to_flip
+k A G A G 1 1 0.2 0.2 1 fine
+l T G G T 1 1 0.2 0.8 -1 to_swap

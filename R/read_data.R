@@ -147,11 +147,46 @@ format_exposure_dat <- function(exposure_dat, exposure)
 ensembl_get_position <- function(snp)
 {
 	library(biomaRt)
+	library(stringr)
 	Mart <- useMart(host="grch37.ensembl.org", biomart="ENSEMBL_MART_SNP",dataset="hsapiens_snp")
-	Attr<-listAttributes(Mart)
-	ensembl<-getBM(attributes=c("refsnp_id","chr_name","chrom_start"),filters="snp_filter",values=snp,mart=Mart)
-	ensembl<-ensembl[nchar(ensembl$chr_name)<=2,]
-	ensembl
+	Attr <- listAttributes(Mart)
+	ensembl <- getBM(attributes=c("refsnp_id","chr_name","chrom_start","allele","minor_allele","minor_allele_freq"),filters="snp_filter",values=snp,mart=Mart)
+
+	# Sort out chromosome name
+	ensembl$chr_name <- str_match(ensembl$chr_name, "(HSCHR)?([0-9X]*)")[,3]
+	ensembl$chr_name[ensembl$chr_name == "X"] <- 23
+	ensembl$chr_name[! ensembl$chr_name %in% 1:23] <- NA
+	ensembl$chr_name <- as.numeric(ensembl$chr_name)
+
+	# Remove SNPs that are problematic:
+	# - No chromosome name
+	# - No position
+	# - Not normal alleles
+	# - Not biallelic
+	# - No MAF
+	# - Duplicate SNPs
+	# - minor allele doesn't match the alleles
+	# Add major allele
+	remove <- is.na(ensembl$chr_name) |
+		is.na(ensembl$chrom_start) |
+		nchar(ensembl$allele) != 3 |
+		! ensembl$minor_allele %in% c("A", "C", "T", "G") |
+		is.na(ensembl$minor_allele_freq)
+	ensembl <- ensembl[!remove, ]
+	ensembl <- subset(ensembl, !duplicated(refsnp_id))
+	al <- do.call(rbind, strsplit(ensembl$allele, split="/"))
+	i1 <- al[,1] == ensembl$minor_allele
+	i2 <- al[,2] == ensembl$minor_allele
+	i <- (i1 | i2)
+	ensembl <- ensembl[i, ]
+	al <- al[i, ]
+	i1 <- i1[i]
+	i2 <- i2[i]
+	ensembl <- subset(ensembl, select=-c(allele))
+	ensembl$major_allele[!i1] <- al[!i1, 1]
+	ensembl$major_allele[!i2] <- al[!i2, 2]
+
+	return(ensembl)
 }
 
 

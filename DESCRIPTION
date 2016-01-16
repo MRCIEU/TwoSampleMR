@@ -20,7 +20,8 @@ Depends:
     markdown,
     RCurl,
     gtable,
-    reshape2
+    reshape2,
+    stringr
 Suggests:
     Eur1000Genomes,
     knitr,
