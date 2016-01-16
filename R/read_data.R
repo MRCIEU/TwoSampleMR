@@ -144,6 +144,27 @@ format_exposure_dat <- function(exposure_dat, exposure)
 	return(exposure_dat)
 }
 
+
+ucsc_get_position <- function(snp)
+{
+	snp <- paste(snp, collapse="', '")
+	require(RMySQL)
+	message("Connecting to UCSC MySQL database")
+	mydb <- dbConnect(MySQL(), user="genome", dbname="hg19", host="genome-mysql.cse.ucsc.edu")
+
+	query <- paste0(
+		"SELECT * from snp144 where name in ('", snp, "');"
+	)
+	print(query)
+	out <- dbSendQuery(mydb, query)
+	d <- fetch(out, n=-1)
+	dbClearResult(dbListResults(mydb)[[1]])
+	dbDisconnect(mydb)
+	return(d)
+
+}
+
+
 ensembl_get_position <- function(snp)
 {
 	library(biomaRt)

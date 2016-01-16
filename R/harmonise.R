@@ -33,7 +33,9 @@
 harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 {
 	stopifnot(all(action %in% 1:3))
+
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
+
 	ncombinations <- length(unique(res.tab$id.outcome))
 	if(length(action) == 1)
 	{
@@ -41,15 +43,21 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 	} else if(length(action) != ncombinations) {
 		stop("Action argument must be of length 1 (where the same action will be used for all outcomes), or number of unique id.outcome values (where each outcome will use a different action value)")
 	}
+
+	res.tab <- harmonise_cleanup_variables(res.tab)
+	res.tab <- harmonise_make_snp_effects_positive(res.tab)
+
 	d <- data.frame(id.outcome=unique(res.tab$id.outcome), action=action)
 	res.tab <- merge(res.tab, d, by="id.outcome")
-	if(all(action == 1)) return(res.tab)
+
 	fix.tab <- ddply(res.tab, .(id.outcome), function(x)
 	{
 		x <- mutate(x)
 		message("Harmonising ", x$exposure[1], " and ", x$outcome[1], "(", x$id.outcome[1], ")")
-		x <- harmonise_function(x, x$action[1])
-		# x$mr_keep[is.na(x$beta.outcome) | is.na(x$se.outcome)] <- FALSE
+
+# SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action		
+		x <- harmonise_function_refactored(x, 0.08, x$action[1])
+		# x <- harmonise_function(x, x$action[1])
 		return(x)
 	})
 	return(fix.tab)
@@ -58,17 +66,12 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 
 harmonise_cleanup_variables <- function(res.tab)
 {
-	# if(sum(grep("\\.y",names(res.tab)))) stop(paste("some column names are identical in the instruments file and the outcome database; ",names(res.tab)[grep(".y",names(res.tab))]," present in both files",sep=""))
-
-	res.tab$beta.exposure<-as.numeric(res.tab$beta.exposure)
-	res.tab$beta.outcome<-as.numeric(res.tab$beta.outcome)
-	res.tab$eaf.exposure<-as.numeric(res.tab$eaf.exposure)
-	res.tab$eaf.outcome[res.tab$eaf.outcome=="NR"]<-NA
-	res.tab$eaf.outcome[res.tab$eaf.outcome=="NR "]<-NA
-	res.tab$eaf.outcome<-as.numeric(res.tab$eaf.outcome)
-	# res.tab$eaf.outcome[which(res.tab$eaf.outcome==1)]<-NA
-	 	    
-	# res.tab$p.value.outcome<-as.numeric(res.tab$p.value.outcome)
+	res.tab$beta.exposure <- as.numeric(res.tab$beta.exposure)
+	res.tab$beta.outcome <- as.numeric(res.tab$beta.outcome)
+	res.tab$eaf.exposure <- as.numeric(res.tab$eaf.exposure)
+	res.tab$eaf.outcome[res.tab$eaf.outcome=="NR"] <- NA
+	res.tab$eaf.outcome[res.tab$eaf.outcome=="NR "] <- NA
+	res.tab$eaf.outcome <- as.numeric(res.tab$eaf.outcome)
 
 	# convert alleles to upper case
 	res.tab$effect_allele.exposure <- toupper(res.tab$effect_allele.exposure)
@@ -390,7 +393,7 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 		fB[to_swap] <- 1 - fB[to_swap]
 	}
 
-	d <- data.frame(SNP=SNP, A1=A1, A2=A2, B1=B1, B2=B2, betaA=betaA, betaB=betaB, fA=fA, fB=fB, remove=remove, palindromic=palindromic, ambiguous=(ambiguousA|ambiguousB) & palindromic)
+	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=(ambiguousA|ambiguousB) & palindromic)
 	return(d)
 }
 
@@ -463,33 +466,55 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	fB[to_swap] <- 1 - fB[to_swap]
 
 
-	d <- data.frame(SNP=SNP, A1=A1, A2=A2, B1=B1, B2=B2, betaA=betaA, betaB=betaB, fA=fA, fB=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
+	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
 
 	return(d)
 
 }
 
 
-harmonise_function_refactored <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
+harmonise_function_refactored <- function(dat, tolerance, action)
 {
+	SNP <- dat$SNP
+	A1 <- dat$effect_allele.exposure
+	A2 <- dat$other_allele.exposure
+	B1 <- dat$effect_allele.outcome
+	B2 <- dat$other_allele.outcome
+	betaA <- dat$beta.exposure
+	betaB <- dat$beta.outcome
+	fA <- dat$eaf.exposure
+	fB <- dat$eaf.outcome
+	dat <- subset(dat, select=-c(effect_allele.exposure, other_allele.exposure, effect_allele.outcome, other_allele.outcome, beta.exposure, beta.outcome, eaf.exposure, eaf.outcome))
+	
 	i22 <- !is.na(A1) & !is.na(A2) & !is.na(B1) & !is.na(B2)
 	i21 <- !is.na(A1) & !is.na(A2) & !is.na(B1) & is.na(B2)
 
 	d22 <- harmonise_22(SNP[i22], A1[i22], A2[i22], B1[i22], B2[i22], betaA[i22], betaB[i22], fA[i22], fB[i22], tolerance, action)
-	d21 <- harmonise_21(SNP[i21], A1[i21], A2[i21], B1[i21], B2[i21], betaA[i21], betaB[i21], fA[i21], fB[i21], tolerance, action)
+	d21 <- harmonise_21(SNP[i21], A1[i21], A2[i21], B1[i21], betaA[i21], betaB[i21], fA[i21], fB[i21], tolerance, action)
 	d <- rbind(d21, d22)
 	if(action == 3)
 	{
-		d <- subset(d, !palindromic | !remove | !ambiguous)
+		d1 <- subset(d, !palindromic & !remove & !ambiguous)
 	}
 	if(action == 2)
 	{
-		d <- subset(d, !remove | !ambiguous)
+		d1 <- subset(d, !remove & !ambiguous)
 	}
 	if(action == 1)
 	{
-		d <- subset(d, !remove)
+		d1 <- subset(d, !remove)
 	}
+
+	if(nrow(d1) != nrow(d))
+	{
+		message("Removing the following SNPs due to harmonising issues:\n",
+			paste(subset(d, ! SNP %in% d1$SNP)$SNP, collapse="\n")
+		)
+	}
+
+	d <- merge(d, dat, by="SNP", all.x=TRUE)
+	d <- d[order(d$id.outcome, d$chr_name, d$chrom_start), ]
+
 	return(d)
 }
 
