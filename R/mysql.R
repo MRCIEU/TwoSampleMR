@@ -115,8 +115,6 @@ format_d <- function(d)
 
 	d$displayname.outcome <- paste0(d$outcome, " (", d$consortium.outcome, " ", d$year.outcome, ")")
 
-	d$eaf.outcome[is.na(d$eaf.outcome)] <- 0.5
-
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
 	d <- subset(d, !rem)
 
