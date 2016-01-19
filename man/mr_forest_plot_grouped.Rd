@@ -2,6 +2,7 @@
 % Please edit documentation in R/forest_plot.R
 \name{mr_forest_plot_grouped}
 \alias{mr_forest_plot_grouped}
+\title{Grouped forest plot}
 \usage{
 mr_forest_plot_grouped(name, eff_Col = "b", exposure_Name = "exposure",
   outcome_Name = "outcome", forest_Title = "",
@@ -44,6 +45,9 @@ mr_forest_plot_grouped(name, eff_Col = "b", exposure_Name = "exposure",
 }
 \value{
 grid object giving the forest plot (or plot as pdf, and )
+}
+\description{
+Grouped forest plot
 }
 \examples{
 mr_forest_plot()

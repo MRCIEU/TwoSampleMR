@@ -23,8 +23,11 @@
 
 
 
-
 ## 8.0.1. Unifiying all into a single function that calls each of the above methods
+
+
+#' Grouped forest plot
+#'
 #' @param name = (character) name of the delimited file containing all of the results on the first sheet (needs to have headers), or of the r object
 
 #' @param eff_Col = (character) name of the column in the delimited file that contains the effect sizes
@@ -49,7 +52,6 @@
 #' @examples
 #' mr_forest_plot()
 #'
-#' @export
 
 mr_forest_plot_grouped <-
     function(name, eff_Col = "b", exposure_Name="exposure", outcome_Name="outcome", forest_Title = '', outfile_Name = 'annot_FP.pdf', left_Col_Names=c("Exposure", "Outcome"), left_Col_Titles = NULL, right_Col_Names = c("p", "Outcome.n.case", "Outcome.n.control", "Outcome.sample.size"), right_Col_Titles =
