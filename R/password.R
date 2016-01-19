@@ -26,7 +26,6 @@ check_password <- function(password)
 #' @param password String
 #' @export
 #' @return Nothing, just prints message about whether password is correct or not, and sets global option
-#' @alias
 #' @examples \dontrun{
 #'
 #'}

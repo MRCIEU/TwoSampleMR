@@ -11,6 +11,9 @@ upload_file_to_api(x, max_file_size = 16 * 1024 * 1024, header = FALSE)
 
 \item{max_file_size}{Maximum file size permitted to be uploaded in bytes (16Mb default)}
 }
+\value{
+basename of file
+}
 \description{
 Upload a file using POST request through API
 }

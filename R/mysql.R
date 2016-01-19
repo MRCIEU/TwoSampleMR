@@ -18,7 +18,7 @@ available_outcomes <- function(password=NULL)
 #'
 #' @param x Vector that will be written to a file to be posted
 #' @param max_file_size Maximum file size permitted to be uploaded in bytes (16Mb default)
-#' @return
+#' @return basename of file
 upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 {
 	require(RCurl)
@@ -201,6 +201,7 @@ extract_outcome_data_mysql <- function(exposure_dat, outcomes, user, password, d
 #' @param exposure_dat Output from \code{read_exposure_data}
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
 #' @param password If correct password is supplied then access to restricted studies will be supplied
+#' @export
 #' @return Dataframe of summary statistics for all available outcomes
 extract_outcome_data_using_get <- function(exposure_dat, outcomes, password=NULL)
 {

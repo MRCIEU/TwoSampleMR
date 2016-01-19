@@ -11,7 +11,7 @@ harmonise_exposure_outcome(exposure_dat, outcome_dat, action = 2)
 
 \item{outcome_dat}{Output from \code{extract_outcome_data}}
 
-\item{action}{Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis}
+\item{action}{Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended); 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis. If a single value is passed then this action is applied to all outcomes. But multiple values can be supplied as a vector, each element relating to a different outcome.}
 }
 \value{
 Data frame with harmonised effects and alleles
