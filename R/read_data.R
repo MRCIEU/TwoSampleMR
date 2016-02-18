@@ -81,7 +81,7 @@ format_exposure_dat <- function(exposure_dat, exposure)
 		{
 			message("Warning: The following SNP(s) are missing required information for the MR tests. They will be excluded. Sorry. We did all we could.")
 			message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")			
-			print(subset(exposure_dat, !mr_keep))
+			message(paste(subset(exposure_dat, !mr_keep)$SNP, collapse="\n"))
 		}
 	}
 
@@ -120,7 +120,7 @@ format_exposure_dat <- function(exposure_dat, exposure)
 	{
 		message("Warning: The following SNP(s) were not present in ensembl GRCh37. They will be excluded. Sorry. This is Matt's fault.")
 		message("Atenção: O SNP (s) seguinte não estavam presentes no GRCh37 Ensembl. Eles serão excluídos. Desculpe. Isso é culpa do Matt.")
-		print(missing)
+		message(paste(missing, collapse="\n"))
 	}
 	stopifnot(nrow(exposure_dat) > 0)
 
@@ -155,7 +155,7 @@ ucsc_get_position <- function(snp)
 	query <- paste0(
 		"SELECT * from snp144 where name in ('", snp, "');"
 	)
-	print(query)
+	message(query)
 	out <- dbSendQuery(mydb, query)
 	d <- fetch(out, n=-1)
 	dbClearResult(dbListResults(mydb)[[1]])
