@@ -600,7 +600,7 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_
 				Outcome.n.case = x$ncase.outcome[1],
 				Outcome.n.control = x$ncontrol.outcome[1]
 			)
-			d$id.outcome <- x$displayname.outcome[1]
+			d$outcome <- x$displayname.outcome[1]
 
 		} else {
 			a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
@@ -613,13 +613,12 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_
 				Outcome.n.case = x$ncase.outcome[1],
 				Outcome.n.control = x$ncontrol.outcome[1]
 			)
-			d$id.outcome <- x$displayname.outcome[1]
+			d$outcome <- x$displayname.outcome[1]
 		}
 		return(d)
 	})
-	res <- subset(res, select=c(exposure, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
+	res <- subset(res, select=c(exposure, outcome, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
 	names(res)[1] <- "exposure"
-	names(res)[2] <- "outcome"
 	return(res)
 }
 
@@ -651,12 +650,11 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method=mr_
 			Outcome.n.case = x$ncase.outcome[1],
 			Outcome.n.control = x$ncontrol.outcome[1]
 		)
-		d$id.outcome <- x$displayname.outcome[1]
+		d$outcome <- x$displayname.outcome[1]
 		return(d)
 	})
-	res <- subset(res, select=c(exposure, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
+	res <- subset(res, select=c(exposure, outcome, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
 	names(res)[1] <- "exposure"
-	names(res)[2] <- "outcome"
 	return(res)
 }
 

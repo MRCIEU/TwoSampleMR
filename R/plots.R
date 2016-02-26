@@ -47,7 +47,7 @@ mr_scatter_plot <- function(mr_results, dat)
 #' @return List of plots
 mr_leaveoneout_plot <- function(singlesnp_results)
 {
-	res <- dlply(singlesnp_results, .(exposure, outcome), function(d)
+	res <- dlply(singlesnp_results, .(exposure, id.outcome), function(d)
 	{
 		if(nrow(d) < 3) {
 			return(
@@ -102,7 +102,7 @@ blank_plot <- function(message)
 #' @return List of plots
 mr_forest_plot <- function(singlesnp_results)
 {
-	res <- dlply(singlesnp_results, .(exposure, outcome), function(d)
+	res <- dlply(singlesnp_results, .(exposure, id.outcome), function(d)
 	{
 		if(nrow(d) < 3) {
 			return(
