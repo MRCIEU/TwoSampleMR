@@ -54,6 +54,11 @@ extract_outcome_data <- function(exposure_dat, outcomes, password=NULL)
 
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?password=", password, "&outcomefile=", outcomefile, "&snpfile=", snpfile)
 	d <- fromJSON(url)
+	if(length(d) == 0)
+	{
+		message("None of the requested SNPs were available in the specified GWASs.")
+		return(NULL)
+	}
 	return(format_d(d))
 }
 
