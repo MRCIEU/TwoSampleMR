@@ -14,15 +14,16 @@ Depends:
     meta,
     biomaRt,
     plyr,
-    RMySQL,
     jsonlite,
     knitr,
     markdown,
     RCurl,
     gtable,
     reshape2,
-    stringr
+    stringr,
+    data.table
 Suggests:
+    RMySQL,
     Eur1000Genomes,
     knitr,
     rmarkdown,

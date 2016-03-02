@@ -11,9 +11,19 @@
 #'         extra: Table of extra results
 mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list()$obj)
 {
-	res <- dlply(subset(dat, mr_keep), .(id.outcome, exposure), function(x)
+	if(sum(dat$mr_keep) == 0)
+	{
+		message("No SNPs available for MR analysis")
+		return(NULL)
+	}
+
+	mr_tab <- ddply(subset(dat, mr_keep), .(id.outcome, exposure), function(x)
 	{
 		message("Performing MR analysis of '", x$exposure[1], "' on '", x$displayname.outcome[1], "'")
+		if(nrow(x) == 0)
+		{
+			message("No SNPs available for MR analysis")
+		}
 		res <- lapply(method_list, function(meth)
 		{
 			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
@@ -31,7 +41,11 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 		mr_tab <- subset(mr_tab, !(is.na(b) & is.na(se) & is.na(pval)))
 		return(mr_tab)
 	})
-	mr_tab <- rbind.fill(lapply(res, function(x) x))
+
+	if(nrow(mr_tab) == 0)
+	{
+		return(NULL)
+	}
 
 	ao <- available_outcomes()
 	ao <- subset(ao, select=c(id, trait, trait_strict, consortium, ethnic, gender, ncase, ncontrol, sample_size, pmid, unit, sd, year, cat, subcat))

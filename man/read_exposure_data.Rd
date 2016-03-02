@@ -2,23 +2,49 @@
 % Please edit documentation in R/read_data.R
 \name{read_exposure_data}
 \alias{read_exposure_data}
-\title{Read in summary statistics for exposure trait}
+\title{Read exposure data}
 \usage{
-read_exposure_data(filename, exposure, quote = "\\"", sep = " ")
+read_exposure_data(filename, sep = " ", phenotype_col = "Phenotype",
+  snp_col = "SNP", beta_col = "beta", se_col = "se", eaf_col = "eaf",
+  effect_allele_col = "effect_allele", other_allele_col = "other_allele",
+  pval_col = "pval", ncase_col = "ncase", ncontrol_col = "ncontrol",
+  samplesize_col = "samplesize", gene_col = "gene", min_pval = 1e-100)
 }
 \arguments{
-\item{filename}{Filename}
+\item{filename}{Filename. Must have header with at least SNP column present.}
 
-\item{exposure}{Name of exposure trait}
+\item{sep="}{" Specify delimeter in file}
 
-\item{quote}{Character used for quotes}
+\item{phenotype_col="Phenotype"}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"}
 
-\item{sep}{Character used to delimit columns}
+\item{snp_col="SNP"}{Required name of column with SNP rs IDs}
+
+\item{beta_col="beta"}{Required for MR. Name of column with effect sizes}
+
+\item{se_col="se"}{Required for MR. Name of column with standard errors}
+
+\item{eaf_col="eaf"}{Required for MR. Name of column with effect allele frequency}
+
+\item{effect_allele_col="effect_allele"}{Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"}
+
+\item{other_allele_col="other_allele"}{Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"}
+
+\item{pval_col="pval"}{Required for enrichment tests. Name of column with p-value.}
+
+\item{ncase_col="ncase"}{Optional column name for number of cases.}
+
+\item{ncontrol_col="ncontrol"}{Optional column name for number of controls.}
+
+\item{samplesize_col="samplesize"}{Optional column name for sample size.}
+
+\item{gene_col="gene"}{Optional column name for gene name.}
+
+\item{min_pval=1e-100}{Minimum allowed pval}
 }
 \value{
-Data frame of exposure summary stats
+data frame
 }
 \description{
-Read in summary statistics for exposure trait
+Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
 }
 

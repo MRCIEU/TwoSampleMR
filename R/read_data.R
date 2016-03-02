@@ -1,148 +1,401 @@
-#' Read in summary statistics for exposure trait
-#'
-#' @param filename Filename
-#' @param exposure Name of exposure trait
-#' @param quote Character used for quotes
-#' @param sep Character used to delimit columns
-#' @export
-#' @return Data frame of exposure summary stats
-read_exposure_data <- function(filename, exposure, quote='"', sep=" ")
-{
-	exposure_dat <- read.csv(filename, header=T, stringsAsFactors=FALSE, quote=quote, sep=sep)
-	format_exposure_dat(exposure_dat, exposure)
 
+
+#' Read outcome data
+#'
+#' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se.
+#'
+#' @param filename Filename. Must have header with at least SNP column present.
+#' @param snps=NULL SNPs to extract. If NULL then doesn't extract any and keeps all.
+#' @param sep=" " Specify delimeter in file
+#' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
+#' @param snp_col="SNP" Required name of column with SNP rs IDs
+#' @param beta_col="beta" Required for MR. Name of column with effect sizes
+#' @param se_col="se" Required for MR. Name of column with standard errors
+#' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
+#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
+#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
+#' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
+#' @param ncase_col="ncase" Optional column name for number of cases.
+#' @param ncontrol_col="ncontrol" Optional column name for number of controls.
+#' @param samplesize_col="samplesize" Optional column name for sample size.
+#' @param gene_col="gene" Optional column name for gene name.
+#' @param min_pval=1e-100 Minimum allowed pval
+#'
+#' @export
+#' @return data frame
+read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-100)
+{
+	outcome_dat <- fread(filename, header=TRUE, sep=sep)
+	outcome_dat <- format_data(
+		as.data.frame(outcome_dat),
+		type="outcome",
+		snps=snps,
+		sep=sep,
+		phenotype_col=phenotype_col,
+		snp_col=snp_col,
+		beta_col=beta_col,
+		se_col=se_col,
+		eaf_col=eaf_col,
+		effect_allele_col=effect_allele_col,
+		other_allele_col=other_allele_col,
+		pval_col=pval_col,
+		ncase_col=ncase_col,
+		ncontrol_col=ncontrol_col,
+		samplesize_col=samplesize_col,
+		gene_col=gene_col,
+		min_pval=min_pval
+	)
+	return(outcome_dat)
 }
 
-
-
-#' Format exposure_dat into the right shape
+#' Read exposure data
 #'
-#' Check that SNP is there
-#' If SNP isn't there, error
-#' If SNP is there, check that beta, se, eaf, a1, a2 are there
-#' For all SNPs with those vals, say MR possible
-#' For all without, say that MR is not possible but fisher test is
-#' If some p values provided, fill in p-values where possible
-#' If any SNPs not found in ensembl then remove
+#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
 #'
-#' @param exposure_dat Data frame
-#' @param exposure Name of exposure trait
+#' @param filename Filename. Must have header with at least SNP column present.
+#' @param sep=" " Specify delimeter in file
+#' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
+#' @param snp_col="SNP" Required name of column with SNP rs IDs
+#' @param beta_col="beta" Required for MR. Name of column with effect sizes
+#' @param se_col="se" Required for MR. Name of column with standard errors
+#' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
+#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
+#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
+#' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
+#' @param ncase_col="ncase" Optional column name for number of cases.
+#' @param ncontrol_col="ncontrol" Optional column name for number of controls.
+#' @param samplesize_col="samplesize" Optional column name for sample size.
+#' @param gene_col="gene" Optional column name for gene name.
+#' @param min_pval=1e-100 Minimum allowed pval
+#'
 #' @export
-format_exposure_dat <- function(exposure_dat, exposure)
+#' @return data frame
+read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-100)
 {
-	# Check all the columns are there as expected
-
-	mrcols <- c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele")
-
-	if(! "SNP" %in% names(exposure_dat))
-	{
-		stop(
-			"Must have at least 'SNP' column to perform any analysis\n",
-			"For MR analysis must have the following columns:\n",
-			paste(mrcols, collapse=" "), "\n\n"	
-		)
-	}
-
-	dup <- duplicated(exposure_dat$SNP)
-	if(any(dup))
-	{
-		warning("Duplicated SNPs present in exposure data. Just keeping the first instance of the following:\n", paste(exposure_dat$SNP[dup], collapse="\n"))
-		exposure_dat <- exposure_dat[!dup,]
-	}
-
-	exposure_dat$SNP <- tolower(exposure_dat$SNP)
-	exposure_dat$SNP <- gsub("[[:space:]]", "", exposure_dat$SNP)
-
-	domr <- FALSE
-	if(all(mrcols %in% names(exposure_dat)))
-	{
-		message("All necessary columns present for MR analysis")
-		domr <- TRUE
-	} else {
-		message("MR analysis can't be performed. Must have the following columns:\n", paste(mrcols, collapse=" "), "\n")
-	}
-
-	if(domr)
-	{
-		# Do some checks
-		stopifnot(all(is.numeric(exposure_dat$beta), na.rm=TRUE))
-		stopifnot(all(is.numeric(exposure_dat$se), na.rm=TRUE))
-		stopifnot(all(is.numeric(exposure_dat$eaf), na.rm=TRUE))
-		stopifnot(all(exposure_dat$eaf > 0, na.rm=TRUE))
-		stopifnot(all(exposure_dat$eaf < 1, na.rm=TRUE))
-		exposure_dat$effect_allele <- toupper(exposure_dat$effect_allele)
-		exposure_dat$other_allele <- toupper(exposure_dat$other_allele)
-		stopifnot(all(exposure_dat$effect_allele %in% c("A", "C", "T", "G")))
-		stopifnot(all(exposure_dat$other_allele %in% c("A", "C", "T", "G")))
-		exposure_dat$exposure <- exposure
-
-		exposure_dat$mr_keep <- apply(exposure_dat[,mrcols], 1, function(x) !any(is.na(x)))
-		if(any(!exposure_dat$mr_keep))
-		{
-			message("Warning: The following SNP(s) are missing required information for the MR tests. They will be excluded. Sorry. We did all we could.")
-			message("Atenção: O SNP (s) seguinte estão faltando informações necessárias. Eles serão excluídos. Desculpe. Fizemos tudo o que podíamos.")			
-			message(paste(subset(exposure_dat, !mr_keep)$SNP, collapse="\n"))
-		}
-	}
-
-	if("P_value" %in% names(exposure_dat))
-	{
-		exposure_dat$P_value_origin <- "reported"
-		badp <- !is.numeric(exposure_dat$P_value) | exposure_dat$P_value <= 0 | exposure_dat$P_value >= 1 | !is.finite(exposure_dat$P_value)
-		if(any(badp))
-		{
-			message("P-values have been provided but the following SNPs have issues with the p-values:\n", paste(exposure_dat$SNP[badp], collapse="\n"))
-		}
-		if(all(c("beta", "se") %in% names(exposure_dat)))
-		{
-			goodp <- badp & is.finite(exposure_dat$beta) & is.finite(exposure_dat$se)
-			exposure_dat$P_value[goodp] <- pnorm(abs(exposure_dat$beta[goodp]) / exposure_dat$se[goodp], lower.tail=FALSE)
-			exposure_dat$P_value_origin[goodp] <- "inferred"
-		} else {
-			exposure_dat$P_value[badp] <- 0.99
-			exposure_dat$P_value_origin[badp] <- "unavailable"
-		}
-	} else if(all(c("beta", "se") %in% names(exposure_dat))) {
-		exposure_dat$P_value <- pnorm(abs(exposure_dat$beta) / exposure_dat$se, lower.tail=FALSE)
-		exposure_dat$P_value_origin <- "inferred"
-	} else {
-		exposure_dat$P_value <- 0.99
-		exposure_dat$P_value_origin <- "unavailable"
-	}
-
-	
-
-
-	# Get SNP positions
-	bm <- ensembl_get_position(exposure_dat$SNP)
-	missing <- exposure_dat$SNP[! exposure_dat$SNP %in% bm$refsnp_id]
-	if(length(missing) > 0)
-	{
-		message("Warning: The following SNP(s) were not present in ensembl GRCh37. They will be excluded. Sorry. This is Matt's fault.")
-		message("Atenção: O SNP (s) seguinte não estavam presentes no GRCh37 Ensembl. Eles serão excluídos. Desculpe. Isso é culpa do Matt.")
-		message(paste(missing, collapse="\n"))
-	}
-	stopifnot(nrow(exposure_dat) > 0)
-
-
-
-	exposure_dat <- exposure_dat[,names(exposure_dat)!="chr_name", drop=FALSE]
-	exposure_dat <- exposure_dat[,names(exposure_dat)!="chrom_start", drop=FALSE]
-	exposure_dat <- merge(exposure_dat, bm, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
-
-	if(domr)
-	{
-		names(exposure_dat)[names(exposure_dat) == "effect_allele"] <- "effect_allele.exposure"
-		names(exposure_dat)[names(exposure_dat) == "other_allele"] <- "other_allele.exposure"
-		names(exposure_dat)[names(exposure_dat) == "beta"] <- "beta.exposure"
-		names(exposure_dat)[names(exposure_dat) == "se"] <- "se.exposure"
-		names(exposure_dat)[names(exposure_dat) == "eaf"] <- "eaf.exposure"		
-	}
-	names(exposure_dat)[names(exposure_dat) == "P_value"] <- "pval.exposure"
-	names(exposure_dat)[names(exposure_dat) == "P_value_origin"] <- "pval_origin.exposure"
-
+	exposure_dat <- fread(filename, header=TRUE, sep=sep)
+	exposure_dat <- format_data(
+		as.data.frame(exposure_dat),
+		type="exposure",
+		snps=NULL,
+		sep=sep,
+		phenotype_col=phenotype_col,
+		snp_col=snp_col,
+		beta_col=beta_col,
+		se_col=se_col,
+		eaf_col=eaf_col,
+		effect_allele_col=effect_allele_col,
+		other_allele_col=other_allele_col,
+		pval_col=pval_col,
+		ncase_col=ncase_col,
+		ncontrol_col=ncontrol_col,
+		samplesize_col=samplesize_col,
+		gene_col=gene_col,
+		min_pval=min_pval
+	)
 	return(exposure_dat)
 }
+
+#' Read exposure data
+#'
+#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. If it is the exposure then looks up SNPs in biomaRt to get basic info.
+#'
+#' @param dat Data frame. Must have header with at least SNP column present.
+#' @param type="exposure". Is this the exposure or the outcome data that is being read in?
+#' @param snps=NULL SNPs to extract. If NULL then doesn't extract any and keeps all.
+#' @param sep=" " Specify delimeter in file
+#' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
+#' @param snp_col="SNP" Required name of column with SNP rs IDs
+#' @param beta_col="beta" Required for MR. Name of column with effect sizes
+#' @param se_col="se" Required for MR. Name of column with standard errors
+#' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
+#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
+#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
+#' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
+#' @param ncase_col="ncase" Optional column name for number of cases.
+#' @param ncontrol_col="ncontrol" Optional column name for number of controls.
+#' @param samplesize_col="samplesize" Optional column name for sample size.
+#' @param gene_col="gene" Optional column name for gene name.
+#' @param min_pval=1e-100 Minimum allowed pval
+#'
+#' @export
+#' @return data frame
+format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-100)
+{
+	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, ncase_col, ncontrol_col, samplesize_col)
+
+	i <- names(dat) %in% all_cols
+	if(sum(i) == 0)
+	{
+		stop("None of the specified columns present")
+	}
+	dat <- dat[,i]
+
+	if(! snp_col %in% names(dat))
+	{
+		stop("SNP column not found")
+	}
+	names(dat)[names(dat) == snp_col] <- "SNP"
+	dat$SNP <- tolower(dat$SNP)
+	dat$SNP <- gsub("[[:space:]]", "", dat$SNP)
+	dat <- subset(dat, !is.na(SNP))
+
+	if(!is.null(snps))
+	{
+		dat <- subset(dat, SNP %in% snps)
+	}
+	
+	if(! phenotype_col %in% names(dat))
+	{
+		message("No phenotype name specified, defaulting to '", type, "'.")
+		dat[[type]] <- type
+	} else {
+		dat[[type]] <- dat[[phenotype_col]]
+		if(phenotype_col != type)
+		{
+			dat <- subset(dat, select=-c(phenotype_col))
+		}
+	}
+
+	# Remove duplicated SNPs
+	dat <- ddply(dat, type, function(x){
+		x <- mutate(x)
+		dup <- duplicated(x$SNP)
+		if(any(dup))
+		{
+			warning("Duplicated SNPs present in exposure data for phenotype '", x[[type]][1], ". Just keeping the first instance of the following:\n", paste(x$SNP[dup], collapse="\n"))
+			x <- x[!dup,]
+		}
+		return(x)		
+	})
+
+	# Check if columns required for MR are present
+	mr_cols <- c(snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col)
+	if(! all(mr_cols %in% names(dat)))
+	{
+		warning("The following columns are not present and are required for MR analysis\n", paste(mr_cols[!mr_cols %in% names(dat)]), collapse="\n")
+		dat$mr_keep.outcome <- FALSE
+	} else {
+		dat$mr_keep.outcome <- TRUE
+	}
+
+	# Check beta
+	i <- which(names(dat) == beta_col)[1]
+	if(!is.na(i))
+	{
+		names(dat)[i] <- "beta.outcome"
+		if(!is.numeric(dat$beta.outcome))
+		{
+			warning("beta column is not numeric. Coercing...")
+			dat$beta.outcome <- as.numeric(dat$beta.outcome)
+		}
+		index <- !is.finite(dat$beta.outcome)
+		index[is.na(index)] <- TRUE
+		dat$beta.outcome[index] <- NA
+	}
+
+	# Check se
+	i <- which(names(dat) == se_col)[1]
+	if(!is.na(i))
+	{
+		names(dat)[i] <- "se.outcome"
+		if(!is.numeric(dat$se.outcome))
+		{
+			warning("se column is not numeric. Coercing...")
+			dat$se.outcome <- as.numeric(dat$se.outcome)
+		}
+		index <- !is.finite(dat$se.outcome) | dat$se.outcome <= 0
+		index[is.na(index)] <- TRUE
+		dat$se.outcome[index] <- NA
+	}
+
+	# Check eaf
+	i <- which(names(dat) == eaf_col)[1]
+	if(!is.na(i))
+	{
+		names(dat)[i] <- "eaf.outcome"
+		if(!is.numeric(dat$eaf.outcome))
+		{
+			warning("eaf column is not numeric. Coercing...")
+			dat$eaf.outcome <- as.numeric(dat$eaf.outcome)
+		}
+		index <- !is.finite(dat$eaf.outcome) | dat$eaf.outcome <= 0 | dat$eaf.outcome >= 1
+		index[is.na(index)] <- TRUE
+		dat$eaf.outcome[index] <- NA
+	}
+
+	# Check effect_allele
+	i <- which(names(dat) == effect_allele_col)[1]
+	if(!is.na(i))
+	{
+		names(dat)[i] <- "effect_allele.outcome"
+		if(!is.character(dat$effect_allele.outcome))
+		{
+			warning("effect_allele column is not character data. Coercing...")
+			dat$effect_allele.outcome <- as.character(dat$effect_allele.outcome)
+		}
+
+		dat$effect_allele.outcome <- toupper(dat$effect_allele.outcome)
+		index <- ! dat$effect_allele.outcome %in% c("A", "C", "T", "G")
+		index[is.na(index)] <- TRUE
+		dat$effect_allele.outcome[index] <- NA
+	}
+
+
+	# Check other_allele
+	i <- which(names(dat) == other_allele_col)[1]
+	if(!is.na(i))
+	{
+		names(dat)[i] <- "other_allele.outcome"
+		if(!is.character(dat$other_allele.outcome))
+		{
+			warning("other_allele column is not character data. Coercing...")
+			dat$other_allele.outcome <- as.character(dat$other_allele.outcome)
+		}
+
+		dat$other_allele.outcome <- toupper(dat$other_allele.outcome)
+		index <- ! dat$other_allele.outcome %in% c("A", "C", "T", "G")
+		index[is.na(index)] <- TRUE
+		dat$other_allele.outcome[index] <- NA
+	}
+
+
+	# Check pval
+	i <- which(names(dat) == pval_col)[1]
+	if(!is.na(i))
+	{
+		names(dat)[i] <- "pval.outcome"
+		if(!is.numeric(dat$pval.outcome))
+		{
+			warning("pval column is not numeric. Coercing...")
+			dat$pval.outcome <- as.numeric(dat$pval.outcome)
+		}
+		index <- !is.finite(dat$pval.outcome) | dat$pval.outcome < 0 | dat$pval.outcome > 1
+		index[is.na(index)] <- TRUE
+		dat$pval.outcome[index] <- NA
+		index <- dat$pval.outcome < min_pval
+		index[is.na(index)] <- FALSE
+		dat$pval.outcome[index] <- min_pval
+
+		dat$pval_origin.outcome <- "reported"
+		if(any(is.na(dat$pval.outcome)))
+		{
+			if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat))
+			{
+				index <- is.na(dat$pval.outcome)
+				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower=FALSE)
+				dat$pval_origin.outcome[index] <- "inferred"
+			}
+		}
+	}
+
+	# If no pval column then create it from beta and se if available
+	if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat) & ! "pval.outcome" %in% names(dat))
+	{
+		message("Inferring p-values")
+		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower=FALSE)
+		dat$pval_origin.outcome <- "inferred"
+	}
+
+	if(ncase_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == ncase_col)[1]] <- "ncase.outcome"
+	}
+	if(ncontrol_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == ncontrol_col)[1]] <- "ncontrol.outcome"
+	}
+	if(samplesize_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == samplesize_col)[1]] <- "samplesize.outcome"
+	}
+
+	if(any(dat$mr_keep.outcome))
+	{
+		mrcols <- c("beta.outcome", "se.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome")
+		dat$mr_keep.outcome <- apply(dat[, mrcols], 1, function(x) !any(is.na(x)))
+		if(any(!dat$mr_keep.outcome))
+		{
+			warning("The following SNP(s) are missing required information for the MR tests and will be excluded\n", paste(subset(dat, !mr_keep.outcome)$SNP, collapse="\n"))
+		}
+		if(all(!dat$mr_keep.outcome))
+		{
+			warning("None of the provided SNPs can be used for MR analysis, they are missing required information.")
+		}
+
+	}
+
+	dat$id.outcome <- as.numeric(as.factor(dat[[type]]))
+
+	# Get SNP positions if exposure
+	if(type == "exposure")
+	{
+		dat$row_index <- 1:nrow(dat)
+		snp <- unique(dat$SNP)
+
+		if(length(snp) > 500)
+		{
+			message("Looking up SNP info for ", length(snp), " SNPs, this could take some time.")
+		}
+
+		bm <- ensembl_get_position(snp)
+		missing <- dat$SNP[! dat$SNP %in% bm$refsnp_id]
+		if(length(missing) > 0)
+		{
+			warning("The following SNP(s) were not present in ensembl GRCh37. They will be excluded.", paste(missing, collapse="\n"))
+			dat <- subset(dat, SNP %in% bm$refsnp_id)
+		}
+		stopifnot(nrow(dat) > 0)
+
+		dat <- dat[,names(dat)!="chr_name", drop=FALSE]
+		dat <- dat[,names(dat)!="chrom_start", drop=FALSE]
+		dat <- merge(dat, bm, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
+		dat <- dat[order(dat$row_index), ]
+		dat <- subset(dat, select=-c(row_index))
+	}
+
+	names(dat) <- gsub("outcome", type, names(dat))
+
+	return(dat)
+}
+
+
+
+
+#' Get data selected from GWAS catalog into correct format
+#'
+#' Subset the GWAS catalogue to have the rows you require for instrumenting a particular exposure and then run this command.
+#' Be careful to avoid using different phenotypes, phenotype types, or units together.
+#' @param gwas_catalog_subset Subset of rows from \code{data(gwas_catalog)}
+#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' @param  traitname If specified, will name the exposure/outcome this variable. Otherwise (default) will name it based on the Phenotype columnin \code{gwas_catalog_subset}
+#' @export
+#' @return Data frame
+#' @examples \dontrun{
+#' data(gwas_catalog)
+#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
+#' bmi <- format_gwas_catalog(bmi)
+#'}
+format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
+{
+	stopifnot(type %in% c("exposure", "outcome"))
+
+
+	gwas_catalog_subset[[type]] <- paste(gwas_catalog_subset$Phenotype, gwas_catalog_subset[["Phenotype info"]], gwas_catalog_subset$Units, sep=" || ")
+	if(length(unique(gwas_catalog_subset[[type]])) > 1)
+	{
+		message("Separating the entries into the following phenotypes:\n", paste(unique(gwas_catalog_subset[[type]]), collapse="\n"))
+	}
+
+	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "Allele", "other_allele", "SE", "P-value", type))
+	names(gwas_catalog_subset) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se", "pval", type)
+	if(type == "exposure")
+	{
+		format_data(gwas_catalog_subset, type=type, phenotype_col=type)
+	} else {
+
+	}
+}
+
 
 
 ucsc_get_position <- function(snp)
@@ -208,67 +461,4 @@ ensembl_get_position <- function(snp)
 	ensembl$major_allele[!i2] <- al[!i2, 2]
 
 	return(ensembl)
-}
-
-
-#' Read in summary statistics for outcome trait
-#'
-#' @param filename Filename
-#' @param outcome Name of exposure trait
-#' @param quote Character used for quotes
-#' @param sep Character used to delimit columns
-#' @export
-#' @return Data frame of exposure summary stats
-read_outcome_data <- function(filename, outcome, quote='"', sep=" ")
-{
-	outcome_dat <- read.csv(filename, header=T, stringsAsFactors=FALSE, quote=quote, sep=sep)
-
-	# Check all the columns are there as expected
-	stopifnot(all(c("SNP", "beta", "se", "eaf", "effect_allele", "other_allele") %in% names(outcome_dat)))
-	names(outcome_dat)[names(outcome_dat) == "effect_allele"] <- "effect_allele.outcome"
-	names(outcome_dat)[names(outcome_dat) == "other_allele"] <- "other_allele.outcome"
-	names(outcome_dat)[names(outcome_dat) == "beta"] <- "beta.outcome"
-	names(outcome_dat)[names(outcome_dat) == "se"] <- "se.outcome"
-	names(outcome_dat)[names(outcome_dat) == "eaf"] <- "eaf.outcome"
-	outcome_dat$outcome <- outcome
-
-	return(outcome_dat)
-}
-
-
-
-
-#' Get data selected from GWAS catalog into correct format
-#'
-#' Subset the GWAS catalogue to have the rows you require for instrumenting a particular exposure and then run this command.
-#' Be careful to avoid using different phenotypes, phenotype types, or units together.
-#' @param gwas_catalog_subset Subset of rows from \code{data(gwas_catalog)}
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
-#' @param  traitname If specified, will name the exposure/outcome this variable. Otherwise (default) will name it based on the Phenotype columnin \code{gwas_catalog_subset}
-#' @export
-#' @return Data frame
-#' @examples \dontrun{
-#' data(gwas_catalog)
-#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
-#' bmi <- format_gwas_catalog(bmi)
-#'}
-format_gwas_catalog <- function(gwas_catalog_subset, type="exposure", traitname=NULL)
-{
-	stopifnot(type %in% c("exposure", "outcome"))
-	if(is.null(traitname))
-	{
-		ph <- paste(gwas_catalog_subset$Phenotype, gwas_catalog_subset[["Phenotype info"]])
-		if(length(unique(ph)) > 1)
-		{
-			warning("There is more than one Phenotype / Phenotype info combination. This can cause problems in MR. Using the first entry.")
-		}
-		traitname <- gwas_catalog_subset$Phenotype[1]
-	}
-	if(length(unique(gwas_catalog_subset$Units)) > 1)
-	{
-		warning("The effect sizes selected are in different units. This will cause problems in MR")
-	}
-	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "Allele", "other_allele", "SE", "P-value"))
-	names(gwas_catalog_subset) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se", "P_value")
-	format_exposure_dat(gwas_catalog_subset, traitname)
 }

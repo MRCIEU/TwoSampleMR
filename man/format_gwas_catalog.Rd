@@ -4,8 +4,7 @@
 \alias{format_gwas_catalog}
 \title{Get data selected from GWAS catalog into correct format}
 \usage{
-format_gwas_catalog(gwas_catalog_subset, type = "exposure",
-  traitname = NULL)
+format_gwas_catalog(gwas_catalog_subset, type = "exposure")
 }
 \arguments{
 \item{gwas_catalog_subset}{Subset of rows from \code{data(gwas_catalog)}}
