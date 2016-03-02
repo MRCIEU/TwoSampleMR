@@ -10,14 +10,14 @@
 #' @return List of plots
 mr_scatter_plot <- function(mr_results, dat)
 {
-	dat <- subset(dat, paste(id.outcome, exposure) %in% paste(mr_results$Study.ID, mr_results$Exposure))
-	mrres <- dlply(dat, .(exposure, id.outcome), function(d)
+	dat <- subset(dat, paste(id.outcome, id.exposure) %in% paste(mr_results$id.outcome, mr_results$id.exposure))
+	mrres <- dlply(dat, .(id.exposure, id.outcome), function(d)
 	{
 		if(nrow(d) < 2)
 		{
 			return(blank_plot("Insufficient number of SNPs"))
 		}
-		mrres <- subset(mr_results, Exposure == d$exposure[1] & Study.ID == d$id.outcome[1])
+		mrres <- subset(mr_results, id.exposure == d$id.exposure[1] & id.outcome == d$id.outcome[1])
 		# egger <- subset(mr_results$extra, Exposure == d$exposure[1] & Outcome == d$outcome[1])
 
 		mrres$a <- 0
@@ -47,7 +47,7 @@ mr_scatter_plot <- function(mr_results, dat)
 #' @return List of plots
 mr_leaveoneout_plot <- function(singlesnp_results)
 {
-	res <- dlply(singlesnp_results, .(exposure, id.outcome), function(d)
+	res <- dlply(singlesnp_results, .(id.exposure, id.outcome), function(d)
 	{
 		if(nrow(d) < 3) {
 			return(
@@ -102,7 +102,7 @@ blank_plot <- function(message)
 #' @return List of plots
 mr_forest_plot <- function(singlesnp_results)
 {
-	res <- dlply(singlesnp_results, .(exposure, id.outcome), function(d)
+	res <- dlply(singlesnp_results, .(id.exposure, id.outcome), function(d)
 	{
 		if(nrow(d) < 3) {
 			return(
@@ -143,6 +143,30 @@ mr_forest_plot <- function(singlesnp_results)
 }
 
 
+#' Funnel plot
+#'
+#' Create funnel plot from single SNP analyses
+#'
+#' @param singlesnp_results from \code{mr_singlesnp}
+#'
+#' @export
+#' @return List of plots
+mr_funnelplot <- function(singlesnp_results)
+{
+	res <- dlply(singlesnp_results, .(id.exposure, id.outcome), function(d)
+	{
+		if(nrow(d) < 3) {
+			return(
+				blank_plot("Insufficient number of SNPs")
+			)
+		}
+		ggplot(subset(d, SNP != "All"), aes(y = 1/se, x=b)) +
+		geom_point() +
+		geom_vline(data=subset(d, SNP == "All"), aes(xintercept=b)) +
+		labs(y="1/se", x="beta")
+	})
+	res
+}
 
 
 

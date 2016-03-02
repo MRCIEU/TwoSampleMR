@@ -326,7 +326,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 
 	}
 
-	dat$id.outcome <- as.numeric(as.factor(dat[[type]]))
+	dat$id.outcome <- create_ids(dat[[type]])
 
 	# Get SNP positions if exposure
 	if(type == "exposure")
@@ -464,3 +464,70 @@ ensembl_get_position <- function(snp)
 
 	return(ensembl)
 }
+
+
+random_string <- function(n=1, len=6)
+{
+	randomString <- c(1:n)
+	for (i in 1:n)
+	{
+		randomString[i] <- paste(sample(c(0:9, letters, LETTERS),
+		len, replace=TRUE),
+		collapse="")
+	}
+	return(randomString)
+}
+
+create_ids <- function(x)
+{
+	a <- as.factor(x)
+	levels(a) <- random_string(length(levels(a)))
+	a <- as.character(a)
+	return(a)
+}
+
+
+#' Combine data
+#'
+#' Taking exposure or outcome data (returned from \code{format_data})
+#' combine multiple datasets together so they can be analysed in one
+#' batch. Removes duplicate SNPs, preferentially keeping those usable
+#' in MR analysis
+#'
+#' @param x List of data frames returned from \code{format_data}
+#'
+#' @export
+#' @return data frame
+combine_data <- function(x)
+{
+	stopifnot(is.list(x))
+	if("exposure" %in% names(x[[1]])) type <- "exposure"
+	else if("outcome" %in% names(x[[1]])) type <- "outcome"
+	else stop("Datasets must be generated from format_data")
+
+	check <- all(sapply(x, function(i) {
+		type %in% names(i)}))
+
+	if(!check)
+	{
+		stop("Not all datasets or of type '", type, "'")
+	}
+
+	id_col <- paste0("id.", type)
+	mr_keep_col <- paste0("mr_keep.", type)
+	x <- rbind.fill(x)
+
+	x <- ddply(x, id_col, function(x)
+	{
+		x <- mutate(x)
+		x <- x[order(x[[mr_keep_col]], decreasing=TRUE), ]
+		x <- subset(x, !duplicated(SNP))
+		return(x)
+	})
+
+	rownames(x) <- NULL
+	return(x)
+}
+
+
+

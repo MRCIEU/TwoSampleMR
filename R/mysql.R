@@ -110,8 +110,8 @@ format_d <- function(d)
 		consortium.outcome = as.character(d$consortium),
 		year.outcome = as.numeric(d$year),
 		pmid.outcome = as.numeric(d$pmid),
-		id.outcome = as.numeric(d$id),
-		displayname.outcome = 0
+		id.outcome = as.character(d$id),
+		originalname.outcome = 0
 	)
 
 	if(nrow(d) == 0)
@@ -120,7 +120,8 @@ format_d <- function(d)
 		return(d)
 	}
 
-	d$displayname.outcome <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
+	d$originalname.outcome <- d$outcome
+	d$outcome <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
 
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
 	d <- subset(d, !rem)

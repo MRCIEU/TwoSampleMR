@@ -17,9 +17,9 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 		return(NULL)
 	}
 
-	mr_tab <- ddply(subset(dat, mr_keep), .(id.outcome, exposure), function(x)
+	mr_tab <- ddply(subset(dat, mr_keep), .(id.exposure, id.outcome), function(x)
 	{
-		message("Performing MR analysis of '", x$exposure[1], "' on '", x$displayname.outcome[1], "'")
+		message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
 		if(nrow(x) == 0)
 		{
 			message("No SNPs available for MR analysis")
@@ -30,10 +30,10 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 		})
 		methl <- mr_method_list()
 		mr_tab <- data.frame(
-			Study.ID = x$id.outcome[1],
-			Exposure = x$exposure[1],
-			Test = methl$name[methl$obj %in% method_list],
-			n.SNPs = sapply(res, function(x) x$nsnp),
+			id.outcome = x$id.outcome[1],
+			id.exposure = x$id.exposure[1],
+			method = methl$name[methl$obj %in% method_list],
+			nsnp = sapply(res, function(x) x$nsnp),
 			b = sapply(res, function(x) x$b),
 			se = sapply(res, function(x) x$se),
 			pval = sapply(res, function(x) x$pval)
@@ -47,13 +47,13 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 		return(NULL)
 	}
 
-	ao <- available_outcomes()
-	ao <- subset(ao, select=c(id, trait, trait_strict, consortium, ethnic, gender, ncase, ncontrol, sample_size, pmid, unit, sd, year, cat, subcat))
+	# ao <- available_outcomes()
+	# ao <- subset(ao, select=c(id, trait, trait_strict, consortium, ethnic, gender, ncase, ncontrol, sample_size, pmid, unit, sd, year, cat, subcat))
 
-	mr_tab$ord <- 1:nrow(mr_tab)
-	mr_tab <- merge(mr_tab, ao, by.x="Study.ID", by.y="id")
-	mr_tab <- mr_tab[order(mr_tab$ord), ]
-	mr_tab <- subset(mr_tab, select=-c(ord))
+	# mr_tab$ord <- 1:nrow(mr_tab)
+	# mr_tab <- merge(mr_tab, ao, by.x="Study.ID", by.y="id")
+	# mr_tab <- mr_tab[order(mr_tab$ord), ]
+	# mr_tab <- subset(mr_tab, select=-c(ord))
 
 	return(mr_tab)
 }
@@ -99,13 +99,13 @@ mr_method_list <- function()
 		list(
 			obj="mr_eggers_regression",
 			name="MR Egger regression",
-			PubmedID="",
+			PubmedID="26050253",
 			Description=""
 		),
 		list(
 			obj="mr_eggers_regression_bootstrap",
 			name="MR Egger regression (bootstrap)",
-			PubmedID="",
+			PubmedID="26050253",
 			Description=""
 		),
 		list(
@@ -522,7 +522,6 @@ weighted_median_bootstrap = function(b_exp, b_out, se_exp, se_out, weights, nboo
 
 
 
-
 #' Penalised weighted median MR
 #'
 #' Modification to standard weighted median MR
@@ -646,7 +645,7 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_
 #' @return List of data frames
 mr_singlesnp <- function(dat, parameters=default_parameters(), single_method=mr_wald_ratio, all_method=mr_two_sample_ml)
 {
-	res <- ddply(subset(dat, mr_keep), .(exposure, id.outcome), function(x)
+	res <- ddply(subset(dat, mr_keep), .(id.exposure, id.outcome), function(x)
 	{
 		nsnp <- nrow(x)
 		l <- lapply(1:nsnp, function(i)
@@ -664,17 +663,68 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method=mr_
 			Outcome.n.case = x$ncase.outcome[1],
 			Outcome.n.control = x$ncontrol.outcome[1]
 		)
-		d$outcome <- x$displayname.outcome[1]
+		d$outcome <- x$outcome[1]
+		d$exposure <- x$exposure[1]
 		return(d)
 	})
-	res <- subset(res, select=c(exposure, outcome, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
+	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
 	names(res)[1] <- "exposure"
 	return(res)
 }
-
 
 
 mr_egger_sensitivity_analysis <- function(dat)
 {
 	
 }
+
+
+get_r_from_pn <- function(p, n)
+{
+	# qval <- qf(p, 1, n-2, low=FALSE)
+	qval <- qchisq(p, 1, low=F) / (qchisq(p, n-2, low=F)/(n-2))
+	r <- sum(sqrt(qval / (n - qval)))
+
+	if(r >= 1)
+	{
+		warning("Correlation greater than 1, make sure SNPs are pruned for LD.")
+	}
+	return(r)
+}
+
+
+#' MR Steiger test of directionality
+#'
+#' A statistical test for whether the assumption that exposure causes outcome is valid
+#'
+#' @param p_exp Vector of p-values of SNP-exposure
+#' @param p_out Vector of p-values of SNP-outcome
+#' @param n_exp Sample sizes for p_exp
+#' @param n_out Sample sizes for p_out
+#'
+#' @export
+#' @return List. correct_causal_direction evaluates if the exposure -> outcome assumption holds. steiger_test evaluates the confidence of the correct_causal_direction value
+mr_steiger <- function(p_exp, p_out, n_exp, n_out)
+{
+	require(psych)
+	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
+	p_exp <- p_exp[!index]
+	p_out <- p_out[!index]
+	n_exp <- n_exp[!index]
+	n_out <- n_out[!index]
+
+	r_exp <- get_r_from_pn(p_exp, n_exp)
+	r_out <- get_r_from_pn(p_out, n_out)
+
+	rtest <- psych::r.test(n=mean(n_exp), n2=mean(n_out), r12=r_exp, r34=r_out)
+
+	l <- list(
+		r2_exp = r_exp^2,
+		r2_out = r_out^2,
+		correct_causal_direction = r_exp > r_out,
+		steiger_test = rtest$p
+	)
+	return(l)
+}
+
+
