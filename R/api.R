@@ -1,8 +1,3 @@
-options("googleAuthR.scopes.selected" = c("https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"))
-options("googleAuthR.webapp.client_id" = "906514199468-1jpkqgngur8emoqfg9j460s47fdo2euo.apps.googleusercontent.com")
-options("googleAuthR.webapp.client_secret" = "I7Gqp83Ku4KJxL9zHWYxG_gD")
-
-
 
 get_access_token <- function()
 {
