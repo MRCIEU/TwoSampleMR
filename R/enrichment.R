@@ -44,36 +44,32 @@ enrichment_method_list <- function()
 }
 
 
-
 enrichment <- function(dat, method_list=enrichment_method_list()$obj)
 {
-	res <- dlply(subset(dat, mr_keep), .(id.outcome, exposure), function(x)
+	res <- ddply(dat, .(id.exposure, id.outcome), function(x1)
 	{
-		message("Performing enrichment analysis of '", x$exposure[1], "' on '", x$displayname.outcome[1], "'")
+		# message("Performing enrichment analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
+
+		x <- subset(x1, !is.na(pval.outcome))
+		if(nrow(x) == 0)
+		{
+			message("No outcome p-values for analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
+			return(NULL)
+		}
 		res <- lapply(method_list, function(meth)
 		{
 			get(meth)(x$pval.outcome)
 		})
 		methl <- enrichment_method_list()
 		enrichment_tab <- data.frame(
-			Study.ID = x$id.outcome[1],
-			Exposure = x$exposure[1],
-			Test = methl$name[methl$obj %in% method_list],
-			n.SNPs = sapply(res, function(x) x$nsnp),
+			outcome = x$outcome[1],
+			exposure = x$exposure[1],
+			method = methl$name[methl$obj %in% method_list],
+			nsnp = sapply(res, function(x) x$nsnp),
 			pval = sapply(res, function(x) x$pval)
 		)
 		enrichment_tab <- subset(enrichment_tab, !is.na(pval))
 		return(enrichment_tab)
 	})
-	enrichment_tab <- rbind.fill(lapply(res, function(x) x))
-
-	ao <- available_outcomes()
-	ao <- subset(ao, select=c(id, trait, trait_strict, consortium, ethnic, gender, ncase, ncontrol, sample_size, pmid, unit, sd, year, cat, subcat))
-
-	enrichment_tab$ord <- 1:nrow(enrichment_tab)
-	enrichment_tab <- merge(enrichment_tab, ao, by.x="Study.ID", by.y="id")
-	enrichment_tab <- enrichment_tab[order(enrichment_tab$ord), ]
-	enrichment_tab <- subset(enrichment_tab, select=-c(ord))
-
-	return(enrichment_tab)
+	return(res)
 }

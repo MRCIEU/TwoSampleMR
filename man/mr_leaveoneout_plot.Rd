@@ -4,7 +4,7 @@
 \alias{mr_leaveoneout_plot}
 \title{Plot results from leaveoneout analysis}
 \usage{
-mr_leaveoneout_plot(singlesnp_results)
+mr_leaveoneout_plot(leaveoneout_results)
 }
 \arguments{
 \item{leaveoneout_results}{Output from \code{mr_leaveoneout}}

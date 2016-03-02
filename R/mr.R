@@ -2,7 +2,7 @@
 #' Perform all Mendelian randomization tests
 #'
 #' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param param Parameters to be used for various MR methods. Default is output from \code{dafault_param}.
+#' @param parameters Parameters to be used for various MR methods. Default is output from \code{dafault_param}.
 #' @param method_list List of methods to use in analysis. See \code{mr_method_list()} for details.
 #'
 #' @export
@@ -11,18 +11,14 @@
 #'         extra: Table of extra results
 mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list()$obj)
 {
-	if(sum(dat$mr_keep) == 0)
+	mr_tab <- ddply(dat, .(id.exposure, id.outcome), function(x1)
 	{
-		message("No SNPs available for MR analysis")
-		return(NULL)
-	}
-
-	mr_tab <- ddply(subset(dat, mr_keep), .(id.exposure, id.outcome), function(x)
-	{
-		message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
+		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
+		x <- subset(x1, mr_keep)
 		if(nrow(x) == 0)
 		{
-			message("No SNPs available for MR analysis")
+			message("No SNPs available for MR analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
+			return(NULL)
 		}
 		res <- lapply(method_list, function(meth)
 		{
@@ -30,8 +26,8 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 		})
 		methl <- mr_method_list()
 		mr_tab <- data.frame(
-			id.outcome = x$id.outcome[1],
-			id.exposure = x$id.exposure[1],
+			outcome = x$outcome[1],
+			exposure = x$exposure[1],
 			method = methl$name[methl$obj %in% method_list],
 			nsnp = sapply(res, function(x) x$nsnp),
 			b = sapply(res, function(x) x$b),
@@ -41,19 +37,6 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 		mr_tab <- subset(mr_tab, !(is.na(b) & is.na(se) & is.na(pval)))
 		return(mr_tab)
 	})
-
-	if(nrow(mr_tab) == 0)
-	{
-		return(NULL)
-	}
-
-	# ao <- available_outcomes()
-	# ao <- subset(ao, select=c(id, trait, trait_strict, consortium, ethnic, gender, ncase, ncontrol, sample_size, pmid, unit, sd, year, cat, subcat))
-
-	# mr_tab$ord <- 1:nrow(mr_tab)
-	# mr_tab <- merge(mr_tab, ao, by.x="Study.ID", by.y="id")
-	# mr_tab <- mr_tab[order(mr_tab$ord), ]
-	# mr_tab <- subset(mr_tab, select=-c(ord))
 
 	return(mr_tab)
 }
@@ -70,66 +53,77 @@ mr_method_list <- function()
 			obj="mr_wald_ratio",
 			name="Wald ratio",
 			PubmedID="",
-			Description=""
+			Description="",
+			heterogeneity_test=FALSE
 		),
 		list(
 			obj="mr_meta_fixed_simple",
 			name="Fixed effects meta analysis (simple SE)",
 			PubmedID="",
-			Description=""
+			Description="",
+			heterogeneity_test=FALSE
 		),
 		list(
 			obj="mr_meta_fixed",
 			name="Fixed effects meta analysis (delta method)",
 			PubmedID="",
-			Description=""
+			Description="",
+			heterogeneity_test=TRUE
 		),
 		list(
 			obj="mr_meta_random",
 			name="Random effects meta analysis (delta method)",
 			PubmedID="",
-			Description=""
+			Description="",
+			heterogeneity_test=TRUE
 		),
 		list(
 			obj="mr_two_sample_ml",
 			name="Maximum likelihood",
 			PubmedID="",
-			Description=""
+			Description="",
+			heterogeneity_test=TRUE
 		),
 		list(
-			obj="mr_eggers_regression",
+			obj="mr_egger_regression",
 			name="MR Egger regression",
 			PubmedID="26050253",
-			Description=""
+			Description="",
+			heterogeneity_test=TRUE
 		),
 		list(
-			obj="mr_eggers_regression_bootstrap",
+			obj="mr_egger_regression_bootstrap",
 			name="MR Egger regression (bootstrap)",
 			PubmedID="26050253",
-			Description=""
+			Description="",
+			heterogeneity_test=FALSE
 		),
 		list(
 			obj="mr_weighted_median",
 			name="Weighted median",
 			PubmedID="",
-			Description=""
+			Description="",
+			heterogeneity_test=FALSE
 		),
 		list(
 			obj="mr_penalised_weighted_median",
 			name="Penalised weighted median",
 			PubmedID="",
-			Description=""
+			Description="",
+			heterogeneity_test=FALSE
 		),
 		list(
 			obj="mr_ivw",
 			name="Inverse variance weighted regression",
 			PubmedID="",
-			Description=""
+			Description="",
+			heterogeneity_test=TRUE
 		)
 	)
 	a <- lapply(a, as.data.frame)
 	a <- rbind.fill(a)
 	a <- as.data.frame(lapply(a, as.character), stringsAsFactors=FALSE)
+	a$heterogeneity_test <- as.logical(a$heterogeneity_test)
 	return(a)
 }
 
@@ -207,6 +201,7 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
+#'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	ratio <- b_out / b_exp
@@ -215,7 +210,8 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.fixed
 	se <- res$seTE.fixed
 	pval <- res$pval.fixed
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
+	Q_pval <- pchisq(res$Q, res$df.Q, low=FALSE)
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
 
@@ -232,6 +228,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
+#'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	ratio <- b_out / b_exp
@@ -240,7 +237,8 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.random
 	se <- res$seTE.random
 	pval <- res$pval.random
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
+	Q_pval <- pchisq(res$Q, res$df.Q, low=FALSE)
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
 
@@ -257,6 +255,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
+#'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(length(b_exp)<2)
@@ -280,7 +279,12 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- opt$par[length(b_exp)+1]
 	se <- sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1])
 	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
+
+	Q <- 2 * opt$value
+	Q_df <- length(b_exp) - 1
+	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
 
 
@@ -301,9 +305,10 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b_i: Estimate of horizontal pleiotropy (intercept)
 #'         se_i: Standard error of intercept
 #'         pval_i: p-value of intercept
+#'         Q, Q_df, Q_pval: Heterogeneity stats
 #'         mod: Summary of regression
 #'         dat: Original data used for MR Egger regression
-mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	stopifnot(length(b_exp) == length(b_out))
 	stopifnot(length(se_exp) == length(se_out))
@@ -347,7 +352,11 @@ mr_eggers_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 	se_i <- coefficients(smod)[1,2]
 	pval_i <- coefficients(smod)[1,4]
 
- 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), b_i = b_i, se_i = se_i, pval_i = pval_i, mod = smod, dat = dat))
+	Q <- smod$sigma^2 * (length(b_exp) - 2)
+	Q_df <- length(b_exp) - 2
+	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+
+ 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), b_i = b_i, se_i = se_i, pval_i = pval_i, Q = Q, Q_df = Q_df, Q_pval = Q_pval, mod = smod, dat = dat))
 }
 
 
@@ -389,7 +398,7 @@ linreg <- function(x, y, w=rep(x,1))
 #'         pval_i: p-value of intercept
 #'         mod: Summary of regression
 #'         dat: Original data used for MR Egger regression
-mr_eggers_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(length(b_exp) < 2)
 	{
@@ -508,7 +517,7 @@ weighted_median <- function(b_iv, weights)
 #'
 #' @export
 #' @return Empirical standard error
-weighted_median_bootstrap = function(b_exp, b_out, se_exp, se_out, weights, nboot)
+weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nboot)
 {
 	med <- rep(0, nboot)
 	for(i in 1:nboot){
@@ -568,6 +577,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
+#'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp)) < 1)
@@ -577,10 +587,12 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error 
 	pval <- pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
-	Q.ivw <- ivw.res$sigma^2*(length(b_exp)-2) 
+	Q <- ivw.res$sigma^2*(length(b_exp)-2)
+	Q_df <- length(b_exp) - 1
+	Q_pval <- pchisq(Q, Q_df, low=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
-	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp)))
+	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
 
 
@@ -631,7 +643,6 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_
 		return(d)
 	})
 	res <- subset(res, select=c(exposure, outcome, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
-	names(res)[1] <- "exposure"
 	return(res)
 }
 
@@ -668,17 +679,17 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method=mr_
 		return(d)
 	})
 	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
-	names(res)[1] <- "exposure"
 	return(res)
 }
 
 
-mr_egger_sensitivity_analysis <- function(dat)
-{
-	
-}
-
-
+#' Calculate variance explained from p vals and sample size
+#'
+#' @param p Array of pvals
+#' @param n Array of sample sizes
+#'
+#' @export
+#' @return r value
 get_r_from_pn <- function(p, n)
 {
 	# qval <- qf(p, 1, n-2, low=FALSE)
@@ -727,4 +738,56 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out)
 	return(l)
 }
 
+
+#' Get heterogeneity stats
+#'
+#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
+#' @param parameters Parameters to be used for various MR methods. Default is output from \code{dafault_param}.
+#' @param method_list List of methods to use in analysis. See \code{mr_method_list()} for details.
+#'
+#' @export
+#' @return Data frame
+mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list = subset(mr_method_list(), heterogeneity_test)$obj)
+{
+	het_tab <- ddply(dat, .(id.exposure, id.outcome), function(x1)
+	{
+		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
+		x <- subset(x1, mr_keep)
+		if(nrow(x) < 2)
+		{
+			message("Not enough SNPs available for Heterogeneity analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
+			return(NULL)
+		}
+		res <- lapply(method_list, function(meth)
+		{
+			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
+		})
+		methl <- mr_method_list()
+		het_tab <- data.frame(
+			outcome = x$outcome[1],
+			exposure = x$exposure[1],
+			method = methl$name[methl$obj %in% method_list],
+			Q = sapply(res, function(x) x$Q),
+			Q_df = sapply(res, function(x) x$Q_df),
+			Q_pval = sapply(res, function(x) x$Q_pval)
+		)
+		het_tab <- subset(het_tab, !(is.na(Q) & is.na(Q_df) & is.na(Q_pval)))
+		return(het_tab)
+	})
+
+	return(het_tab)
+}
+
+
+Isq <- function(y,s)
+{
+	k = length(y)
+	w = 1/s^2; 
+	sum.w = sum(w)
+	mu.hat = sum(y*w)/sum.w
+	Q = sum(w*(y-mu.hat)^2)
+	Isq = (Q - (k-1))/Q
+	Isq = max(0,Isq)
+	return(Isq)
+}
 

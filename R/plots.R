@@ -26,10 +26,8 @@ mr_scatter_plot <- function(mr_results, dat)
 		ggplot(data=d, aes(x=beta.exposure, y=beta.outcome)) +
 			geom_errorbar(aes(ymin=beta.outcome-se.outcome, ymax=beta.outcome+se.outcome), colour="grey", width=0) +
 			geom_errorbarh(aes(xmin=beta.exposure-se.exposure, xmax=beta.exposure+se.exposure), colour="grey", height=0) +
-
 			geom_point() +
 			geom_abline(data=mrres, aes(intercept=a, slope=b, colour=Test), show.legend=TRUE) +
-			# scale_colour_brewer(type="qual") +
 			scale_colour_manual(values=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928")) +
 			labs(colour="MR Test", x=paste("SNP effect on", d$exposure[1]), y=paste("SNP effect on", d$outcome[1])) +
 			theme(legend.position="top", legend.direction="vertical") +
@@ -45,9 +43,9 @@ mr_scatter_plot <- function(mr_results, dat)
 #'
 #' @export
 #' @return List of plots
-mr_leaveoneout_plot <- function(singlesnp_results)
+mr_leaveoneout_plot <- function(leaveoneout_results)
 {
-	res <- dlply(singlesnp_results, .(id.exposure, id.outcome), function(d)
+	res <- dlply(leaveoneout_results, .(id.exposure, id.outcome), function(d)
 	{
 		if(nrow(d) < 3) {
 			return(

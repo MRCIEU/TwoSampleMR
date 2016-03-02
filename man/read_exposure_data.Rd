@@ -8,7 +8,7 @@ read_exposure_data(filename, sep = " ", phenotype_col = "Phenotype",
   snp_col = "SNP", beta_col = "beta", se_col = "se", eaf_col = "eaf",
   effect_allele_col = "effect_allele", other_allele_col = "other_allele",
   pval_col = "pval", ncase_col = "ncase", ncontrol_col = "ncontrol",
-  samplesize_col = "samplesize", gene_col = "gene", min_pval = 1e-100)
+  samplesize_col = "samplesize", gene_col = "gene", min_pval = 1e-200)
 }
 \arguments{
 \item{filename}{Filename. Must have header with at least SNP column present.}
@@ -39,7 +39,7 @@ read_exposure_data(filename, sep = " ", phenotype_col = "Phenotype",
 
 \item{gene_col="gene"}{Optional column name for gene name.}
 
-\item{min_pval=1e-100}{Minimum allowed pval}
+\item{min_pval=1e-200}{Minimum allowed pval}
 }
 \value{
 data frame

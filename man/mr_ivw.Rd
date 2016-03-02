@@ -20,6 +20,7 @@ List with the following elements:
         b: MR estimate
         se: Standard error
         pval: p-value
+        Q, Q_df, Q_pval: Heterogeneity stats
 }
 \description{
 Inverse variance weighted regression

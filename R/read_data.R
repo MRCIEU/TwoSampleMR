@@ -19,11 +19,11 @@
 #' @param ncontrol_col="ncontrol" Optional column name for number of controls.
 #' @param samplesize_col="samplesize" Optional column name for sample size.
 #' @param gene_col="gene" Optional column name for gene name.
-#' @param min_pval=1e-100 Minimum allowed pval
+#' @param min_pval=1e-200 Minimum allowed pval
 #'
 #' @export
 #' @return data frame
-read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-100)
+read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
 	outcome_dat <- fread(filename, header=TRUE, sep=sep)
 	outcome_dat <- format_data(
@@ -67,11 +67,11 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #' @param ncontrol_col="ncontrol" Optional column name for number of controls.
 #' @param samplesize_col="samplesize" Optional column name for sample size.
 #' @param gene_col="gene" Optional column name for gene name.
-#' @param min_pval=1e-100 Minimum allowed pval
+#' @param min_pval=1e-200 Minimum allowed pval
 #'
 #' @export
 #' @return data frame
-read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-100)
+read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
 	exposure_dat <- fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
@@ -117,11 +117,11 @@ read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp
 #' @param ncontrol_col="ncontrol" Optional column name for number of controls.
 #' @param samplesize_col="samplesize" Optional column name for sample size.
 #' @param gene_col="gene" Optional column name for gene name.
-#' @param min_pval=1e-100 Minimum allowed pval
+#' @param min_pval=1e-200 Minimum allowed pval
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-100)
+format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
 	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, ncase_col, ncontrol_col, samplesize_col)
 
