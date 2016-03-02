@@ -149,6 +149,7 @@ format_d <- function(d)
 #' @return Dataframe of study details
 available_outcomes_mysql <- function(user, password, dbname, host, port)
 {
+	require(RMySQL)
 	mydb <- dbConnect(MySQL(), user=user, password=password, dbname=dbname, host=host)
 	query <- "SELECT * from study;"
 	out <- dbSendQuery(mydb, query)
@@ -172,6 +173,7 @@ available_outcomes_mysql <- function(user, password, dbname, host, port)
 #' @return Dataframe of summary statistics for all available outcomes
 extract_outcome_data_mysql <- function(exposure_dat, outcomes, user, password, dbname, host, port)
 {
+	require(RMySQL)
 	message("Extracting data for ", nrow(exposure_dat), " SNPs")
 	snps <- paste(exposure_dat$SNP, collapse="', '")
 	outcomes <- paste(outcomes, collapse="', '")
