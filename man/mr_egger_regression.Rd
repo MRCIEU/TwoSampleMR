@@ -25,6 +25,7 @@ List of with the following elements:
         b_i: Estimate of horizontal pleiotropy (intercept)
         se_i: Standard error of intercept
         pval_i: p-value of intercept
+        Q, Q_df, Q_pval: Heterogeneity stats
         mod: Summary of regression
         dat: Original data used for MR Egger regression
 }

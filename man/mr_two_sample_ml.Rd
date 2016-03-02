@@ -20,6 +20,7 @@ List with the following elements:
         b: causal effect estimate
         se: standard error
         pval: p-value
+        Q, Q_df, Q_pval: Heterogeneity stats
 }
 \description{
 Maximum likelihood MR method

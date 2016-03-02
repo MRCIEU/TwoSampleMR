@@ -4,13 +4,13 @@
 \alias{mr_heterogeneity}
 \title{Get heterogeneity stats}
 \usage{
-mr_heterogeneity(dat, param = default_parameters(),
+mr_heterogeneity(dat, parameters = default_parameters(),
   method_list = subset(mr_method_list(), heterogeneity_test)$obj)
 }
 \arguments{
 \item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
 
-\item{param}{Parameters to be used for various MR methods. Default is output from \code{dafault_param}.}
+\item{parameters}{Parameters to be used for various MR methods. Default is output from \code{dafault_param}.}
 
 \item{method_list}{List of methods to use in analysis. See \code{mr_method_list()} for details.}
 }

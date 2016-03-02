@@ -10,9 +10,9 @@ mr(dat, parameters = default_parameters(),
 \arguments{
 \item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
 
-\item{method_list}{List of methods to use in analysis. See \code{mr_method_list()} for details.}
+\item{parameters}{Parameters to be used for various MR methods. Default is output from \code{dafault_param}.}
 
-\item{param}{Parameters to be used for various MR methods. Default is output from \code{dafault_param}.}
+\item{method_list}{List of methods to use in analysis. See \code{mr_method_list()} for details.}
 }
 \value{
 List with the following elements:

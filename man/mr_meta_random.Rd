@@ -20,6 +20,7 @@ List with the following elements:
         b: causal effect estimate
         se: standard error
         pval: p-value
+        Q, Q_df, Q_pval: Heterogeneity stats
 }
 \description{
 Perform 2 sample IV using random effects meta analysis and delta method for standard errors
