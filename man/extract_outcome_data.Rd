@@ -4,10 +4,10 @@
 \alias{extract_outcome_data}
 \title{Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.}
 \usage{
-extract_outcome_data(exposure_dat, outcomes, password = NULL)
+extract_outcome_data(snps, outcomes, password = NULL)
 }
 \arguments{
-\item{exposure_dat}{Output from \code{read_exposure_data}}
+\item{snps}{Array of SNP rs IDs}
 
 \item{outcomes}{Array of IDs (see \code{id} column in output from \code{available_outcomes})}
 

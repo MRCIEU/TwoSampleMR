@@ -37,16 +37,16 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #'
 #' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 #'
-#' @param exposure_dat Output from \code{read_exposure_data}
+#' @param snps Array of SNP rs IDs
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
 #' @param password If correct password is supplied then access to restricted studies will be supplied
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(exposure_dat, outcomes, password=NULL)
+extract_outcome_data <- function(snps, outcomes, password=NULL)
 {
 	password <- get_password(password)
-	message("Extracting data for ", nrow(exposure_dat), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
-	snps <- unique(exposure_dat$SNP)
+	snps <- unique(snps)
+	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
 	outcomes <- unique(outcomes)
 
 	snpfile <- upload_file_to_api(snps)
@@ -59,7 +59,9 @@ extract_outcome_data <- function(exposure_dat, outcomes, password=NULL)
 		message("None of the requested SNPs were available in the specified GWASs.")
 		return(NULL)
 	}
-	return(format_d(d))
+	d <- format_d(d)
+	d$data_source.outcome <- "mrbase"
+	return(d)
 }
 
 
@@ -118,7 +120,7 @@ format_d <- function(d)
 		return(d)
 	}
 
-	d$displayname.outcome <- paste0(d$outcome, " (", d$consortium.outcome, " ", d$year.outcome, ")")
+	d$displayname.outcome <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
 
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
 	d <- subset(d, !rem)
@@ -131,6 +133,18 @@ format_d <- function(d)
 	}
 
 	d <- cleanup_outcome_data(d)
+
+	mrcols <- c("beta.outcome", "se.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome")
+	d$mr_keep.outcome <- apply(d[, mrcols], 1, function(x) !any(is.na(x)))
+	if(any(!d$mr_keep.outcome))
+	{
+		warning("The following SNP(s) are missing required information for the MR tests and will be excluded\n", paste(subset(d, !mr_keep.outcome)$SNP, collapse="\n"))
+	}
+	if(all(!d$mr_keep.outcome))
+	{
+		warning("None of the provided SNPs can be used for MR analysis, they are missing required information.")
+	}
+
 	return(d)	
 }
 

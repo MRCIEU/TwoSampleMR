@@ -45,6 +45,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 		gene_col=gene_col,
 		min_pval=min_pval
 	)
+	outcome_dat$data_source.outcome <- "textfile"
 	return(outcome_dat)
 }
 
@@ -92,6 +93,7 @@ read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp
 		gene_col=gene_col,
 		min_pval=min_pval
 	)
+	exposure_dat$data_source.exposure <- "textfile"
 	return(exposure_dat)
 }
 
@@ -354,6 +356,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	}
 
 	names(dat) <- gsub("outcome", type, names(dat))
+	rownames(dat) <- NULL
 
 	return(dat)
 }
@@ -388,12 +391,11 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 
 	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "Allele", "other_allele", "SE", "P-value", type))
 	names(gwas_catalog_subset) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se", "pval", type)
-	if(type == "exposure")
-	{
-		format_data(gwas_catalog_subset, type=type, phenotype_col=type)
-	} else {
+	
+	dat <- format_data(gwas_catalog_subset, type=type, phenotype_col=type)
+	dat[[paste0("data_source.", type)]] <- "gwas_catalog"
 
-	}
+	return(dat)
 }
 
 

@@ -50,16 +50,19 @@ harmonise_exposure_outcome <- function(exposure_dat, outcome_dat, action=2)
 	d <- data.frame(id.outcome=unique(res.tab$id.outcome), action=action)
 	res.tab <- merge(res.tab, d, by="id.outcome")
 
-	fix.tab <- ddply(res.tab, .(id.outcome), function(x)
+	fix.tab <- ddply(res.tab, .(id.exposure, id.outcome), function(x)
 	{
 		x <- mutate(x)
-		message("Harmonising ", x$exposure[1], " and ", x$outcome[1], "(", x$id.outcome[1], ")")
+		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
 
 # SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action		
 		x <- harmonise_function_refactored(x, 0.08, x$action[1])
 		# x <- harmonise_function(x, x$action[1])
 		return(x)
 	})
+	mr_cols <- c("beta.exposure", "beta.outcome", "se.exposure", "se.outcome")
+	fix.tab$mr_keep <- apply(fix.tab[, mr_cols], 1, function(x) !any(is.na(x)))
+
 	return(fix.tab)
 }
 
@@ -104,7 +107,6 @@ harmonise_make_snp_effects_positive <- function(res.tab)
 #' @param res.tab Data frame of exposure and outcome summary stats
 #' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
 #'
-#' @export
 #' @return Data frame
 harmonise_function <- function(res.tab, action)
 {
