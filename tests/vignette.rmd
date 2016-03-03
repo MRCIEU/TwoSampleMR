@@ -1,25 +1,5 @@
----
-title: "Using MR-Base"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-bibliography: mr_base.bib
----
 
-```{r echo=FALSE}
-library(knitr)
-library(pander)
-opts_chunk$set(cache=TRUE, fig.width=7, fig.height=7)
-```
 
-## Introduction
-
-Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). The MR-Base package aims to make this easy by combining two important components - the statistical routines to estimate the causal effects, and a database comprising GWAS summary statistics from `r nrow(available_outcomes)` studies.
-
-The general principles [@DaveySmith2003, @smith2014mendelian], and statistical methods [@Bowden2015] can be found elsewhere, here we will just outline how to use the R package.
 
 ## Exposure data
 
@@ -209,5 +189,3 @@ mr_leaveoneout_plot(l)[[2]]
 
 You can also perform a Fisher's combined test to see if there is an enrichment of p-values in the outcome data (e.g. are the SNPs that influence the exposure also likely to influence the outcome, this is not an MR analysis).
 
-
-## References

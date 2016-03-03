@@ -90,7 +90,7 @@ ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_
 	{
 		message("Removing the following SNPs due to LD with other SNPs:\n", paste(y$SNP, collapse="\n"), sep="\n")
 	}
-	return(subset(dat, SNP %in% res$SNP, select=-c(pval.exposure)))
+	return(subset(dat, SNP %in% res$SNP))
 }
 
 

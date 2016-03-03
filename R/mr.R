@@ -708,7 +708,7 @@ get_r_from_pn <- function(p, n)
 {
 	# qval <- qf(p, 1, n-2, low=FALSE)
 	qval <- qchisq(p, 1, low=F) / (qchisq(p, n-2, low=F)/(n-2))
-	r <- sum(sqrt(qval / (n - qval)))
+	r <- sqrt(sum(qval / (n - qval)))
 
 	if(r >= 1)
 	{

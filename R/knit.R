@@ -67,11 +67,6 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
 {
     message("Writing report as ", output_type, " file to ", output_path)
 
-
-    # Make a results summary of all combinations
-
-    # For each 
-
     m <- list(
         mr = mr(dat),
         enrichment = enrichment(dat),

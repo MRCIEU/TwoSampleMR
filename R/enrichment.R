@@ -44,6 +44,14 @@ enrichment_method_list <- function()
 }
 
 
+#' Perform enrichment analysis
+#'
+#'
+#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
+#' @param method_list=enrichment_method_list()$obj List of methods to use in analysis. See \code{enrichment_method_list()} for details.
+#'
+#' @export
+#' @return data frame
 enrichment <- function(dat, method_list=enrichment_method_list()$obj)
 {
 	res <- ddply(dat, .(id.exposure, id.outcome), function(x1)

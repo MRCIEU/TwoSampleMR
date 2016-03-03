@@ -1,19 +1,41 @@
 
-#' Get access token for OAuth2 session
+#' Get access token for OAuth2 access to MR Base
 #'
 #'
 #' @export
 #' @return access token string
-get_access_token <- function()
+get_mrbase_access_token <- function()
 {
 	a <- googleAuthR::gar_auth()
+	if(! a$validate())
+	{
+		a$refresh()
+	}
 	return(a$credentials$access_token)
 }
 
 
-check_api <- function()
+#' Revoke access token for MR Base
+#'
+#' @export
+#' @return NULL
+revoke_mrbase_access_token <- function()
 {
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/check_token?access_token=", get_access_token())
+	a <- googleAuthR::gar_auth()
+	a$revoke()
+}
+
+
+#' Check MR Base access level
+#'
+#' In order to be granted access to a particular dataset that is not generally available please contact the developers.
+#'
+#'
+#' @export
+#' @return access level string
+check_mrbase_access <- function()
+{
+	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/check_token?access_token=", get_mrbase_access_token())
 	d <- fromJSON(url)
 	return(d)
 }
@@ -25,7 +47,7 @@ check_api <- function()
 #'
 #' @export
 #' @return Dataframe of details for all available studies
-available_outcomes <- function(access_token = get_access_token())
+available_outcomes <- function(access_token = get_mrbase_access_token())
 {
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_studies?access_token=", access_token)
 	d <- fromJSON(url)
@@ -63,7 +85,7 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, access_token = get_access_token())
+extract_outcome_data <- function(snps, outcomes, access_token = get_mrbase_access_token())
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
@@ -157,7 +179,7 @@ format_d <- function(d)
 
 	d <- cleanup_outcome_data(d)
 
-	mrcols <- c("beta.outcome", "se.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome")
+	mrcols <- c("beta.outcome", "se.outcome", "effect_allele.outcome")
 	d$mr_keep.outcome <- apply(d[, mrcols], 1, function(x) !any(is.na(x)))
 	if(any(!d$mr_keep.outcome))
 	{
@@ -185,7 +207,7 @@ format_d <- function(d)
 #' @return Dataframe of summary statistics for all available outcomes
 extract_outcome_data_using_get <- function(exposure_dat, outcomes)
 {
-	access_token <- get_access_token()
+	access_token <- get_mrbase_access_token()
 	password <- get_password(password)
 	message("Extracting data for ", nrow(exposure_dat), " SNPs")
 	snps <- paste(exposure_dat$SNP, collapse=",")

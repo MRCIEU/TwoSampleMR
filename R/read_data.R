@@ -74,7 +74,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #'
 #' @export
 #' @return data frame
-read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
 	exposure_dat <- fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
@@ -98,6 +98,10 @@ read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp
 		min_pval=min_pval
 	)
 	exposure_dat$data_source.exposure <- "textfile"
+	if(clump)
+	{
+		exposure_dat <- clump_data(exposure_dat)
+	}
 	return(exposure_dat)
 }
 
@@ -159,7 +163,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 		dat[[type]] <- dat[[phenotype_col]]
 		if(phenotype_col != type)
 		{
-			dat <- subset(dat, select=-c(phenotype_col))
+			dat <- dat[,-which(names(dat)==phenotype_col)]
 		}
 	}
 
@@ -176,13 +180,19 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	})
 
 	# Check if columns required for MR are present
-	mr_cols <- c(snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col)
-	if(! all(mr_cols %in% names(dat)))
+	mr_cols_required <- c(snp_col, beta_col, se_col, effect_allele_col) 
+	mr_cols_desired <- c(other_allele_col, eaf_col)
+	if(! all(mr_cols_required %in% names(dat)))
 	{
-		warning("The following columns are not present and are required for MR analysis\n", paste(mr_cols[!mr_cols %in% names(dat)]), collapse="\n")
+		warning("The following columns are not present and are required for MR analysis\n", paste(mr_cols_required[!mr_cols_required %in% names(dat)]), collapse="\n")
 		dat$mr_keep.outcome <- FALSE
 	} else {
 		dat$mr_keep.outcome <- TRUE
+	}
+
+	if(! all(mr_cols_desired %in% names(dat)))
+	{
+		warning("The following columns are not present but are helpful for harmonisation\n", paste(mr_cols_desired[!mr_cols_desired %in% names(dat)]), collapse="\n")
 	}
 
 	# Check beta
@@ -294,7 +304,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 			}
 		}
 	}
-
+	
 	# If no pval column then create it from beta and se if available
 	if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat) & ! "pval.outcome" %in% names(dat))
 	{
@@ -302,6 +312,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower=FALSE)
 		dat$pval_origin.outcome <- "inferred"
 	}
+	
 
 	if(ncase_col %in% names(dat))
 	{
@@ -321,6 +332,9 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 			dat$ncontrol.outcome <- as.numeric(dat$ncontrol.outcome)
 		}
 	}
+
+	
+
 	if(samplesize_col %in% names(dat))
 	{
 		names(dat)[which(names(dat) == samplesize_col)[1]] <- "samplesize.outcome"
@@ -349,6 +363,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	{
 		names(dat)[which(names(dat) == gene_col)[1]] <- "gene.outcome"
 	}
+	
 
 	if(units_col %in% names(dat))
 	{
@@ -375,6 +390,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 		}
 
 	}
+	
 
 	# Get SNP positions if exposure
 	if(type == "exposure")
@@ -402,10 +418,8 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 		dat <- dat[order(dat$row_index), ]
 		dat <- subset(dat, select=-c(row_index))
 	}
-
 	names(dat) <- gsub("outcome", type, names(dat))
 	rownames(dat) <- NULL
-
 	return(dat)
 }
 
@@ -446,8 +460,8 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 		message("Separating the entries into the following phenotypes:\n", paste(unique(gwas_catalog_subset[[type]]), collapse="\n"))
 	}
 
-	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "Allele", "other_allele", "SE", "P-value", type))
-	names(gwas_catalog_subset) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se", "pval", type)
+	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "Allele", "other_allele", "SE", "P-value", "Units", "Gene", type))
+	names(gwas_catalog_subset) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se", "pval", "units", "gene", type)
 	
 	dat <- format_data(gwas_catalog_subset, type=type, phenotype_col=type)
 	dat[[paste0("data_source.", type)]] <- "gwas_catalog"

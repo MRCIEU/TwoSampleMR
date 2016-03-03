@@ -1,0 +1,174 @@
+---
+title: "Using MR-Base"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+bibliography: TwoSampleMR.bib
+---
+
+```{r echo=FALSE}
+library(knitr)
+library(TwoSampleMR)
+opts_chunk$set(cache=TRUE, fig.width=7, fig.height=7)
+```
+
+## Introduction
+
+Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components 
+
+- data management and harmonisation
+- the statistical routines to estimate the causal effects
+- a large repository of the actual GWAS summary statistics needed to perform the analyses.
+
+The general principles [@DaveySmith2003; @DaveySmithHemani2014], and statistical methods [@Pierce2013; @Bowden2015] can be found elsewhere, here we will just outline how to use the R package.
+
+
+## Overview
+
+The package implements simple functions to do the following.
+
+1. Get GWAS SNPs for exposure(s)
+	- Provide your own instruments or
+	- Search through extensive catalogs of instruments
+		+ GWAS catalog
+		+ GTEx gene expression QTLs
+		+ Curated set of SNPs extracted from MR Base
+		+ Protein QTLs
+		+ Metabolite QTLs
+		+ DNA methylation QTLs
+2. Perform LD pruning using 1000 genomes data on the MR Base server
+2. Get corresponding SNPs for outcome(s)
+	- Provide your own GWAS summary stats
+	- Search through an extensive collection in the MR Base database
+3. Harmonise exposure and outcome associations so effect sizes correspond to the same allele
+4. Perform MR and various downstream analyses
+	- `r nrow(mr_method_list())` 2SMR methods currently implemented
+	- Tests for heterogeneity
+	- Tests for directional horizontal pleiotropy
+	- Tests for causal direction
+	- Single SNP sensitivity analyses
+	- Several plotting functions for sensitivity analyses
+5. Automatic report generation
+
+
+## Worked example
+
+Here is a basic example, performing an MR analysis of body mass index (BMI) on type 2 diabetes (T2D). The entire analysis can be performed in the following lines of code:
+
+```{r eval=FALSE}
+library(TwoSampleMR)
+exposure_dat <- read_exposure_data(system.file("data/bmi.txt", package="TwoSampleMR"), clump=TRUE)
+outcome_dat <- extract_outcome_data(exposure_dat$SNP, 6)
+dat <- harmonise_data(exposure_dat, outcome_dat)
+mr_report(dat)
+```
+
+This generates a self contained html file that has the results from a number of MR and sensitivity tests.
+
+
+### More details
+
+We provide the GWAS SNPs from the 2010 GIANT study on BMI [@Speliotes2010] which can be read in like this:
+
+```{r }
+library(TwoSampleMR)
+exposure_dat <- read_exposure_data(system.file("data/bmi.txt", package="TwoSampleMR"))
+```
+
+The `read_exposure_data` function is quite flexible, it basically looks for a number of columns, most relevantly `SNP`, `beta`, `se`, `effect_allele` that will be used in MR analysis. It looks up the SNPs in Ensembl biomart to check that they are valid, and imputes missing information where possible. See `?format_data` for more information. This is what the data looks like:
+
+```{r }
+kable(head(exposure_dat))
+```
+
+Next we can perform LD pruning to make sure that we only have independent SNPs. This avoids complications in the MR analysis.
+
+```{r }
+exposure_dat <- clump_data(exposure_dat)
+```
+
+Alternatively we could have specified the `clump=TRUE` argument in the `read_exposure_data` function. In this case all the SNPs were already in linkage equilibrium. Next, we can find the `r nrow(exposure_dat)` BMI SNPs in the type 2 diabetes GWAS summary statistics data. To obtain a list of available GWAS data:
+
+```{r }
+ao <- available_outcomes()
+```
+
+Because the data used here is sensitive it is necessary that you sign the data access agreement before the function will complete, a web browser should open prompting you to accept the data access agreement using your gmail account. The `extract_outcome_data` function is used to query MR Base for the requested SNPs against the requested GWAS data. It expects an array of SNPs and an array of GWAS IDs (the `id` column in `ao`). The T2D ID is `6`, so:
+
+```{r }
+outcome_dat <- extract_outcome_data(exposure_dat$SNP, 6)
+```
+
+Now we can harmonise the exposure and outcome data so that it all corresponds to the same effect allele:
+
+```{r }
+dat <- harmonise_data(exposure_dat, outcome_dat)
+```
+
+Note that sometimes palindromic SNPs will be excluded from the analysis because there is insufficient information to determine if they are on the same strand. For more details on how to handle this see `?harmonise_data`.
+
+Now that the data is harmonised it is ready to analyse. The following 2SMR methods are currently implemented in the package:
+
+```{r }
+kable(mr_method_list())
+```
+
+To use these methods to perform the MR, run:
+
+```{r }
+mr_results <- mr(dat)
+```
+
+Our results look like this:
+
+```{r }
+kable(mr_results)
+```
+
+There is compelling evidence for a causal association. To visualise how much the different methods differ in their estimates:
+
+```{r }
+mr_scatter_plot(mr_results, dat)[[1]]
+```
+
+And to test if any single SNPs are driving the association we can do two things, a forest plot of the single SNP analyses:
+
+
+```{r }
+mr_forest_plot(mr_singlesnp(dat))[[1]]
+```
+
+and a leave-one-out analysis:
+
+```{r }
+mr_leaveoneout_plot(mr_leaveoneout(dat))[[1]]
+```
+
+We can also estimate heterogeneity:
+
+```{r }
+kable(mr_heterogeneity(dat))
+```
+
+Test for directional pleiotropy:
+
+```{r }
+kable(mr_pleiotropy_test(dat))
+```
+
+And test that the direction of causality is indeed from BMI to T2D:
+
+```{r }
+kable(directionality_test(dat))
+```
+
+Finally, we can also perform a simple test of enrichment (are the extracted p-values more extreme than expected by chance?)
+
+```{r }
+kable(enrichment(dat))
+```
+
+
+## References

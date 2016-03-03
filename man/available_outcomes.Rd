@@ -4,7 +4,7 @@
 \alias{available_outcomes}
 \title{Get list of studies with available GWAS summary statistics through API}
 \usage{
-available_outcomes(access_token = get_access_token())
+available_outcomes(access_token = get_mrbase_access_token())
 }
 \arguments{
 \item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data}

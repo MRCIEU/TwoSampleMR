@@ -51,12 +51,13 @@ kable(tablist$mr_pleiotropy_test, row.names=FALSE)
 
 ### Test that the exposure is upstream of the outcome
 
-
 ```{r chunk4 }
 
 kable(tablist$directionality_test, row.names=FALSE)
 
 ```
+
+Note - R^2 values are approximate
 
 ---
 
