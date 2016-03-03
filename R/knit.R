@@ -72,55 +72,44 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
 
     # For each 
 
-    combinations <- subset(dat, !duplicated(paste(id.outcome, id.exposure)), select=c(id.exposure, id.outcome))
+    m <- list(
+        mr = mr(dat),
+        enrichment = enrichment(dat),
+        directionality_test = directionality_test(dat),
+        mr_heterogeneity = mr_heterogeneity(dat),
+        mr_pleiotropy_test = mr_pleiotropy_test(dat),
+        mr_singlesnp = mr_singlesnp(dat),
+        mr_leaveoneout = mr_leaveoneout(dat)
+    )
 
-    mr_results <- mr(dat)
-    mrs_results <- mr_singlesnp(dat)
-    mrl_results <- mr_leaveoneout(dat)
-    enrichment_results <- enrichment(dat)
-    directionality_test_results <- directionality_test(dat)
-    heterogeneity_results <- mr_heterogeneity(dat)
+    p <- list(
+        mr_scatter_plot = mr_scatter_plot(m1, dat),
+        mr_forest_plot = mr_forest_plot(m2),
+        mr_funnel_plot = mr_funnel_plot(m2),
+        mr_leaveoneout_plot = mr_leaveoneout_plot(m3)
+    )
 
+    combinations <- subset(dat, !duplicated(paste(id.outcome, id.exposure)), select=c(id.exposure, id.outcome, exposure, outcome))
 
-    p1 <- mr_scatter_plot(mr_results, dat)
-    p2 <- mr_forest_plot(mrs_results)
-    p3 <- mr_funnel_plot(mrs_results)
-    p4 <- mr_leaveoneout_plot(mrl_results)
-
-
-
-
-    combinations <- unique(paste(dat$exposure, dat$outcome, sep="@@@@@@"))
-    combinations <- as.data.frame(do.call(rbind, strsplit(combinations, split="@@@@@@")))
-    names(combinations) <- c("exposure", "outcome")
-
-    plots <- mr_scatter_plot(mr_results, dat)
-    combinations <- expand.grid(exposure=unique(dat$exposure), outcome=unique(dat$outcome))
-
-    maintab <- lapply(1:nrow(combinations), function(i) {
-        mrres <- subset(mr_results$mr, Exposure==combinations$exposure[i] & Outcome==combinations$outcome[i], select=c(Test, b, se, pval))
-        names(mrres) <- c("Test", "Effect", "SE", "p-value")
-        return(mrres)
-    })
-
-    eggertab <- lapply(1:nrow(combinations), function(i) {
-
-        egger <- subset(mr_results$extra, Exposure==combinations$exposure[i] & Outcome==combinations$outcome[i], select=c(b, se, pval))
-        names(egger) <- c("Effect", "SE", "p-value")
-        return(egger)
-    })
-
-    # return(list(maintab, eggertab, plots))
-
+    l <- list()
     for(i in 1:nrow(combinations))
     {
         title <- paste(combinations$exposure[i], "against", combinations$outcome[i])
-        p <- plots[[i]]
-        mt <- maintab[[i]]
-        et <- eggertab[[i]]
-        output_file <- paste("TwoSampleMR", gsub(" ", "_", title), output_type, sep=".")
+        tablist <- lapply(m[c("mr", "enrichment", "directionality_test", "mr_heterogeneity", "mr_pleiotropy_test")], function(x)
+            subset(x, id.exposure == combinations$id.exposure[i] & id.outcome == combinations$id.outcome[i], select=-c(id.exposure, id.outcome, exposure, outcome))
+        )
+        plotlist <- lapply(p, function(x) {
+            d <- attributes(x)$split_labels
+            index <- which(d$id.exposure == combinations$id.exposure[i] & d$id.outcome == combinations$id.outcome[i])
+            return(x[[index]])
+        })
+
+        output_file <- paste("TwoSampleMR", sanitise_string(title), output_type, sep=".")
         knit_report(file.path(path, "mr_report.Rmd"), output_file, ...)
     }
+}
 
-
+sanitise_string <- function(x)
+{
+    gsub(" ", "_", gsub("[^[:alnum:] ]", "", x))
 }

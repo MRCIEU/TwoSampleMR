@@ -774,8 +774,8 @@ directionality_test <- function(dat)
 		a <- data.frame(
 			exposure = x$exposure[1],
 			outcome = x$outcome[1],
-			r2_exp = b$r2_exp,
-			r2_out = b$r2_out,
+			snp_r2.exposure = b$r2_exp,
+			snp_r2.outcome = b$r2_out,
 			correct_causal_direction = b$correct_causal_direction,
 			steiger_pval = b$steiger_test
 		)
