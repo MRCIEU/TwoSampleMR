@@ -739,6 +739,39 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out)
 }
 
 
+#' Perform MR Steiger test of directionality
+#'
+#' A statistical test for whether the assumption that exposure causes outcome is valid
+#'
+#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
+#'
+#' @export
+#' @return data frame
+directionality_test <- function(dat)
+{
+	if(! all(c("pval.exposure", "pval.outcome", "samplesize.exposure", "samplesize.outcome") %in% names(dat)))
+	{
+		message("Data requires p-values and sample sizes for outcomes and exposures")
+		return(NULL)
+	}
+	dtest <- ddply(dat, .(id.exposure, id.outcome), function(x)
+	{
+		b <- mr_steiger(x$pval.exposure, x$pval.outcome, x$samplesize.exposure, x$samplesize.outcome)
+		a <- data.frame(
+			exposure = x$exposure[1],
+			outcome = x$outcome[1],
+			r2_exp = b$r2_exp,
+			r2_out = b$r2_out,
+			correct_causal_direction = b$correct_causal_direction,
+			steiger_pval = b$steiger_test
+		)
+		return(a)
+	})
+
+	return(dtest)
+}
+
+
 #' Get heterogeneity stats
 #'
 #' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
