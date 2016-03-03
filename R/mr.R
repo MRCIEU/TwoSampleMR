@@ -9,7 +9,7 @@
 #' @return List with the following elements:
 #'         mr: Table of MR results
 #'         extra: Table of extra results
-mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list()$obj)
+mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_method_list(), use_by_default)$obj)
 {
 	mr_tab <- ddply(dat, .(id.exposure, id.outcome), function(x1)
 	{
@@ -20,6 +20,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=mr_method_list(
 			message("No SNPs available for MR analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
 			return(NULL)
 		}
+
 		res <- lapply(method_list, function(meth)
 		{
 			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
@@ -54,6 +55,7 @@ mr_method_list <- function()
 			name="Wald ratio",
 			PubmedID="",
 			Description="",
+			use_by_default=TRUE,
 			heterogeneity_test=FALSE
 		),
 		list(
@@ -61,6 +63,7 @@ mr_method_list <- function()
 			name="Fixed effects meta analysis (simple SE)",
 			PubmedID="",
 			Description="",
+			use_by_default=TRUE,
 			heterogeneity_test=FALSE
 		),
 		list(
@@ -68,6 +71,7 @@ mr_method_list <- function()
 			name="Fixed effects meta analysis (delta method)",
 			PubmedID="",
 			Description="",
+			use_by_default=TRUE,
 			heterogeneity_test=TRUE
 		),
 		list(
@@ -75,6 +79,7 @@ mr_method_list <- function()
 			name="Random effects meta analysis (delta method)",
 			PubmedID="",
 			Description="",
+			use_by_default=TRUE,
 			heterogeneity_test=TRUE
 		),
 		list(
@@ -82,20 +87,23 @@ mr_method_list <- function()
 			name="Maximum likelihood",
 			PubmedID="",
 			Description="",
+			use_by_default=TRUE,
 			heterogeneity_test=TRUE
 		),
 		list(
 			obj="mr_egger_regression",
-			name="MR Egger regression",
+			name="MR Egger",
 			PubmedID="26050253",
 			Description="",
+			use_by_default=TRUE,
 			heterogeneity_test=TRUE
 		),
 		list(
 			obj="mr_egger_regression_bootstrap",
-			name="MR Egger regression (bootstrap)",
+			name="MR Egger (bootstrap)",
 			PubmedID="26050253",
 			Description="",
+			use_by_default=FALSE,
 			heterogeneity_test=FALSE
 		),
 		list(
@@ -103,6 +111,7 @@ mr_method_list <- function()
 			name="Weighted median",
 			PubmedID="",
 			Description="",
+			use_by_default=TRUE,
 			heterogeneity_test=FALSE
 		),
 		list(
@@ -110,13 +119,15 @@ mr_method_list <- function()
 			name="Penalised weighted median",
 			PubmedID="",
 			Description="",
+			use_by_default=FALSE,
 			heterogeneity_test=FALSE
 		),
 		list(
 			obj="mr_ivw",
-			name="Inverse variance weighted regression",
+			name="Inverse variance weighted",
 			PubmedID="",
 			Description="",
+			use_by_default=TRUE,
 			heterogeneity_test=TRUE
 		)
 	)
@@ -124,6 +135,7 @@ mr_method_list <- function()
 	a <- rbind.fill(a)
 	a <- as.data.frame(lapply(a, as.character), stringsAsFactors=FALSE)
 	a$heterogeneity_test <- as.logical(a$heterogeneity_test)
+	a$use_by_default <- as.logical(a$use_by_default)
 	return(a)
 }
 
@@ -600,13 +612,13 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' Leave one out sensitivity analysis
 #'
 #' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_meta_fixed_simple Choose which method to use
+#' @param method=mr_ivw Choose which method to use
 #'
 #' @export
 #' @return List of data frames
-mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_fixed_simple)
+mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 {
-	res <- ddply(subset(dat, mr_keep), .(exposure, id.outcome), function(x)
+	res <- ddply(subset(dat, mr_keep), .(id.exposure, id.outcome), function(x)
 	{
 		nsnp <- nrow(x)
 		if(nsnp > 1)
@@ -621,11 +633,10 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_
 				b = sapply(l, function(y) y$b),
 				se = sapply(l, function(y) y$se),
 				p = sapply(l, function(y) y$pval),
-				Outcome.sample.size = x$samplesize.outcome[1],
-				Outcome.n.case = x$ncase.outcome[1],
-				Outcome.n.control = x$ncontrol.outcome[1]
+				samplesize = x$samplesize.outcome[1]
 			)
-			d$outcome <- x$displayname.outcome[1]
+			d$outcome <- x$outcome[1]
+			d$exposure <- x$exposure[1]
 
 		} else {
 			a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
@@ -634,15 +645,14 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_
 				b = a$b,
 				se = a$se,
 				p = a$pval,
-				Outcome.sample.size = x$samplesize.outcome[1],
-				Outcome.n.case = x$ncase.outcome[1],
-				Outcome.n.control = x$ncontrol.outcome[1]
+				samplesize = x$samplesize.outcome[1]
 			)
-			d$outcome <- x$displayname.outcome[1]
+			d$outcome <- x$outcome[1]
+			d$exposure <- x$exposure[1]
 		}
 		return(d)
 	})
-	res <- subset(res, select=c(exposure, outcome, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
+	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p))
 	return(res)
 }
 
@@ -654,31 +664,35 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_meta_
 #'
 #' @export
 #' @return List of data frames
-mr_singlesnp <- function(dat, parameters=default_parameters(), single_method=mr_wald_ratio, all_method=mr_two_sample_ml)
+mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr_wald_ratio", all_method=c("mr_ivw", "mr_egger_regression"))
 {
 	res <- ddply(subset(dat, mr_keep), .(id.exposure, id.outcome), function(x)
 	{
 		nsnp <- nrow(x)
 		l <- lapply(1:nsnp, function(i)
 		{
-			with(x, single_method(beta.exposure[i], beta.outcome[i], se.exposure[i], se.outcome[i], parameters))
+			with(x, get(single_method)(beta.exposure[i], beta.outcome[i], se.exposure[i], se.outcome[i], parameters))
 		})
-		l[[nsnp+1]] <- with(x, all_method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
+		nom <- c()
+		for(i in 1:length(all_method))
+		{
+			l[[nsnp+i]] <- with(x, get(all_method[i])(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
+
+			nom <- c(nom, paste0("All - ", subset(mr_method_list(), obj==all_method[i])$name))
+		}
 
 		d <- data.frame(
-			SNP = c(as.character(x$SNP), "All"),
+			SNP = c(as.character(x$SNP), nom),
 			b = sapply(l, function(y) y$b),
 			se = sapply(l, function(y) y$se),
 			p = sapply(l, function(y) y$pval),
-			Outcome.sample.size = x$samplesize.outcome[1],
-			Outcome.n.case = x$ncase.outcome[1],
-			Outcome.n.control = x$ncontrol.outcome[1]
+			samplesize = x$samplesize.outcome[1]
 		)
 		d$outcome <- x$outcome[1]
 		d$exposure <- x$exposure[1]
 		return(d)
 	})
-	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, Outcome.n.case, Outcome.n.control, Outcome.sample.size, SNP, b, se, p))
+	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p))
 	return(res)
 }
 
@@ -824,3 +838,35 @@ Isq <- function(y,s)
 	return(Isq)
 }
 
+
+
+#' Test for horizontal pleiotropy in MR analysis
+#'
+#' Performs MR Egger and returns intercept values
+#'
+#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
+#'
+#' @export
+#' @return data frame
+mr_pleiotropy_test <- function(dat)
+{
+	ptab <- ddply(dat, .(id.exposure, id.outcome), function(x1)
+	{
+		x <- subset(x1, mr_keep)
+		if(nrow(x) < 2)
+		{
+			message("Not enough SNPs available for Heterogeneity analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
+			return(NULL)
+		}
+		res <- mr_egger_regression(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, default_parameters())
+		out <- data.frame(
+			outcome = x$outcome[1],
+			exposure = x$exposure[1],
+			egger_intercept = res$b_i,
+			se = res$se_i,
+			pval = res$pval_i
+		)
+		return(out)
+	})
+	return(ptab)
+}

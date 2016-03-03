@@ -4,13 +4,12 @@
 \alias{mr_leaveoneout}
 \title{Leave one out sensitivity analysis}
 \usage{
-mr_leaveoneout(dat, parameters = default_parameters(),
-  method = mr_meta_fixed_simple)
+mr_leaveoneout(dat, parameters = default_parameters(), method = mr_ivw)
 }
 \arguments{
 \item{dat}{Output from \code{harmonise_exposure_outcome}}
 
-\item{method=mr_meta_fixed_simple}{Choose which method to use}
+\item{method=mr_ivw}{Choose which method to use}
 }
 \value{
 List of data frames

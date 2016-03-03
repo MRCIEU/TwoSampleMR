@@ -18,16 +18,18 @@ mr_scatter_plot <- function(mr_results, dat)
 			return(blank_plot("Insufficient number of SNPs"))
 		}
 		mrres <- subset(mr_results, id.exposure == d$id.exposure[1] & id.outcome == d$id.outcome[1])
-		# egger <- subset(mr_results$extra, Exposure == d$exposure[1] & Outcome == d$outcome[1])
-
 		mrres$a <- 0
-		# mrres$a[mrres$Test == "Egger regression"] <- egger$b[1]
+		if("MR Egger" %in% mrres$method)
+		{
+			temp <- mr_egger_regression(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, default_parameters())
+			mrres$a[mrres$method == "MR Egger"] <- temp$b_i
+		}
 
 		ggplot(data=d, aes(x=beta.exposure, y=beta.outcome)) +
 			geom_errorbar(aes(ymin=beta.outcome-se.outcome, ymax=beta.outcome+se.outcome), colour="grey", width=0) +
 			geom_errorbarh(aes(xmin=beta.exposure-se.exposure, xmax=beta.exposure+se.exposure), colour="grey", height=0) +
 			geom_point() +
-			geom_abline(data=mrres, aes(intercept=a, slope=b, colour=Test), show.legend=TRUE) +
+			geom_abline(data=mrres, aes(intercept=a, slope=b, colour=method), show.legend=TRUE) +
 			scale_colour_manual(values=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928")) +
 			labs(colour="MR Test", x=paste("SNP effect on", d$exposure[1]), y=paste("SNP effect on", d$outcome[1])) +
 			theme(legend.position="top", legend.direction="vertical") +
@@ -47,7 +49,7 @@ mr_leaveoneout_plot <- function(leaveoneout_results)
 {
 	res <- dlply(leaveoneout_results, .(id.exposure, id.outcome), function(d)
 	{
-		if(nrow(d) < 3) {
+		if(sum(!grepl("All", d$SNP)) < 3) {
 			return(
 				blank_plot("Insufficient number of SNPs")
 			)
@@ -102,24 +104,25 @@ mr_forest_plot <- function(singlesnp_results)
 {
 	res <- dlply(singlesnp_results, .(id.exposure, id.outcome), function(d)
 	{
-		if(nrow(d) < 3) {
+		if(sum(!grepl("All", d$SNP)) < 3) {
 			return(
 				blank_plot("Insufficient number of SNPs")
 			)
 		}
+		am <- grep("All", d$SNP, value=TRUE)
 		d$up <- d$b + 1.96 * d$se
 		d$lo <- d$b - 1.96 * d$se
 		d$tot <- 1
-		d$tot[d$SNP != "All"] <- 0.01
+		d$tot[d$SNP %in% am] <- 0.01
 		d$SNP <- as.character(d$SNP)
-		nom <- d$SNP[d$SNP != "All"]
+		nom <- d$SNP[! d$SNP %in% am]
 		nom <- nom[order(d$b)]
 		d <- rbind(d, d[nrow(d),])
 		d$SNP[nrow(d)-1] <- ""
 		d$b[nrow(d)-1] <- NA
 		d$up[nrow(d)-1] <- NA
 		d$lo[nrow(d)-1] <- NA
-		d$SNP <- ordered(d$SNP, levels=c("All", "", nom))
+		d$SNP <- ordered(d$SNP, levels=c(am, "", nom))
 
 		ggplot(d, aes(y=SNP, x=b)) +
 		geom_vline(xintercept=0, linetype="dotted") +
@@ -149,22 +152,24 @@ mr_forest_plot <- function(singlesnp_results)
 #'
 #' @export
 #' @return List of plots
-mr_funnelplot <- function(singlesnp_results)
+mr_funnel_plot <- function(singlesnp_results)
 {
 	res <- dlply(singlesnp_results, .(id.exposure, id.outcome), function(d)
 	{
-		if(nrow(d) < 3) {
+		if(sum(!grepl("All", d$SNP)) < 3) {
 			return(
 				blank_plot("Insufficient number of SNPs")
 			)
 		}
-		ggplot(subset(d, SNP != "All"), aes(y = 1/se, x=b)) +
+		am <- grep("All", d$SNP, value=TRUE)
+		d$SNP <- gsub("All - ", "", d$SNP)
+		am <- gsub("All - ", "", am)
+		ggplot(subset(d, ! SNP %in% am), aes(y = 1/se, x=b)) +
 		geom_point() +
-		geom_vline(data=subset(d, SNP == "All"), aes(xintercept=b)) +
-		labs(y="1/se", x="beta")
+		geom_vline(data=subset(d, SNP %in% am), aes(xintercept=b, colour = SNP)) +
+		scale_colour_brewer(type="qual") +
+		labs(y=expression(1/SE[IV]), x=expression(beta[IV]), colour="MR Method")
 	})
 	res
 }
-
-
 

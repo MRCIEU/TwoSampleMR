@@ -1,4 +1,9 @@
 
+#' Get access token for OAuth2 session
+#'
+#'
+#' @export
+#' @return access token string
 get_access_token <- function()
 {
 	a <- googleAuthR::gar_auth()
@@ -16,12 +21,12 @@ check_api <- function()
 
 #' Get list of studies with available GWAS summary statistics through API
 #'
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
 #'
 #' @export
 #' @return Dataframe of details for all available studies
-available_outcomes <- function()
+available_outcomes <- function(access_token = get_access_token())
 {
-	access_token <- get_access_token()
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_studies?access_token=", access_token)
 	d <- fromJSON(url)
 	return(d)
@@ -54,11 +59,12 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #'
 #' @param snps Array of SNP rs IDs
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes)
+extract_outcome_data <- function(snps, outcomes, access_token = get_access_token())
 {
-	access_token <- get_access_token()
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
 	outcomes <- unique(outcomes)
@@ -120,12 +126,14 @@ format_d <- function(d)
 		eaf.outcome = as.numeric(d$effect_allelel_freq),
 		effect_allele.outcome = as.character(d$effect_allele),
 		other_allele.outcome = as.character(d$other_allele),
+		units.outcome = as.character(d$unit),
 		outcome = as.character(d$trait),
 		consortium.outcome = as.character(d$consortium),
 		year.outcome = as.numeric(d$year),
 		pmid.outcome = as.numeric(d$pmid),
 		id.outcome = as.character(d$id),
-		originalname.outcome = 0
+		originalname.outcome = 0,
+		stringsAsFactors=FALSE
 	)
 
 	if(nrow(d) == 0)

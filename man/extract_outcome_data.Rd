@@ -4,12 +4,14 @@
 \alias{extract_outcome_data}
 \title{Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.}
 \usage{
-extract_outcome_data(snps, outcomes)
+extract_outcome_data(snps, outcomes, access_token = get_access_token())
 }
 \arguments{
 \item{snps}{Array of SNP rs IDs}
 
 \item{outcomes}{Array of IDs (see \code{id} column in output from \code{available_outcomes})}
+
+\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data}
 }
 \value{
 Dataframe of summary statistics for all available outcomes

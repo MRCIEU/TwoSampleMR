@@ -5,7 +5,8 @@
 \title{Perform 2 sample MR on each SNP individually}
 \usage{
 mr_singlesnp(dat, parameters = default_parameters(),
-  single_method = mr_wald_ratio, all_method = mr_two_sample_ml)
+  single_method = "mr_wald_ratio", all_method = c("mr_ivw",
+  "mr_egger_regression"))
 }
 \arguments{
 \item{dat}{Output from \code{harmonise_exposure_outcome}}

@@ -5,7 +5,7 @@
 \title{Perform all Mendelian randomization tests}
 \usage{
 mr(dat, parameters = default_parameters(),
-  method_list = mr_method_list()$obj)
+  method_list = subset(mr_method_list(), use_by_default)$obj)
 }
 \arguments{
 \item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}

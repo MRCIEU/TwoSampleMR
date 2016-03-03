@@ -8,7 +8,7 @@ read_outcome_data(filename, snps = NULL, sep = " ",
   phenotype_col = "Phenotype", snp_col = "SNP", beta_col = "beta",
   se_col = "se", eaf_col = "eaf", effect_allele_col = "effect_allele",
   other_allele_col = "other_allele", pval_col = "pval",
-  ncase_col = "ncase", ncontrol_col = "ncontrol",
+  units_col = "units", ncase_col = "ncase", ncontrol_col = "ncontrol",
   samplesize_col = "samplesize", gene_col = "gene", min_pval = 1e-200)
 }
 \arguments{
@@ -33,6 +33,8 @@ read_outcome_data(filename, snps = NULL, sep = " ",
 \item{other_allele_col="other_allele"}{Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"}
 
 \item{pval_col="pval"}{Required for enrichment tests. Name of column with p-value.}
+
+\item{units_col="units"}{Optional column name for units.}
 
 \item{ncase_col="ncase"}{Optional column name for number of cases.}
 

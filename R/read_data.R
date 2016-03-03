@@ -15,6 +15,7 @@
 #' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
 #' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
 #' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
+#' @param units_col="units" Optional column name for units.
 #' @param ncase_col="ncase" Optional column name for number of cases.
 #' @param ncontrol_col="ncontrol" Optional column name for number of controls.
 #' @param samplesize_col="samplesize" Optional column name for sample size.
@@ -23,7 +24,7 @@
 #'
 #' @export
 #' @return data frame
-read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
 	outcome_dat <- fread(filename, header=TRUE, sep=sep)
 	outcome_dat <- format_data(
@@ -39,6 +40,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 		effect_allele_col=effect_allele_col,
 		other_allele_col=other_allele_col,
 		pval_col=pval_col,
+		units_col=units_col,
 		ncase_col=ncase_col,
 		ncontrol_col=ncontrol_col,
 		samplesize_col=samplesize_col,
@@ -63,6 +65,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
 #' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
 #' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
+#' @param units_col="units" Optional column name for units.
 #' @param ncase_col="ncase" Optional column name for number of cases.
 #' @param ncontrol_col="ncontrol" Optional column name for number of controls.
 #' @param samplesize_col="samplesize" Optional column name for sample size.
@@ -71,7 +74,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #'
 #' @export
 #' @return data frame
-read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
 	exposure_dat <- fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
@@ -87,6 +90,7 @@ read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp
 		effect_allele_col=effect_allele_col,
 		other_allele_col=other_allele_col,
 		pval_col=pval_col,
+		units_col=units_col,
 		ncase_col=ncase_col,
 		ncontrol_col=ncontrol_col,
 		samplesize_col=samplesize_col,
@@ -97,7 +101,7 @@ read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp
 	return(exposure_dat)
 }
 
-#' Read exposure data
+#' Read exposure or outcome data
 #'
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. If it is the exposure then looks up SNPs in biomaRt to get basic info.
 #'
@@ -113,6 +117,7 @@ read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp
 #' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
 #' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
 #' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
+#' @param units_col="units" Optional column name for units.
 #' @param ncase_col="ncase" Optional column name for number of cases.
 #' @param ncontrol_col="ncontrol" Optional column name for number of controls.
 #' @param samplesize_col="samplesize" Optional column name for sample size.
@@ -121,9 +126,9 @@ read_exposure_data <- function(filename, sep=" ", phenotype_col="Phenotype", snp
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
-	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, ncase_col, ncontrol_col, samplesize_col)
+	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col)
 
 	i <- names(dat) %in% all_cols
 	if(sum(i) == 0)
@@ -301,15 +306,60 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	if(ncase_col %in% names(dat))
 	{
 		names(dat)[which(names(dat) == ncase_col)[1]] <- "ncase.outcome"
+		if(!is.numeric(dat$ncase.outcome))
+		{
+			warning(ncase_col, " column is not numeric")
+			dat$ncase.outcome <- as.numeric(dat$ncase.outcome)
+		}
 	}
 	if(ncontrol_col %in% names(dat))
 	{
 		names(dat)[which(names(dat) == ncontrol_col)[1]] <- "ncontrol.outcome"
+		if(!is.numeric(dat$ncontrol.outcome))
+		{
+			warning(ncontrol_col, " column is not numeric")
+			dat$ncontrol.outcome <- as.numeric(dat$ncontrol.outcome)
+		}
 	}
 	if(samplesize_col %in% names(dat))
 	{
 		names(dat)[which(names(dat) == samplesize_col)[1]] <- "samplesize.outcome"
+		if(!is.numeric(dat$samplesize.outcome))
+		{
+			warning(samplesize_col, " column is not numeric")
+			dat$samplesize.outcome <- as.numeric(dat$samplesize.outcome)
+		}
+
+		if("ncontrol.outcome" %in% names(dat) & "ncase.outcome" %in% names(dat))
+		{
+			index <- is.na(dat$samplesize.outcome) & !is.na(dat$ncase.outcome) & !is.na(dat$ncontrol.outcome)
+			if(any(index))
+			{
+				message("Generating sample size from ncase and ncontrol")
+				dat$samplesize.outcome[index] <- dat$ncase.outcome[index] + dat$ncontrol.outcome[index]			
+			}
+		}
+	} else if("ncontrol.outcome" %in% names(dat) & "ncase.outcome" %in% names(dat))
+	{
+		message("Generating sample size from ncase and ncontrol")
+		dat$samplesize.outcome <- dat$ncase.outcome + dat$ncontrol.outcome
 	}
+
+	if(gene_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == gene_col)[1]] <- "gene.outcome"
+	}
+
+	if(units_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == units_col)[1]] <- "units.outcome"
+		dat$units.outcome_dat <- as.character(dat$units.outcome)
+		check_units(dat, type, "units.outcome")
+		dat[[type]] <- paste0(dat[[type]], " (", dat$units.outcome, ")")
+	}
+
+	# Create id column
+	dat$id.outcome <- create_ids(dat[[type]])
 
 	if(any(dat$mr_keep.outcome))
 	{
@@ -325,8 +375,6 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 		}
 
 	}
-
-	dat$id.outcome <- create_ids(dat[[type]])
 
 	# Get SNP positions if exposure
 	if(type == "exposure")
@@ -361,7 +409,16 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	return(dat)
 }
 
-
+check_units <- function(x, id, col)
+{
+	temp <- ddply(x, id, function(x1)
+	{
+		if(length(unique(x1[[col]])) > 1)
+		{
+			warning("More than one type of unit specified for ", x1[[id]][1])
+		}
+	})
+}
 
 
 #' Get data selected from GWAS catalog into correct format

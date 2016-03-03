@@ -52,7 +52,6 @@ knit_report <- function(input_filename, output_filename, ...)
 #' Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
 #' A separate report is produced for each exposure - outcome pair that was analysed
 #'
-#' @param mr_results Output from \code{mr}
 #' @param dat Output from \code{harmonise_exposure_outcome}
 #' @param output_path Directory in which reports should be saved
 #' @param output_type Choose "html" or "md". Default is "html".
@@ -64,9 +63,32 @@ knit_report <- function(input_filename, output_filename, ...)
 #'
 #' @export
 #' @return NULL
-mr_report <- function(mr_results, dat, output_path = ".", output_type = "html", author = "Analyst", study = "Two Sample MR", path=system.file("reports", package="meffil"), ...)
+mr_report <- function(dat, output_path = ".", output_type = "html", author = "Analyst", study = "Two Sample MR", path=system.file("reports", package="TwoSampleMR"), ...)
 {
-    message("Writing report as html file to ", output_path)
+    message("Writing report as ", output_type, " file to ", output_path)
+
+
+    # Make a results summary of all combinations
+
+    # For each 
+
+    combinations <- subset(dat, !duplicated(paste(id.outcome, id.exposure)), select=c(id.exposure, id.outcome))
+
+    mr_results <- mr(dat)
+    mrs_results <- mr_singlesnp(dat)
+    mrl_results <- mr_leaveoneout(dat)
+    enrichment_results <- enrichment(dat)
+    directionality_test_results <- directionality_test(dat)
+    heterogeneity_results <- mr_heterogeneity(dat)
+
+
+    p1 <- mr_scatter_plot(mr_results, dat)
+    p2 <- mr_forest_plot(mrs_results)
+    p3 <- mr_funnel_plot(mrs_results)
+    p4 <- mr_leaveoneout_plot(mrl_results)
+
+
+
 
     combinations <- unique(paste(dat$exposure, dat$outcome, sep="@@@@@@"))
     combinations <- as.data.frame(do.call(rbind, strsplit(combinations, split="@@@@@@")))

@@ -4,13 +4,11 @@
 \alias{mr_report}
 \title{Generate MR report}
 \usage{
-mr_report(mr_results, dat, output_path = ".", output_type = "html",
+mr_report(dat, output_path = ".", output_type = "html",
   author = "Analyst", study = "Two Sample MR",
-  path = system.file("reports", package = "meffil"), ...)
+  path = system.file("reports", package = "TwoSampleMR"), ...)
 }
 \arguments{
-\item{mr_results}{Output from \code{mr}}
-
 \item{dat}{Output from \code{harmonise_exposure_outcome}}
 
 \item{output_path}{Directory in which reports should be saved}
