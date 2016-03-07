@@ -88,6 +88,7 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
 
     combinations <- ddply(dat, .(id.exposure, id.outcome), summarise, n=length(exposure), exposure=exposure[1], outcome=outcome[1])
 
+    output_file <- array("", nrow(combinations))
     for(i in 1:nrow(combinations))
     {
         title <- paste(combinations$exposure[i], "against", combinations$outcome[i])
@@ -113,9 +114,10 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
             }
         })
 
-        output_file <- paste("TwoSampleMR", sanitise_string(title), output_type, sep=".")
-        knit_report(file.path(path, "mr_report.Rmd"), output_file, ...)
+        output_file[i] <- file.path(output_path, paste("TwoSampleMR", sanitise_string(title), output_type, sep="."))
+        knit_report(file.path(path, "mr_report.Rmd"), output_file[i], ...)
     }
+    return(output_file)
 }
 
 sanitise_string <- function(x)
