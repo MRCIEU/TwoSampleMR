@@ -33,17 +33,28 @@ knit_report <- function(input_filename, output_filename, ...)
 
     name <- gsub("\\.[^.]+$", "", basename(output_filename))
     suffix <- gsub(".*\\.([^.]+)$", "\\1", output_filename)
+
     is.html <- tolower(suffix) %in% c("htm","html")
+    is.pdf <- tolower(suffix) == "pdf"
+    is.docx <- tolower(suffix) %in% c("doc", "docx")
+    is.md <- tolower(suffix) %in% c("md", "markdown")
 
     if (is.html)
-        md.filename <- paste(name, "md", sep=".")
+        return(knit2html(input_filename, output=paste0(name, ".html"), envir=parent.frame(), ...))
+    else if (is.md)
+        return(knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
+    else if (is.pdf)
+    {        
+        require(rmarkdown)
+        return(render(input_filename, output_format = "pdf_document", output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
+    }
+    else if (is.docx)
+    {        
+        require(rmarkdown)
+        return(render(input_filename, output_format = "word_document", output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
+    }
     else
-        md.filename <- basename(output_filename)
-    
-    knit(input_filename, output=md.filename, envir=parent.frame(), ...)
-
-    if (is.html)
-        markdownToHTML(md.filename, basename(output_filename))
+        stop("Please choose a filename with pdf, html, docx or md suffix")
 }
 
 
@@ -115,7 +126,7 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
         })
 
         output_file[i] <- file.path(output_path, paste("TwoSampleMR", sanitise_string(title), output_type, sep="."))
-        knit_report(file.path(path, "mr_report.Rmd"), output_file[i], ...)
+        output_file[i] <- knit_report(file.path(path, "mr_report.Rmd"), output_file[i], ...)
     }
     return(output_file)
 }
