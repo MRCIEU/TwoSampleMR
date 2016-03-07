@@ -36,7 +36,7 @@ knit_report <- function(input_filename, output_filename, ...)
 
     is.html <- tolower(suffix) %in% c("htm","html")
     is.pdf <- tolower(suffix) == "pdf"
-    is.docx <- tolower(suffix) %in% c("doc", "docx")
+    is.docx <- tolower(suffix) %in% c("doc", "docx", "word")
     is.md <- tolower(suffix) %in% c("md", "markdown")
 
     if (is.html)
