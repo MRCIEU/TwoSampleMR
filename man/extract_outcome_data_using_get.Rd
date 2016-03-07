@@ -5,12 +5,12 @@
 \title{Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 WARNING: This is unlikely to work correctly if there are a large number of SNPs}
 \usage{
-extract_outcome_data_using_get(exposure_dat, outcomes)
+extract_outcome_data_using_get(snps, outcomes)
 }
 \arguments{
-\item{exposure_dat}{Output from \code{read_exposure_data}}
-
 \item{outcomes}{Array of IDs (see \code{id} column in output from \code{available_outcomes})}
+
+\item{exposure_dat}{Output from \code{read_exposure_data}}
 }
 \value{
 Dataframe of summary statistics for all available outcomes
