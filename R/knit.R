@@ -67,6 +67,7 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
 {
     message("Writing report as ", output_type, " file to ", output_path)
 
+    message("Performing analysis")
     m <- list(
         mr = mr(dat),
         enrichment = enrichment(dat),
@@ -77,26 +78,39 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
         mr_leaveoneout = mr_leaveoneout(dat)
     )
 
+    message("Generating graphs")
     p <- list(
-        mr_scatter_plot = mr_scatter_plot(m1, dat),
-        mr_forest_plot = mr_forest_plot(m2),
-        mr_funnel_plot = mr_funnel_plot(m2),
-        mr_leaveoneout_plot = mr_leaveoneout_plot(m3)
+        mr_scatter_plot = mr_scatter_plot(m$mr, dat),
+        mr_forest_plot = mr_forest_plot(m$mr_singlesnp),
+        mr_funnel_plot = mr_funnel_plot(m$mr_singlesnp),
+        mr_leaveoneout_plot = mr_leaveoneout_plot(m$mr_leaveoneout)
     )
 
-    combinations <- subset(dat, !duplicated(paste(id.outcome, id.exposure)), select=c(id.exposure, id.outcome, exposure, outcome))
+    combinations <- ddply(dat, .(id.exposure, id.outcome), summarise, n=length(exposure), exposure=exposure[1], outcome=outcome[1])
 
-    l <- list()
     for(i in 1:nrow(combinations))
     {
         title <- paste(combinations$exposure[i], "against", combinations$outcome[i])
         tablist <- lapply(m[c("mr", "enrichment", "directionality_test", "mr_heterogeneity", "mr_pleiotropy_test")], function(x)
-            subset(x, id.exposure == combinations$id.exposure[i] & id.outcome == combinations$id.outcome[i], select=-c(id.exposure, id.outcome, exposure, outcome))
+            {
+                if(is.null(x))
+                {
+                    return(NULL)
+                } else {
+                   subset(x, id.exposure == combinations$id.exposure[i] & id.outcome == combinations$id.outcome[i], select=-c(id.exposure, id.outcome, exposure, outcome))
+                }
+            }
         )
+
         plotlist <- lapply(p, function(x) {
             d <- attributes(x)$split_labels
             index <- which(d$id.exposure == combinations$id.exposure[i] & d$id.outcome == combinations$id.outcome[i])
-            return(x[[index]])
+            if(length(index) < 1)
+            {
+                return(blank_plot("Insufficient number of SNPs"))
+            } else {
+                return(x[[index]])
+            }
         })
 
         output_file <- paste("TwoSampleMR", sanitise_string(title), output_type, sep=".")
