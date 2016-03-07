@@ -109,11 +109,13 @@ mr_forest_plot <- function(singlesnp_results)
 				blank_plot("Insufficient number of SNPs")
 			)
 		}
+		levels(d$SNP)[levels(d$SNP) == "All - Inverse variance weighted"] <- "All - IVW"
+		levels(d$SNP)[levels(d$SNP) == "All - MR Egger"] <- "All - Egger"
 		am <- grep("All", d$SNP, value=TRUE)
 		d$up <- d$b + 1.96 * d$se
 		d$lo <- d$b - 1.96 * d$se
-		d$tot <- 1
-		d$tot[d$SNP %in% am] <- 0.01
+		d$tot <- 0.01
+		d$tot[d$SNP %in% am] <- 1
 		d$SNP <- as.character(d$SNP)
 		nom <- d$SNP[! d$SNP %in% am]
 		nom <- nom[order(d$b)]
@@ -168,7 +170,8 @@ mr_funnel_plot <- function(singlesnp_results)
 		geom_point() +
 		geom_vline(data=subset(d, SNP %in% am), aes(xintercept=b, colour = SNP)) +
 		scale_colour_brewer(type="qual") +
-		labs(y=expression(1/SE[IV]), x=expression(beta[IV]), colour="MR Method")
+		labs(y=expression(1/SE[IV]), x=expression(beta[IV]), colour="MR Method") +
+		theme(legend.position="top", legend.direction="vertical")
 	})
 	res
 }
