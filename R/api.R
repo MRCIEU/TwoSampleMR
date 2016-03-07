@@ -40,6 +40,17 @@ check_mrbase_access <- function()
 	return(d)
 }
 
+#' Get number of studies in database
+#'
+#'
+#' @export
+#' @return integer
+get_mrbase_status <- function()
+{
+	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_status")
+	d <- fromJSON(url)[1,1]
+	return(d)	
+}
 
 #' Get list of studies with available GWAS summary statistics through API
 #'
@@ -205,12 +216,11 @@ format_d <- function(d)
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data_using_get <- function(exposure_dat, outcomes)
+extract_outcome_data_using_get <- function(snps, outcomes)
 {
 	access_token <- get_mrbase_access_token()
-	password <- get_password(password)
 	message("Extracting data for ", nrow(exposure_dat), " SNPs")
-	snps <- paste(exposure_dat$SNP, collapse=",")
+	snps <- paste(snps, collapse=",")
 	outcomes <- paste(outcomes, collapse=",")
 
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects?access_token=", access_token, "&outcomes=", outcomes, "&snps=", snps)
