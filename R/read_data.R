@@ -457,7 +457,7 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 	stopifnot(type %in% c("exposure", "outcome"))
 
 
-	gwas_catalog_subset[[type]] <- paste(gwas_catalog_subset$Phenotype, gwas_catalog_subset[["Phenotype info"]], gwas_catalog_subset$Units, sep=" || ")
+	gwas_catalog_subset[[type]] <- paste(gwas_catalog_subset$Phenotype, gwas_catalog_subset$PubmidID, gwas_catalog_subset[["Phenotype info"]], gwas_catalog_subset$Units, sep=" || ")
 	if(length(unique(gwas_catalog_subset[[type]])) > 1)
 	{
 		message("Separating the entries into the following phenotypes:\n", paste(unique(gwas_catalog_subset[[type]]), collapse="\n"))
