@@ -18,12 +18,18 @@ clump_data <- function(dat, where="remote", refdat=NULL, plink_bin=NULL, clump_k
 	{
 		stop("where variable must be remote or local")
 	}
-	if(where == "remote")
-	{
-		return(ld_pruning_api(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1))
-	} else {
-		return(ld_pruning_local(dat, refdat, plink_bin, clump_kb, clump_r2, clump_p1, clump_p2, tempdir))
-	}
+
+	res <- ddply(dat, .(id.exposure), function(x) {
+		x <- mutate(x)
+		message("Clumping ", x$id.exposure[1], ", ", nrow(x), " SNPs")
+		if(where == "remote")
+		{
+			return(ld_pruning_api(x, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1))
+		} else {
+			return(ld_pruning_local(x, refdat, plink_bin, clump_kb, clump_r2, clump_p1, clump_p2, tempdir))
+		}
+	})
+	return(res)
 }
 
 

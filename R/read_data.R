@@ -549,14 +549,14 @@ ensembl_get_position <- function(snp)
 		nchar(ensembl$allele) != 3 |
 		! ensembl$minor_allele %in% c("A", "C", "T", "G") |
 		is.na(ensembl$minor_allele_freq)
-	ensembl <- ensembl[!remove, ]
+	ensembl <- ensembl[!remove, , drop=FALSE]
 	ensembl <- subset(ensembl, !duplicated(refsnp_id))
 	al <- do.call(rbind, strsplit(ensembl$allele, split="/"))
 	i1 <- al[,1] == ensembl$minor_allele
 	i2 <- al[,2] == ensembl$minor_allele
 	i <- (i1 | i2)
 	ensembl <- ensembl[i, ]
-	al <- al[i, ]
+	al <- al[i, , drop=FALSE]
 	i1 <- i1[i]
 	i2 <- i2[i]
 	ensembl <- subset(ensembl, select=-c(allele))
