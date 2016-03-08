@@ -20,7 +20,6 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 			message("No SNPs available for MR analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
 			return(NULL)
 		}
-
 		res <- lapply(method_list, function(meth)
 		{
 			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
@@ -328,7 +327,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 	# print(b_exp)
 
-	if(length(b_exp) < 2)
+	if(length(b_exp) < 3)
 	{
 		return(list(
 			b = NA,
@@ -338,6 +337,9 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 			b_i = NA,
 			se_i = NA,
 			pval_i = NA,
+			Q = NA,
+			Q_df = NA,
+			Q_pval = NA,
 			mod = NA,
 			smod = NA,
 			dat = NA
@@ -412,7 +414,7 @@ linreg <- function(x, y, w=rep(x,1))
 #'         dat: Original data used for MR Egger regression
 mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(length(b_exp) < 2)
+	if(length(b_exp) < 3)
 	{
 		return(list(
 			b = NA,

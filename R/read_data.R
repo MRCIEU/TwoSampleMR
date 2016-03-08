@@ -482,7 +482,7 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 #'
 #' @export
 #' @return Data frame
-format_eqtl_catalog <- function(eqtl_mrbase_subset, type="exposure")
+format_eqtl_mrbase <- function(eqtl_mrbase_subset, type="exposure")
 {
 	stopifnot(type %in% c("exposure", "outcome"))
 	eqtl_mrbase_subset[[type]] <- paste0(eqtl_mrbase_subset$gene_name, " (", eqtl_mrbase_subset$tissue, ")")

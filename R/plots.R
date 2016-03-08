@@ -13,7 +13,7 @@ mr_scatter_plot <- function(mr_results, dat)
 	dat <- subset(dat, paste(id.outcome, id.exposure) %in% paste(mr_results$id.outcome, mr_results$id.exposure))
 	mrres <- dlply(dat, .(id.exposure, id.outcome), function(d)
 	{
-		if(nrow(d) < 2)
+		if(nrow(d) < 3)
 		{
 			return(blank_plot("Insufficient number of SNPs"))
 		}
