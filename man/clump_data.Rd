@@ -9,7 +9,7 @@ clump_data(dat, where = "remote", refdat = NULL, plink_bin = NULL,
   tempdir = getwd())
 }
 \arguments{
-\item{dat}{Output from \code{read_exposure_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start) and p-value column (pval.exposure)}
+\item{dat}{Output from \code{format_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated}
 
 \item{where}{Where to perform clumping - if using MR-Base servers then specify "remote" (default), if providing your own reference data and plink binary then specify "local"}
 

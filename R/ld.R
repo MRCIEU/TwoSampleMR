@@ -1,8 +1,9 @@
 #' Perform LD clumping on SNP data
 #'
 #' Uses PLINK clumping method, where SNPs in LD within a particular window will be pruned. The SNP with the lowest p-value is retained.
-#' @param dat Output from \code{read_exposure_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start) and p-value column (pval.exposure)
-#' @param  where Where to perform clumping - if using MR-Base servers then specify "remote" (default), if providing your own reference data and plink binary then specify "local"
+#'
+#' @param dat Output from \code{format_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated
+#' @param where Where to perform clumping - if using MR-Base servers then specify "remote" (default), if providing your own reference data and plink binary then specify "local"
 #' @param refdat Path to binary plink files to use for LD referencing. If NULL (default) and where="local" then looks for data provided by the Eur1000Genomes R package.
 #' @param plink_bin Path to plink binary. If NULL (default) and where="local" then looks for executable in Eur1000Genomes R package.
 #' @param clump_kb=10000 Clumping window 
@@ -10,6 +11,7 @@
 #' @param clump_p1=1 Clumping sig level for index SNPs
 #' @param clump_p2=1 Clumping sig level for secondary SNPs
 #' @param tempdir = "." Where to print results
+#'
 #' @export
 #' @return Data frame
 clump_data <- function(dat, where="remote", refdat=NULL, plink_bin=NULL, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1, tempdir = getwd())
@@ -17,6 +19,31 @@ clump_data <- function(dat, where="remote", refdat=NULL, plink_bin=NULL, clump_k
 	if(! where %in% c("remote", "local"))
 	{
 		stop("where variable must be remote or local")
+	}
+
+	if(!is.data.frame(dat))
+	{
+		stop("Expecting data frame returned from format_data")
+	}
+
+	if(! "pval.exposure" %in% names(dat))
+	{
+		dat$pval.exposure <- 0.99
+	}
+
+	if(! "id.exposure" %in% names(dat))
+	{
+		dat$id.exposure <- random_string(1)
+	}
+
+	if(! "chr_name" %in% names(dat))
+	{
+		stop("Need chromosome name")
+	}
+
+	if(! "chrom_start" %in% names(dat))
+	{
+		stop("Need chromosome position")
 	}
 
 	res <- ddply(dat, .(id.exposure), function(x) {
