@@ -10,8 +10,6 @@ format_gwas_catalog(gwas_catalog_subset, type = "exposure")
 \item{gwas_catalog_subset}{Subset of rows from \code{data(gwas_catalog)}}
 
 \item{type}{Are these data used as "exposure" or "outcome"? Default is "exposure"}
-
-\item{traitname}{If specified, will name the exposure/outcome this variable. Otherwise (default) will name it based on the Phenotype columnin \code{gwas_catalog_subset}}
 }
 \value{
 Data frame
@@ -23,6 +21,7 @@ Be careful to avoid using different phenotypes, phenotype types, or units togeth
 \examples{
 \dontrun{
 data(gwas_catalog)
+require(MRInstruments)
 bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
 bmi <- format_gwas_catalog(bmi)
 }

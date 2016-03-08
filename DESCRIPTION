@@ -27,6 +27,7 @@ Suggests:
     Eur1000Genomes,
     knitr,
     rmarkdown,
+    MRInstruments
 License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr

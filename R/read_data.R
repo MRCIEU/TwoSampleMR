@@ -379,7 +379,8 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	if(any(dat$mr_keep.outcome))
 	{
 		mrcols <- c("beta.outcome", "se.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome")
-		dat$mr_keep.outcome <- apply(dat[, mrcols], 1, function(x) !any(is.na(x)))
+		mrcols_present <- mrcols[mrcols %in% names(dat)]
+		dat$mr_keep.outcome <- apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
 		if(any(!dat$mr_keep.outcome))
 		{
 			warning("The following SNP(s) are missing required information for the MR tests and will be excluded\n", paste(subset(dat, !mr_keep.outcome)$SNP, collapse="\n"))
@@ -439,13 +440,15 @@ check_units <- function(x, id, col)
 #'
 #' Subset the GWAS catalogue to have the rows you require for instrumenting a particular exposure and then run this command.
 #' Be careful to avoid using different phenotypes, phenotype types, or units together.
+#'
 #' @param gwas_catalog_subset Subset of rows from \code{data(gwas_catalog)}
 #' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
-#' @param  traitname If specified, will name the exposure/outcome this variable. Otherwise (default) will name it based on the Phenotype columnin \code{gwas_catalog_subset}
+#'
 #' @export
 #' @return Data frame
 #' @examples \dontrun{
 #' data(gwas_catalog)
+#' require(MRInstruments)
 #' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
 #' bmi <- format_gwas_catalog(bmi)
 #'}
@@ -467,6 +470,33 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 	dat[[paste0("data_source.", type)]] <- "gwas_catalog"
 
 	return(dat)
+}
+
+
+#' Get data from eQTL catalog into correct format
+#'
+#' See \code{format_data}
+#'
+#' @param eqtl_mrbase_subset Selected rows from \code{eqtl_mrbase} data loaded from \code{MRInstruments} package
+#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#'
+#' @export
+#' @return Data frame
+format_eqtl_catalog <- function(eqtl_mrbase_subset, type="exposure")
+{
+	stopifnot(type %in% c("exposure", "outcome"))
+	eqtl_mrbase_subset[[type]] <- paste0(eqtl_mrbase_subset$gene_name, " (", eqtl_mrbase_subset$tissue, ")")
+
+	if(length(unique(eqtl_mrbase_subset[[type]])) > 1)
+	{
+		message("Separating the entries into the following phenotypes:\n", paste(unique(eqtl_mrbase_subset[[type]]), collapse="\n"))
+	}
+
+	dat <- format_data(eqtl_mrbase_subset, type=type, phenotype_col=type, pval_col="P_value", samplesize_col="n")
+	dat[[paste0("data_source.", type)]] <- "eqtl_mrbase"
+
+	return(dat)
+
 }
 
 
