@@ -1,5 +1,9 @@
 .onLoad <- function(libname, pkgname) {
 
+	packageStartupMessage(
+		"Welcome to TwoSampleMR. Check here for updates: https://github.com/MRCIEU/TwoSampleMR\n",
+		"To check your access level run check_mrbase_access()"
+	)
 	op <- options()
 	op.googleAuthR <- list(
 		googleAuthR.httr_oauth_cache = TRUE,
@@ -15,8 +19,9 @@
 			paste0(sample(c(1:9, LETTERS, letters), 20, replace = T), collapse=''),
 		googleAuthR.tryAttempts = 5
 	)
-	toset <- !(names(op.googleAuthR) %in% names(op))
-	if(any(toset)) options(op.googleAuthR[toset])
+	# toset <- !(names(op.googleAuthR) %in% names(op))
+	# if(any(toset)) options(op.googleAuthR[toset])
+	options(op.googleAuthR)
 	
 	invisible()
 
