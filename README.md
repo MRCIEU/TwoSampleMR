@@ -1,14 +1,16 @@
 # Two Sample MR
 
+Two sample Mendelian randomisation is a technique that makes causal inference about an exposure on an outcome using only summary statistics from a GWAS. This means you obtain SNPs (the instruments) that are robustly associated with your exposure, obtain a set of GWAS summary associations for the outcome you are interested, extract the instrument SNPs from the outcome GWAS, and by contrasting the effect sizes of the SNPs on the exposure with the effect sizes of the SNPs on the outcome one can estimate the causal effect.
+
 This package provides the following functionality to help perform two sample MR:
 
-- Extraction of user-specified SNP effects from a choice of GWAS summary statistics
+- Extraction of user-specified SNP effects from a choice of hundreds of GWAS summary statistics
 - LD pruning of exposure SNPs
-- Harmonisation of direction of effects between exposure and outcome results
-- Two sample MR analysis
-- Plots and automatically generated reports 
+- Harmonisation of direction of effects between exposure and outcome associations
+- Two sample MR analysis methods and diagnostic tools
+- Plots and automatically generated reports
 
-It uses a database that hosts hundreds of GWAS results that can be queried as a resource for outcome data. It also provides LD pruning on a remote server for exposure SNP data provided by the user.
+A set of instruments from several sources including GWAS catalogs, metabolite QTLs, etc can be obtained from the `MRInstruments` package [https://github.com/MRCIEU/MRInstruments](https://github.com/MRCIEU/MRInstruments). Users can also specify instruments manually by providing a text file. The package uses the MR Base database, a host to hundreds of GWAS results, that can be queried as a resource for outcome data. Users can alternatively provide their own outcome summary associations. It also provides LD pruning on a remote server for exposure SNP data provided by the user. 
 
 ## Installing the TwoSampleMR R package
 
@@ -32,26 +34,28 @@ Load library
 
     library(TwoSampleMR)
 
-Read the data (e.g. telomere length example data)
+Read the data (e.g. BMI example data)
 
-    tl_file <- system.file("data/telomere_length.txt", package="TwoSampleMR")
-    exposure_dat <- read_exposure_data(tl_file, "Telomere length")
+    bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
+    exposure_dat <- read_exposure_data(bmi_file)
+
+Alternatively, instruments can be identified from various data sources in the `MRInstruments` package.
 
 Prune the SNPs in LD using clumping on the remote server:
 
     exposure_dat <- clump_data(exposure_dat)
 
-Get the available outcome studies
+Get the available outcomes in MR Base
 
     ao <- available_outcomes()
 
 Extract the outcome associations, e.g. for Celiac disease and T2D
     
-    outcome_dat <- extract_outcome_data(exposure_dat, c(6, 13))
+    outcome_dat <- extract_outcome_data(exposure_dat$SNP, c(6, 13))
 
-Harmonise the exposure and outcome data
+Harmonise the exposure and outcome data. This checks that the effect alleles in the exposure and outcome data align, flips them and the effect size directions when necessary, and drops SNPs when it is impossible to determine the correct orientation.
     
-    dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
+    dat <- harmonise_data(exposure_dat, outcome_dat)
 
 Perform the MR
     
@@ -77,6 +81,12 @@ Forest plot
     p[[1]]
     p[[2]]
 
-More details about each step are outlined in the vignette.
+Funnel plot
 
+    p <- mr_funnel_plot(s)
+    p[[1]]
+    p[[2]]
 
+Also possible to perform heterogeneity tests, tests for directional horizontal pleiotropy, tests for the causal direction, enrichment analysis, and more.
+
+More details are outlined in the vignette.
