@@ -21,7 +21,8 @@ Depends:
     gtable,
     reshape2,
     stringr,
-    data.table
+    data.table,
+    googleAuthR
 Suggests:
     RMySQL,
     Eur1000Genomes,
