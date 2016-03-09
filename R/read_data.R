@@ -145,7 +145,9 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	{
 		stop("SNP column not found")
 	}
+
 	names(dat)[names(dat) == snp_col] <- "SNP"
+	snp_col <- "SNP"
 	dat$SNP <- tolower(dat$SNP)
 	dat$SNP <- gsub("[[:space:]]", "", dat$SNP)
 	dat <- subset(dat, !is.na(SNP))
@@ -377,8 +379,8 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	dat$id.outcome <- create_ids(dat[[type]])
 
 	if(any(dat$mr_keep.outcome))
-	{
-		mrcols <- c("beta.outcome", "se.outcome", "eaf.outcome", "effect_allele.outcome", "other_allele.outcome")
+	{#"eaf.outcome"
+		mrcols <- c("beta.outcome", "se.outcome", "effect_allele.outcome", "other_allele.outcome")
 		mrcols_present <- mrcols[mrcols %in% names(dat)]
 		dat$mr_keep.outcome <- apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
 		if(any(!dat$mr_keep.outcome))
@@ -403,7 +405,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 		{
 			message("Looking up SNP info for ", length(snp), " SNPs, this could take some time.")
 		}
-
+		
 		bm <- ensembl_get_position(snp)
 		missing <- dat$SNP[! dat$SNP %in% bm$refsnp_id]
 		if(length(missing) > 0)
@@ -419,6 +421,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 		dat <- dat[order(dat$row_index), ]
 		dat <- subset(dat, select=-c(row_index))
 	}
+
 	names(dat) <- gsub("outcome", type, names(dat))
 	rownames(dat) <- NULL
 	return(dat)
