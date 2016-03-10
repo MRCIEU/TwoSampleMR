@@ -36,16 +36,6 @@ clump_data <- function(dat, where="remote", refdat=NULL, plink_bin=NULL, clump_k
 		dat$id.exposure <- random_string(1)
 	}
 
-	if(! "chr_name" %in% names(dat))
-	{
-		stop("Need chromosome name")
-	}
-
-	if(! "chrom_start" %in% names(dat))
-	{
-		stop("Need chromosome position")
-	}
-
 	res <- ddply(dat, .(id.exposure), function(x) {
 		x <- mutate(x)
 		message("Clumping ", x$id.exposure[1], ", ", nrow(x), " SNPs")
@@ -108,16 +98,13 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 #' @return Data frame of only independent SNPs
 ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1)
 {
-	snpcode <- paste0("chr", dat$chr_name, ":", dat$chrom_start)
-	snpfile <- upload_file_to_api(data.frame(SNP=snpcode, P=dat$pval.exposure), header=TRUE)
+	snpfile <- upload_file_to_api(data.frame(SNP=dat$SNP, P=dat$pval.exposure), header=TRUE)
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/clump?snpfile=", snpfile, 
 		"&p1=", clump_p1,
 		"&p2=", clump_p2,
 		"&r2=", clump_r2,
 		"&kb=", clump_kb)
-	res <- read.table(url, header=TRUE)
-	index <- match(res$SNP, snpcode)
-	res$SNP <- dat$SNP[index]
+	res <- fromJSON(url)
 	y <- subset(dat, !SNP %in% res$SNP)
 	if(nrow(y) > 0)
 	{
@@ -125,6 +112,18 @@ ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_
 	}
 	return(subset(dat, SNP %in% res$SNP))
 }
+
+# 	index <- match(res$SNP, snpcode)
+# 	res$SNP <- dat$SNP[index]
+# 	y <- subset(dat, !SNP %in% res$SNP)
+# 	if(nrow(y) > 0)
+# 	{
+# 		message("Removing the following SNPs due to LD with other SNPs:\n", paste(y$SNP, collapse="\n"), sep="\n")
+# 	}
+# 	return(subset(dat, SNP %in% res$SNP))
+# }
+
+
 
 
 #' Perform clumping on the chosen SNPs using local data
@@ -176,4 +175,53 @@ ld_pruning_local <- function(dat, refdat=NULL, clump_kb=10000, clump_r2=0.1, clu
 		message("Removing the following SNPs due to LD with other SNPs:", paste(y$SNP, collapse="\n"), sep="\n")
 	}
 	return(subset(dat, SNP %in% res$SNP, select=-c(pval.exposure)))
+}
+
+
+get_snp_positions_biomart <- function(dat)
+{
+	dat$row_index <- 1:nrow(dat)
+	snp <- unique(dat$SNP)
+
+	if(length(snp) > 500)
+	{
+		message("Looking up SNP info for ", length(snp), " SNPs, this could take some time.")
+	}
+
+	bm <- ensembl_get_position(snp)
+	missing <- dat$SNP[! dat$SNP %in% bm$refsnp_id]
+	if(length(missing) > 0)
+	{
+		warning("The following SNP(s) were not present in ensembl GRCh37. They will be excluded.", paste(missing, collapse="\n"))
+		dat <- subset(dat, SNP %in% bm$refsnp_id)
+	}
+	stopifnot(nrow(dat) > 0)
+
+	dat <- dat[,names(dat)!="chr_name", drop=FALSE]
+	dat <- dat[,names(dat)!="chrom_start", drop=FALSE]
+	dat <- merge(dat, bm, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
+	dat <- dat[order(dat$row_index), ]
+	dat <- subset(dat, select=-c(row_index))
+	return(dat)
+}
+
+
+ld_pruning_api_old <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1)
+{
+	snpcode <- paste0("chr", dat$chr_name, ":", dat$chrom_start)
+	snpfile <- upload_file_to_api(data.frame(SNP=snpcode, P=dat$pval.exposure), header=TRUE)
+	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/clump?snpfile=", snpfile, 
+		"&p1=", clump_p1,
+		"&p2=", clump_p2,
+		"&r2=", clump_r2,
+		"&kb=", clump_kb)
+	res <- read.table(url, header=TRUE)
+	index <- match(res$SNP, snpcode)
+	res$SNP <- dat$SNP[index]
+	y <- subset(dat, !SNP %in% res$SNP)
+	if(nrow(y) > 0)
+	{
+		message("Removing the following SNPs due to LD with other SNPs:\n", paste(y$SNP, collapse="\n"), sep="\n")
+	}
+	return(subset(dat, SNP %in% res$SNP))
 }

@@ -31,7 +31,6 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 		as.data.frame(outcome_dat),
 		type="outcome",
 		snps=snps,
-		sep=sep,
 		phenotype_col=phenotype_col,
 		snp_col=snp_col,
 		beta_col=beta_col,
@@ -81,7 +80,6 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 		as.data.frame(exposure_dat),
 		type="exposure",
 		snps=NULL,
-		sep=sep,
 		phenotype_col=phenotype_col,
 		snp_col=snp_col,
 		beta_col=beta_col,
@@ -112,7 +110,6 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #' @param dat Data frame. Must have header with at least SNP column present.
 #' @param type="exposure". Is this the exposure or the outcome data that is being read in?
 #' @param snps=NULL SNPs to extract. If NULL then doesn't extract any and keeps all.
-#' @param sep=" " Specify delimeter in file
 #' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
 #' @param snp_col="SNP" Required name of column with SNP rs IDs
 #' @param beta_col="beta" Required for MR. Name of column with effect sizes
@@ -130,7 +127,7 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
 	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col)
 
@@ -393,35 +390,6 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 		}
 
 	}
-	
-
-	# Get SNP positions if exposure
-	if(type == "exposure")
-	{
-		dat$row_index <- 1:nrow(dat)
-		snp <- unique(dat$SNP)
-
-		if(length(snp) > 500)
-		{
-			message("Looking up SNP info for ", length(snp), " SNPs, this could take some time.")
-		}
-		
-		bm <- ensembl_get_position(snp)
-		missing <- dat$SNP[! dat$SNP %in% bm$refsnp_id]
-		if(length(missing) > 0)
-		{
-			warning("The following SNP(s) were not present in ensembl GRCh37. They will be excluded.", paste(missing, collapse="\n"))
-			dat <- subset(dat, SNP %in% bm$refsnp_id)
-		}
-		stopifnot(nrow(dat) > 0)
-
-		dat <- dat[,names(dat)!="chr_name", drop=FALSE]
-		dat <- dat[,names(dat)!="chrom_start", drop=FALSE]
-		dat <- merge(dat, bm, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
-		dat <- dat[order(dat$row_index), ]
-		dat <- subset(dat, select=-c(row_index))
-	}
-
 	names(dat) <- gsub("outcome", type, names(dat))
 	rownames(dat) <- NULL
 	return(dat)

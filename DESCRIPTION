@@ -12,7 +12,6 @@ Description: See title
 Depends:
     ggplot2,
     meta,
-    biomaRt,
     plyr,
     jsonlite,
     knitr,

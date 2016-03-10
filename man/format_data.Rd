@@ -4,13 +4,12 @@
 \alias{format_data}
 \title{Read exposure or outcome data}
 \usage{
-format_data(dat, type = "exposure", snps = NULL, sep = " ",
-  header = TRUE, phenotype_col = "Phenotype", snp_col = "SNP",
-  beta_col = "beta", se_col = "se", eaf_col = "eaf",
-  effect_allele_col = "effect_allele", other_allele_col = "other_allele",
-  pval_col = "pval", units_col = "units", ncase_col = "ncase",
-  ncontrol_col = "ncontrol", samplesize_col = "samplesize",
-  gene_col = "gene", min_pval = 1e-200)
+format_data(dat, type = "exposure", snps = NULL, header = TRUE,
+  phenotype_col = "Phenotype", snp_col = "SNP", beta_col = "beta",
+  se_col = "se", eaf_col = "eaf", effect_allele_col = "effect_allele",
+  other_allele_col = "other_allele", pval_col = "pval",
+  units_col = "units", ncase_col = "ncase", ncontrol_col = "ncontrol",
+  samplesize_col = "samplesize", gene_col = "gene", min_pval = 1e-200)
 }
 \arguments{
 \item{dat}{Data frame. Must have header with at least SNP column present.}
@@ -18,8 +17,6 @@ format_data(dat, type = "exposure", snps = NULL, sep = " ",
 \item{type="exposure".}{Is this the exposure or the outcome data that is being read in?}
 
 \item{snps=NULL}{SNPs to extract. If NULL then doesn't extract any and keeps all.}
-
-\item{sep="}{" Specify delimeter in file}
 
 \item{phenotype_col="Phenotype"}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"}
 
