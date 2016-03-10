@@ -4,20 +4,11 @@
 \alias{clump_data}
 \title{Perform LD clumping on SNP data}
 \usage{
-clump_data(dat, where = "remote", refdat = NULL, plink_bin = NULL,
-  clump_kb = 10000, clump_r2 = 0.1, clump_p1 = 1, clump_p2 = 1,
-  tempdir = getwd())
+clump_data(dat, clump_kb = 10000, clump_r2 = 0.1, clump_p1 = 1,
+  clump_p2 = 1)
 }
 \arguments{
 \item{dat}{Output from \code{format_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated}
-
-\item{where}{Where to perform clumping - if using MR-Base servers then specify "remote" (default), if providing your own reference data and plink binary then specify "local"}
-
-\item{refdat}{Path to binary plink files to use for LD referencing. If NULL (default) and where="local" then looks for data provided by the Eur1000Genomes R package.}
-
-\item{plink_bin}{Path to plink binary. If NULL (default) and where="local" then looks for executable in Eur1000Genomes R package.}
-
-\item{tempdir}{= "." Where to print results}
 
 \item{clump_kb=10000}{Clumping window}
 
