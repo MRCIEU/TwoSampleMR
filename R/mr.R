@@ -192,6 +192,10 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         pval: p-value
 mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
+	{
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+	}
 	b <- sum(b_exp*b_out / se_out^2) / sum(b_exp^2/se_out^2)
 	se <- sqrt(1 / sum(b_exp^2/se_out^2))
 	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
@@ -215,6 +219,10 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
+	{
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q =NA, Q_df =NA, Q_pval =NA))
+	}
 	ratio <- b_out / b_exp
 	ratio.se <- sqrt((se_out^2/b_exp^2) + (b_out^2/b_exp^4)*se_exp^2 - 2*(b_out/b_exp^3)*parameters$Cov)
 	res <- meta::metagen(ratio, ratio.se)
@@ -242,6 +250,10 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
+	{
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q =NA, Q_df =NA, Q_pval =NA))
+	}
 	ratio <- b_out / b_exp
 	ratio.se <- sqrt((se_out^2/b_exp^2) + (b_out^2/b_exp^4)*se_exp^2 - 2*(b_out/b_exp^3)*parameters$Cov)
 	res <- meta::metagen(ratio, ratio.se)
@@ -269,7 +281,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(length(b_exp)<2)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	{
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 	}
@@ -327,7 +339,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 	# print(b_exp)
 
-	if(length(b_exp) < 3)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	{
 		return(list(
 			b = NA,
@@ -414,7 +426,7 @@ linreg <- function(x, y, w=rep(x,1))
 #'         dat: Original data used for MR Egger regression
 mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(length(b_exp) < 3)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	{
 		return(list(
 			b = NA,
@@ -478,7 +490,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #'         pval: p-value
 mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(sum(!is.na(b_exp)) < 1)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
 	b_iv <- b_out / b_exp
@@ -563,7 +575,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #'         pval: p-value
 mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(sum(!is.na(b_exp)) < 1)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 	betaIV <- b_out/b_exp # ratio estimates
 	betaIVW <- sum(b_out*b_exp*se_out^-2)/sum(b_exp^2*se_out^-2) # IVW estimate
@@ -594,7 +606,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(sum(!is.na(b_exp)) < 1)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
