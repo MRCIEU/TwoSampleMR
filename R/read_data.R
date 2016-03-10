@@ -379,7 +379,7 @@ format_data <- function(dat, type="exposure", snps=NULL, sep=" ", header=TRUE, p
 	dat$id.outcome <- create_ids(dat[[type]])
 
 	if(any(dat$mr_keep.outcome))
-	{#"eaf.outcome"
+	{
 		mrcols <- c("beta.outcome", "se.outcome", "effect_allele.outcome", "other_allele.outcome")
 		mrcols_present <- mrcols[mrcols %in% names(dat)]
 		dat$mr_keep.outcome <- apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
