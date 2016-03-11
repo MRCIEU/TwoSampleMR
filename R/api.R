@@ -77,7 +77,9 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 	require(RCurl)
 	uri <- "http://scmv-webapps.epi.bris.ac.uk:5000/upload"
 	filename <- paste0(tempfile(), ".txt")
-	write.table(x, filename, row=F, col=header, qu=F)
+	f <- file(filename, open="wb")
+	write.table(x, file=f, row=F, col=header, qu=F, eol="\n")
+	close(f)
 	if(file.size(filename) > max_file_size) stop("File size is too large, your request has too many SNPs")
 	suppressWarnings(postForm(uri, file=fileUpload(filename=filename)))
 	unlink(filename)
@@ -219,12 +221,18 @@ format_d <- function(d)
 extract_outcome_data_using_get <- function(snps, outcomes)
 {
 	access_token <- get_mrbase_access_token()
-	message("Extracting data for ", nrow(exposure_dat), " SNPs")
+	snps <- unique(snps)
+	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
+	outcomes <- unique(outcomes)
 	snps <- paste(snps, collapse=",")
 	outcomes <- paste(outcomes, collapse=",")
 
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects?access_token=", access_token, "&outcomes=", outcomes, "&snps=", snps)
 	d <- fromJSON(url)
-
+	if(length(d) == 0)
+	{
+	  message("None of the requested SNPs were available in the specified GWASs.")
+	  return(NULL)
+	}
 	return(format_d(d))
 }
