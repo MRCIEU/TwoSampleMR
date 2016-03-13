@@ -448,27 +448,84 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 #'
 #' See \code{format_data}
 #'
-#' @param eqtl_mrbase_subset Selected rows from \code{eqtl_mrbase} data loaded from \code{MRInstruments} package
+#' @param gtex_eqtl_subset Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package
 #' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
 #'
 #' @export
 #' @return Data frame
-format_eqtl_mrbase <- function(eqtl_mrbase_subset, type="exposure")
+format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 {
 	stopifnot(type %in% c("exposure", "outcome"))
-	eqtl_mrbase_subset[[type]] <- paste0(eqtl_mrbase_subset$gene_name, " (", eqtl_mrbase_subset$tissue, ")")
+	gtex_eqtl_subset[[type]] <- paste0(gtex_eqtl_subset$gene_name, " (", gtex_eqtl_subset$tissue, ")")
 
-	if(length(unique(eqtl_mrbase_subset[[type]])) > 1)
+	if(length(unique(gtex_eqtl_subset[[type]])) > 1)
 	{
-		message("Separating the entries into the following phenotypes:\n", paste(unique(eqtl_mrbase_subset[[type]]), collapse="\n"))
+		message("Separating the entries into the following phenotypes:\n", paste(unique(gtex_eqtl_subset[[type]]), collapse="\n"))
 	}
 
-	dat <- format_data(eqtl_mrbase_subset, type=type, phenotype_col=type, pval_col="P_value", samplesize_col="n")
-	dat[[paste0("data_source.", type)]] <- "eqtl_mrbase"
+	dat <- format_data(gtex_eqtl_subset, type=type, phenotype_col=type, pval_col="P_value", samplesize_col="n")
+	dat[[paste0("data_source.", type)]] <- "gtex_eqtl"
 
 	return(dat)
 
 }
+
+
+#' Get data from metabolomic QTL results
+#'
+#' See \code{format_data}
+#'
+#' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package
+#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#'
+#' @export
+#' @return Data frame
+format_metab_qtls <- function(metab_qtls_subset, type="exposure")
+{
+	stopifnot(type %in% c("exposure", "outcome"))
+	
+
+	if(length(unique(metab_qtls_subset$phenotype)) > 1)
+	{
+		message("Separating the entries into the following phenotypes:\n", paste(unique(metab_qtls_subset$phenotype), collapse="\n"))
+	}
+
+	dat <- format_data(metab_qtls_subset, type=type, phenotype_col="phenotype")
+	dat[[paste0("data_source.", type)]] <- "metab_qtls"
+
+	return(dat)
+}
+
+
+
+#' Get data from proteomic QTL results
+#'
+#' See \code{format_data}
+#'
+#' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package
+#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#'
+#' @export
+#' @return Data frame
+format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
+{
+	stopifnot(type %in% c("exposure", "outcome"))
+	
+
+	if(length(unique(proteomic_qtls_subset$analyte)) > 1)
+	{
+		message("Separating the entries into the following phenotypes:\n", paste(unique(proteomic_qtls_subset$analyte), collapse="\n"))
+	}
+
+	dat <- format_data(proteomic_qtls_subset, type=type, phenotype_col="analyte")
+	dat[[paste0("data_source.", type)]] <- "proteomic_qtls"
+
+	return(dat)
+}
+
+
+
+
 
 
 
