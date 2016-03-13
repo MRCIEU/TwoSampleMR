@@ -390,6 +390,16 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		}
 
 	}
+
+	# Add in missing MR cols
+	for(col in c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome", "other_allele.outcome", "eaf.outcome"))
+	{
+		if(! col %in% names(dat))
+		{
+			dat[[col]] <- NA
+		}
+	}
+
 	names(dat) <- gsub("outcome", type, names(dat))
 	rownames(dat) <- NULL
 	return(dat)
