@@ -94,11 +94,16 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #'
 #' @param snps Array of SNP rs IDs
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
+#' @param proxies = 0 Look for LD tags? 1 = yes, 0 = no
+#' @param rsq = 0.8 Minimum LD rsq value (if proxies = 1)
+#' @param align_alleles = 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no
+#' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
+#' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, access_token = get_mrbase_access_token())
+extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
@@ -107,8 +112,19 @@ extract_outcome_data <- function(snps, outcomes, access_token = get_mrbase_acces
 	snpfile <- upload_file_to_api(snps)
 	outcomefile <- upload_file_to_api(outcomes)
 
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?access_token=", access_token, "&outcomefile=", outcomefile, "&snpfile=", snpfile)
+	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?", 
+		"access_token=", access_token, 
+		"&outcomefile=", outcomefile, 
+		"&snpfile=", snpfile,
+		"&proxies=", proxies,
+		"&rsq=", rsq,
+		"&align_alleles=", align_alleles,
+		"&palindromes=", palindromes,
+		"&maf_threshold=", maf_threshold
+	)
+
 	d <- fromJSON(url)
+	print(names(d))
 	if(length(d) == 0)
 	{
 		message("None of the requested SNPs were available in the specified GWASs.")
@@ -150,7 +166,7 @@ get_se <- function(eff, pval)
 #' @return Data frame
 format_d <- function(d)
 {
-	d <- data.frame(
+	d1 <- data.frame(
 		SNP = as.character(d$name),
 		beta.outcome = as.numeric(d$beta),
 		se.outcome = as.numeric(d$se),
@@ -170,6 +186,25 @@ format_d <- function(d)
 		originalname.outcome = 0,
 		stringsAsFactors=FALSE
 	)
+
+	if("proxy" %in% names(d))
+	{
+		p <- data.frame(
+			proxy.outcome = d$proxy,
+			target_snp.outcome = d$target_snp,
+			proxy_snp.outcome = d$proxy_snp,
+			target_a1.outcome = d$target_a1,
+			target_a2.outcome = d$target_a2,
+			proxy_a1.outcome = d$proxy_a1,
+			proxy_a2.outcome = d$proxy_a2,
+			stringsAsFactors = FALSE
+		)
+		d <- cbind(d1, p)
+	} else {
+		d <- d1
+	}
+
+
 
 	if(nrow(d) == 0)
 	{
