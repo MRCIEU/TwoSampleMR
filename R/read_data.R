@@ -444,7 +444,7 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 		message("Separating the entries into the following phenotypes:\n", paste(unique(gwas_catalog_subset[[type]]), collapse="\n"))
 	}
 
-	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "Allele", "other_allele", "SE", "P-value", "Units", "Gene", type))
+	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "effect_allele", "other_allele", "SE", "P_value", "Units", "Gene", type))
 	names(gwas_catalog_subset) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se", "pval", "units", "gene", type)
 	
 	dat <- format_data(gwas_catalog_subset, type=type, phenotype_col=type)
