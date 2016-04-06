@@ -16,8 +16,6 @@ A set of instruments from several sources including GWAS catalogs, metabolite QT
 
 The package is hosted on github, and this allows installation and update to be very easy. First make sure you have the `biomaRt` and `devtools` packages installed:
 
-    source("https://bioconductor.org/biocLite.R")
-    biocLite("biomaRt")
     install.packages("devtools")
 
 Then to install:
