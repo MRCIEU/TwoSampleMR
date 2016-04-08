@@ -535,6 +535,32 @@ format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 
 
 
+#' Get data from proteomic QTL results
+#'
+#' See \code{format_data}
+#'
+#' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package
+#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#'
+#' @export
+#' @return Data frame
+format_aries_mqtl <- function(aries_mqtl_subset, type="exposure")
+{
+	stopifnot(type %in% c("exposure", "outcome"))
+	
+
+	if(length(unique(aries_mqtl_subset$cpg)) > 1)
+	{
+		message("Separating the entries into the following phenotypes:\n", paste(unique(aries_mqtl_subset$cpg), collapse="\n"))
+	}
+
+	dat <- format_data(aries_mqtl_subset, type=type, phenotype_col="cpg")
+	dat[[paste0("data_source.", type)]] <- "aries_mqtl"
+
+	return(dat)
+}
+
+
 
 
 
