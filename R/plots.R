@@ -22,8 +22,14 @@ mr_scatter_plot <- function(mr_results, dat)
 		mrres$a <- 0
 		if("MR Egger" %in% mrres$method)
 		{
-			temp <- mr_egger_regression(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, default_parameters())
+			temp <- mr_egger_regression(d$beta.exposure, d$beta.outcome, d$se.exposure, d$se.outcome, default_parameters())
 			mrres$a[mrres$method == "MR Egger"] <- temp$b_i
+		}
+
+		if("MR Egger (bootstrap)" %in% mrres$method)
+		{
+			temp <- mr_egger_regression_bootstrap(d$beta.exposure, d$beta.outcome, d$se.exposure, d$se.outcome, default_parameters())
+			mrres$a[mrres$method == "MR Egger (bootstrap)"] <- temp$b_i
 		}
 
 		ggplot(data=d, aes(x=beta.exposure, y=beta.outcome)) +
