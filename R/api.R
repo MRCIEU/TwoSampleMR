@@ -125,7 +125,6 @@ extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_a
 	)
 
 	d <- fromJSON(url)
-	print(names(d))
 	if(length(d) == 0)
 	{
 		message("None of the requested SNPs were available in the specified GWASs.")
