@@ -71,6 +71,7 @@ available_outcomes <- function(access_token = get_mrbase_access_token())
 #'
 #' @param x Vector that will be written to a file to be posted
 #' @param max_file_size Maximum file size permitted to be uploaded in bytes (16Mb default)
+#' @param header Header in the file?
 #' @return basename of file
 upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 {

@@ -10,6 +10,8 @@ upload_file_to_api(x, max_file_size = 16 * 1024 * 1024, header = FALSE)
 \item{x}{Vector that will be written to a file to be posted}
 
 \item{max_file_size}{Maximum file size permitted to be uploaded in bytes (16Mb default)}
+
+\item{header}{Header in the file?}
 }
 \value{
 basename of file
