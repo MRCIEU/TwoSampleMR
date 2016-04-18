@@ -514,7 +514,7 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 		)
 	}
 
-	d <- merge(d, dat, by="SNP", all.x=TRUE)
+	d <- merge(d1, dat, by="SNP", all.x=TRUE)
 	d <- d[order(d$id.outcome), ]
 
 	return(d)
