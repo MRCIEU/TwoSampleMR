@@ -372,11 +372,11 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 	smod <- summary(mod)
 
 	b <- coefficients(smod)[2,1]
-	se <- coefficients(smod)[2,2]
-	pval <- coefficients(smod)[2,4]
+	se <- coefficients(smod)[2,2] / min(1,smod$sigma)
+	pval <- 2 * pt(abs(b / se), length(b_exp) - 2, lower.tail = FALSE)
 	b_i <- coefficients(smod)[1,1]
-	se_i <- coefficients(smod)[1,2]
-	pval_i <- coefficients(smod)[1,4]
+	se_i <- coefficients(smod)[1,2] / min(1,smod$sigma)
+	pval_i <- 2 * pt(abs(b_i / se_i), length(b_exp) - 2, lower.tail = FALSE)
 
 	Q <- smod$sigma^2 * (length(b_exp) - 2)
 	Q_df <- length(b_exp) - 2
@@ -606,7 +606,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
