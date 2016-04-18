@@ -198,7 +198,7 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 	}
 	b <- sum(b_exp*b_out / se_out^2) / sum(b_exp^2/se_out^2)
 	se <- sqrt(1 / sum(b_exp^2/se_out^2))
-	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
+	pval <- 2 * pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -301,7 +301,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 	b <- opt$par[length(b_exp)+1]
 	se <- sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1])
-	pval <- pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
+	pval <- 2 * pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
 
 	Q <- 2 * opt$value
 	Q_df <- length(b_exp) - 1
@@ -401,7 +401,7 @@ linreg <- function(x, y, w=rep(x,1))
 
 	sum(w * (y-yhat)^2)
 	se <- sqrt(sum(w*(y-yhat)^2) /  (sum(!is.na(yhat)) - 2) / (sum(w*x^2)))
-	pval <- pt(abs(bhat / se), df=sum(!is.na(yhat)), low=FALSE)
+	pval <- 2 * pt(abs(bhat / se), df=sum(!is.na(yhat)), low=FALSE)
 	return(list(ahat=ahat,bhat=bhat,se=se, pval=pval))
 }
 
@@ -497,7 +497,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
-	pval <- pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
+	pval <- 2 * pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -585,7 +585,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
 	se <- weighted_median_bootstrap(b_exp, b_out, se_out, se_exp, pen.weights, parameters$nboot)
-	pval <- pt(abs(b/se), df=length(b_exp)-1, low=FALSE)
+	pval <- 2 * pt(abs(b/se), df=length(b_exp)-1, low=FALSE)
 	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -612,7 +612,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error 
-	pval <- pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
+	pval <- 2 * pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
 	Q <- ivw.res$sigma^2*(length(b_exp)-2)
 	Q_df <- length(b_exp) - 1
 	Q_pval <- pchisq(Q, Q_df, low=FALSE)
