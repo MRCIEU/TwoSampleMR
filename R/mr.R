@@ -13,7 +13,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 {
 	mr_tab <- ddply(dat, .(id.exposure, id.outcome), function(x1)
 	{
-		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
+		# message("Performing MR analysis of '", x1$id.exposure[1], "' on '", x18WII58$id.outcome[1], "'")
 		x <- subset(x1, mr_keep)
 		if(nrow(x) == 0)
 		{
@@ -339,9 +339,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 	# print(b_exp)
 
-	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
-	{
-		return(list(
+	nulllist <- list(
 			b = NA,
 			se = NA,
 			pval = NA,
@@ -355,7 +353,10 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 			mod = NA,
 			smod = NA,
 			dat = NA
-		))
+		)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
+	{
+		return(nulllist)
 	}
 
 	sign0 <- function(x)
@@ -370,18 +371,22 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 	dat <- data.frame(b_out=b_out, b_exp=b_exp, se_exp=se_exp, se_out=se_out, flipped=to_flip)
 	mod <- lm(b_out ~ b_exp, weights=1/se_out^2)
 	smod <- summary(mod)
+	if(nrow(coefficients(smod)) > 1)
+	{
+		b <- coefficients(smod)[2,1]
+		se <- coefficients(smod)[2,2] / min(1,smod$sigma)
+		pval <- 2 * pt(abs(b / se), length(b_exp) - 2, lower.tail = FALSE)
+		b_i <- coefficients(smod)[1,1]
+		se_i <- coefficients(smod)[1,2] / min(1,smod$sigma)
+		pval_i <- 2 * pt(abs(b_i / se_i), length(b_exp) - 2, lower.tail = FALSE)
 
-	b <- coefficients(smod)[2,1]
-	se <- coefficients(smod)[2,2] / min(1,smod$sigma)
-	pval <- 2 * pt(abs(b / se), length(b_exp) - 2, lower.tail = FALSE)
-	b_i <- coefficients(smod)[1,1]
-	se_i <- coefficients(smod)[1,2] / min(1,smod$sigma)
-	pval_i <- 2 * pt(abs(b_i / se_i), length(b_exp) - 2, lower.tail = FALSE)
-
-	Q <- smod$sigma^2 * (length(b_exp) - 2)
-	Q_df <- length(b_exp) - 2
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
-
+		Q <- smod$sigma^2 * (length(b_exp) - 2)
+		Q_df <- length(b_exp) - 2
+		Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	} else {
+		warning("Collinearities in MR Egger, try LD pruning the exposure variables.")
+		return(nulllist)
+	}
  	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), b_i = b_i, se_i = se_i, pval_i = pval_i, Q = Q, Q_df = Q_df, Q_pval = Q_pval, mod = smod, dat = dat))
 }
 
