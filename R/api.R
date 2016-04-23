@@ -200,6 +200,14 @@ format_d <- function(d)
 			stringsAsFactors = FALSE
 		)
 		d <- cbind(d1, p)
+
+		# If two SNPs have the same proxy SNP then one has to be removed
+		d <- ddply(d, .(outcome), function(x)
+		{
+			x <- mutate(x)
+			subset(x, !duplicated(proxy_snp.outcome))
+		})
+
 	} else {
 		d <- d1
 	}
