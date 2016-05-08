@@ -171,7 +171,7 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 	}
 	b <- b_out / b_exp
-	se <- se_out / b_exp
+	se <- se_out / abs(b_exp)
 	# sqrt((segd^2/gp^2) + (gd^2/gp^4)*segp^2 - 2*(gd/gp^3)) #full delta method with cov set to 0
 	pval <- pnorm(abs(b)/se,lower.tail=F)*2
 	return(list(b=b, se=se, pval=pval, nsnp=1))
