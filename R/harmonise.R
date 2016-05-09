@@ -361,7 +361,6 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	B2[i] <- flip_alleles(B2[i])
 	status1 <- (A1 == B1) & (A2 == B2)
 
-
 	# If still NOT palindromic and alleles DON'T match then try swapping
 	i <- !palindromic & !status1
 	to_swap <- (A1 == B2) & (A2 == B1)
@@ -474,6 +473,58 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 
 }
 
+harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, action)
+{
+	n <- length(A1)
+	A2 <- rep(NA, n)
+	ambiguous <- rep(FALSE, n)
+	palindromic <- check_palindromic(B1, B2)
+	remove <- palindromic
+
+	status1 <- A1 == B1
+	minf <- 0.5 - tolerance
+	maxf <- 0.5 + tolerance
+
+	tempfA <- fA
+	tempfB <- fB
+	tempfA[is.na(tempfA)] <- 0.5
+	tempfB[is.na(tempfB)] <- 0.5
+
+	freq_similar1 <- (tempfA < minf & tempfB < minf) | (tempfA > maxf & tempfB > maxf)
+	ambiguous[status1 & !freq_similar1] <- TRUE
+
+	A2[status1] <- B2[status1]
+
+	to_swap <- A1 == B2
+	freq_similar2 <- (tempfA < minf & tempfB > maxf) | (tempfA > maxf & tempfB < minf)
+
+	ambiguous[to_swap & !freq_similar2] <- TRUE
+	A2[to_swap] <- A1[to_swap]
+	A1[to_swap] <- B1[to_swap]
+	betaA[to_swap] <- betaA[to_swap] * -1
+	fA[to_swap] <- 1 - fA[to_swap]
+
+	to_flip <- A1 != B1 & A2 != B1
+
+	ambiguous[to_flip] <- TRUE
+
+	B1[to_flip] <- flip_alleles(B1[to_flip])
+	status1 <- A1 == B1
+	B2[status1] <- A2[status1]
+
+	to_swap <- A2 == B1
+	B2[to_swap] <- B1[to_swap]
+	B1[to_swap] <- A1[to_swap]
+	betaB[to_swap] <- betaB[to_swap] * -1
+	fB[to_swap] <- 1 - fB[to_swap]
+
+
+	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
+
+	return(d)
+
+}
+
 
 harmonise_function_refactored <- function(dat, tolerance, action)
 {
@@ -490,10 +541,16 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 	
 	i22 <- !is.na(A1) & !is.na(A2) & !is.na(B1) & !is.na(B2)
 	i21 <- !is.na(A1) & !is.na(A2) & !is.na(B1) & is.na(B2)
+	i12 <- !is.na(A1) & is.na(A2) & !is.na(B1) & !is.na(B2)
+
 
 	d22 <- harmonise_22(SNP[i22], A1[i22], A2[i22], B1[i22], B2[i22], betaA[i22], betaB[i22], fA[i22], fB[i22], tolerance, action)
 	d21 <- harmonise_21(SNP[i21], A1[i21], A2[i21], B1[i21], betaA[i21], betaB[i21], fA[i21], fB[i21], tolerance, action)
-	d <- rbind(d21, d22)
+	d12 <- harmonise_12(SNP[i12], A1[i12], B1[i12], B2[i12], betaA[i12], betaB[i12], fA[i12], fB[i12], tolerance, action)
+
+
+
+	d <- rbind(d21, d22, d12)
 	if(action == 3)
 	{
 		d1 <- subset(d, !palindromic & !remove & !ambiguous)
