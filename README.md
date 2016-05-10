@@ -37,13 +37,13 @@ Define your exposure (i.e. genetic proxies/instruments for body mass index)
     bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
     exposure_dat <- read_exposure_data(bmi_file)
 
-Alternatively, instruments can be identified from various data sources in the `MRInstruments` package. The package includes data from various sources that can be useful for defining genetic instruments. The package includes data from various sources that can be useful for defining genetic instruments. 
+Alternatively, instruments can be identified from various data sources in the `MRInstruments` package. 
 
     devtools::install_github("MRCIEU/MRInstruments")
     library(MRInstruments)
     data(metab_qtl) #to load metabolomic QTLs
     exposure_dat <- format_metab_qtls(metab_qtls) 
-      #see the `MRInstruments` page for other instruments and further details [https://github.com/MRCIEU/MRInstruments](https://github.com/MRCIEU/MRInstruments)
+      #see `MRInstruments` page for other instruments [https://github.com/MRCIEU/MRInstruments](https://github.com/MRCIEU/MRInstruments)
     
 Prune the SNPs in LD using clumping on the remote server:
 
