@@ -4,7 +4,7 @@ library(knitr)
 library(Cairo)
 library(plyr)
 library(ggplot2)
-opts_chunk$set(warning=FALSE, echo=FALSE, message=FALSE, results='asis', fig.width=12, fig.height=12, dev="png", fig.path=paste0('figure/', sanitise_string(title)))
+opts_chunk$set(warning=FALSE, echo=FALSE, message=FALSE, results='asis', fig.width=6, fig.height=6, dev="png", fig.path=paste0('figure/', sanitise_string(title)))
 
 ```
 
