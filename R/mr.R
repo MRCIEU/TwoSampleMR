@@ -192,7 +192,7 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         pval: p-value
 mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	{
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 	}
@@ -250,7 +250,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
-	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	{
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q =NA, Q_df =NA, Q_pval =NA))
 	}
