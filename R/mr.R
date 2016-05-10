@@ -173,7 +173,7 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- b_out / b_exp
 	se <- se_out / abs(b_exp)
 	# sqrt((segd^2/gp^2) + (gd^2/gp^4)*segp^2 - 2*(gd/gp^3)) #full delta method with cov set to 0
-	pval <- pnorm(abs(b)/se,lower.tail=F)*2
+	pval <- pnorm(abs(b) / se, lower.tail=FALSE) * 2
 	return(list(b=b, se=se, pval=pval, nsnp=1))
 }
 
@@ -198,7 +198,7 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 	}
 	b <- sum(b_exp*b_out / se_out^2) / sum(b_exp^2/se_out^2)
 	se <- sqrt(1 / sum(b_exp^2/se_out^2))
-	pval <- 2 * pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
+	pval <- 2 * pnorm(abs(b) / se, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -406,7 +406,7 @@ linreg <- function(x, y, w=rep(x,1))
 
 	sum(w * (y-yhat)^2)
 	se <- sqrt(sum(w*(y-yhat)^2) /  (sum(!is.na(yhat)) - 2) / (sum(w*x^2)))
-	pval <- 2 * pt(abs(bhat / se), df=sum(!is.na(yhat)), low=FALSE)
+	pval <- 2 * pnorm(abs(bhat / se), low=FALSE)
 	return(list(ahat=ahat,bhat=bhat,se=se, pval=pval))
 }
 
