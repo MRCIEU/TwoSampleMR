@@ -23,13 +23,13 @@ knit_report <- function(input_filename, output_filename, ...)
     require(markdown)
     output_filename <- normalizePath(output_filename)
 
-    # output_dir <- dirname(output_filename)
-    # if (!file.exists(output_dir))
-    #     dir.create(output_dir)
+    output_dir <- dirname(output_filename)
+    if (!file.exists(output_dir))
+        dir.create(output_dir)
 
-    # current_dir <- getwd()
-    # on.exit(setwd(current_dir))
-    # setwd(output_dir)
+    current_dir <- getwd()
+    on.exit(setwd(current_dir))
+    setwd(output_dir)
 
     name <- gsub("\\.[^.]+$", "", basename(output_filename))
     suffix <- gsub(".*\\.([^.]+)$", "\\1", output_filename)
@@ -46,12 +46,12 @@ knit_report <- function(input_filename, output_filename, ...)
     else if (is.pdf)
     {        
         require(rmarkdown)
-        return(render(input_filename, output_format = "pdf_document", intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
+        return(render(input_filename, pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
     {        
         require(rmarkdown)
-        return(render(input_filename, output_format = "word_document", output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
+        return(render(input_filename, word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else
         stop("Please choose a filename with pdf, html, docx or md suffix")
