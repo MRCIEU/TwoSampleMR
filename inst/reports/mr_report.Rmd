@@ -14,7 +14,6 @@ opts_chunk$set(warning=FALSE, echo=FALSE, message=FALSE, results='asis', fig.wid
 
 ## `r title`
 
-Author: **`r author`** <br/>
 Date: **`r format(Sys.time(), '%d %B, %Y')`**
 
 ---

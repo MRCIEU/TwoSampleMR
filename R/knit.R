@@ -46,7 +46,7 @@ knit_report <- function(input_filename, output_filename, ...)
     else if (is.pdf)
     {        
         require(rmarkdown)
-        return(render(input_filename, output_format = "pdf_document", output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
+        return(render(input_filename, output_format = "pdf_document", intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
     {        
