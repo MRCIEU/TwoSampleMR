@@ -32,70 +32,75 @@ Load library
 
     library(TwoSampleMR)
 
-**Define your exposure** 
+### Define your exposure
 
-    Manually prepare a file of genetic proxies/instruments (e.g. body mass index). To see an example of what a manually prepared file should look click here. 
+Manually prepare a file of genetic proxies/instruments (e.g. body mass index). To see an example of what a manually prepared file should look click here. 
     
-        bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
-        exposure_dat <- read_exposure_data(bmi_file)
+    bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
+    exposure_dat <- read_exposure_data(bmi_file)
 
-    Instruments can also be defined using various data sources, using the [MRInstruments package](https://github.com/MRCIEU/MRInstruments): 
+Instruments can also be defined using various data sources, using the [MRInstruments package](https://github.com/MRCIEU/MRInstruments): 
 
-        devtools::install_github("MRCIEU/MRInstruments")
-        library(MRInstruments)
-        data(metab_qtl) #to load metabolomic QTLs
-        exposure_dat <- format_metab_qtls(metab_qtls) 
-        data(gwas_catalog) # NHGRI/EBI GWAS catalog
-        exposure_dat <- format_gwas_catalog(metab_qtls) 
+    devtools::install_github("MRCIEU/MRInstruments")
+    library(MRInstruments)
+    data(metab_qtl) #to load metabolomic QTLs
+    exposure_dat <- format_metab_qtls(metab_qtls) 
+    data(gwas_catalog) # NHGRI/EBI GWAS catalog
+    exposure_dat <- format_gwas_catalog(metab_qtls) 
     
-    To use the MR-Base repository of full GWAS datasets to define instruments:
-        ao<-available_outcomes() 
-        exposure_dat <- extract_instruments(ao$id[c(1)]) 
- 
-    Prune the SNPs in LD using clumping on the remote server:
-
-        exposure_dat <- clump_data(exposure_dat)
-
-**Define your outcome**
-
-    Get the available outcomes in MR Base
-
-        ao <- available_outcomes()
-
-    Extract the outcome associations, e.g. for Celiac disease and T2D
+To use the MR-Base repository of full GWAS datasets to define instruments:
     
-        outcome_dat <- extract_outcome_data(exposure_dat$SNP, c(6, 13))
+    ao<-available_outcomes() 
+    exposure_dat <- extract_instruments(ao$id[c(1)]) 
+    
+Prune the SNPs in LD using clumping on the remote server:
 
-**Harmonise the exposure and outcome data**
-   
-        This checks that the effect alleles in the exposure and outcome data align, flips them and the effect size directions when necessary, and drops SNPs when it is impossible to determine the correct orientation.
+    exposure_dat <- clump_data(exposure_dat)
 
-        dat <- harmonise_data(exposure_dat, outcome_dat)
+### Define your outcome
 
-**Perform the MR**
+Get the available outcomes in MR Base
+
+    ao <- available_outcomes()
+
+Extract the outcome associations, e.g. for Celiac disease and T2D
+    
+    outcome_dat <- extract_outcome_data(exposure_dat$SNP, c(6, 13))
+
+### Harmonise the exposure and outcome data
+
+This checks that the effect alleles in the exposure and outcome data align, flips them and the effect size directions when necessary, and drops SNPs when it is impossible to determine the correct orientation.
+
+dat <- harmonise_data(exposure_dat, outcome_dat)
+
+### Perform the MR
     
     mr_results <- mr(dat)
 
-**Plot the different methods**
+### Plot the different methods
 
-    Scatter plots
+Scatter plots
+
     p <- mr_scatter_plot(mr_results, dat)
     p[[1]]
     p[[2]]
 
-    Leave one out analysis
+Leave one out analysis
+
     l <- mr_leaveoneout(dat)
     p <- mr_leaveoneout_plot(l)
     p[[1]]
     p[[2]]
 
-    Forest plot
+Forest plot
+
     s <- mr_singlesnp(dat)
     p <- mr_forest_plot(s)
     p[[1]]
     p[[2]]
 
-    Funnel plot
+Funnel plot
+
     p <- mr_funnel_plot(s)
     p[[1]]
     p[[2]]
