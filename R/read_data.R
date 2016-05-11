@@ -169,10 +169,11 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	# Remove duplicated SNPs
 	dat <- ddply(dat, type, function(x){
 		x <- mutate(x)
+		x <- x[order(x[[pval_col]]), ]
 		dup <- duplicated(x$SNP)
 		if(any(dup))
 		{
-			warning("Duplicated SNPs present in exposure data for phenotype '", x[[type]][1], ". Just keeping the first instance of the following:\n", paste(x$SNP[dup], collapse="\n"))
+			warning("Duplicated SNPs present in exposure data for phenotype '", x[[type]][1], ". Just keeping the instance with the most extreme pval:\n", paste(x$SNP[dup], collapse="\n"))
 			x <- x[!dup,]
 		}
 		return(x)		
@@ -368,8 +369,11 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	{
 		names(dat)[which(names(dat) == units_col)[1]] <- "units.outcome"
 		dat$units.outcome_dat <- as.character(dat$units.outcome)
-		check_units(dat, type, "units.outcome")
-		dat[[type]] <- paste0(dat[[type]], " (", dat$units.outcome, ")")
+		temp <- check_units(dat, type, "units.outcome")
+		if(any(temp$ph))
+		{
+			dat[[type]] <- paste0(dat[[type]], " (", dat$units.outcome, ")")
+		}
 	}
 
 	# Create id column
@@ -409,11 +413,16 @@ check_units <- function(x, id, col)
 {
 	temp <- ddply(x, id, function(x1)
 	{
+		ph <- FALSE
 		if(length(unique(x1[[col]])) > 1)
 		{
 			warning("More than one type of unit specified for ", x1[[id]][1])
+			x1 <- mutate(x1)
+			ph <- TRUE
 		}
+		return(data.frame(ph=ph[1], stringsAsFactors=FALSE))
 	})
+	return(temp)
 }
 
 
@@ -437,17 +446,12 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 {
 	stopifnot(type %in% c("exposure", "outcome"))
 
-
-	gwas_catalog_subset[[type]] <- paste(gwas_catalog_subset$Phenotype, gwas_catalog_subset$PubmidID, gwas_catalog_subset[["Phenotype info"]], gwas_catalog_subset$Units, sep=" || ")
-	if(length(unique(gwas_catalog_subset[[type]])) > 1)
+	if(length(unique(gwas_catalog_subset$Phenotype)) > 1)
 	{
-		message("Separating the entries into the following phenotypes:\n", paste(unique(gwas_catalog_subset[[type]]), collapse="\n"))
+		message("Separating the entries into the following phenotypes:\n", paste(unique(gwas_catalog_subset$Phenotype), collapse="\n"))
 	}
-
-	gwas_catalog_subset <- subset(gwas_catalog_subset, select=c("SNP", "Effect", "eaf", "effect_allele", "other_allele", "SE", "P_value", "Units", "Gene", type))
-	names(gwas_catalog_subset) <- c("SNP", "beta", "eaf", "effect_allele", "other_allele", "se", "pval", "units", "gene", type)
 	
-	dat <- format_data(gwas_catalog_subset, type=type, phenotype_col=type)
+	dat <- format_data(gwas_catalog_subset, type=type)
 	dat[[paste0("data_source.", type)]] <- "gwas_catalog"
 
 	return(dat)
