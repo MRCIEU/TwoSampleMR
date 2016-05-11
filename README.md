@@ -32,8 +32,9 @@ Load library
 
     library(TwoSampleMR)
 
-**Define your exposure** (i.e. genetic proxies/instruments for body mass index) 
+**Define your exposure** 
 
+    e.g. manually prepared file of genetic proxies/instruments for body mass index 
     bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
     exposure_dat <- read_exposure_data(bmi_file)
 
@@ -43,8 +44,10 @@ Load library
         library(MRInstruments)
         data(metab_qtl) #to load metabolomic QTLs
         exposure_dat <- format_metab_qtls(metab_qtls) 
+        data(gwas_catalog) # NHGRI/EBI GWAS catalog
+        exposure_dat <- format_gwas_catalog(metab_qtls) 
     
-    To use the MR-Base GWAS catalog to define instruments:
+    To use the MR-Base repository of full GWAS datasets to define instruments:
         ao<-available_outcomes() 
         exposure_dat <- extract_instruments(ao$id[c(1)]) 
  
