@@ -32,7 +32,7 @@ Load library
 
     library(TwoSampleMR)
 
-Define your exposure (i.e. genetic proxies/instruments for body mass index) 
+**Define your exposure** (i.e. genetic proxies/instruments for body mass index) 
 
     bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
     exposure_dat <- read_exposure_data(bmi_file)
