@@ -55,7 +55,7 @@ Load library
 
         exposure_dat <- clump_data(exposure_dat)
 
-**Define the outcomes**
+**Define your outcome**
 
     Get the available outcomes in MR Base
 
