@@ -60,7 +60,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 	})
 	mr_cols <- c("beta.exposure", "beta.outcome", "se.exposure", "se.outcome")
 	fix.tab$mr_keep <- apply(fix.tab[, mr_cols], 1, function(x) !any(is.na(x)))
-	fix.tab <- harmonise_make_snp_effects_positive(fix.tab)
+	# fix.tab <- harmonise_make_snp_effects_positive(fix.tab)
 
 	return(fix.tab)
 }
