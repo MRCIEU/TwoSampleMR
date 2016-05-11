@@ -32,29 +32,30 @@ Load library
 
     library(TwoSampleMR)
 
-**Define your exposure** 
+### Define your exposure
 
-    Manually prepare a file of genetic proxies/instruments (e.g. body mass index). To see an example of what a manually prepared file should look click here. 
+Manually prepare a file of genetic proxies/instruments (e.g. body mass index). To see an example of what a manually prepared file should look click here. 
     
-        bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
-        exposure_dat <- read_exposure_data(bmi_file)
+    bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
+    exposure_dat <- read_exposure_data(bmi_file)
 
-    Instruments can also be defined using various data sources, using the [MRInstruments package](https://github.com/MRCIEU/MRInstruments): 
+Instruments can also be defined using various data sources, using the [MRInstruments package](https://github.com/MRCIEU/MRInstruments): 
 
-        devtools::install_github("MRCIEU/MRInstruments")
-        library(MRInstruments)
-        data(metab_qtl) #to load metabolomic QTLs
-        exposure_dat <- format_metab_qtls(metab_qtls) 
-        data(gwas_catalog) # NHGRI/EBI GWAS catalog
-        exposure_dat <- format_gwas_catalog(metab_qtls) 
+    devtools::install_github("MRCIEU/MRInstruments")
+    library(MRInstruments)
+    data(metab_qtl) #to load metabolomic QTLs
+    exposure_dat <- format_metab_qtls(metab_qtls) 
+    data(gwas_catalog) # NHGRI/EBI GWAS catalog
+    exposure_dat <- format_gwas_catalog(metab_qtls) 
     
-    To use the MR-Base repository of full GWAS datasets to define instruments:
-        ao<-available_outcomes() 
-        exposure_dat <- extract_instruments(ao$id[c(1)]) 
- 
-    Prune the SNPs in LD using clumping on the remote server:
+To use the MR-Base repository of full GWAS datasets to define instruments:
+    
+    ao<-available_outcomes() 
+    exposure_dat <- extract_instruments(ao$id[c(1)]) 
+    
+Prune the SNPs in LD using clumping on the remote server:
 
-        exposure_dat <- clump_data(exposure_dat)
+    exposure_dat <- clump_data(exposure_dat)
 
 **Define your outcome**
 
