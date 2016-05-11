@@ -34,11 +34,12 @@ Load library
 
 **Define your exposure** 
 
-    e.g. manually prepared file of genetic proxies/instruments for body mass index 
+    Manually prepare a file of genetic proxies/instruments (e.g. body mass index)
     bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
     exposure_dat <- read_exposure_data(bmi_file)
+    To see an example of what a manually prepared file should look click here. 
 
-    Alternatively, instruments can be identified from various data sources using the [MRInstruments package](https://github.com/MRCIEU/MRInstruments), e.g. metabolomic QTLs: 
+    Instruments can also be defined using various data sources, using the [MRInstruments package](https://github.com/MRCIEU/MRInstruments): 
 
         devtools::install_github("MRCIEU/MRInstruments")
         library(MRInstruments)
