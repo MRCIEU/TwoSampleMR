@@ -169,11 +169,10 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	# Remove duplicated SNPs
 	dat <- ddply(dat, type, function(x){
 		x <- mutate(x)
-		x <- x[order(x[[pval_col]]), ]
 		dup <- duplicated(x$SNP)
 		if(any(dup))
 		{
-			warning("Duplicated SNPs present in exposure data for phenotype '", x[[type]][1], ". Just keeping the instance with the most extreme pval:\n", paste(x$SNP[dup], collapse="\n"))
+			warning("Duplicated SNPs present in exposure data for phenotype '", x[[type]][1], ". Just keeping the first instance:\n", paste(x$SNP[dup], collapse="\n"))
 			x <- x[!dup,]
 		}
 		return(x)		
