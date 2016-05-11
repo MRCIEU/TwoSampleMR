@@ -67,9 +67,9 @@ Load library
 
 **Harmonise the exposure and outcome data**
    
-   This checks that the effect alleles in the exposure and outcome data align, flips them and the effect size directions when necessary, and drops SNPs when it is impossible to determine the correct orientation.
+        This checks that the effect alleles in the exposure and outcome data align, flips them and the effect size directions when necessary, and drops SNPs when it is impossible to determine the correct orientation.
 
-   dat <- harmonise_data(exposure_dat, outcome_dat)
+        dat <- harmonise_data(exposure_dat, outcome_dat)
 
 **Perform the MR**
     
