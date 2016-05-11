@@ -38,7 +38,6 @@ Load library
     
         bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
         exposure_dat <- read_exposure_data(bmi_file)
-        
 
     Instruments can also be defined using various data sources, using the [MRInstruments package](https://github.com/MRCIEU/MRInstruments): 
 
