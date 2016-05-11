@@ -66,9 +66,10 @@ Load library
         outcome_dat <- extract_outcome_data(exposure_dat$SNP, c(6, 13))
 
 **Harmonise the exposure and outcome data**
-    This checks that the effect alleles in the exposure and outcome data align, flips them and the effect size directions when necessary, and drops SNPs when it is impossible to determine the correct orientation.
-    
-    dat <- harmonise_data(exposure_dat, outcome_dat)
+   
+   This checks that the effect alleles in the exposure and outcome data align, flips them and the effect size directions when necessary, and drops SNPs when it is impossible to determine the correct orientation.
+
+   dat <- harmonise_data(exposure_dat, outcome_dat)
 
 **Perform the MR**
     
