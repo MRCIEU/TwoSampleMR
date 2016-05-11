@@ -44,7 +44,6 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 	}
 
 	res.tab <- harmonise_cleanup_variables(res.tab)
-	# res.tab <- harmonise_make_snp_effects_positive(res.tab)
 
 	d <- data.frame(id.outcome=unique(res.tab$id.outcome), action=action)
 	res.tab <- merge(res.tab, d, by="id.outcome")
@@ -61,6 +60,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 	})
 	mr_cols <- c("beta.exposure", "beta.outcome", "se.exposure", "se.outcome")
 	fix.tab$mr_keep <- apply(fix.tab[, mr_cols], 1, function(x) !any(is.na(x)))
+	fix.tab <- harmonise_make_snp_effects_positive(fix.tab)
 
 	return(fix.tab)
 }
