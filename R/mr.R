@@ -22,13 +22,13 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 		}
 		res <- lapply(method_list, function(meth)
 		{
-			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
+			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
 		})
 		methl <- mr_method_list()
 		mr_tab <- data.frame(
 			outcome = x$outcome[1],
 			exposure = x$exposure[1],
-			method = methl$name[methl$obj %in% method_list],
+			method = methl$name[match(method_list, methl$obj)],
 			nsnp = sapply(res, function(x) x$nsnp),
 			b = sapply(res, function(x) x$b),
 			se = sapply(res, function(x) x$se),
@@ -301,7 +301,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 	b <- opt$par[length(b_exp)+1]
 	se <- sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1])
-	pval <- 2 * pt(abs(b) / se, df = length(b_exp)-1, low=FALSE)
+	pval <- 2 * pnorm(abs(b) / se, low=FALSE)
 
 	Q <- 2 * opt$value
 	Q_df <- length(b_exp) - 1
@@ -502,7 +502,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
-	pval <- 2 * pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), low=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -590,7 +590,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
 	se <- weighted_median_bootstrap(b_exp, b_out, se_out, se_exp, pen.weights, parameters$nboot)
-	pval <- 2 * pt(abs(b/se), df=length(b_exp)-1, low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), low=FALSE)
 	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -617,7 +617,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error 
-	pval <- 2 * pt(abs(b/se), df = length(b_exp)-1, low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), low=FALSE)
 	Q <- ivw.res$sigma^2*(length(b_exp)-2)
 	Q_df <- length(b_exp) - 1
 	Q_pval <- pchisq(Q, Q_df, low=FALSE)
@@ -692,6 +692,7 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 		{
 			with(x, get(single_method)(beta.exposure[i], beta.outcome[i], se.exposure[i], se.outcome[i], parameters))
 		})
+		print(l)
 		nom <- c()
 		for(i in 1:length(all_method))
 		{
