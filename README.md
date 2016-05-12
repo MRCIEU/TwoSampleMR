@@ -51,7 +51,7 @@ Instruments can also be defined using various data sources, using the [MRInstrum
 To use the MR-Base repository of full GWAS datasets to define instruments:
     
     ao<-available_outcomes() 
-    exposure_dat <- extract_instruments(ao$id[c(1)]) 
+    exposure_dat <- extract_instruments(ao$id[c(1)],p1 = 5e-08, clump = TRUE) 
     
 Prune the SNPs in LD using clumping on the remote server:
 
