@@ -110,21 +110,33 @@ extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_a
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
 	outcomes <- unique(outcomes)
 
-	snpfile <- upload_file_to_api(snps)
-	outcomefile <- upload_file_to_api(outcomes)
+	# Split outcomes 
+	n <- length(outcomes)
+	splitsize <- 1
+	splits <- data.frame(outcomes=outcomes, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
+	message("Splitting outcomes into ", max(splits$chunk_id), " chunks")
 
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?", 
-		"access_token=", access_token, 
-		"&outcomefile=", outcomefile, 
-		"&snpfile=", snpfile,
-		"&proxies=", proxies,
-		"&rsq=", rsq,
-		"&align_alleles=", align_alleles,
-		"&palindromes=", palindromes,
-		"&maf_threshold=", maf_threshold
-	)
+	d <- ddply(splits, .(chunk_id), function(x){
+		x <- mutate(x)
+		message(x$chunk_id[1], " of ", max(splits$chunk_id))
+		snpfile <- upload_file_to_api(snps)
+		outcomefile <- upload_file_to_api(x$outcomes)
 
-	d <- fromJSON(url)
+		url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?", 
+			"access_token=", access_token, 
+			"&outcomefile=", outcomefile, 
+			"&snpfile=", snpfile,
+			"&proxies=", proxies,
+			"&rsq=", rsq,
+			"&align_alleles=", align_alleles,
+			"&palindromes=", palindromes,
+			"&maf_threshold=", maf_threshold
+		)
+
+		return(fromJSON(url))
+	})
+
+
 	if(length(d) == 0)
 	{
 		message("None of the requested SNPs were available in the specified GWASs.")
