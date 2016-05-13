@@ -19,18 +19,26 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 	message("Extracting data from ", length(unique(outcomes)), " GWAS(s)")
 	if(clump) message("and performing LD clumping")
 
-	outcomes <- paste(outcomes, collapse=",")
+	# outcomes <- paste(outcomes, collapse=",")
 
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/extract_instruments?access_token=", access_token,
-		"&outcomes=", outcomes, 
-		"&pval=", p1,
-		"&clump=", ifelse(clump, "yes", "no"),
-		"&p2=", p2,
-		"&r2=", r2,
-		"&kb=", kb
-	)
+	d <- list()
+	for(i in 1:length(outcomes))
+	{
+		message(" [>] ", i, " of ", length(outcomes))
+		url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/extract_instruments?access_token=", access_token,
+			"&outcomes=", outcomes[i], 
+			"&pval=", p1,
+			"&clump=", ifelse(clump, "yes", "no"),
+			"&p2=", p2,
+			"&r2=", r2,
+			"&kb=", kb
+		)
+		out <- fromJSON_safe(url)
+		if(!is.data.frame(out)) out <- data.frame()
+		d[[i]] <- out
+	}
+	d <- rbind.fill(d)
 
-	d <- fromJSON(url)
 	if(length(d) == 0)
 	{
 		message("None of the requested outcomes had GWAS hits at the specified threshold.")
