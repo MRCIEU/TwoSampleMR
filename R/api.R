@@ -6,6 +6,16 @@
 #' @return access token string
 get_mrbase_access_token <- function()
 {
+	tf <- basename(tempfile())
+	check <- suppressWarnings(file.create(tf))
+	if(!check)
+	{
+		stop("You are currently in a directory which doesn't have write access.\n",
+			"  In order to authenticate we need to store the credentials in a file called '.httr-oauth'.\n",
+			"  Please setwd() to a different directory where you have write access.")
+	} else {
+		unlink(tf)
+	}
 	a <- googleAuthR::gar_auth()
 	if(! a$validate())
 	{
@@ -26,6 +36,12 @@ revoke_mrbase_access_token <- function()
 }
 
 
+fromJSON_safe <- function(url)
+{
+	r <- readLines(url, warn=FALSE)
+	return(fromJSON(r))
+}
+
 #' Check MR Base access level
 #'
 #' In order to be granted access to a particular dataset that is not generally available please contact the developers.
@@ -36,7 +52,7 @@ revoke_mrbase_access_token <- function()
 check_mrbase_access <- function()
 {
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/check_token?access_token=", get_mrbase_access_token())
-	d <- fromJSON(url)
+	d <- fromJSON_safe(url)
 	return(d)
 }
 
@@ -48,7 +64,7 @@ check_mrbase_access <- function()
 get_mrbase_status <- function()
 {
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_status")
-	d <- fromJSON(url)[1,1]
+	d <- fromJSON_safe(url)[1,1]
 	return(d)	
 }
 
@@ -61,8 +77,7 @@ get_mrbase_status <- function()
 available_outcomes <- function(access_token = get_mrbase_access_token())
 {
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_studies?access_token=", access_token)
-	d <- fromJSON(url)
-	return(d)
+	return(fromJSON_safe(url))
 }
 
 
@@ -110,21 +125,15 @@ extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_a
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
 	outcomes <- unique(outcomes)
 
-	# Split outcomes 
-	n <- length(outcomes)
-	splitsize <- 1
-	splits <- data.frame(outcomes=outcomes, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
-	message("Splitting outcomes into ", max(splits$chunk_id), " chunks")
 
-	d <- ddply(splits, .(chunk_id), function(x){
-		x <- mutate(x)
-		message(x$chunk_id[1], " of ", max(splits$chunk_id))
+	if(length(snps) < 5 | length(outcomes) < 5)
+	{
 		snpfile <- upload_file_to_api(snps)
-		outcomefile <- upload_file_to_api(x$outcomes)
+		outcomefile <- upload_file_to_api(outcomes)
 
-		url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?", 
-			"access_token=", access_token, 
-			"&outcomefile=", outcomefile, 
+		url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?",
+			"access_token=", access_token,
+			"&outcomefile=", outcomefile,
 			"&snpfile=", snpfile,
 			"&proxies=", proxies,
 			"&rsq=", rsq,
@@ -132,10 +141,80 @@ extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_a
 			"&palindromes=", palindromes,
 			"&maf_threshold=", maf_threshold
 		)
+		d <- fromJSON_safe(url)
 
-		return(fromJSON(url))
-	})
+	} else if(length(snps) > length(outcomes)) {
 
+		# Split snps 
+		n <- length(snps)
+		splitsize <- 100
+		splits <- data.frame(snps=snps, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
+		d <- list()
+		for(i in 1:length(outcomes))
+		{
+			message(i, " of ", length(outcomes), " outcomes")
+			
+			d[[i]] <- ddply(splits, .(chunk_id), function(x)
+			{
+				x <- mutate(x)
+				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id))
+				snpfile <- upload_file_to_api(x$snps)
+				outcomefile <- upload_file_to_api(outcomes[i])
+
+				url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?",
+					"access_token=", access_token,
+					"&outcomefile=", outcomefile,
+					"&snpfile=", snpfile,
+					"&proxies=", proxies,
+					"&rsq=", rsq,
+					"&align_alleles=", align_alleles,
+					"&palindromes=", palindromes,
+					"&maf_threshold=", maf_threshold
+				)
+				out <- fromJSON_safe(url)
+				if(!is.data.frame(out)) out <- data.frame()
+				return(out)
+			})
+		}
+
+		d <- rbind.fill(d)
+
+	} else {
+		# Split outcomes
+		n <- length(outcomes)
+		splitsize <- 100
+		splits <- data.frame(outcomes=outcomes, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
+		d <- list()
+		for(i in 1:length(snps))
+		{
+			message(i, " of ", length(snps), " snps")
+			
+			d[[i]] <- ddply(splits, .(chunk_id), function(x)
+			{
+				x <- mutate(x)
+				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id))
+				snpfile <- upload_file_to_api(snps[i])
+				outcomefile <- upload_file_to_api(x$outcomes)
+
+				url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?",
+					"access_token=", access_token,
+					"&outcomefile=", outcomefile,
+					"&snpfile=", snpfile,
+					"&proxies=", proxies,
+					"&rsq=", rsq,
+					"&align_alleles=", align_alleles,
+					"&palindromes=", palindromes,
+					"&maf_threshold=", maf_threshold
+				)
+				out <- fromJSON_safe(url)
+				if(!is.data.frame(out)) out <- data.frame()
+				return(out)
+			})
+		}
+
+		d <- rbind.fill(d)
+
+	}
 
 	if(length(d) == 0)
 	{
@@ -146,6 +225,40 @@ extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_a
 	d$data_source.outcome <- "mrbase"
 	return(d)
 }
+
+
+
+extract_outcome_data_simple <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+{
+	snps <- unique(snps)
+	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
+	outcomes <- unique(outcomes)
+
+	snpfile <- upload_file_to_api(snps)
+	outcomefile <- upload_file_to_api(outcomes)
+
+	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?", 
+		"access_token=", access_token, 
+		"&outcomefile=", outcomefile, 
+		"&snpfile=", snpfile,
+		"&proxies=", proxies,
+		"&rsq=", rsq,
+		"&align_alleles=", align_alleles,
+		"&palindromes=", palindromes,
+		"&maf_threshold=", maf_threshold
+	)
+	d <- fromJSON_safe(url)
+
+	if(length(d) == 0)
+	{
+		message("None of the requested SNPs were available in the specified GWASs.")
+		return(NULL)
+	}
+	d <- format_d(d)
+	d$data_source.outcome <- "mrbase"
+	return(d)
+}
+
 
 
 #' Avoid issues in MR by finding impossible vals and setting to NA
@@ -283,7 +396,7 @@ extract_outcome_data_using_get <- function(snps, outcomes)
 	outcomes <- paste(outcomes, collapse=",")
 
 	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects?access_token=", access_token, "&outcomes=", outcomes, "&snps=", snps)
-	d <- fromJSON(url)
+	d <- fromJSON_safe(url)
 	if(length(d) == 0)
 	{
 	  message("None of the requested SNPs were available in the specified GWASs.")
