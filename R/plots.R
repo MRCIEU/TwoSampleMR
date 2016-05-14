@@ -18,6 +18,9 @@ mr_scatter_plot <- function(mr_results, dat)
 		{
 			return(blank_plot("Insufficient number of SNPs"))
 		}
+		index <- d$beta.exposure < 0
+		d$beta.exposure[index] <- d$beta.exposure[index] * -1
+		d$beta.outcome[index] <- d$beta.outcome[index] * -1
 		mrres <- subset(mr_results, id.exposure == d$id.exposure[1] & id.outcome == d$id.outcome[1])
 		mrres$a <- 0
 		if("MR Egger" %in% mrres$method)
