@@ -91,7 +91,7 @@ ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_
 		"&p2=", clump_p2,
 		"&r2=", clump_r2,
 		"&kb=", clump_kb)
-	res <- fromJSON(url)
+	res <- fromJSON_safe(url)
 	y <- subset(dat, !SNP %in% res$SNP)
 	if(nrow(y) > 0)
 	{

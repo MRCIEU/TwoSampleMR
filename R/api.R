@@ -38,7 +38,8 @@ revoke_mrbase_access_token <- function()
 
 fromJSON_safe <- function(url)
 {
-	r <- readLines(url, warn=FALSE)
+	# r <- readLines(url, warn=FALSE)
+	r <- getURL(url, timeout=300)
 	return(fromJSON(r))
 }
 
