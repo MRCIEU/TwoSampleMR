@@ -86,7 +86,7 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1)
 {
 	snpfile <- upload_file_to_api(data.frame(SNP=dat$SNP, P=dat$pval.exposure), header=TRUE)
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/clump?snpfile=", snpfile, 
+	url <- paste0(options()$mrbaseapi, "clump?snpfile=", snpfile,
 		"&p1=", clump_p1,
 		"&p2=", clump_p2,
 		"&r2=", clump_r2,

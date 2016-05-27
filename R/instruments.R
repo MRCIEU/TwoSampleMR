@@ -25,7 +25,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 	for(i in 1:length(outcomes))
 	{
 		message(" [>] ", i, " of ", length(outcomes))
-		url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/extract_instruments?access_token=", access_token,
+		url <- paste0(options()$mrbaseapi, "extract_instruments?access_token=", access_token,
 			"&outcomes=", outcomes[i], 
 			"&pval=", p1,
 			"&clump=", ifelse(clump, "yes", "no"),

@@ -22,6 +22,9 @@
 	# toset <- !(names(op.googleAuthR) %in% names(op))
 	# if(any(toset)) options(op.googleAuthR[toset])
 	options(op.googleAuthR)
+
+	# options(mrbaseapi="http://scmv-webapps.epi.bris.ac.uk:5000/")
+	options(mrbaseapi="http://api.mrbase.org/")
 	
 	invisible()
 

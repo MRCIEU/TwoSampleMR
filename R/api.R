@@ -52,7 +52,7 @@ fromJSON_safe <- function(url)
 #' @return access level string
 check_mrbase_access <- function()
 {
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/check_token?access_token=", get_mrbase_access_token())
+	url <- paste0(options()$mrbaseapi, "check_token?access_token=", get_mrbase_access_token())
 	d <- fromJSON_safe(url)
 	return(d)
 }
@@ -64,7 +64,7 @@ check_mrbase_access <- function()
 #' @return integer
 get_mrbase_status <- function()
 {
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_status")
+	url <- paste0(options()$mrbaseapi, "get_status")
 	d <- fromJSON_safe(url)[1,1]
 	return(d)	
 }
@@ -77,7 +77,7 @@ get_mrbase_status <- function()
 #' @return Dataframe of details for all available studies
 available_outcomes <- function(access_token = get_mrbase_access_token())
 {
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_studies?access_token=", access_token)
+	url <- paste0(options()$mrbaseapi, "get_studies?access_token=", access_token)
 	return(fromJSON_safe(url))
 }
 
@@ -92,7 +92,7 @@ available_outcomes <- function(access_token = get_mrbase_access_token())
 upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 {
 	require(RCurl)
-	uri <- "http://scmv-webapps.epi.bris.ac.uk:5000/upload"
+	uri <- paste0(options()$mrbaseapi, "upload")
 	filename <- paste0(tempfile(), ".txt")
 	f <- file(filename, open="wb")
 	write.table(x, file=f, row=F, col=header, qu=F, eol="\n")
@@ -141,7 +141,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = FALSE, rsq = 0.8, ali
 		snpfile <- upload_file_to_api(snps)
 		outcomefile <- upload_file_to_api(outcomes)
 
-		url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?",
+		url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
 			"access_token=", access_token,
 			"&outcomefile=", outcomefile,
 			"&snpfile=", snpfile,
@@ -171,7 +171,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = FALSE, rsq = 0.8, ali
 				snpfile <- upload_file_to_api(x$snps)
 				outcomefile <- upload_file_to_api(outcomes[i])
 
-				url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?",
+				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
 					"access_token=", access_token,
 					"&outcomefile=", outcomefile,
 					"&snpfile=", snpfile,
@@ -206,7 +206,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = FALSE, rsq = 0.8, ali
 				snpfile <- upload_file_to_api(snps[i])
 				outcomefile <- upload_file_to_api(x$outcomes)
 
-				url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?",
+				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
 					"access_token=", access_token,
 					"&outcomefile=", outcomefile,
 					"&snpfile=", snpfile,
@@ -247,7 +247,7 @@ extract_outcome_data_simple <- function(snps, outcomes, proxies = 0, rsq = 0.8, 
 	snpfile <- upload_file_to_api(snps)
 	outcomefile <- upload_file_to_api(outcomes)
 
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects_from_file?", 
+	url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
 		"access_token=", access_token, 
 		"&outcomefile=", outcomefile, 
 		"&snpfile=", snpfile,
@@ -405,7 +405,7 @@ extract_outcome_data_using_get <- function(snps, outcomes)
 	snps <- paste(snps, collapse=",")
 	outcomes <- paste(outcomes, collapse=",")
 
-	url <- paste0("http://scmv-webapps.epi.bris.ac.uk:5000/get_effects?access_token=", access_token, "&outcomes=", outcomes, "&snps=", snps)
+	url <- paste0(options()$mrbaseapi, "get_effects?access_token=", access_token, "&outcomes=", outcomes, "&snps=", snps)
 	d <- fromJSON_safe(url)
 	if(length(d) == 0)
 	{
