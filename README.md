@@ -65,7 +65,7 @@ Get the available outcomes in MR Base
 
 Extract the outcome associations, e.g. for Celiac disease and T2D
     
-    outcome_dat <- extract_outcome_data(exposure_dat$SNP, c(6, 13))
+    outcome_dat <- extract_outcome_data(exposure_dat$SNP, c(6, 13),proxies=T,rsq=0.8)
 
 ### Harmonise the exposure and outcome data
 
