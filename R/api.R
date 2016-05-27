@@ -111,7 +111,7 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #'
 #' @param snps Array of SNP rs IDs
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
-#' @param proxies = 0 Look for LD tags? 1 = yes, 0 = no
+#' @param proxies = FALSE Look for LD tags? Default is FALSE.
 #' @param rsq = 0.8 Minimum LD rsq value (if proxies = 1)
 #' @param align_alleles = 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no
 #' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
@@ -120,12 +120,21 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+extract_outcome_data <- function(snps, outcomes, proxies = FALSE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
 	outcomes <- unique(outcomes)
 
+	if(proxies == FALSE)
+	{
+		proxies <- 0
+	} else if(proxies == TRUE)
+	{
+		proxies <- 1
+	} else {
+		stop("'proxies' argument should be TRUE or FALSE")
+	}
 
 	if((length(snps) < 5 & length(outcomes) < 100) | (length(outcomes) < 5 & length(snps) < 100))
 	{
