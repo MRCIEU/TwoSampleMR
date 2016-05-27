@@ -19,6 +19,8 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 		{
 			message("No SNPs available for MR analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
 			return(NULL)
+		} else {
+			message("Analysing '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
 		}
 		res <- lapply(method_list, function(meth)
 		{
@@ -283,7 +285,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	{
-		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
 	}
 	loglikelihood <- function(param) {
 		return(1/2*sum((b_exp-param[1:length(b_exp)])^2/se_exp^2)+1/2*sum((b_out-param[length(b_exp)+1]*param[1:length(b_exp)])^2/se_out^2))
@@ -296,11 +298,17 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 	if(class(opt)=="try-error")
 	{
 		message("mr_two_sample_ml failed to converge")
-		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
 	}
 
 	b <- opt$par[length(b_exp)+1]
-	se <- sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1])
+	se <- try(sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1]))
+	if(class(se)=="try-error")
+	{
+		message("mr_two_sample_ml failed to converge")
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
+	}
+
 	pval <- 2 * pnorm(abs(b) / se, low=FALSE)
 
 	Q <- 2 * opt$value

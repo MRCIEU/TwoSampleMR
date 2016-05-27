@@ -127,7 +127,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_a
 	outcomes <- unique(outcomes)
 
 
-	if(length(snps) < 5 | length(outcomes) < 5)
+	if((length(snps) < 5 & length(outcomes) < 100) | (length(outcomes) < 5 & length(snps) < 100))
 	{
 		snpfile <- upload_file_to_api(snps)
 		outcomefile <- upload_file_to_api(outcomes)
@@ -158,7 +158,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_a
 			d[[i]] <- ddply(splits, .(chunk_id), function(x)
 			{
 				x <- mutate(x)
-				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id))
+				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
 				snpfile <- upload_file_to_api(x$snps)
 				outcomefile <- upload_file_to_api(outcomes[i])
 
@@ -193,7 +193,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_a
 			d[[i]] <- ddply(splits, .(chunk_id), function(x)
 			{
 				x <- mutate(x)
-				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id))
+				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
 				snpfile <- upload_file_to_api(snps[i])
 				outcomefile <- upload_file_to_api(x$outcomes)
 
