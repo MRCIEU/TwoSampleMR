@@ -645,10 +645,24 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' @return List of data frames
 mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 {
-	res <- ddply(dat, .(id.exposure, id.outcome), function(x)
+	res <- ddply(dat, .(id.exposure, id.outcome), function(X)
 	{
-		x <- subset(x, mr_keep)
+		x <- subset(X, mr_keep)
 		nsnp <- nrow(x)
+		if(nsnp == 0)
+		{
+			x <- X[1,]
+			d <- data.frame(
+				SNP = "All",
+				b = NA,
+				se = NA,
+				p = NA,
+				samplesize = NA,
+				outcome = x$outcome[1],
+				exposure = x$exposure[1]
+			)
+			return(d)
+		}
 		if(nsnp > 1)
 		{
 			l <- lapply(1:nsnp, function(i)
@@ -666,7 +680,7 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 			d$outcome <- x$outcome[1]
 			d$exposure <- x$exposure[1]
 
-		} else if(nsnp == 1) {
+		} else {
 			a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
 			d <- data.frame(
 				SNP = "All",
@@ -677,20 +691,9 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 			)
 			d$outcome <- x$outcome[1]
 			d$exposure <- x$exposure[1]
-		} else {
-			d <- data.frame(
-				SNP = "All",
-				b = NA,
-				se = NA,
-				p = NA,
-				samplesize = NA,
-				outcome = x$outcome[1],
-				exposure = x$exposure[1]
-			)
 		}
 		return(d)
 	})
-	print(res)
 	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p))
 	return(res)
 }
@@ -705,13 +708,15 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #' @return List of data frames
 mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr_wald_ratio", all_method=c("mr_ivw", "mr_egger_regression"))
 {
-	res <- ddply(dat, .(id.exposure, id.outcome), function(x)
+	res <- ddply(dat, .(id.exposure, id.outcome), function(X)
 	{
-		x <- subset(x, mr_keep)
-		if(nrow(x) == 0)
+		x <- subset(X, mr_keep)
+		nsnp <- nrow(x)
+		if(nsnp == 0)
 		{
+			x <- X[1,]
 			d <- data.frame(
-				SNP = "No MR SNPs",
+				SNP = "No available data",
 				b = NA,
 				se = NA,
 				p = NA,
@@ -721,12 +726,10 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 			)
 			return(d)
 		}
-		nsnp <- nrow(x)
 		l <- lapply(1:nsnp, function(i)
 		{
 			with(x, get(single_method)(beta.exposure[i], beta.outcome[i], se.exposure[i], se.outcome[i], parameters))
 		})
-		print(l)
 		nom <- c()
 		for(i in 1:length(all_method))
 		{
