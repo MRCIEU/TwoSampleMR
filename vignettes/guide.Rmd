@@ -1,0 +1,223 @@
+# Introduction
+
+Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components 
+
+- data management and harmonisation
+- the statistical routines to estimate the causal effects
+- a large repository of the actual GWAS summary statistics needed to perform the analyses.
+
+The general principles [@DaveySmith2003; @DaveySmithHemani2014], and statistical methods [@Pierce2013; @Bowden2015] can be found elsewhere, here we will just outline how to use the R package.
+
+# Installation
+
+To install directly from the GitHub repository do the following:
+
+```{r eval=FALSE}
+library(devtools)
+install_github("MRCIEU/TwoSampleMR")
+```
+
+If you don't have the `devtools` package install it from CRAN using `install.packages("devtools")`.
+
+# Overview
+
+The workflow for performing MR is as follows:
+
+1. Select instruments for the exposure
+2. Perform LD clumping if necessary
+3. Extract the instruments from the MR Base GWAS database for the outcomes of interest
+4. Harmonise the effect sizes for the instruments on the exposures and the outcomes to be each for the same reference allele
+5. Perform MR analysis
+6. Perform sensitivity analyses
+7. Create plots
+8. Compile reports
+
+Each step is documented in detail below.
+
+
+# Exposure data
+
+A data frame of the instruments for an exposure is required. Each line has the information for one SNP for one exposure. The minimum information required for MR analysis is the following:
+
+- `SNP` - rs ID 
+- `beta` - The effect size. If the trait is binary then log(OR) should be used
+- `se` - The standard error of the effect size
+- `effect_allele` - The allele of the SNP which has the effect marked in `beta`
+
+Other information that is useful for MR can also be provided:
+
+- `other_allele` - The non-effect allele
+- `eaf` - The effect allele frequency
+- `Phenotype` - The name of the phenotype for which the SNP has an effect
+
+You can also provide the following extra information:
+
+- `samplesize` - Sample size for estimating the effect size
+- `ncase` - Number of cases
+- `ncontrol` - Number of controls
+- `pval` - The P-value for the SNP's association with the exposure
+- `units` - The units in which the effects are presented
+- `gene` - The gene or other annotation for the the SNP
+
+## Reading in from a file
+
+The data can be read in from a text file using the `read_exposure_data` function. The file must have a header with column names corresponding to the columns described above.
+
+### Example 1: The default column names are used
+
+An example of a text file with the default column names is provided as part of the package, the first few rows look like this:
+
+```
+Phenotype SNP beta se effect_allele other_allele eaf pval units gene samplesize
+BMI rs10767664 0.19 0.0306122448979592 A T 0.78 5e-26 kg/m2 BDNF 225238
+BMI rs13078807 0.1 0.0204081632653061 G A 0.2 4e-11 kg/m2 CADM2 221431
+BMI rs1514175 0.07 0.0204081632653061 A G 0.43 8e-14 kg/m2 TNNI3K 207641
+BMI rs1558902 0.39 0.0204081632653061 A T 0.42 5e-120 kg/m2 FTO 222476
+BMI rs10968576 0.11 0.0204081632653061 G A 0.31 3e-13 kg/m2 LRRN6C 247166
+BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886
+```
+
+The exact path to the file will be different on everyone's computer, but it can be located like this:
+
+```{r}
+bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
+```
+
+You can read the data in like this:
+
+```{r}
+bmi_exp_dat <- read_exposure_data(bmi_file)
+head(bmi_exp_dat)
+```
+
+The output from this function is a new data frame with standardised column names:
+
+- `SNP`
+- `exposure`
+- `beta.exposure`
+- `se.exposure`
+- `effect_allele.exposure`
+- `other_allele.exposure`
+- `eaf.exposure`
+- `mr_keep.exposure`
+- `pval.exposure`
+- `pval_origin.exposure`
+- `id.exposure`
+- `data_source.exposure`
+- `units.exposure`
+- `gene.exposure`
+- `samplesize.exposure`
+
+The function attempts to match the columns to the ones it expects. It also checks that the data type is as expected.
+
+If the required data for MR to be performed is not present (SNP name, effect size, standard error, effect allele) for a particular SNP, then the column `mr_keep.exposure` will be "FALSE". 
+
+
+### Example 2: The text file has non-default column names
+
+If the text file does not have default column names, this can still be read in as follows. Here are the first few rows of an example:
+
+```
+rsid,effect,SE,a1,a2,a1_freq,p-value,Units,Gene,n
+rs10767664,0.19,0.030612245,A,T,0.78,5.00E-26,kg/m2,BDNF,225238
+rs13078807,0.1,0.020408163,G,A,0.2,4.00E-11,kg/m2,CADM2,221431
+rs1514175,0.07,0.020408163,A,G,0.43,8.00E-14,kg/m2,TNNI3K,207641
+rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
+```
+
+Note that this is a CSV file, with commas separating fields. The file is located here:
+
+```{r }
+bmi2_file <- system.file("data/bmi2.csv", package="TwoSampleMR")
+```
+
+To read in this data:
+
+```{r }
+bmi_exp_dat <- read_exposure_data(
+	filename = bmi2_file,
+	sep = ",",
+	snp_col = "rsid",
+	beta_col = "effect",
+	se_col = "SE",
+	effect_allele_col = "a1",
+	other_allele_col = "a2",
+	eaf_col = "a1_freq",
+	pval_col = "p-value",
+	unit_col = "Units",
+	gene_col = "Gene",
+	samplesize_col = "n"
+)
+head(bmi)
+```
+
+
+If the `Phenotype` column is not provided (as is the case in this example) then it will assume that the phenotype's name is simply "exposure". This is entered in the `exposure` column. It can be renamed manually:
+
+
+```{r }
+bmi_exp_dat$exposure <- "BMI"
+```
+
+
+## Using an existing data frame
+
+If the data already exists as a data frame in R then it can be converted into the correct format using the `format_data` function. For example, here is some randomly created data:
+
+```{r}
+random_df <- data.frame(
+	SNP = c("rs1", "rs2"),
+	beta = c(1, 2),
+	se = c(1, 2),
+	effect_allele = c("A", "T")
+)
+random_df
+```
+
+This can be formatted like so:
+
+```{r}
+random_exp_dat <- format_data(random_df, type="exposure")
+random_exp_dat
+```
+
+
+## Obtaining instruments from existing catalogues
+
+A number of sources of instruments have already been curated and are available for use in MR Base. They are provided as data objects in the `MRInstruments` package. To install the MR
+
+
+### GWAS catalog
+
+### Metabolites
+
+### Proteins
+
+### Gene expression levels
+
+### DNA methylation levels
+
+### MR Base GWAS database
+
+
+
+# Clumping
+
+
+
+# Outcome data
+
+
+# Harmonise data
+
+
+# Perform MR
+
+
+# Sensitivity analyses
+
+
+# Plots
+
+
+# Reports
