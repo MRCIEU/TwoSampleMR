@@ -597,7 +597,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	penalty <- pchisq(weights*(betaIV-betaIVW)^2, df=1, lower.tail=FALSE)
 	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
-	se <- weighted_median_bootstrap(b_exp, b_out, se_out, se_exp, pen.weights, parameters$nboot)
+	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, pen.weights, parameters$nboot)
 	pval <- 2 * pnorm(abs(b/se), low=FALSE)
 	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
 }
