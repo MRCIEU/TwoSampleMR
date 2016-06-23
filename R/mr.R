@@ -573,6 +573,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #' Penalised weighted median MR
 #'
 #' Modification to standard weighted median MR
+#' Updated based on Burgess 2016 "Robust instrumental variable methods using multiple candidate instruments with application to Mendelian randomization"
 #'
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome
@@ -594,7 +595,8 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	betaIVW <- sum(b_out*b_exp*se_out^-2)/sum(b_exp^2*se_out^-2) # IVW estimate
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	weights <- 1/VBj
-	penalty <- pchisq(weights*(betaIV-betaIVW)^2, df=1, lower.tail=FALSE)
+	bwm <- mr_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
+	penalty <- pchisq(weights*(betaIV-bwm$b)^2, df=1, lower.tail=FALSE)
 	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, pen.weights, parameters$nboot)
