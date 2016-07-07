@@ -766,6 +766,8 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 get_r_from_pn <- function(p, n)
 {
 	# qval <- qf(p, 1, n-2, low=FALSE)
+	p[p == 1] <- 0.999
+	p[p == 0] <- 1e-200
 	qval <- qchisq(p, 1, low=F) / (qchisq(p, n-2, low=F)/(n-2))
 	r <- sqrt(sum(qval / (n - qval)))
 
