@@ -61,6 +61,7 @@
 
 #' Perform multivariable MR
 #'
+#' WARNING: EXPERIMENTAL, needs more testing
 #' 1. identify exposures
 #' 2. get best instruments for each exposure
 #' 3. get effects of each instrument from each exposure and the outcome
@@ -74,6 +75,7 @@
 #' @return List of results table, exposure effects and outcome effects
 multivariable_mr <- function(id_exposure, id_outcome)
 {
+	message("Warning: This analysis is still experimental")
 	stopifnot(length(id_exposure) > 1)
 	stopifnot(length(id_outcome) == 1)
 
