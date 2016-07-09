@@ -59,38 +59,90 @@
 # 4. create matrix of xs
 
 
-
-extract_multivariable_instruments <- function(id)
+#' Perform multivariable MR
+#'
+#' 1. identify exposures
+#' 2. get best instruments for each exposure
+#' 3. get effects of each instrument from each exposure and the outcome
+#' 4. create matrix of exposure effects
+#' 5. perform multivariable MR
+#'
+#' @param id_exposure Array of ids from \code{available_outcomes}
+#' @param id_outcome Single id from \code{available_outcomes}
+#'
+#' @export
+#' @return List of results table, exposure effects and outcome effects
+multivariable_mr <- function(id_exposure, id_outcome)
 {
-	stopifnot(length(id) > 1)
-	# Get best instruments for each exposure
-	l <- list()
-	for(i in 1:length(id))
-	{
-		message("Extracting instruments for ", id[i])
-		l[[i]] <- extract_instruments(id[i])
-	}
+	stopifnot(length(id_exposure) > 1)
+	stopifnot(length(id_outcome) == 1)
 
-	exposure_dat <- rbind.fill(l)
-	exposure_dat <- clump_data(exposure_dat)
+	# Get best instruments for each exposure
+	exposure_dat <- extract_instruments(id_exposure, r2 = 0.0000001, kb=10000)
+	temp <- exposure_dat
+	temp$id.exposure <- 1
+	temp <- clump_data(temp, clump_r2=0.0000001)
+	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
 
 	# Get effects of each instrument from each exposure
+	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure)
+	d1 <- subset(d1, mr_keep.outcome)
+	d2 <- subset(d1, id.outcome != id_exposure[1])
+	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
 
-	d1 <- extract_outcome_data(exposure_dat$SNP, id[1])
-	d2 <- extract_outcome_data(exposure_dat$SNP, id[-1])
-	d1 <- convert_outcome_to_exposure(d1)
-
+	# Harmonise against the first id
 	d <- harmonise_data(d1, d2)
 
+	# Only keep SNPs that are present in all
+	tab <- table(d$SNP)
+	keepsnps <- names(tab)[tab == length(id_exposure)-1]
+	d <- subset(d, SNP %in% keepsnps)
 	
+	# Reshape exposures
+	dh1 <- subset(d, id.outcome == id.outcome[1], select=c(SNP, exposure, id.exposure, effect_allele.exposure, other_allele.exposure, beta.exposure, se.exposure))
+	dh2 <- subset(d, select=c(SNP, outcome, id.outcome, effect_allele.outcome, other_allele.outcome, beta.outcome, se.outcome))
+	names(dh2) <- gsub("outcome", "exposure", names(dh2))
+	dh <- rbind(dh1, dh2)
+	exposure_mat <- reshape2::dcast(dh, SNP ~ exposure, value.var="beta.exposure")
 
 
-	od <- table(od$SNP)
+	# Get outcome data
+	outcome_dat <- extract_outcome_data(keepsnps, id_outcome)
+	dat <- harmonise_data(d1, outcome_dat)
+	exposure_mat <- subset(exposure_mat, SNP %in% dat$SNP)
+	dat$SNP <- as.character(dat$SNP)
+	exposure_mat$SNP <- as.character(exposure_mat$SNP)
+	index <- match(exposure_mat$SNP, dat$SNP)
+	dat <- dat[index, ]
+	stopifnot(all(dat$SNP == exposure_mat$SNP))
 
-	#
+	exposure_mat <- as.matrix(exposure_mat[,-1])
+	rownames(exposure_mat) <- dat$SNP
+	effs <- array(1:length(id_exposure))
+	se <- array(1:length(id_exposure))
+	pval <- array(1:length(id_exposure))
+	for(i in 1:length(id_exposure))
+	{
+		mod <- summary(lm(lm(dat$beta.outcome ~ exposure_mat[,-c(i)])$res ~ exposure_mat[,i]))
+		effs[i] <- mod$coef[2,1]
+		se[i] <- mod$coef[2,2]
+		pval[i] <- pnorm(abs(effs[i]) / se[i], lower.tail=FALSE)
+	}
 
-
+	nom <- unique(dh$exposure)
+	return(list(
+		results = data.frame(
+			exposure=nom,
+			outcome=unique(dat$outcome),
+			b=effs,
+			se=se,
+			pval=pval,
+			stringsAsFactors=FALSE
+		),
+		exposure_effects = exposure_mat,
+		outcome_effects  = dat$beta.outcome
+	))
 }
 
 
