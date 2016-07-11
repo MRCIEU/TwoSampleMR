@@ -1,3 +1,20 @@
+---
+title: "MR Base for two sample MR"
+author: Gibran Hemani
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    toc: true
+    toc_depth: 2
+---
+
+```{r echo=FALSE}
+opts_chunk$set(eval=FALSE)
+```
+
+* * * 
+
 # Introduction
 
 Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components 
@@ -8,7 +25,9 @@ Two sample Mendelian randomisation (2SMR) is a method to estimate the causal eff
 
 The general principles [@DaveySmith2003; @DaveySmithHemani2014], and statistical methods [@Pierce2013; @Bowden2015] can be found elsewhere, here we will just outline how to use the R package.
 
-# Installation
+* * * 
+
+## Installation
 
 To install directly from the GitHub repository do the following:
 
@@ -19,21 +38,66 @@ install_github("MRCIEU/TwoSampleMR")
 
 If you don't have the `devtools` package install it from CRAN using `install.packages("devtools")`.
 
-# Overview
+* * * 
+
+## Overview
 
 The workflow for performing MR is as follows:
 
-1. Select instruments for the exposure
-2. Perform LD clumping if necessary
-3. Extract the instruments from the MR Base GWAS database for the outcomes of interest
-4. Harmonise the effect sizes for the instruments on the exposures and the outcomes to be each for the same reference allele
-5. Perform MR analysis
-6. Perform sensitivity analyses
-7. Create plots
-8. Compile reports
+1. Select instruments for the exposure (perform LD clumping if necessary)
+2. Extract the instruments from the MR Base GWAS database for the outcomes of interest
+3. Harmonise the effect sizes for the instruments on the exposures and the outcomes to be each for the same reference allele
+4. Perform MR analysis, sensitivity analyses, create plots, compile reports
+
+A diagramatic overview is shown here:
+
+![TwoSampleMRSchematic](figure/twosamplemr_schematic_long-01.png)
+
+A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:
+
+```{r eval=FALSE}
+
+library(TwoSampleMR)
+
+# List available GWASs
+ao <- available_outcomes()
+
+# Get instruments
+exposure_dat <- read_exposure_data("path_to_bmi_instruments.txt")
+
+# Get effects of instruments on outcome
+outcome_dat <- extract_outcome_data(snps=exposure_dat$SNP, outcomes=7)
+
+# Harmonise the exposure and outcome data
+dat <- harmonise_data(exposure_dat, outcome_dat)
+
+# Perform MR
+res <- mr(dat)
+```
 
 Each step is documented in detail below.
 
+
+## Authentication
+
+In order to perform any commands that access data in the MR Base database, you must authenticate the request using OAuth2.0 authentication, using a Google account. For example, requesting a list of studies in the MR Base database:
+
+```{r }
+ao <- available_outcomes()
+```
+
+requires authentication.
+
+If you are using a desktop computer this will open a web browser, navigating to a page that asks you to sign in to your Google account and authenticate access to MR Base. 
+
+If you are using a server which doesn't have a graphic user interface then it will provide a link and a code to enter into a browser to authenticate access.
+
+This function creates a new (hidden) file in your working directory called `.httr-oauth`. If you are using R in a working directory that does not have write permissions then this command will fail, please navigate to a directory that does have write permissions. 
+
+If you need to run this in a non-interactive script then you can generate the `.httr-oauth` file on an interactive computer, copy that file to the working directory that R will be running from, and then run a batch (non-interactive).
+
+
+* * * 
 
 # Exposure data
 
@@ -184,40 +248,593 @@ random_exp_dat
 
 ## Obtaining instruments from existing catalogues
 
-A number of sources of instruments have already been curated and are available for use in MR Base. They are provided as data objects in the `MRInstruments` package. To install the MR
+A number of sources of instruments have already been curated and are available for use in MR Base. They are provided as data objects in the `MRInstruments` package. To install:
 
+```{r eval=FALSE}
+devtools::install_github("MRCIEU/MRInstruments")
+```
+
+This package contains a number of data.frames, each of which is a repository of SNP-trait associations. How to access the data frames is detailed below:
 
 ### GWAS catalog
 
+The NHGRI-EBI GWAS catalog contains a catalog of significant associations obtained from GWASs. This version of the data is filtered and harmonised to contain associations that have the required data to perform MR, to ensure that the units used to report effect sizes from a particular study are all the same, and other data cleaning operations.
+
+To use the GWAS catalog:
+
+```{r }
+library(MRInstruments)
+data(gwas_catalog)
+head(gwas_catalog)
+```
+
+For example, to obtain instruments for body mass index using the Speliotes et al 2010 study:
+
+```{r }
+bmi_gwas <- subset(gwas_catalog, grepl("Speliotes", Author) & Phenotype == "Body mass index (kg/m2 increase)")
+bmi_exp_dat <- format_data(bmi_gwas)
+```
+
+
 ### Metabolites
+
+Independent top hits from GWASs on `r length(unique(metab_qtls$phenotype))` metabolites in whole blood are stored in the `metab_qtls` data object. Use `?metab_qtls` to get more information.
+
+
+```{r}
+data(metab_qtls)
+head(metab_qtls)
+```
+
+For example, to obtain instruments for the Alanine:
+
+```{r }
+ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype=="Ala"))
+```
 
 ### Proteins
 
+Independent top hits from GWASs on `r length(unique(proteomic_qtls$analyte))` protein levels in whole blood are stored in the `proteomic_qtls` data object. Use `?proteomic_qtls` to get more information.
+
+
+```{r}
+data(proteomic_qtls)
+head(proteomic_qtls)
+```
+
+For example, to obtain instruments for the ApoH protein:
+
+```{r }
+apoh_exp_dat <- format_proteomic_qtls(subset(proteomic_qtls, analyte=="ApoH"))
+```
+
 ### Gene expression levels
+
+Independent top hits from GWASs on `r length(unique(gtex_eqtl$gene_name))` gene identifiers and in `r length(unique(gtex_eqtl$tissue))` tissues are available from the GTEX study in `gtex_eqtl`. Use `?gtex_eqtl` to get more information.
+
+```{r}
+data(gtex_eqtl)
+head(gtex_eqtl)
+```
+
+For example, to obtain instruments for the IRAK1BP1 gene expression levels in subcutaneous adipose tissue:
+
+```{r }
+irak1bp1_exp_dat <- format_gtex_eqtl(subset(gtex_eqtl, gene_name=="IRAK1BP1" & tissue == "Adipose Subcutaneous"))
+```
+
 
 ### DNA methylation levels
 
+Independent top hits from GWASs on `r length(unique(aries_mqtl$gene_name))` DNA methylation levels in whole blood across `r length(unique(aries_mqtl$timepoint))` time points are available from the ARIES study in `aries_mqtl`. Use `?aries_mqtl` to get more information.
+
+```{r}
+data(aries_mqtl)
+head(aries_mqtl)
+```
+
+For example, to obtain instruments for cg25212131 CpG DNA methylation levels in at birth:
+
+```{r }
+cg25212131_exp_dat <- format_aries_mqtl(subset(aries_mqtl, cpg=="cg25212131" & age == "Birth"))
+```
+
+
 ### MR Base GWAS database
 
+The MR Base GWAS database contains the entire summary statistics for hundreds of GWASs. You can use this database to define the instruments for a particular exposure. You can also use this database to obtain the effects for constructing polygenic risk scores using different p-value thresholds.
+
+For example, to obtain details about the available GWASs do the following:
+
+```{r }
+ao <- available_outcomes()
+head(ao)
+```
+
+For information about authentication see the [Authentication](#Authentication) section. 
+
+The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
+
+```{r }
+head(subset(ao, select=c(trait, id)))
+```
+
+To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:
+
+```{r }
+bmi_exp_dat <- extract_instruments(outcomes=2)
+```
+
+This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can specify various parameters for this function:
+
+- `p1` = P-value threshold for keeping a SNP
+- `clump` = Whether or not to return independent SNPs only (default=TRUE)
+- `r2` = The maximum LD R-square allowed between returned SNPs
+- `kb` = The distance in which to search for LD R-square values
+
+By changing changing the `p1` parameter it is possible to obtain SNP effects for constructing polygenic risk scores.
 
 
-# Clumping
+## Clumping
 
+For standard two sample MR it is important to ensure that the instruments for the exposure are independent. Once instruments have been identified for an exposure variable, MR Base can be used to perform clumping.
 
+The European samples from the 1000 genomes project are used to estimate LD between SNPs. You can provide a list of SNP IDs, the SNPs will be extracted from 1000 genomes data, LD calculated between them, and amongst those SNPs that have LD R-square above the specified threshold only the SNP with the lowest P-value will be retained. To do this, use the following command:
+
+```{r }
+bmi_exp_dat <- clump_data(bmi_exp_dat)
+```
+
+The `clump_data` command takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the R/MRInstruments package the SNPs are already LD clumped.
+
+* * * 
 
 # Outcome data
 
+Once instruments for the exposure trait have been specified, those SNPs need to be extracted from the outcome trait. 
+
+
+## Available studies in MR Base
+
+MR Base contains complete GWAS summary statistics from a large number of studies. To obtain details about the available GWASs do the following:
+
+```{r }
+ao <- available_outcomes()
+head(ao)
+```
+
+For information about authentication see the [Authentication](#Authentication) section. 
+
+The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
+
+```{r }
+head(subset(ao, select=c(trait, id)))
+```
+
+
+## Extracting particular SNPs from particular studies
+
+If we want to perform MR of BMI against coronary heart disease, we need to identify the SNPs that influence the BMI, and then extract those SNPs from a GWAS on coronary heart disease.
+
+We have already extracted the `r nrow(bmi_exp_dat)` SNP effects for BMI:
+
+```{r }
+head(bmi_exp_dat)
+```
+
+We now need to find a suitable GWAS for coronary heart disease. We can search the available studies:
+
+```{r }
+ao[grepl("heart disease", ao$trait), ]
+```
+
+The most recent CARDIOGRAM GWAS is ID number 7. We can extract the BMI SNPs from this GWAS as follows:
+
+```{r }
+chd_out_dat <- extract_outcome_data(
+					snps=bmi_exp_dat$SNP,
+					outcomes = 7
+			   )
+```
+
+The `extract_outcome_data` is a flexible function. The `snps` argument only requires an array of rsIDs, and the `outcomes` variable can be a vector of outcomes. e.g. `chd_out_dat(c("rs234", "rs17097147"), c(2, 7))` will extract the two SNPs from each of the outcomes 2 and 7.
+
+
+## LD proxies
+
+By default if a particular requested SNP is not present in the outcome GWAS then a SNP (proxy) that is in LD with the requested SNP (target) will be searched for instead. LD proxies are defined using 1000 genomes European sample data. The effect of the proxy SNP on the outcome is returned, along with the proxy SNP, the effect allele of the proxy SNP, and the corresponding allele (in phase) for the target SNP.
+
+The parameters for handling LD proxies are as follows:
+
+- `proxies` = TRUE or FALSE (TRUE by default)
+- `rsq` = numeric value of minimum rsq to find a proxy. Default is 0.8, minimum is 0.6
+- `palindromes` = Allow palindromic SNPs? Default is 1 (yes)
+- `maf_threshold` = If palindromes allowed then what is the maximum minor allele frequency of palindromes allowed? Default is 0.3.
+
+
+## Using local GWAS summary data
+
+If you have GWAS summary data that is not present in MR Base, this can still be to perform analysis, though the LD proxy functionality is not currently available.
+
+Supposing there is a GWAS summary file called "gwas_summary.csv" with e.g. 2 million rows and it looks like this:
+
+```
+rsid,effect,SE,a1,a2,a1_freq,p-value,Units,Gene,n
+rs10767664,0.19,0.030612245,A,T,0.78,5.00E-26,kg/m2,BDNF,225238
+rs13078807,0.1,0.020408163,G,A,0.2,4.00E-11,kg/m2,CADM2,221431
+rs1514175,0.07,0.020408163,A,G,0.43,8.00E-14,kg/m2,TNNI3K,207641
+rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
+...
+...
+```
+
+To extract the exposure SNPs from this data, we would use the following command:
+
+```{r }
+outcome_dat <- read_outcome_data(
+	snps = bmi_exp_dat$SNP,
+	filename = "gwas_summary.csv",
+	sep = ",",
+	snp_col = "rsid",
+	beta_col = "effect",
+	se_col = "SE",
+	effect_allele_col = "a1",
+	other_allele_col = "a2",
+	eaf_col = "a1_freq",
+	pval_col = "p-value",
+	unit_col = "Units",
+	gene_col = "Gene",
+	samplesize_col = "n"
+)
+```
+
+This returns an outcome data frame with only the SNPs that were requested (if those SNPs were present in the "gwas_summary.csv" file).
+
+
+## Outcome data format
+
+The `extract_outcome_data` function returns a table of SNP effects for the requested SNPs on the requested outcomes. The format of the data is similar to the exposure data format, except the main columns are as follows:
+
+- `SNP`
+- `beta.outcome`
+- `se.outcome`
+- `samplesize.outcome`
+- `ncase.outcome`
+- `ncontrol.outcome`
+- `pval.outcome`
+- `eaf.outcome`
+- `effect_allele.outcom`
+- `other_allele.outcome`
+- `units.outcome`
+- `outcome`
+- `consortium.outcome`
+- `year.outcome`
+- `pmid.outcome`
+- `id.outcome`
+- `originalname.outcome`
+- `proxy.outcome`
+- `target_snp.outcome`
+- `proxy_snp.outcome`
+- `target_a1.outcome`
+- `target_a2.outcome`
+- `proxy_a1.outcome`
+- `proxy_a2.outcome`
+- `mr_keep.outcome`
+- `data_source.outcome`
+
+
+* * * 
 
 # Harmonise data
 
+The exposure data and outcome data are now obtained, but it is important to harmonise the effects. This means that the effect of a SNP on the exposure and the effect of that SNP on the outcome must each correspond to the same allele. 
+
+To harmonise the exposure and outcome data, do the following:
+
+```{r }
+dat <- harmonise_data(
+	exposure_dat = bmi_exp_dat, 
+	outcome_dat = chd_out_dat
+)
+```
+
+This creates a new data frame that has the exposure data and outcome data combined. 
+
+If there were 3 exposure traits and 3 outcome traits then there will be 9 sets of harmonisations being performed - harmonising the SNP effects of exposure trait 1 against outcome trait 1; exposure trait 1 against outcome trait 2; and so on.
+
+## Dealing with strand issues
+
+Recent GWASs typically present the effects of a SNP in reference to the allele on the forward strand. But as reference panels are updated the forward strand sometimes changes, and GWASs from a few years ago aren't guaranteed to be using forward strand conventions.
+
+Some examples are shown below:
+
+### Correct, unambigious
+
+```
+exposure effect = 0.5
+effect allele = A
+other allele = G
+
+outcome effect = 0.05
+effect allele = A
+other allele = G
+```
+
+Here the effect allele on the exposure and the outcome is the same
+
+
+### Incorrect reference, unambigious
+
+```
+exposure effect = 0.5
+effect allele = A
+other allele = G
+
+outcome effect = -0.05
+effect allele = C
+other allele = T
+```
+
+Here the outcome GWAS is presenting the effect for the alternate allele on the reverse strand. We need to flip the outcome effect to 0.05 to correspond to the same allele as the exposure GWAS on the forward strand.
+
+
+### Ambiguous
+
+```
+exposure effect = 0.5
+effect allele = A
+other allele = G
+
+outcome effect = -0.05
+effect allele = A
+other allele = C
+```
+
+Here the alleles do not correspond for the same SNP, so this SNP will be discarded from the analysis.
+
+
+### Palindromic SNP, inferrable
+
+```
+exposure effect = 0.5
+effect allele = A
+other allele = T
+effect allele frequency = 0.11
+
+outcome effect = -0.05
+effect allele = A
+other allele = T
+effect allele frequency = 0.91
+```
+
+Here the alleles correspond, but it is a palindromic SNP, such that the alleles on the forward strand are the same as on the reverse strand (A/T on forward is T/A on the reverse). However, the allele frequency of the effect allele gives us information - if the outcome effect allele (A) were on the forward strand we would expect it to have a low allele frequency, but given it has a high frequency (0.91) we infer that the outcome GWAS is presenting the effect on the reverse strand for the alternative allele. We would flip the effect to 0.05 for the outcome GWAS.
+
+
+### Palindromic SNP, not inferrable
+
+```
+exposure effect = 0.5
+effect allele = A
+other allele = T
+effect allele frequency = 0.50
+
+outcome effect = -0.05
+effect allele = A
+other allele = T
+effect allele frequency = 0.50
+```
+
+This is similar to the above, except the allele frequency no longer gives us information about the strand. We would discard this SNP. This is done for any palindromic SNPs that have minor allele frequency above 0.42.
+
+
+### Options
+
+There are three options to harmonising the data. 
+
+1. Assume all alleles are presented on the forward strand
+2. Try to infer the forward strand alleles using allele frequency information
+3. Correct the strand for non-palindromic SNPs, but drop all palindromic SNPs
+
+By default, the `harmonise_data` function uses option 2, but this can be modified using the `action` argument, e.g. `harmonise_data(exposure_dat, outcome_dat, action=3)`.
+
+* * * 
 
 # Perform MR
 
+Once the exposure and outcome data are harmonised, we have effects and standard errors for each instrument SNP available for the exposure and outcome traits. We can use this information to perform Mendelian randomisation. To do this, simply run:
 
-# Sensitivity analyses
+```{r }
+res <- mr(dat)
+res
+```
+
+This returns a data frame of estimates of the causal effect of the exposure on the outcome for a range of different MR methods.
+
+If there were multiple exposures against multiple outcomes in `dat`, the `mr()` function will perform each MR method for each combination of exposure-outcome traits.
+
+## Available methods
+
+The list of available MR methods can be obtained:
+
+```{r }
+mr_method_list()
+```
+
+To perform them, they can be specified in the `mr()` function, e.g. to only perform MR Egger regression and Inverse variance weighted methods,
+
+```{r }
+mr(dat, method_list=c("mr_egger_regression", "mr_ivw"))
+```
+
+By default, all the methods that are labelled `TRUE` in the `use_by_default` column are used by the `mr()` function.
+
+* * * 
+
+## Sensitivity analyses
+
+### Heterogeneity statistics
+
+Some of the MR methods can also perform tests for heterogeneity. To obtain those statistics:
+
+```{r }
+mr_heterogeneity(dat)
+```
+
+As with the `mr()` function, the `mr_heterogeneity()` function can take an argument to only perform heterogeneity tests using specified methods, e.g.
+
+```{r }
+mr_heterogeneity(dat, method_list=c("mr_egger_regression", "mr_ivw"))
+```
 
 
-# Plots
+### Horizontal pleiotropy
+
+The intercept term in MR Egger regression can be a useful indication of whether directional horizontal pleiotropy is driving the results of an MR analysis. This can be obtained as follows:
+
+```{r }
+mr_pleiotropy_test(dat)
+```
 
 
-# Reports
+### Single SNP analysis
+
+To obtain the MR estimates using each of the SNPs singly we can do the following:
+
+```{r }
+res_single <- mr_singlesnp(dat)
+```
+
+This returns a data.frame of results that is similar to the output from `mr()` except it performs the analysis multiple times for each exposure-outcome combination - each time using a different single SNP to perform the analysis.
+
+The method used to perform the single SNP MR is the Wald ratio by default, though this can be changed, e.g. to use the fixed effects meta analysis method instead:
+
+```{r }
+res_single <- mr_singlesnp(dat, single_method="mr_meta_fixed")
+```
+
+The `mr_singlesnp()` function calculates the full MR using all available SNPs as well, and by default it uses the IVW and MR Egger methods. This can be specified as so:
+
+```{r }
+res_single <- mr_singlesnp(dat, all_method="mr_two_sample_ml")
+```
+
+will perform only the maximum likelihood method for the combined test.
+
+
+### Leave-one-out analysis
+
+It is possible to perform a leave-one-out analysis, where the MR is performed again but leaving out each SNP in turn, to identify if a single SNP is driving the association.
+
+```{r }
+res_loo <- mr_leaveoneout(dat)
+```
+
+By default the method used is the inverse variance weighted method, but this can be changed by using the `method` argument.
+
+* * * 
+
+## Plots
+
+There are a few ways to visualise the results, listed below
+
+
+### Scatter plot
+
+We can depict the relationship of the SNP effects on the exposure against the SNP effects on the outcome using a scatter plot.
+
+```{r }
+res <- mr(dat)
+p1 <- mr_scatter_plot(res, dat)
+```
+
+A scatter plot is created for each exposure-outcome test, and stored in `p1` as a list of plots. For example, to plot the first scatter plot:
+
+```{r }
+p1[[1]]
+```
+
+And to see how many plots there are:
+
+```{r }
+length(p1)
+```
+
+Lines are drawn for each method used in `mr(dat)`, the slope of the line corresponding to the estimated causal effect. To limit which lines are drawn, simply specify the desired methods, e.g. to only draw MR Egger and IVW:
+
+```{r }
+res <- mr(dat, method_list=c("mr_egger_regression", "mr_ivw"))
+p1 <- mr_scatter_plot(res, dat)
+```
+
+It is possible to save this plot using the `ggsave()` function, e.g. to save as a pdf
+
+```{r eval=FALSE}
+ggsave(p1[[1]], file="filename.pdf", width=7, height=7)
+```
+
+or save as a png
+
+```{r eval=FALSE}
+ggsave(p1[[1]], file="filename.png", width=7, height=7)
+```
+
+See `?ggsave` for more info.
+
+
+### Forest plot
+
+Use the `mr_forest_plot()` function to compare the MR estimates using the different MR methods against the single SNP tests.
+
+```{r }
+res_single <- mr_singlesnp(dat)
+p2 <- mr_forest_plot(res_single)
+p2[[1]]
+```
+
+Here, the plot shows the causal effect as estimated using each of the SNPs on their own, and comparing against the causal effect as estimated using the methods that use all the SNPs.
+
+To get plots that use different methods, specify them in the `mr_singlesnp()` function:
+
+```{r }
+res_single <- mr_singlesnp(dat, all_method=c("mr_ivw", "mr_two_sample_ml"))
+p2 <- mr_forest_plot(res_single)
+p2[[1]]
+```
+
+### Leave-one-out plot
+
+Use the `mr_leaveoneout_plot` function to visualise the leave-one-out analysis:
+
+```{r }
+res_loo <- mr_leaveoneout(dat)
+p3 <- mr_leaveoneout_plot(res_loo)
+p3[[1]]
+```
+
+Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)` to use Egger regression.
+
+
+### Funnel plot
+
+Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows:
+
+```{r }
+res_single <- mr_singlesnp(dat)
+p4 <- mr_funnel_plot(res_single)
+p4[[1]]
+```
+
+* * * 
+
+## Reports
+
+A report can be generated that performs all MR analyses, sensitivity analyses, and plots, and presents them in a single self-contained html web page, word document, or pdf document. 
+
+```{r eval=FALSE}
+mr_report(dat)
+```
+
+By default this produces a html file in the current working directory, but see the help pages on how to modify this.
+
+This function will create a separate report file for every exposure-outcome combination that is present in the `dat` object.
+
