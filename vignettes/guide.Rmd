@@ -7,6 +7,7 @@ output:
     highlight: tango
     toc: true
     toc_depth: 2
+bibliography: TwoSampleMR.bib
 ---
 
 ```{r echo=FALSE}
@@ -838,3 +839,9 @@ By default this produces a html file in the current working directory, but see t
 
 This function will create a separate report file for every exposure-outcome combination that is present in the `dat` object.
 
+
+* * *
+
+# References
+
+<br/>

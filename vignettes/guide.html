@@ -106,6 +106,7 @@ img {
 <li><a href="#plots">Plots</a></li>
 <li><a href="#reports">Reports</a></li>
 </ul></li>
+<li><a href="#references">References</a></li>
 </ul>
 </div>
 
@@ -118,7 +119,7 @@ img {
 <li>the statistical routines to estimate the causal effects</li>
 <li>a large repository of the actual GWAS summary statistics needed to perform the analyses.</li>
 </ul>
-<p>The general principles <span class="citation">[@DaveySmith2003; @DaveySmithHemani2014]</span>, and statistical methods <span class="citation">[@Pierce2013; @Bowden2015]</span> can be found elsewhere, here we will just outline how to use the R package.</p>
+<p>The general principles <span class="citation">(G. <span>Davey Smith</span> and Ebrahim 2003; George <span>Davey Smith</span> and Hemani 2014)</span>, and statistical methods <span class="citation">(Pierce and Burgess 2013; Bowden, <span>Davey Smith</span>, and Burgess 2015)</span> can be found elsewhere, here we will just outline how to use the R package.</p>
 <hr />
 <div id="installation" class="section level2">
 <h2>Installation</h2>
@@ -646,6 +647,17 @@ p4[[<span class="dv">1</span>]]</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mr_report</span>(dat)</code></pre>
 <p>By default this produces a html file in the current working directory, but see the help pages on how to modify this.</p>
 <p>This function will create a separate report file for every exposure-outcome combination that is present in the <code>dat</code> object.</p>
+<hr />
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p><br /></p>
+<div class="references">
+<p>Bowden, Jack, George <span>Davey Smith</span>, and Stephen Burgess. 2015. “Mendelian randomization with invalid instruments: effect estimation and bias detection through Egger regression.” <em>International Journal of Epidemiology</em> In press.</p>
+<p><span>Davey Smith</span>, G., and S. Ebrahim. 2003. “’Mendelian randomization’: can genetic epidemiology contribute to understanding environmental determinants of disease?” <em>International Journal of Epidemiology</em> 32 (1): 1–22. doi:<a href="http://dx.doi.org/10.1093/ije/dyg070">10.1093/ije/dyg070</a>.</p>
+<p><span>Davey Smith</span>, George, and Gibran Hemani. 2014. “Mendelian randomization: genetic anchors for causal inference in epidemiological studies.” <em>Human Molecular Genetics</em> 23 (R1). Oxford Univ Press: R89—–98. doi:<a href="http://dx.doi.org/10.1093/hmg/ddu328">10.1093/hmg/ddu328</a>.</p>
+<p>Pierce, Brandon L, and Stephen Burgess. 2013. “Efficient design for Mendelian randomization studies: subsample and 2-sample instrumental variable estimators.” <em>American Journal of Epidemiology</em> 178 (7): 1177–84. doi:<a href="http://dx.doi.org/10.1093/aje/kwt084">10.1093/aje/kwt084</a>.</p>
 </div>
 </div>
 
