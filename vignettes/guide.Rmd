@@ -2,21 +2,25 @@
 title: "MR Base for two sample MR"
 author: Gibran Hemani
 output: 
-  html_document:
-    theme: united
-    highlight: tango
-    toc: true
-    toc_depth: 2
+  knitrBootstrap::bootstrap_document:
+    title: MR Base for two sample MR
+    theme: United
+    highlight: Magula
+    theme.chooser: FALSE
+    highlight.chooser: FALSE
+    menu: FALSE
 bibliography: TwoSampleMR.bib
 ---
 
 ```{r echo=FALSE}
-opts_chunk$set(eval=FALSE)
+opts_chunk$set(eval=TRUE, cache=TRUE)
+suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
+suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
 ```
 
 * * * 
 
-# Introduction
+# MR Base for two sample MR
 
 Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components 
 
@@ -52,7 +56,9 @@ The workflow for performing MR is as follows:
 
 A diagramatic overview is shown here:
 
-![TwoSampleMRSchematic](figure/twosamplemr_schematic_long-01.png)
+
+<div class="row"><div class="col-md-12">
+<a href="#" class="thumbnail"><img src="figure/twosamplemr_schematic_long-01.png"></a></div></div>
 
 A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:
 
@@ -144,13 +150,13 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886
 
 The exact path to the file will be different on everyone's computer, but it can be located like this:
 
-```{r}
+```{r eval=TRUE}
 bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
 ```
 
 You can read the data in like this:
 
-```{r}
+```{r eval=TRUE}
 bmi_exp_dat <- read_exposure_data(bmi_file)
 head(bmi_exp_dat)
 ```
@@ -209,11 +215,11 @@ bmi_exp_dat <- read_exposure_data(
 	other_allele_col = "a2",
 	eaf_col = "a1_freq",
 	pval_col = "p-value",
-	unit_col = "Units",
+	units_col = "Units",
 	gene_col = "Gene",
 	samplesize_col = "n"
 )
-head(bmi)
+head(bmi_exp_dat)
 ```
 
 
@@ -471,7 +477,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
 
 To extract the exposure SNPs from this data, we would use the following command:
 
-```{r }
+```{r eval=FALSE}
 outcome_dat <- read_outcome_data(
 	snps = bmi_exp_dat$SNP,
 	filename = "gwas_summary.csv",
@@ -483,7 +489,7 @@ outcome_dat <- read_outcome_data(
 	other_allele_col = "a2",
 	eaf_col = "a1_freq",
 	pval_col = "p-value",
-	unit_col = "Units",
+	units_col = "Units",
 	gene_col = "Gene",
 	samplesize_col = "n"
 )
