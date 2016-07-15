@@ -1,14 +1,11 @@
 ---
 title: "MR Base for two sample MR"
-author: Gibran Hemani
 output: 
-  knitrBootstrap::bootstrap_document:
-    title: MR Base for two sample MR
-    theme: United
-    highlight: Magula
-    theme.chooser: FALSE
-    highlight.chooser: FALSE
-    menu: FALSE
+  html_document:
+    theme: united
+    highlight: tango
+    toc: true
+    toc_depth: 2
 bibliography: TwoSampleMR.bib
 ---
 
@@ -20,7 +17,7 @@ suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
 
 * * * 
 
-# MR Base for two sample MR
+# Introduction
 
 Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components 
 
@@ -57,8 +54,7 @@ The workflow for performing MR is as follows:
 A diagramatic overview is shown here:
 
 
-<div class="row"><div class="col-md-12">
-<a href="#" class="thumbnail"><img src="figure/twosamplemr_schematic_long-01.png"></a></div></div>
+![here](figure/twosamplemr_schematic_long-01.png)
 
 A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:
 
@@ -369,7 +365,7 @@ head(subset(ao, select=c(trait, id)))
 To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:
 
 ```{r }
-bmi_exp_dat <- extract_instruments(outcomes=2)
+bmi2014_exp_dat <- extract_instruments(outcomes=2)
 ```
 
 This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can specify various parameters for this function:
@@ -439,9 +435,9 @@ The most recent CARDIOGRAM GWAS is ID number 7. We can extract the BMI SNPs from
 
 ```{r }
 chd_out_dat <- extract_outcome_data(
-					snps=bmi_exp_dat$SNP,
-					outcomes = 7
-			   )
+	snps = bmi_exp_dat$SNP,
+	outcomes = 7
+)
 ```
 
 The `extract_outcome_data` is a flexible function. The `snps` argument only requires an array of rsIDs, and the `outcomes` variable can be a vector of outcomes. e.g. `chd_out_dat(c("rs234", "rs17097147"), c(2, 7))` will extract the two SNPs from each of the outcomes 2 and 7.
