@@ -15,7 +15,7 @@ mr_scatter_plot <- function(mr_results, dat)
 	mrres <- dlply(dat, .(id.exposure, id.outcome), function(d)
 	{
 		d <- mutate(d)
-		if(nrow(d) < 3 | sum(d$mr_keep) == 0)
+		if(nrow(d) < 2 | sum(d$mr_keep) == 0)
 		{
 			return(blank_plot("Insufficient number of SNPs"))
 		}
@@ -117,7 +117,7 @@ mr_forest_plot <- function(singlesnp_results)
 	res <- dlply(singlesnp_results, .(id.exposure, id.outcome), function(d)
 	{
 		d <- mutate(d)
-		if(sum(!grepl("All", d$SNP)) < 3) {
+		if(sum(!grepl("All", d$SNP)) < 2) {
 			return(
 				blank_plot("Insufficient number of SNPs")
 			)
@@ -172,7 +172,7 @@ mr_funnel_plot <- function(singlesnp_results)
 	res <- dlply(singlesnp_results, .(id.exposure, id.outcome), function(d)
 	{
 		d <- mutate(d)
-		if(sum(!grepl("All", d$SNP)) < 3) {
+		if(sum(!grepl("All", d$SNP)) < 2) {
 			return(
 				blank_plot("Insufficient number of SNPs")
 			)
