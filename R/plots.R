@@ -61,6 +61,7 @@ mr_leaveoneout_plot <- function(leaveoneout_results)
 	res <- dlply(leaveoneout_results, .(id.exposure, id.outcome), function(d)
 	{
 		d <- mutate(d)
+		# Need to have at least 3 SNPs because IVW etc methods can't be performed with fewer than 2 SNPs
 		if(sum(!grepl("All", d$SNP)) < 3) {
 			return(
 				blank_plot("Insufficient number of SNPs")

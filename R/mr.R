@@ -665,7 +665,7 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 			)
 			return(d)
 		}
-		if(nsnp > 1)
+		if(nsnp > 2)
 		{
 			l <- lapply(1:nsnp, function(i)
 			{
