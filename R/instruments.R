@@ -37,7 +37,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		if(!is.data.frame(out)) out <- data.frame()
 		d[[i]] <- out
 	}
-	d <- rbind.fill(d)
+	d <- plyr::rbind.fill(d)
 
 	if(length(d) == 0)
 	{

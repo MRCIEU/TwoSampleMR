@@ -97,7 +97,7 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
         mr_leaveoneout_plot = mr_leaveoneout_plot(m$mr_leaveoneout)
     )
 
-    combinations <- ddply(dat, .(id.exposure, id.outcome), summarise, n=length(exposure), exposure=exposure[1], outcome=outcome[1])
+    combinations <- plyr::ddply(dat, c("id.exposure", "id.outcome"), summarise, n=length(exposure), exposure=exposure[1], outcome=outcome[1])
 
     output_file <- array("", nrow(combinations))
     for(i in 1:nrow(combinations))

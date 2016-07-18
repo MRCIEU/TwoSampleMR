@@ -1,6 +1,6 @@
 Package: TwoSampleMR
-Title: It does what it says on the tin
-Version: 0.1.1
+Title: Interfacing to the MR Base database and performing two sample MR
+Version: 0.1.2
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
@@ -9,25 +9,25 @@ Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut"))
 			 )
 Description: See title
-Depends:
+Depends: 
+    R (>= 3.1.0)
+Suggests:
     ggplot2,
-    meta,
     plyr,
-    jsonlite,
-    knitr,
-    markdown,
-    RCurl,
-    gtable,
     reshape2,
     stringr,
-    data.table,
-    googleAuthR
-Suggests:
-    RMySQL,
-    Eur1000Genomes,
     knitr,
+    markdown,
+    gtable,
+    RMySQL,
     rmarkdown,
     MRInstruments
+Imports:
+    meta,
+    jsonlite,
+    RCurl,
+    data.table,
+    googleAuthR
 License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr

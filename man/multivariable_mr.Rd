@@ -15,6 +15,7 @@ multivariable_mr(id_exposure, id_outcome)
 List of results table, exposure effects and outcome effects
 }
 \description{
+WARNING: EXPERIMENTAL, needs more testing
 1. identify exposures
 2. get best instruments for each exposure
 3. get effects of each instrument from each exposure and the outcome

@@ -27,9 +27,9 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1
 		dat$id.exposure <- random_string(1)
 	}
 
-	res <- ddply(dat, .(id.exposure), function(x)
+	res <- plyr::ddply(dat, c("id.exposure"), function(x)
 	{
-		x <- mutate(x)
+		x <- plyr::mutate(x)
 		message("Clumping ", x$id.exposure[1], ", ", nrow(x), " SNPs")
 		return(ld_pruning_api(x, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1))
 	})

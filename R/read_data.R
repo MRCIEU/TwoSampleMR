@@ -26,7 +26,7 @@
 #' @return data frame
 read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
-	outcome_dat <- fread(filename, header=TRUE, sep=sep)
+	outcome_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	outcome_dat <- format_data(
 		as.data.frame(outcome_dat),
 		type="outcome",
@@ -75,7 +75,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #' @return data frame
 read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
-	exposure_dat <- fread(filename, header=TRUE, sep=sep)
+	exposure_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
 		as.data.frame(exposure_dat),
 		type="exposure",
@@ -167,8 +167,8 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	}
 
 	# Remove duplicated SNPs
-	dat <- ddply(dat, type, function(x){
-		x <- mutate(x)
+	dat <- plyr::ddply(dat, type, function(x){
+		x <- plyr::mutate(x)
 		dup <- duplicated(x$SNP)
 		if(any(dup))
 		{
@@ -428,13 +428,13 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 
 check_units <- function(x, id, col)
 {
-	temp <- ddply(x, id, function(x1)
+	temp <- plyr::ddply(x, id, function(x1)
 	{
 		ph <- FALSE
 		if(length(unique(x1[[col]])) > 1)
 		{
 			warning("More than one type of unit specified for ", x1[[id]][1])
-			x1 <- mutate(x1)
+			x1 <- plyr::mutate(x1)
 			ph <- TRUE
 		}
 		return(data.frame(ph=ph[1], stringsAsFactors=FALSE))
@@ -609,8 +609,8 @@ ucsc_get_position <- function(snp)
 
 ensembl_get_position <- function(snp)
 {
-	library(biomaRt)
-	library(stringr)
+	require(biomaRt)
+	require(stringr)
 	Mart <- useMart(host="grch37.ensembl.org", biomart="ENSEMBL_MART_SNP",dataset="hsapiens_snp")
 	Attr <- listAttributes(Mart)
 	ensembl <- getBM(attributes=c("refsnp_id","chr_name","chrom_start","allele","minor_allele","minor_allele_freq"),filters="snp_filter",values=snp,mart=Mart)
@@ -702,11 +702,11 @@ combine_data <- function(x)
 
 	id_col <- paste0("id.", type)
 	mr_keep_col <- paste0("mr_keep.", type)
-	x <- rbind.fill(x)
+	x <- plyr::rbind.fill(x)
 
-	x <- ddply(x, id_col, function(x)
+	x <- plyr::ddply(x, id_col, function(x)
 	{
-		x <- mutate(x)
+		x <- plyr::mutate(x)
 		x <- x[order(x[[mr_keep_col]], decreasing=TRUE), ]
 		x <- subset(x, !duplicated(SNP))
 		return(x)

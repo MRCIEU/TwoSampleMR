@@ -38,7 +38,7 @@ enrichment_method_list <- function()
 		)
 	)
 	a <- lapply(a, as.data.frame)
-	a <- rbind.fill(a)
+	a <- plyr::rbind.fill(a)
 	a <- as.data.frame(lapply(a, as.character), stringsAsFactors=FALSE)
 	return(a)	
 }
@@ -54,7 +54,7 @@ enrichment_method_list <- function()
 #' @return data frame
 enrichment <- function(dat, method_list=enrichment_method_list()$obj)
 {
-	res <- ddply(dat, .(id.exposure, id.outcome), function(x1)
+	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing enrichment analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
 

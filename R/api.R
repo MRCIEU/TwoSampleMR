@@ -39,8 +39,8 @@ revoke_mrbase_access_token <- function()
 fromJSON_safe <- function(url)
 {
 	# r <- readLines(url, warn=FALSE)
-	r <- getURL(url, timeout=300)
-	return(fromJSON(r))
+	r <- RCurl::getURL(url, timeout=300)
+	return(jsonlite::fromJSON(r))
 }
 
 #' Check MR Base access level
@@ -91,14 +91,13 @@ available_outcomes <- function(access_token = get_mrbase_access_token())
 #' @return basename of file
 upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 {
-	require(RCurl)
 	uri <- paste0(options()$mrbaseapi, "upload")
 	filename <- paste0(tempfile(), ".txt")
 	f <- file(filename, open="wb")
 	write.table(x, file=f, row=F, col=header, qu=F, eol="\n")
 	close(f)
 	if(file.size(filename) > max_file_size) stop("File size is too large, your request has too many SNPs")
-	suppressWarnings(postForm(uri, file=fileUpload(filename=filename)))
+	suppressWarnings(RCurl::postForm(uri, file=RCurl::fileUpload(filename=filename)))
 	unlink(filename)
 	return(basename(filename))
 }
@@ -164,9 +163,9 @@ extract_outcome_data <- function(snps, outcomes, proxies = FALSE, rsq = 0.8, ali
 		{
 			message(i, " of ", length(outcomes), " outcomes")
 			
-			d[[i]] <- ddply(splits, .(chunk_id), function(x)
+			d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x)
 			{
-				x <- mutate(x)
+				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
 				snpfile <- upload_file_to_api(x$snps)
 				outcomefile <- upload_file_to_api(outcomes[i])
@@ -187,7 +186,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = FALSE, rsq = 0.8, ali
 			})
 		}
 
-		d <- rbind.fill(d)
+		d <- plyr::rbind.fill(d)
 
 	} else {
 		# Split outcomes
@@ -199,9 +198,9 @@ extract_outcome_data <- function(snps, outcomes, proxies = FALSE, rsq = 0.8, ali
 		{
 			message(i, " of ", length(snps), " snps")
 			
-			d[[i]] <- ddply(splits, .(chunk_id), function(x)
+			d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x)
 			{
-				x <- mutate(x)
+				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
 				snpfile <- upload_file_to_api(snps[i])
 				outcomefile <- upload_file_to_api(x$outcomes)
@@ -222,7 +221,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = FALSE, rsq = 0.8, ali
 			})
 		}
 
-		d <- rbind.fill(d)
+		d <- plyr::rbind.fill(d)
 
 	}
 
@@ -337,9 +336,9 @@ format_d <- function(d)
 		d <- cbind(d1, p)
 
 		# If two SNPs have the same proxy SNP then one has to be removed
-		d <- ddply(d, .(outcome), function(x)
+		d <- plyr::ddply(d, c("outcome"), function(x)
 		{
-			x <- mutate(x)
+			x <- plyr::mutate(x)
 			subset(x, !duplicated(proxy_snp.outcome))
 		})
 

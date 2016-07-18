@@ -48,9 +48,9 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 	d <- data.frame(id.outcome=unique(res.tab$id.outcome), action=action)
 	res.tab <- merge(res.tab, d, by="id.outcome")
 
-	fix.tab <- ddply(res.tab, .(id.exposure, id.outcome), function(x)
+	fix.tab <- plyr::ddply(res.tab, c("id.exposure", "id.outcome"), function(x)
 	{
-		x <- mutate(x)
+		x <- plyr::mutate(x)
 		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
 
 # SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action		

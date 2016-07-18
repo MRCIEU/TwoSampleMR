@@ -11,7 +11,7 @@
 #'         extra: Table of extra results
 mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_method_list(), use_by_default)$obj)
 {
-	mr_tab <- ddply(dat, .(id.exposure, id.outcome), function(x1)
+	mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing MR analysis of '", x1$id.exposure[1], "' on '", x18WII58$id.outcome[1], "'")
 		x <- subset(x1, mr_keep)
@@ -133,7 +133,7 @@ mr_method_list <- function()
 		)
 	)
 	a <- lapply(a, as.data.frame)
-	a <- rbind.fill(a)
+	a <- plyr::rbind.fill(a)
 	a <- as.data.frame(lapply(a, as.character), stringsAsFactors=FALSE)
 	a$heterogeneity_test <- as.logical(a$heterogeneity_test)
 	a$use_by_default <- as.logical(a$use_by_default)
@@ -647,7 +647,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' @return List of data frames
 mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 {
-	res <- ddply(dat, .(id.exposure, id.outcome), function(X)
+	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
 	{
 		x <- subset(X, mr_keep)
 		nsnp <- nrow(x)
@@ -710,7 +710,7 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #' @return List of data frames
 mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr_wald_ratio", all_method=c("mr_ivw", "mr_egger_regression"))
 {
-	res <- ddply(dat, .(id.exposure, id.outcome), function(X)
+	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
 	{
 		x <- subset(X, mr_keep)
 		nsnp <- nrow(x)
@@ -829,7 +829,7 @@ directionality_test <- function(dat)
 		message("Data requires p-values and sample sizes for outcomes and exposures")
 		return(NULL)
 	}
-	dtest <- ddply(dat, .(id.exposure, id.outcome), function(x)
+	dtest <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x)
 	{
 		b <- mr_steiger(x$pval.exposure, x$pval.outcome, x$samplesize.exposure, x$samplesize.outcome)
 		a <- data.frame(
@@ -857,7 +857,7 @@ directionality_test <- function(dat)
 #' @return Data frame
 mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list = subset(mr_method_list(), heterogeneity_test)$obj)
 {
-	het_tab <- ddply(dat, .(id.exposure, id.outcome), function(x1)
+	het_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
 		x <- subset(x1, mr_keep)
@@ -911,7 +911,7 @@ Isq <- function(y,s)
 #' @return data frame
 mr_pleiotropy_test <- function(dat)
 {
-	ptab <- ddply(dat, .(id.exposure, id.outcome), function(x1)
+	ptab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		x <- subset(x1, mr_keep)
 		if(nrow(x) < 2)
