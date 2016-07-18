@@ -244,6 +244,10 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	if(!is.na(i))
 	{
 		names(dat)[i] <- "effect_allele.outcome"
+		if(is.logical(dat$effect_allele.outcome))
+		{
+			dat$effect_allele.outcome <- substr(as.character(dat$effect_allele.outcome), 1, 1)
+		}
 		if(!is.character(dat$effect_allele.outcome))
 		{
 			warning("effect_allele column is not character data. Coercing...")
@@ -253,7 +257,12 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		dat$effect_allele.outcome <- toupper(dat$effect_allele.outcome)
 		index <- ! dat$effect_allele.outcome %in% c("A", "C", "T", "G")
 		index[is.na(index)] <- TRUE
-		dat$effect_allele.outcome[index] <- NA
+		if(any(index))
+		{
+			warning("effect_allele column has some values that are not A/C/T/G. These SNPs will be excluded")
+			dat$effect_allele.outcome[index] <- NA
+			dat$mr_keep.outcome[index] <- FALSE
+		}
 	}
 
 
@@ -262,6 +271,10 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	if(!is.na(i))
 	{
 		names(dat)[i] <- "other_allele.outcome"
+		if(is.logical(dat$other_allele.outcome))
+		{
+			dat$other_allele.outcome <- substr(as.character(dat$other_allele.outcome), 1, 1)
+		}
 		if(!is.character(dat$other_allele.outcome))
 		{
 			warning("other_allele column is not character data. Coercing...")
@@ -271,7 +284,12 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		dat$other_allele.outcome <- toupper(dat$other_allele.outcome)
 		index <- ! dat$other_allele.outcome %in% c("A", "C", "T", "G")
 		index[is.na(index)] <- TRUE
-		dat$other_allele.outcome[index] <- NA
+		if(any(index))
+		{
+			warning("other_allele column has some values that are not A/C/T/G. These SNPs will be excluded")
+			dat$other_allele.outcome[index] <- NA
+			dat$mr_keep.outcome[index] <- FALSE
+		}
 	}
 
 
@@ -380,19 +398,19 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 
 	if(any(dat$mr_keep.outcome))
 	{
-		mrcols <- c("beta.outcome", "se.outcome", "effect_allele.outcome", "other_allele.outcome")
+		mrcols <- c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome")
 		mrcols_present <- mrcols[mrcols %in% names(dat)]
 		dat$mr_keep.outcome <- apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
 		if(any(!dat$mr_keep.outcome))
 		{
 			warning("The following SNP(s) are missing required information for the MR tests and will be excluded\n", paste(subset(dat, !mr_keep.outcome)$SNP, collapse="\n"))
 		}
-		if(all(!dat$mr_keep.outcome))
-		{
-			warning("None of the provided SNPs can be used for MR analysis, they are missing required information.")
-		}
-
 	}
+	if(all(!dat$mr_keep.outcome))
+	{
+		warning("None of the provided SNPs can be used for MR analysis, they are missing required information.")
+	}
+
 
 	# Add in missing MR cols
 	for(col in c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome", "other_allele.outcome", "eaf.outcome"))
