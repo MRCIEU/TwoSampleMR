@@ -1,6 +1,6 @@
 Package: TwoSampleMR
-Title: It does what it says on the tin
-Version: 0.1.1
+Title: Two Sample MR functions and interface to MR Base database
+Version: 0.1.2
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",

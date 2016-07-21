@@ -31,7 +31,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1
 	{
 		x <- mutate(x)
 		message("Clumping ", x$id.exposure[1], ", ", nrow(x), " SNPs")
-		return(ld_pruning_api(x, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1))
+		return(ld_pruning_api(x, clump_kb=clump_kb, clump_r2=clump_r2, clump_p1=clump_p1, clump_p2=clump_p2))
 	})
 	return(res)
 }
