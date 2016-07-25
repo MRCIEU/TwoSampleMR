@@ -1,8 +1,9 @@
 .onLoad <- function(libname, pkgname) {
 
 	packageStartupMessage(
-		"Welcome to TwoSampleMR. Check here for updates: https://github.com/MRCIEU/TwoSampleMR\n",
-		"To check your access level run check_mrbase_access()"
+		"Welcome to TwoSampleMR.\n",
+		"[=>] Check for updates: https://github.com/MRCIEU/TwoSampleMR\n",
+		"[=>] Full documentation: https://mrcieu.github.io/TwoSampleMR"
 	)
 	op <- options()
 	op.googleAuthR <- list(

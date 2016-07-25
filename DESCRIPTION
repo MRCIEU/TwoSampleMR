@@ -1,5 +1,5 @@
 Package: TwoSampleMR
-Title: Interfacing to the MR Base database and performing two sample MR
+Title: Two Sample MR functions and interface to MR Base database
 Version: 0.1.2
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
