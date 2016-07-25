@@ -1,16 +1,20 @@
 ---
 title: "MR Base for two sample MR"
+author: "Gibran Hemani"
+date: "`r Sys.Date()`"
 output: 
-  html_document:
-    theme: united
-    highlight: tango
+  rmarkdown::html_document:
     toc: true
     toc_depth: 2
-bibliography: TwoSampleMR.bib
+vignette: >
+  %\VignetteIndexEntry{MR Base for two sample MR}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+bibliography: refs.bib
 ---
 
 ```{r echo=FALSE}
-opts_chunk$set(eval=TRUE, cache=TRUE)
+knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
 suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
 suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
 ```
@@ -655,7 +659,7 @@ This returns a data frame of estimates of the causal effect of the exposure on t
 
 If there were multiple exposures against multiple outcomes in `dat`, the `mr()` function will perform each MR method for each combination of exposure-outcome traits.
 
-## Available methods
+## MR methods
 
 The list of available MR methods can be obtained:
 

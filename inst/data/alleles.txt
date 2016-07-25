@@ -1,4 +1,4 @@
-SNP A1 A2 B1 B2 betaA betaB trueBetaB fA fB note
+test SNP A1 A2 B1 B2 betaA betaB fA fB note
 a A G A G 1 1 0.5 0.5 1 fine
 b A G G A 1 1 0.5 0.5 -1 to_swap
 c A G T A 1 1 0.5 0.5 0 incompatible
