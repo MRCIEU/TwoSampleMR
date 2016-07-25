@@ -199,7 +199,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
 Note that this is a CSV file, with commas separating fields. The file is located here:
 
 ```{r }
-bmi2_file <- system.file("data/bmi2.csv", package="TwoSampleMR")
+bmi2_file <- system.file("data/bmi.csv", package="TwoSampleMR")
 ```
 
 To read in this data:
