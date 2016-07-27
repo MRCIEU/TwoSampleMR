@@ -44,7 +44,7 @@ mr_scatter_plot <- function(mr_results, dat)
 			ggplot2::scale_colour_manual(values=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928")) +
 			ggplot2::labs(colour="MR Test", x=paste("SNP effect on", d$exposure[1]), y=paste("SNP effect on", d$outcome[1])) +
 			ggplot2::theme(legend.position="top", legend.direction="vertical") +
-			ggplot2::guides(colour=guide_legend(ncol=2))
+			ggplot2::guides(colour=ggplot2::guide_legend(ncol=2))
 	})
 	mrres
 }
