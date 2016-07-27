@@ -792,7 +792,7 @@ get_r_from_pn <- function(p, n)
 #' @return List. correct_causal_direction evaluates if the exposure -> outcome assumption holds. steiger_test evaluates the confidence of the correct_causal_direction value
 mr_steiger <- function(p_exp, p_out, n_exp, n_out)
 {
-	require(psych)
+	requireNamespace("psych", quietly=TRUE)
 	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
 	p_exp <- p_exp[!index]
 	p_out <- p_out[!index]
