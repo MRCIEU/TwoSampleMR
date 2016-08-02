@@ -13,7 +13,7 @@
 #'
 #' @export
 #' @return data frame
-extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.1, kb = 5000, access_token = get_mrbase_access_token())
+extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token())
 {
 	outcomes <- unique(outcomes)
 	message("Extracting data from ", length(unique(outcomes)), " GWAS(s)")
