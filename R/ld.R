@@ -10,7 +10,7 @@
 #'
 #' @export
 #' @return Data frame
-clump_data <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1)
+clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1)
 {
 	if(!is.data.frame(dat))
 	{
