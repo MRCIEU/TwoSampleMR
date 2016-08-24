@@ -18,12 +18,4 @@ Data frame
 Subset the GWAS catalogue to have the rows you require for instrumenting a particular exposure and then run this command.
 Be careful to avoid using different phenotypes, phenotype types, or units together.
 }
-\examples{
-\dontrun{
-data(gwas_catalog)
-require(MRInstruments)
-bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
-bmi <- format_gwas_catalog(bmi)
-}
-}
 

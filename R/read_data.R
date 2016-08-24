@@ -317,7 +317,7 @@ format_data <- function(dat, type="exposure", snps=NULL, phenotype_col="Phenotyp
 			if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat))
 			{
 				index <- is.na(dat$pval.outcome)
-				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower=FALSE)
+				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
 				dat$pval_origin.outcome[index] <- "inferred"
 			}
 		}
@@ -327,7 +327,7 @@ format_data <- function(dat, type="exposure", snps=NULL, phenotype_col="Phenotyp
 	if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat) & ! "pval.outcome" %in% names(dat))
 	{
 		message("Inferring p-values")
-		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower=FALSE)
+		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE)
 		dat$pval_origin.outcome <- "inferred"
 	}
 	
@@ -454,12 +454,6 @@ check_units <- function(x, id, col)
 #'
 #' @export
 #' @return Data frame
-#' @examples \dontrun{
-#' data(gwas_catalog)
-#' require(MRInstruments)
-#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
-#' bmi <- format_gwas_catalog(bmi)
-#'}
 format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 {
 	stopifnot(type %in% c("exposure", "outcome"))

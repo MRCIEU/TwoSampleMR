@@ -1,5 +1,5 @@
 Package: TwoSampleMR
-Title: Mendelian randomization functions functions and interface to GWAS database
+Title: Mendelian Randomization Functions Functions and Interface to GWAS Database
 Version: 0.2.0
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
@@ -20,7 +20,6 @@ Suggests:
     markdown,
     gtable,
     rmarkdown,
-    MRInstruments,
     psych
 Imports:
     meta,
