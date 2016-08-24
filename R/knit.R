@@ -50,7 +50,7 @@ knit_report <- function(input_filename, output_filename, ...)
     }
     else if (is.docx)
     {
-        require(rmarkdown)
+        requireNamespace("rmarkdown", quietly=TRUE)
         return(rmarkdown::render(input_filename, rmarkdown::word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else
@@ -70,6 +70,7 @@ knit_report <- function(input_filename, output_filename, ...)
 #' folder specified in \code{output_path}.
 #' @param author Author name
 #' @param study Study title
+#' @param path Path to knitr document for generating report
 #' @param ... Extra options to be passed to knitr
 #'
 #' @export

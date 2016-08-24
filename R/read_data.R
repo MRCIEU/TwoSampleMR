@@ -55,6 +55,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
 #'
 #' @param filename Filename. Must have header with at least SNP column present.
+#' @param clump Default=FALSE. Option to clump the SNPs using MR-Base.
 #' @param sep Default=" ". Specify delimeter in file
 #' @param phenotype_col Default="Phenotype". Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
 #' @param snp_col Default="SNP". Required name of column with SNP rs IDs
@@ -108,26 +109,26 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. If it is the exposure then looks up SNPs in biomaRt to get basic info.
 #'
 #' @param dat Data frame. Must have header with at least SNP column present.
-#' @param type="exposure". Is this the exposure or the outcome data that is being read in?
-#' @param snps=NULL SNPs to extract. If NULL then doesn't extract any and keeps all.
-#' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
-#' @param snp_col="SNP" Required name of column with SNP rs IDs
-#' @param beta_col="beta" Required for MR. Name of column with effect sizes
-#' @param se_col="se" Required for MR. Name of column with standard errors
-#' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
-#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
-#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
-#' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
-#' @param units_col="units" Optional column name for units.
-#' @param ncase_col="ncase" Optional column name for number of cases.
-#' @param ncontrol_col="ncontrol" Optional column name for number of controls.
-#' @param samplesize_col="samplesize" Optional column name for sample size.
-#' @param gene_col="gene" Optional column name for gene name.
-#' @param min_pval=1e-200 Minimum allowed pval
+#' @param type Default="exposure". Is this the exposure or the outcome data that is being read in?
+#' @param snps Default=NULL SNPs. to extract. If NULL then doesn't extract any and keeps all.
+#' @param phenotype_col Default="Phenotype". Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
+#' @param snp_col Default="SNP". Required name of column with SNP rs IDs
+#' @param beta_col Default="beta". Required for MR. Name of column with effect sizes
+#' @param se_col Default="se". Required for MR. Name of column with standard errors
+#' @param eaf_col Default="eaf". Required for MR. Name of column with effect allele frequency
+#' @param effect_allele_col Default="effect_allele". Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
+#' @param other_allele_col Default="other_allele". Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
+#' @param pval_col Default="pval". Required for enrichment tests. Name of column with p-value.
+#' @param units_col Default="units". Optional column name for units.
+#' @param ncase_col Default="ncase". Optional column name for number of cases.
+#' @param ncontrol_col Default="ncontrol". Optional column name for number of controls.
+#' @param samplesize_col Default="samplesize". Optional column name for sample size.
+#' @param gene_col Default="gene". Optional column name for gene name.
+#' @param min_pval Default=1e-200. Minimum allowed pval
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+format_data <- function(dat, type="exposure", snps=NULL, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
 {
 	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col)
 
@@ -587,70 +588,70 @@ format_aries_mqtl <- function(aries_mqtl_subset, type="exposure")
 
 
 
-ucsc_get_position <- function(snp)
-{
-	snp <- paste(snp, collapse="', '")
-	require(RMySQL)
-	message("Connecting to UCSC MySQL database")
-	mydb <- dbConnect(MySQL(), user="genome", dbname="hg19", host="genome-mysql.cse.ucsc.edu")
+# ucsc_get_position <- function(snp)
+# {
+# 	snp <- paste(snp, collapse="', '")
+# 	require(RMySQL)
+# 	message("Connecting to UCSC MySQL database")
+# 	mydb <- dbConnect(MySQL(), user="genome", dbname="hg19", host="genome-mysql.cse.ucsc.edu")
 
-	query <- paste0(
-		"SELECT * from snp144 where name in ('", snp, "');"
-	)
-	message(query)
-	out <- dbSendQuery(mydb, query)
-	d <- fetch(out, n=-1)
-	dbClearResult(dbListResults(mydb)[[1]])
-	dbDisconnect(mydb)
-	return(d)
+# 	query <- paste0(
+# 		"SELECT * from snp144 where name in ('", snp, "');"
+# 	)
+# 	message(query)
+# 	out <- dbSendQuery(mydb, query)
+# 	d <- fetch(out, n=-1)
+# 	dbClearResult(dbListResults(mydb)[[1]])
+# 	dbDisconnect(mydb)
+# 	return(d)
 
-}
+# }
 
 
-ensembl_get_position <- function(snp)
-{
-	require(biomaRt)
-	require(stringr)
-	Mart <- useMart(host="grch37.ensembl.org", biomart="ENSEMBL_MART_SNP",dataset="hsapiens_snp")
-	Attr <- listAttributes(Mart)
-	ensembl <- getBM(attributes=c("refsnp_id","chr_name","chrom_start","allele","minor_allele","minor_allele_freq"),filters="snp_filter",values=snp,mart=Mart)
+# ensembl_get_position <- function(snp)
+# {
+# 	require(biomaRt)
+# 	require(stringr)
+# 	Mart <- useMart(host="grch37.ensembl.org", biomart="ENSEMBL_MART_SNP",dataset="hsapiens_snp")
+# 	Attr <- listAttributes(Mart)
+# 	ensembl <- getBM(attributes=c("refsnp_id","chr_name","chrom_start","allele","minor_allele","minor_allele_freq"),filters="snp_filter",values=snp,mart=Mart)
 
-	# Sort out chromosome name
-	ensembl$chr_name <- str_match(ensembl$chr_name, "(HSCHR)?([0-9X]*)")[,3]
-	ensembl$chr_name[ensembl$chr_name == "X"] <- 23
-	ensembl$chr_name[! ensembl$chr_name %in% 1:23] <- NA
-	ensembl$chr_name <- as.numeric(ensembl$chr_name)
+# 	# Sort out chromosome name
+# 	ensembl$chr_name <- str_match(ensembl$chr_name, "(HSCHR)?([0-9X]*)")[,3]
+# 	ensembl$chr_name[ensembl$chr_name == "X"] <- 23
+# 	ensembl$chr_name[! ensembl$chr_name %in% 1:23] <- NA
+# 	ensembl$chr_name <- as.numeric(ensembl$chr_name)
 
-	# Remove SNPs that are problematic:
-	# - No chromosome name
-	# - No position
-	# - Not normal alleles
-	# - Not biallelic
-	# - No MAF
-	# - Duplicate SNPs
-	# - minor allele doesn't match the alleles
-	# Add major allele
-	remove <- is.na(ensembl$chr_name) |
-		is.na(ensembl$chrom_start) |
-		nchar(ensembl$allele) != 3 |
-		! ensembl$minor_allele %in% c("A", "C", "T", "G") |
-		is.na(ensembl$minor_allele_freq)
-	ensembl <- ensembl[!remove, , drop=FALSE]
-	ensembl <- subset(ensembl, !duplicated(refsnp_id))
-	al <- do.call(rbind, strsplit(ensembl$allele, split="/"))
-	i1 <- al[,1] == ensembl$minor_allele
-	i2 <- al[,2] == ensembl$minor_allele
-	i <- (i1 | i2)
-	ensembl <- ensembl[i, ]
-	al <- al[i, , drop=FALSE]
-	i1 <- i1[i]
-	i2 <- i2[i]
-	ensembl <- subset(ensembl, select=-c(allele))
-	ensembl$major_allele[!i1] <- al[!i1, 1]
-	ensembl$major_allele[!i2] <- al[!i2, 2]
+# 	# Remove SNPs that are problematic:
+# 	# - No chromosome name
+# 	# - No position
+# 	# - Not normal alleles
+# 	# - Not biallelic
+# 	# - No MAF
+# 	# - Duplicate SNPs
+# 	# - minor allele doesn't match the alleles
+# 	# Add major allele
+# 	remove <- is.na(ensembl$chr_name) |
+# 		is.na(ensembl$chrom_start) |
+# 		nchar(ensembl$allele) != 3 |
+# 		! ensembl$minor_allele %in% c("A", "C", "T", "G") |
+# 		is.na(ensembl$minor_allele_freq)
+# 	ensembl <- ensembl[!remove, , drop=FALSE]
+# 	ensembl <- subset(ensembl, !duplicated(refsnp_id))
+# 	al <- do.call(rbind, strsplit(ensembl$allele, split="/"))
+# 	i1 <- al[,1] == ensembl$minor_allele
+# 	i2 <- al[,2] == ensembl$minor_allele
+# 	i <- (i1 | i2)
+# 	ensembl <- ensembl[i, ]
+# 	al <- al[i, , drop=FALSE]
+# 	i1 <- i1[i]
+# 	i2 <- i2[i]
+# 	ensembl <- subset(ensembl, select=-c(allele))
+# 	ensembl$major_allele[!i1] <- al[!i1, 1]
+# 	ensembl$major_allele[!i2] <- al[!i2, 2]
 
-	return(ensembl)
-}
+# 	return(ensembl)
+# }
 
 
 random_string <- function(n=1, len=6)

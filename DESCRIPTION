@@ -19,9 +19,9 @@ Suggests:
     knitr,
     markdown,
     gtable,
-    RMySQL,
     rmarkdown,
-    MRInstruments
+    MRInstruments,
+    psych
 Imports:
     meta,
     jsonlite,

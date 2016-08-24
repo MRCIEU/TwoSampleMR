@@ -14,6 +14,8 @@ mr_meta_fixed_simple(b_exp, b_out, se_exp, se_out, parameters)
 \item{se_exp}{Standard errors of genetic effects on exposure}
 
 \item{se_out}{Standard errors of genetic effects on outcome}
+
+\item{parameters}{List of parameters (see default_parameters)}
 }
 \value{
 List with the following elements:

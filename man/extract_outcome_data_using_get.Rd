@@ -8,9 +8,9 @@ WARNING: This is unlikely to work correctly if there are a large number of SNPs}
 extract_outcome_data_using_get(snps, outcomes)
 }
 \arguments{
-\item{outcomes}{Array of IDs (see \code{id} column in output from \code{available_outcomes})}
+\item{snps}{Array of rs IDs.}
 
-\item{exposure_dat}{Output from \code{read_exposure_data}}
+\item{outcomes}{Array of IDs (see \code{id} column in output from \code{available_outcomes})}
 }
 \value{
 Dataframe of summary statistics for all available outcomes

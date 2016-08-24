@@ -21,6 +21,8 @@ folder specified in \code{output_path}.}
 
 \item{study}{Study title}
 
+\item{path}{Path to knitr document for generating report}
+
 \item{...}{Extra options to be passed to knitr}
 }
 \description{

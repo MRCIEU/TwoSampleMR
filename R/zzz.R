@@ -1,10 +1,10 @@
 .onLoad <- function(libname, pkgname) {
 
-	packageStartupMessage(
-		"Welcome to TwoSampleMR.\n",
-		"[>] Check for updates: https://github.com/MRCIEU/TwoSampleMR\n",
-		"[>] Full documentation: https://mrcieu.github.io/TwoSampleMR"
-	)
+	# packageStartupMessage(
+	# 	"Welcome to TwoSampleMR.\n",
+	# 	"[>] Check for updates: https://github.com/MRCIEU/TwoSampleMR\n",
+	# 	"[>] Full documentation: https://mrcieu.github.io/TwoSampleMR"
+	# )
 	op <- options()
 	op.googleAuthR <- list(
 		googleAuthR.httr_oauth_cache = TRUE,

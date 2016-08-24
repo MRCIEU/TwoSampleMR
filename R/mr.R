@@ -160,6 +160,7 @@ default_parameters <- function()
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
+#' @param parameters List of parameters (see default_parameters)
 #'
 #' @export
 #' @return List with the following elements:
@@ -186,6 +187,7 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
+#' @param parameters List of parameters (see default_parameters)
 #'
 #' @export
 #' @return List with the following elements:
@@ -212,6 +214,7 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
+#' @param parameters List of parameters (see default_parameters)
 #'
 #' @export
 #' @return List with the following elements:
@@ -243,6 +246,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
+#' @param parameters List of parameters (see default_parameters)
 #'
 #' @export
 #' @return List with the following elements:
@@ -274,6 +278,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
+#' @param parameters List of parameters (see default_parameters)
 #'
 #' @export
 #' @return List with the following elements:
@@ -611,6 +616,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
+#' @param parameters List of parameters (see default_parameters)
 #'
 #' @export
 #' @return List with the following elements:
@@ -640,6 +646,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' Leave one out sensitivity analysis
 #'
 #' @param dat Output from \code{harmonise_exposure_outcome}
+#' @param parameters List of parameters (see default_parameters)
 #' @param method Default=mr_ivw Choose which method to use
 #'
 #' @export
@@ -703,7 +710,9 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #' Perform 2 sample MR on each SNP individually
 #'
 #' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method Default=mr_two_sample_ml Function to use for MR analysis
+#' @param parameters List of parameters (see default_parameters)
+#' @param single_method Default="mr_wald_ratio" Function to use for MR analysis
+#' @param all_method Default=c("mr_ivw", "mr_egger_regression") Function to use for MR analysis
 #'
 #' @export
 #' @return List of data frames

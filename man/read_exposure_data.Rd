@@ -14,6 +14,8 @@ read_exposure_data(filename, clump = FALSE, sep = " ",
 \arguments{
 \item{filename}{Filename. Must have header with at least SNP column present.}
 
+\item{clump}{Default=FALSE. Option to clump the SNPs using MR-Base.}
+
 \item{sep}{Default=" ". Specify delimeter in file}
 
 \item{phenotype_col}{Default="Phenotype". Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"}

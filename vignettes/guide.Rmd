@@ -58,7 +58,7 @@ The workflow for performing MR is as follows:
 A diagramatic overview is shown here:
 
 
-![here](figure/twosamplemr_schematic_long-01.png)
+![here](images/twosamplemr_schematic_long-01.png)
 
 A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:
 
@@ -151,7 +151,7 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886
 The exact path to the file will be different on everyone's computer, but it can be located like this:
 
 ```{r eval=TRUE}
-bmi_file <- system.file("data/bmi.txt", package="TwoSampleMR")
+bmi_file <- system.file("example_data/bmi.txt", package="TwoSampleMR")
 ```
 
 You can read the data in like this:
@@ -199,7 +199,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
 Note that this is a CSV file, with commas separating fields. The file is located here:
 
 ```{r }
-bmi2_file <- system.file("data/bmi.csv", package="TwoSampleMR")
+bmi2_file <- system.file("example_data/bmi.csv", package="TwoSampleMR")
 ```
 
 To read in this data:
