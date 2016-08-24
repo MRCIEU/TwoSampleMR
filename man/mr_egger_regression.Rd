@@ -15,7 +15,7 @@ mr_egger_regression(b_exp, b_out, se_exp, se_out, parameters)
 
 \item{se_out}{Standard errors of genetic effects on outcome}
 
-\item{bootstrap}{Number of bootstraps to estimate standard error. If NULL then don't use bootstrap}
+\item{parameters}{Number of bootstraps, presented using format of default_parameters, to estimate standard error. If NULL then don't use bootstrap}
 }
 \value{
 List of with the following elements:

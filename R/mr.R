@@ -231,7 +231,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.fixed
 	se <- res$seTE.fixed
 	pval <- res$pval.fixed
-	Q_pval <- pchisq(res$Q, res$df.Q, low=FALSE)
+	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
@@ -262,7 +262,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.random
 	se <- res$seTE.random
 	pval <- res$pval.random
-	Q_pval <- pchisq(res$Q, res$df.Q, low=FALSE)
+	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
@@ -309,11 +309,11 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
 	}
 
-	pval <- 2 * pnorm(abs(b) / se, low=FALSE)
+	pval <- 2 * pnorm(abs(b) / se, lower.tail=FALSE)
 
 	Q <- 2 * opt$value
 	Q_df <- length(b_exp) - 1
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
@@ -326,7 +326,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param bootstrap Number of bootstraps to estimate standard error. If NULL then don't use bootstrap
+#' @param parameters Number of bootstraps, presented using format of default_parameters, to estimate standard error. If NULL then don't use bootstrap
 #'
 #' @export
 #' @return List of with the following elements:
@@ -390,7 +390,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 		Q <- smod$sigma^2 * (length(b_exp) - 2)
 		Q_df <- length(b_exp) - 2
-		Q_pval <- pchisq(Q, Q_df, low=FALSE)
+		Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	} else {
 		warning("Collinearities in MR Egger, try LD pruning the exposure variables.")
 		return(nulllist)
@@ -414,7 +414,7 @@ linreg <- function(x, y, w=rep(x,1))
 
 	sum(w * (y-yhat)^2)
 	se <- sqrt(sum(w*(y-yhat)^2) /  (sum(!is.na(yhat)) - 2) / (sum(w*x^2)))
-	pval <- 2 * pnorm(abs(bhat / se), low=FALSE)
+	pval <- 2 * pnorm(abs(bhat / se), lower.tail=FALSE)
 	return(list(ahat=ahat,bhat=bhat,se=se, pval=pval))
 }
 
@@ -425,7 +425,7 @@ linreg <- function(x, y, w=rep(x,1))
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param nboot Number of bootstraps. Default 1000
+#' @param parameters Number of bootstraps, presented using default_parameters. Default 1000
 #'
 #' @export
 #' @return List of with the following elements:
@@ -494,7 +494,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param nboot Number of bootstraps to calculate se. Default 1000
+#' @param parameters Number of bootstraps to calculate se, presented using default_parameters. Default 1000
 #'
 #' @export
 #' @return List with the following elements:
@@ -510,7 +510,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -579,8 +579,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param penk Constant term in penalisation. Default=20 
-#' @param nboot Number of bootstraps to calculate SE. Default 1000
+#' @param parameters Values for penk, constant term in penalisation, and nboot, number of bootstraps, as presented as a list e.g. see default_parameters
 #'
 #' @export
 #' @return List with the following elements:
@@ -600,7 +599,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, pen.weights, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -627,10 +626,10 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error 
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q <- ivw.res$sigma^2*(length(b_exp)-2)
 	Q_df <- length(b_exp) - 1
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -641,7 +640,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' Leave one out sensitivity analysis
 #'
 #' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_ivw Choose which method to use
+#' @param method Default=mr_ivw Choose which method to use
 #'
 #' @export
 #' @return List of data frames
@@ -704,7 +703,7 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #' Perform 2 sample MR on each SNP individually
 #'
 #' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_two_sample_ml Function to use for MR analysis
+#' @param method Default=mr_two_sample_ml Function to use for MR analysis
 #'
 #' @export
 #' @return List of data frames
@@ -765,10 +764,10 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 #' @return r value
 get_r_from_pn <- function(p, n)
 {
-	# qval <- qf(p, 1, n-2, low=FALSE)
+	# qval <- qf(p, 1, n-2, lower.tail=FALSE)
 	p[p == 1] <- 0.999
 	p[p == 0] <- 1e-200
-	qval <- qchisq(p, 1, low=F) / (qchisq(p, n-2, low=F)/(n-2))
+	qval <- qchisq(p, 1, lower.tail=F) / (qchisq(p, n-2, lower.tail=F)/(n-2))
 	r <- sqrt(sum(qval / (n - qval)))
 
 	if(r >= 1)

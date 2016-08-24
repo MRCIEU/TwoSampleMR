@@ -15,12 +15,12 @@
 #' generated.
 #' All output files including cache and figures will appear in the
 #' same folder as \code{output_filename}.
-#' @param  ... Arguments to be passed to \code{\link{knitr::knit}}
+#' @param  ... Arguments to be passed to \code{knitr::knit}
 #' @return NULL
 knit_report <- function(input_filename, output_filename, ...)
 {
-	require(knitr)
-    require(markdown)
+	requireNamespace("knitr", quietly=TRUE)
+    requireNamespace("markdown", quietly=TRUE)
     output_filename <- normalizePath(output_filename)
 
     output_dir <- dirname(output_filename)
@@ -40,18 +40,18 @@ knit_report <- function(input_filename, output_filename, ...)
     is.md <- tolower(suffix) %in% c("md", "markdown")
 
     if (is.html)
-        return(knit2html(input_filename, output=paste0(name, ".html"), envir=parent.frame(), ...))
+        return(knitr::knit2html(input_filename, output=paste0(name, ".html"), envir=parent.frame(), ...))
     else if (is.md)
-        return(knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
+        return(knitr::knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
     else if (is.pdf)
-    {        
-        require(rmarkdown)
-        return(render(input_filename, pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
+    {
+        requireNamespace("rmarkdown", quietly=TRUE)
+        return(rmarkdown::render(input_filename, rmarkdown::pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
-    {        
+    {
         require(rmarkdown)
-        return(render(input_filename, word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
+        return(rmarkdown::render(input_filename, rmarkdown::word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else
         stop("Please choose a filename with pdf, html, docx or md suffix")
@@ -76,6 +76,7 @@ knit_report <- function(input_filename, output_filename, ...)
 #' @return NULL
 mr_report <- function(dat, output_path = ".", output_type = "html", author = "Analyst", study = "Two Sample MR", path=system.file("reports", package="TwoSampleMR"), ...)
 {
+    requireNamespace("plyr", quietly=TRUE)
     message("Writing report as ", output_type, " file to ", output_path)
 
     message("Performing analysis")

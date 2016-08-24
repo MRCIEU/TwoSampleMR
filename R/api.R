@@ -94,7 +94,7 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 	uri <- paste0(options()$mrbaseapi, "upload")
 	filename <- paste0(tempfile(), ".txt")
 	f <- file(filename, open="wb")
-	write.table(x, file=f, row=F, col=header, qu=F, eol="\n")
+	write.table(x, file=f, row.names=F, col.names=header, quote=F, eol="\n")
 	close(f)
 	if(file.size(filename) > max_file_size) stop("File size is too large, your request has too many SNPs")
 	suppressWarnings(RCurl::postForm(uri, file=RCurl::fileUpload(filename=filename)))
@@ -391,7 +391,7 @@ format_d <- function(d)
 #' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 #' WARNING: This is unlikely to work correctly if there are a large number of SNPs
 #'
-#' @param exposure_dat Output from \code{read_exposure_data}
+#' @param snps Array of rs IDs.
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes

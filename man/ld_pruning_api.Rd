@@ -10,13 +10,13 @@ ld_pruning_api(dat, clump_kb = 10000, clump_r2 = 0.1, clump_p1 = 1,
 \arguments{
 \item{dat}{Output from \code{read_exposure_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start) and p-value column (pval.exposure)}
 
-\item{clump_kb=10000}{Clumping window}
+\item{clump_kb}{Default=10000. Clumping window}
 
-\item{clump_r2=0.1}{Clumping r2 cutoff}
+\item{clump_r2}{Default=0.1. Clumping r2 cutoff}
 
-\item{clump_p1=1}{Clumping sig level for index SNPs}
+\item{clump_p1}{Default=1. Clumping sig level for index SNPs}
 
-\item{clump_p2=1}{Clumping sig level for secondary SNPs}
+\item{clump_p2}{Default=1. Clumping sig level for secondary SNPs}
 }
 \value{
 Data frame of only independent SNPs

@@ -4,19 +4,19 @@
 \alias{clump_data}
 \title{Perform LD clumping on SNP data}
 \usage{
-clump_data(dat, clump_kb = 10000, clump_r2 = 0.1, clump_p1 = 1,
+clump_data(dat, clump_kb = 10000, clump_r2 = 0.01, clump_p1 = 1,
   clump_p2 = 1)
 }
 \arguments{
 \item{dat}{Output from \code{format_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated}
 
-\item{clump_kb=10000}{Clumping window}
+\item{clump_kb}{Defaul= 10000. Clumping window}
 
-\item{clump_r2=0.1}{Clumping r2 cutoff}
+\item{clump_r2}{Default=0.01. Clumping r2 cutoff}
 
-\item{clump_p1=1}{Clumping sig level for index SNPs}
+\item{clump_p1}{Default=1. Clumping sig level for index SNPs}
 
-\item{clump_p2=1}{Clumping sig level for secondary SNPs}
+\item{clump_p2}{Default=1. Clumping sig level for secondary SNPs}
 }
 \value{
 Data frame

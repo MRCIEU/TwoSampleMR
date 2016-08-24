@@ -14,35 +14,35 @@ read_exposure_data(filename, clump = FALSE, sep = " ",
 \arguments{
 \item{filename}{Filename. Must have header with at least SNP column present.}
 
-\item{sep="}{" Specify delimeter in file}
+\item{sep}{Default=" ". Specify delimeter in file}
 
-\item{phenotype_col="Phenotype"}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"}
+\item{phenotype_col}{Default="Phenotype". Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"}
 
-\item{snp_col="SNP"}{Required name of column with SNP rs IDs}
+\item{snp_col}{Default="SNP". Required name of column with SNP rs IDs}
 
-\item{beta_col="beta"}{Required for MR. Name of column with effect sizes}
+\item{beta_col}{Default="beta". Required for MR. Name of column with effect sizes}
 
-\item{se_col="se"}{Required for MR. Name of column with standard errors}
+\item{se_col}{Default="se". Required for MR. Name of column with standard errors}
 
-\item{eaf_col="eaf"}{Required for MR. Name of column with effect allele frequency}
+\item{eaf_col}{Default="eaf". Required for MR. Name of column with effect allele frequency}
 
-\item{effect_allele_col="effect_allele"}{Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"}
+\item{effect_allele_col}{Default="effect_allele". Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"}
 
-\item{other_allele_col="other_allele"}{Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"}
+\item{other_allele_col}{Default="other_allele". Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"}
 
-\item{pval_col="pval"}{Required for enrichment tests. Name of column with p-value.}
+\item{pval_col}{Default="pval". Required for enrichment tests. Name of column with p-value.}
 
-\item{units_col="units"}{Optional column name for units.}
+\item{units_col}{Default="units". Optional column name for units.}
 
-\item{ncase_col="ncase"}{Optional column name for number of cases.}
+\item{ncase_col}{Default="ncase". Optional column name for number of cases.}
 
-\item{ncontrol_col="ncontrol"}{Optional column name for number of controls.}
+\item{ncontrol_col}{Default="ncontrol". Optional column name for number of controls.}
 
-\item{samplesize_col="samplesize"}{Optional column name for sample size.}
+\item{samplesize_col}{Default="samplesize". Optional column name for sample size.}
 
-\item{gene_col="gene"}{Optional column name for gene name.}
+\item{gene_col}{Default="gene". Optional column name for gene name.}
 
-\item{min_pval=1e-200}{Minimum allowed pval}
+\item{min_pval}{Default=1e-200. Minimum allowed pval}
 }
 \value{
 data frame

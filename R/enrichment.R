@@ -15,7 +15,7 @@ fishers_combined_test <- function(pval)
 		warning("p-values of 0 are unreliable in Fisher's combined test.")
 		pval[index] <- 1e-50
 	}
-	p <- pchisq(-2 * sum(log(pval)), df=2*length(pval), low=FALSE)
+	p <- pchisq(-2 * sum(log(pval)), df=2*length(pval), lower.tail=FALSE)
 	return(list(pval=p, nsnp=length(pval)))
 }
 
@@ -48,7 +48,7 @@ enrichment_method_list <- function()
 #'
 #'
 #' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param method_list=enrichment_method_list()$obj List of methods to use in analysis. See \code{enrichment_method_list()} for details.
+#' @param method_list Default=enrichment_method_list()$obj. List of methods to use in analysis. See \code{enrichment_method_list()} for details.
 #'
 #' @export
 #' @return data frame

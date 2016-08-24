@@ -15,7 +15,7 @@ mr_egger_regression_bootstrap(b_exp, b_out, se_exp, se_out, parameters)
 
 \item{se_out}{Standard errors of genetic effects on outcome}
 
-\item{nboot}{Number of bootstraps. Default 1000}
+\item{parameters}{Number of bootstraps, presented using default_parameters. Default 1000}
 }
 \value{
 List of with the following elements:

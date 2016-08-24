@@ -3,14 +3,14 @@
 #' Uses PLINK clumping method, where SNPs in LD within a particular window will be pruned. The SNP with the lowest p-value is retained.
 #'
 #' @param dat Output from \code{format_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated
-#' @param clump_kb=10000 Clumping window 
-#' @param clump_r2=0.1 Clumping r2 cutoff
-#' @param clump_p1=1 Clumping sig level for index SNPs
-#' @param clump_p2=1 Clumping sig level for secondary SNPs
+#' @param clump_kb Defaul= 10000. Clumping window 
+#' @param clump_r2 Default=0.01. Clumping r2 cutoff
+#' @param clump_p1 Default=1. Clumping sig level for index SNPs
+#' @param clump_p2 Default=1. Clumping sig level for secondary SNPs
 #'
 #' @export
 #' @return Data frame
-clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1)
+clump_data <- function(dat, clump_kb=10000, clump_r2=0.01, clump_p1=1, clump_p2=1)
 {
 	if(!is.data.frame(dat))
 	{
@@ -56,7 +56,7 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 	# Make textfile
 	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
 	fn <- tempfile(tmpdir = tempdir)
-	write.table(data.frame(SNP=snps, P=pvals), file=fn, row=F, col=T, qu=F)
+	write.table(data.frame(SNP=snps, P=pvals), file=fn, row.names=F, col.names=T, quote=F)
 
 	fun2 <- paste0(
 		shQuote(plink_bin, type=shell),
@@ -69,7 +69,7 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 		" --out ", shQuote(fn, type=shell)
 	)
 	system(fun2)
-	a <- read.table(paste(fn, ".clumped", sep=""), he=T)
+	a <- read.table(paste(fn, ".clumped", sep=""), header=T)
 	unlink(paste(fn, "*", sep=""))
 	return(a)
 }
@@ -78,10 +78,10 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 #' Perform clumping on the chosen SNPs using through API
 #'
 #' @param dat Output from \code{read_exposure_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start) and p-value column (pval.exposure)
-#' @param clump_kb=10000 Clumping window 
-#' @param clump_r2=0.1 Clumping r2 cutoff
-#' @param clump_p1=1 Clumping sig level for index SNPs
-#' @param clump_p2=1 Clumping sig level for secondary SNPs
+#' @param clump_kb Default=10000. Clumping window 
+#' @param clump_r2 Default=0.1. Clumping r2 cutoff
+#' @param clump_p1 Default=1. Clumping sig level for index SNPs
+#' @param clump_p2 Default=1. Clumping sig level for secondary SNPs
 #' @return Data frame of only independent SNPs
 ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1)
 {

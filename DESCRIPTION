@@ -1,5 +1,5 @@
 Package: TwoSampleMR
-Title: Two Sample MR functions and interface to MR Base database
+Title: Mendelian randomization functions functions and interface to GWAS database
 Version: 0.2.0
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
@@ -8,7 +8,7 @@ Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
              person("Jie", "Zheng", email = "Jie.Zheng@bristol.ac.uk",
                   role = c("aut"))
 			 )
-Description: See title
+Description: Two sample Mendelian randomization (MR) estimates the causal effect between two measured variables. This can be performed using summary statistics from genome wide association studies. The TwoSampleMR package facilitates this process from extracting summary data from a the MR-Base GWAS database, harmonising, performing LD operations, performing MR methods and sensitivity analyses, and generating reports.
 Depends: 
     R (>= 3.1.0)
 Suggests:

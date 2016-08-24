@@ -16,7 +16,7 @@ generated.
 All output files including cache and figures will appear in the
 same folder as \code{output_filename}.}
 
-\item{...}{Arguments to be passed to \code{\link{knitr::knit}}}
+\item{...}{Arguments to be passed to \code{knitr::knit}}
 }
 \description{
 Warning: It is quite likely that this will be called within an RMD file

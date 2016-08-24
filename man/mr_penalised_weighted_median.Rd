@@ -15,9 +15,7 @@ mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
 
 \item{se_out}{Standard errors of genetic effects on outcome}
 
-\item{penk}{Constant term in penalisation. Default=20}
-
-\item{nboot}{Number of bootstraps to calculate SE. Default 1000}
+\item{parameters}{Values for penk, constant term in penalisation, and nboot, number of bootstraps, as presented as a list e.g. see default_parameters}
 }
 \value{
 List with the following elements:
