@@ -21,7 +21,8 @@ Suggests:
     gtable,
     RMySQL,
     rmarkdown,
-    MRInstruments
+    MRInstruments,
+    MendelianRandomization
 Imports:
     meta,
     jsonlite,

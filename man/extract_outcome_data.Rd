@@ -4,7 +4,7 @@
 \alias{extract_outcome_data}
 \title{Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.}
 \usage{
-extract_outcome_data(snps, outcomes, proxies = FALSE, rsq = 0.8,
+extract_outcome_data(snps, outcomes, proxies = TRUE, rsq = 0.8,
   align_alleles = 1, palindromes = 1, maf_threshold = 0.3,
   access_token = get_mrbase_access_token())
 }
@@ -13,9 +13,9 @@ extract_outcome_data(snps, outcomes, proxies = FALSE, rsq = 0.8,
 
 \item{outcomes}{Array of IDs (see \code{id} column in output from \code{available_outcomes})}
 
-\item{proxies}{= FALSE Look for LD tags? Default is FALSE.}
+\item{proxies}{Look for LD tags? Default is TRUE.}
 
-\item{rsq}{= 0.8 Minimum LD rsq value (if proxies = 1)}
+\item{rsq}{Minimum LD rsq value (if proxies = 1). Default = 0.8.}
 
 \item{align_alleles}{= 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no}
 

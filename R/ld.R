@@ -4,13 +4,13 @@
 #'
 #' @param dat Output from \code{format_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated
 #' @param clump_kb=10000 Clumping window 
-#' @param clump_r2=0.1 Clumping r2 cutoff
+#' @param clump_r2=0.01 Clumping r2 cutoff
 #' @param clump_p1=1 Clumping sig level for index SNPs
 #' @param clump_p2=1 Clumping sig level for secondary SNPs
 #'
 #' @export
 #' @return Data frame
-clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1)
+clump_data <- function(dat, clump_kb=10000, clump_r2=0.01, clump_p1=1, clump_p2=1)
 {
 	if(!is.data.frame(dat))
 	{

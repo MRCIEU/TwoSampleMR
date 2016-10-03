@@ -5,7 +5,7 @@
 \title{Find instruments for use in MR from the MR Base database}
 \usage{
 extract_instruments(outcomes, p1 = 5e-08, clump = TRUE, p2 = 5e-08,
-  r2 = 0.1, kb = 5000, access_token = get_mrbase_access_token())
+  r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token())
 }
 \arguments{
 \item{outcomes}{Array of outcome IDs (see \code{available_outcomes})}
