@@ -317,6 +317,8 @@ format_d <- function(d)
 		year.outcome = as.numeric(d$year),
 		pmid.outcome = as.numeric(d$pmid),
 		id.outcome = as.character(d$id),
+		category.outcome = as.character(d$category),
+		subcategory.outcome = as.character(d$subcategory),
 		originalname.outcome = 0,
 		stringsAsFactors=FALSE
 	)

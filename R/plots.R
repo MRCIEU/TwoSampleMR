@@ -12,6 +12,7 @@ mr_scatter_plot <- function(mr_results, dat)
 {
 	# dat <- subset(dat, paste(id.outcome, id.exposure) %in% paste(mr_results$id.outcome, mr_results$id.exposure))
 	requireNamespace("ggplot2", quietly=TRUE)
+	requireNamespace("plyr", quietly=TRUE)
 	mrres <- plyr::dlply(dat, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)
@@ -59,6 +60,7 @@ mr_scatter_plot <- function(mr_results, dat)
 mr_leaveoneout_plot <- function(leaveoneout_results)
 {
 	requireNamespace("ggplot2", quietly=TRUE)
+	requireNamespace("plyr", quietly=TRUE)
 	res <- plyr::dlply(leaveoneout_results, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)
@@ -118,6 +120,7 @@ blank_plot <- function(message)
 mr_forest_plot <- function(singlesnp_results)
 {
 	requireNamespace("ggplot2", quietly=TRUE)
+	requireNamespace("plyr", quietly=TRUE)
 	res <- plyr::dlply(singlesnp_results, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)
@@ -174,6 +177,7 @@ mr_forest_plot <- function(singlesnp_results)
 mr_funnel_plot <- function(singlesnp_results)
 {
 	requireNamespace("ggplot2", quietly=TRUE)
+	requireNamespace("plyr", quietly=TRUE)
 	res <- plyr::dlply(singlesnp_results, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)

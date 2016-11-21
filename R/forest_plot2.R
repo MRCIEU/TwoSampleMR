@@ -1,0 +1,316 @@
+#' Format MR results for forest plot
+#'
+#' This function takes the results from mr() and is particularly useful
+#' if the MR has been applied using multiple exposures and multiple outcomes. 
+#' It creates a new data frame with the following:
+#'
+#' - exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
+#' - only one estimate for each exposure-outcome
+#' - exponentiated effects if required
+#'
+#' It uses the available_outcomes() function to retrieve the outcome sample size.
+#' 
+#' @param mr_res Results from mr()
+#' @param exponentiate Convert effects to OR? Default=FALSE
+#' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"
+#' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
+#' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
+#'
+#' @return data frame.
+format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE)
+{
+
+	requireNamespace("ggplot2", quietly=TRUE)
+	requireNamespace("plyr", quietly=TRUE)
+
+	# Get extra info on outcomes
+	ao <- available_outcomes()
+	dat <- subset(mr_res, (nsnp==1 & method==single_snp_method) | (nsnp > 1 & method == multi_snp_method))
+	dat <- merge(dat, ao, by.x="id.outcome", by.y="id")
+	dat <- dat[order(dat$b), ]
+
+	# Create CIs
+	dat$up_ci <- dat$b + 1.96 * dat$se
+	dat$lo_ci <- dat$b - 1.96 * dat$se
+
+	# Exponentiate?
+	if(exponentiate)
+	{
+		dat$b <- exp(dat$b)
+		dat$up_ci <- exp(dat$up_ci)
+		dat$lo_ci <- exp(dat$lo_ci)
+	}
+	
+	# Organise cats
+	dat$subcategory <- as.factor(dat$subcategory)
+
+	if(group_single_categories)
+	{
+		temp <- subset(dat, !duplicated(outcome))
+		tab <- table(temp$subcategory)
+		othercats <- names(tab)[tab==1]
+		if(length(othercats) > 1)
+		{
+			levels(dat$subcategory)[levels(dat$subcategory) %in% othercats] <- "Other"
+			dat$subcategory <- factor(dat$subcategory)
+		}
+	}
+
+	dat <- data.frame(
+		exposure = dat$exposure,
+		outcome = dat$trait,
+		category = dat$subcategory,
+		effect = dat$b,
+		up_ci = dat$up_ci,
+		lo_ci = dat$lo_ci,
+		nsnp = dat$nsnp.x,
+		pval = dat$pval,
+		sample_size = dat$sample_size,
+		stringsAsFactors = FALSE
+	)
+
+	# if(fix_capitals)
+	# {
+	# 	dat$exposure <- simple_cap(dat$exposure)
+	# 	dat$outcome <- simple_cap(dat$outcome)
+	# 	dat$category <- simple_cap(dat$category)
+	# }
+
+	# Fill in missing values
+	exps <- unique(dat$exposure)
+	dat <- plyr::ddply(dat, c("outcome"), function(x)
+	{
+		x <- plyr::mutate(x)
+		nc <- ncol(x)
+		missed <- exps[! exps %in% x$exposure]
+		if(length(missed) >= 1)
+		{
+			out <- unique(x$outcome)
+			ca <- unique(x$category)
+			n <- unique(x$sample_size)
+			md <- data.frame(exposure = missed, outcome=out, category=ca, sample_size=n, stringsAsFactors=FALSE)
+			x <- plyr::rbind.fill(x, md)
+		}
+		return(x)
+	})
+	# dat <- dplyr::group_by(dat, outcome) %>%
+	# 	dplyr::do({
+	# 		x <- .
+	# 		nc <- ncol(x)
+	# 		missed <- exps[! exps %in% x$exposure]
+	# 		if(length(missed) >= 1)
+	# 		{
+	# 			out <- unique(x$outcome)
+	# 			ca <- unique(x$category)
+	# 			n <- unique(x$sample_size)
+	# 			md <- data.frame(exposure = missed, outcome=out, category=ca, sample_size=n, stringsAsFactors=FALSE)
+	# 			x <- dplyr::bind_rows(x, md)
+	# 		}
+	# 		return(x)
+	# 	}) %>% as.data.frame(stringsAsFactors=FALSE)
+
+	return(dat)
+}
+
+#' Simple attempt at correcting string case
+#'
+#' @param x Character or array of character
+#'
+#' @return Character or array of character
+simple_cap <- function(x) {
+	sapply(x, function(x){
+		x <- tolower(x)
+		s <- strsplit(x, " ")[[1]]
+		paste(toupper(substring(s, 1,1)), substring(s, 2), sep="", collapse=" ")
+	})
+}
+
+
+#' Create fixed width label
+#'
+#' @param n1 number
+#' @param nom name
+#'
+#' @return text
+create_label <- function(n1, nom)
+{
+	len_n1 <- max(nchar(n1), na.rm=TRUE)
+	n1_c <- formatC(n1, width=len_n1)
+
+	l <- nchar(nom)
+	len_nom <- max(l)
+	p <- paste0("%-", len_nom, "s")
+	nomp <- sprintf(p, nom)
+
+	out <- paste0(n1_c, "    ", nomp)
+	out <- factor(out, levels = unique(out))
+	return(out)
+}
+
+#' A basic forest plot
+#'
+#' This function is used to create a basic forest plot.
+#' It requires the output from format_mr_results().
+#' It is 
+#'
+#' @param dat Output from format_mr_results()
+#' @param section Which category in dat to plot. If NULL then prints everything
+#' @param xlab x-axis label. Default=NULL
+#' @param bottom Show x-axis? Default=FALSE
+#'
+#' @return ggplot object
+forest_plot_basic <- function(dat, section=NULL, xlab=NULL, bottom=TRUE, trans="identity")
+{
+	if(bottom)
+	{
+		text_colour <- ggplot2::element_text(colour="black")
+		tick_colour <- ggplot2::element_line(colour="black")
+		xlabname <- xlab
+	} else {
+		text_colour <- ggplot2::element_blank()
+		tick_colour <- ggplot2::element_blank()
+		xlabname <- NULL
+	}
+
+	# OR or log(OR)?
+	# If CI are symmetric then log(OR)
+	# Use this to guess where to put the null line
+	null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
+
+	up <- max(dat$up_ci, na.rm=TRUE)
+	lo <- min(dat$lo_ci, na.rm=TRUE)
+	r <- up-lo
+	lo_orig <- lo
+	lo <- lo - r * 0.5
+
+	if(!is.null(section))
+	{
+		dat <- subset(dat, category==section)
+		main_title <- section		
+	} else {
+		main_title <- NULL
+	}
+
+	if(! "lab" %in% names(dat))
+	{
+		dat$lab <- create_label(dat$sample_size, dat$outcome)
+	}
+
+	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
+	l$col[1:nrow(l) %% 2 == 0] <- "b"
+
+	dat <- merge(dat, l, by="lab", all.x=TRUE)
+
+	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
+	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), colour="white", size=0.3) +
+	ggplot2::geom_vline(xintercept=null_line, colour="#333333", size=0.3) +
+	ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
+	ggplot2::geom_point(colour="black", size=2.2) +
+	ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2) +
+	ggplot2::facet_grid(lab ~ .) +
+	ggplot2::scale_x_continuous(trans=trans, limits=c(lo, up)) +
+	ggplot2::scale_colour_brewer(type="qual") +
+	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
+	ggplot2::theme(
+		axis.line=ggplot2::element_blank(),
+		axis.text.y=ggplot2::element_blank(), 
+		axis.ticks.y=ggplot2::element_blank(), 
+		axis.text.x=text_colour, 
+		axis.ticks.x=tick_colour, 
+		# strip.text.y=ggplot2::element_text(angle=360, hjust=0), 
+		strip.background=ggplot2::element_rect(fill="white", colour="white"),
+		strip.text=ggplot2::element_text(family="Courier New", face="bold", size=9),
+		legend.position="none",
+		legend.direction="vertical",
+		panel.grid.minor.x=ggplot2::element_blank(),
+		panel.grid.minor.y=ggplot2::element_blank(),
+		panel.grid.major.y=ggplot2::element_blank(),
+		plot.title = ggplot2::element_text(hjust = 0, size=8),
+		plot.margin=ggplot2::unit(c(0,10,3,0), units="points"),
+		plot.background=ggplot2::element_rect(fill="white"),
+		panel.margin=ggplot2::unit(0,"lines"),
+		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
+		strip.text.y = ggplot2::element_blank()
+		# strip.background = ggplot2::element_blank()
+	) +
+	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=main_title) +
+	ggplot2::geom_text(ggplot2::aes(label=outcome), x=lo, y=2, hjust=0, vjust=0.5, size=2.5)
+	return(p)
+}
+
+
+
+#' Forest plot for multiple exposures and multiple outcomes
+#'
+#' Perform MR of multiple exposures and multiple outcomes. This plots the results
+#' 
+#' @param mr_res Results from mr()
+#' @param exponentiate Convert effects to OR? Default=FALSE
+#' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"
+#' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
+#' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
+#' @param by_category Separate the results into sections by category? Default=TRUE
+#' @param xlab x-axis label. Default=""
+#' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL
+#' @param trans Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"
+#'
+#' @export
+#' @return grid plot object
+forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, xlab="", xlim=NULL, trans="identity")
+{
+
+	dat <- format_mr_results(
+		mr_res, 
+		exponentiate=exponentiate, 
+		single_snp_method=single_snp_method,
+		multi_snp_method=multi_snp_method,
+		group_single_categories=group_single_categories
+	)
+
+	dat$lab <- create_label(dat$sample_size, dat$outcome)
+
+	# Change lab
+	if(!is.null(xlim))
+	{
+		stopifnot(length(xlim) == 2)
+		stopifnot(xlim[1] < xlim[2])
+		dat$lo_ci <- pmax(dat$lo_ci, xlim[1], na.rm=TRUE)
+		dat$up_ci <- pmin(dat$up_ci, xlim[2], na.rm=TRUE)
+	}
+
+	legend <- cowplot::get_legend(
+		ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=outcome)) + 
+		ggplot2::geom_point(ggplot2::aes(colour=exposure)) + 
+		ggplot2::scale_colour_brewer(type="qual") + 
+		ggplot2::labs(colour="Exposure") + 
+		ggplot2::theme(text=ggplot2::element_text(size=10))
+	)
+
+	if(!by_category)
+	{
+		return(forest_plot_basic(dat, bottom = TRUE, xlab=xlab) + ggplot2::theme(legend.position="left"))
+	}
+
+	sec <- unique(dat$category)
+	h <- rep(0, length(sec))
+	l <- list()
+	for(i in 1:length(sec))
+	{
+		l[[i]] <- forest_plot_basic(dat, unique(dat$category)[i], bottom = i==length(sec), xlab = xlab, trans=trans)
+		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
+	}
+	h <- h + 1
+	h[length(sec)] <- h[length(sec)] + 2
+
+	return(
+		cowplot::plot_grid(
+			gridExtra::arrangeGrob(
+				legend,
+				gridExtra::arrangeGrob(grobs=l, ncol=1, nrow=length(h), heights=h),
+				ncol=2, nrow=1, widths=c(1, 5) 
+			)
+		)
+	)
+}
+

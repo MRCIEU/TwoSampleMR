@@ -717,4 +717,28 @@ combine_data <- function(x)
 }
 
 
+#' Convert outcome data to exposure data
+#'
+#' Helper function to convert results from extract_outcome_data to exposure_dat format
+#'
+#' @param outcome_dat Output from \code{extract_outcome_data}
+#'
+#' @export
+#' @return data frame
+convert_outcome_to_exposure <- function(outcome_dat)
+{
+	exposure_dat <- format_data(
+		outcome_dat,
+		beta_col = "beta.outcome",
+		se_col="se.outcome",
+		pval_col="pval.outcome",
+		phenotype_col="outcome",
+		effect_allele_col="effect_allele.outcome",
+		other_allele_col="other_allele.outcome",
+		eaf_col="eaf.outcome",
+		units_col="units.outcome"
+	)
+	return(exposure_dat)
+}
+
 
