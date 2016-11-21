@@ -155,11 +155,12 @@ create_label <- function(n1, nom)
 #'
 #' @param dat Output from format_mr_results()
 #' @param section Which category in dat to plot. If NULL then prints everything
+#' @param colour_group Which exposure to plot. If NULL then prints everything grouping by colour.
 #' @param xlab x-axis label. Default=NULL
 #' @param bottom Show x-axis? Default=FALSE
 #'
 #' @return ggplot object
-forest_plot_basic <- function(dat, section=NULL, xlab=NULL, bottom=TRUE, trans="identity")
+forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity")
 {
 	if(bottom)
 	{
@@ -191,6 +192,22 @@ forest_plot_basic <- function(dat, section=NULL, xlab=NULL, bottom=TRUE, trans="
 		main_title <- NULL
 	}
 
+	if(!is.null(colour_group))
+	{
+		dat <- subset(dat, exposure == colour_group)
+		point_plot <- ggplot2::geom_point(size=2)
+	} else {
+		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
+	}
+
+	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
+	{
+		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
+	} else {
+		outcome_labels <- NULL
+		lo <- lo_orig
+	}
+
 	if(! "lab" %in% names(dat))
 	{
 		dat$lab <- create_label(dat$sample_size, dat$outcome)
@@ -207,7 +224,7 @@ forest_plot_basic <- function(dat, section=NULL, xlab=NULL, bottom=TRUE, trans="
 	ggplot2::geom_vline(xintercept=null_line, colour="#333333", size=0.3) +
 	ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
 	ggplot2::geom_point(colour="black", size=2.2) +
-	ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2) +
+	point_plot +
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(trans=trans, limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
@@ -235,7 +252,7 @@ forest_plot_basic <- function(dat, section=NULL, xlab=NULL, bottom=TRUE, trans="
 		# strip.background = ggplot2::element_blank()
 	) +
 	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=main_title) +
-	ggplot2::geom_text(ggplot2::aes(label=outcome), x=lo, y=2, hjust=0, vjust=0.5, size=2.5)
+	outcome_labels
 	return(p)
 }
 
@@ -251,13 +268,14 @@ forest_plot_basic <- function(dat, section=NULL, xlab=NULL, bottom=TRUE, trans="
 #' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
 #' @param by_category Separate the results into sections by category? Default=TRUE
+#' @param in_columns Separate the exposures into different columns. Default=FALSE
 #' @param xlab x-axis label. Default=""
 #' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL
 #' @param trans Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"
 #'
 #' @export
 #' @return grid plot object
-forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, xlab="", xlim=NULL, trans="identity")
+forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, in_columns=FALSE, xlab="", xlim=NULL, trans="identity")
 {
 
 	dat <- format_mr_results(
@@ -292,25 +310,73 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		return(forest_plot_basic(dat, bottom = TRUE, xlab=xlab) + ggplot2::theme(legend.position="left"))
 	}
 
-	sec <- unique(dat$category)
-	h <- rep(0, length(sec))
-	l <- list()
-	for(i in 1:length(sec))
+	if(!in_columns)
 	{
-		l[[i]] <- forest_plot_basic(dat, unique(dat$category)[i], bottom = i==length(sec), xlab = xlab, trans=trans)
-		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
-	}
-	h <- h + 1
-	h[length(sec)] <- h[length(sec)] + 2
+		message("Single column")
+		sec <- unique(dat$category)
+		h <- rep(0, length(sec))
+		l <- list()
+		for(i in 1:length(sec))
+		{
+			l[[i]] <- forest_plot_basic(dat, unique(dat$category)[i], bottom = i==length(sec), xlab = xlab, trans=trans)
+			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
+		}
+		h <- h + 1
+		h[length(sec)] <- h[length(sec)] + 2
 
-	return(
-		cowplot::plot_grid(
-			gridExtra::arrangeGrob(
-				legend,
-				gridExtra::arrangeGrob(grobs=l, ncol=1, nrow=length(h), heights=h),
-				ncol=2, nrow=1, widths=c(1, 5) 
+		return(
+			cowplot::plot_grid(
+				gridExtra::arrangeGrob(
+					legend,
+					gridExtra::arrangeGrob(grobs=l, ncol=1, nrow=length(h), heights=h),
+					ncol=2, nrow=1, widths=c(1, 5) 
+				)
 			)
 		)
-	)
+	} else {
+		sec <- unique(dat$category)
+		columns <- unique(dat$exposure)
+		message(length(columns), " columns")
+		l <- list()
+		count <- 1
+		for(i in 1:length(sec))
+		{
+			h <- rep(0, length(sec))
+			tem <- length(unique(subset(dat, category==sec[i])$outcome))
+			print(tem)
+			print(sec[i])
+			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
+			for(j in 1:length(columns))
+			{
+				l[[count]] <- forest_plot_basic(
+					dat, 
+					unique(dat$category)[i], 
+					bottom = j==length(sec), 
+					colour_group=columns[j], 
+					colour_group_first = j == 1, 
+					xlab = xlab, 
+					trans = trans
+				)
+				count <- count + 1
+			}
+		}
+		h <- h + 1
+		h[length(sec)] <- h[length(sec)] + 2
+
+		return(
+			cowplot::plot_grid(
+				gridExtra::arrangeGrob(
+					legend,
+					gridExtra::arrangeGrob(grobs=l, ncol=length(columns), nrow=length(h), heights=h),
+					ncol=2, nrow=1, widths=c(1, 5, rep(5 / 1.5, length(col)-1)) 
+				)
+			)
+		)
+
+	}
+
+
+
+
 }
 
