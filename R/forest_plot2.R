@@ -246,7 +246,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 		panel.grid.minor.y=ggplot2::element_blank(),
 		panel.grid.major.y=ggplot2::element_blank(),
 		plot.title = ggplot2::element_text(hjust = 0, size=12),
-		plot.margin=ggplot2::unit(c(0,10,3,0), units="points"),
+		plot.margin=ggplot2::unit(c(0,3,3,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.margin=ggplot2::unit(0,"lines"),
 		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
@@ -263,8 +263,8 @@ forest_plot_names <- function(dat, section=NULL, colour_group=NULL, colour_group
 {
 	if(bottom)
 	{
-		text_colour <- ggplot2::element_text(colour="white")
-		tick_colour <- ggplot2::element_line(colour="white")
+		text_colour <- ggplot2::element_text(colour="black")
+		tick_colour <- ggplot2::element_line(colour="black")
 		xlabname <- xlab
 	} else {
 		text_colour <- ggplot2::element_blank()
@@ -288,9 +288,11 @@ forest_plot_names <- function(dat, section=NULL, colour_group=NULL, colour_group
 	if(!is.null(section))
 	{
 		dat <- subset(dat, category==section)
-		main_title <- section		
+		main_title <- section
+		section_colour <- "black"
 	} else {
-		main_title <- NULL
+		main_title <- section
+		section_colour <- "white"
 	}
 
 	if(!is.null(colour_group))
@@ -341,8 +343,8 @@ forest_plot_names <- function(dat, section=NULL, colour_group=NULL, colour_group
 		panel.grid.minor.x=ggplot2::element_blank(),
 		panel.grid.minor.y=ggplot2::element_blank(),
 		panel.grid.major.y=ggplot2::element_blank(),
-		plot.title = ggplot2::element_text(hjust = 0, size=12),
-		plot.margin=ggplot2::unit(c(0,10,3,0), units="points"),
+		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=section_colour),
+		plot.margin=ggplot2::unit(c(0,3,3,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.margin=ggplot2::unit(0,"lines"),
 		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
@@ -479,6 +481,16 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		for(i in 1:length(sec))
 		{
 			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
+			l[[count]] <- forest_plot_names(
+				dat, 
+				sec[i], 
+				bottom = i==length(sec), 
+				colour_group=NULL, 
+				colour_group_first = TRUE, 
+				xlab = "df", 
+				trans = trans
+			)
+			count <- count + 1
 			for(j in 1:length(columns))
 			{
 				l[[count]] <- forest_plot_basic(
@@ -486,7 +498,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					sec[i], 
 					bottom = i==length(sec), 
 					colour_group=columns[j], 
-					colour_group_first = j == 1, 
+					colour_group_first = FALSE, 
 					xlab = paste0("Effect of ", columns[j]), 
 					trans = trans
 				)
@@ -500,10 +512,10 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			cowplot::plot_grid(
 				gridExtra::arrangeGrob(
 					grobs=l, 
-					ncol=length(columns), 
+					ncol=length(columns) + 1, 
 					nrow=length(h), 
 					heights=h,
-					widths=c(5, rep(5 / 1.5, length(columns)-1))
+					widths=c(3, rep(5, length(columns)))
 				)
 			)
 		)
