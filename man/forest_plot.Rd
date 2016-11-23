@@ -6,8 +6,8 @@
 \usage{
 forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
   multi_snp_method = "Inverse variance weighted",
-  group_single_categories = TRUE, by_category = TRUE, xlab = "",
-  xlim = NULL, trans = "identity")
+  group_single_categories = TRUE, by_category = TRUE, in_columns = FALSE,
+  xlab = "", xlim = NULL, trans = "identity")
 }
 \arguments{
 \item{mr_res}{Results from mr()}
@@ -22,7 +22,9 @@ forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
 
 \item{by_category}{Separate the results into sections by category? Default=TRUE}
 
-\item{xlab}{x-axis label. Default=""}
+\item{in_columns}{Separate the exposures into different columns. Default=FALSE}
+
+\item{xlab}{x-axis label. Only used if in_columns=FALSE. Default=""}
 
 \item{xlim}{limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL}
 

@@ -26,6 +26,7 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 	# Get extra info on outcomes
 	ao <- available_outcomes()
 	dat <- subset(mr_res, (nsnp==1 & method==single_snp_method) | (nsnp > 1 & method == multi_snp_method))
+	dat$index <- 1:nrow(dat)
 	dat <- merge(dat, ao, by.x="id.outcome", by.y="id")
 	dat <- dat[order(dat$b), ]
 
@@ -57,15 +58,16 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 	}
 
 	dat <- data.frame(
-		exposure = dat$exposure,
-		outcome = dat$trait,
-		category = dat$subcategory,
+		exposure = as.character(dat$exposure),
+		outcome = as.character(dat$trait),
+		category = as.character(dat$subcategory),
 		effect = dat$b,
 		up_ci = dat$up_ci,
 		lo_ci = dat$lo_ci,
 		nsnp = dat$nsnp.x,
 		pval = dat$pval,
 		sample_size = dat$sample_size,
+		index = dat$index,
 		stringsAsFactors = FALSE
 	)
 
@@ -108,6 +110,19 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 	# 		}
 	# 		return(x)
 	# 	}) %>% as.data.frame(stringsAsFactors=FALSE)
+
+	dat <- dat[order(dat$index), ]
+
+
+	dat <- dat[order(dat$outcome), ]
+
+	temp1 <- subset(dat, category=="Cardiovascular")
+	temp2 <- subset(dat, category=="Other")
+	dat <- rbind(
+		subset(dat, category=="Cardiovascular"), 
+		subset(dat, !category %in% c("Cardiovascular","Other")),
+		subset(dat, category=="Other")
+	)
 
 	return(dat)
 }
@@ -187,7 +202,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	if(!is.null(section))
 	{
 		dat <- subset(dat, category==section)
-		main_title <- section		
+		main_title <- section
 	} else {
 		main_title <- ""
 	}
@@ -204,11 +219,15 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	{
 		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
 		main_title <- ifelse(is.null(section), "", section)
+		title_colour <- "black"
 	} else {
 		outcome_labels <- NULL
 		lo <- lo_orig
 		main_title <- ""
+		title_colour <- "white"
 	}
+
+	main_title <- section
 
 	if(! "lab" %in% names(dat))
 	{
@@ -219,6 +238,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	l$col[1:nrow(l) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
+	dat <- dat[nrow(dat):1, ]
 
 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
@@ -245,10 +265,10 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 		panel.grid.minor.x=ggplot2::element_blank(),
 		panel.grid.minor.y=ggplot2::element_blank(),
 		panel.grid.major.y=ggplot2::element_blank(),
-		plot.title = ggplot2::element_text(hjust = 0, size=12),
-		plot.margin=ggplot2::unit(c(0,3,3,0), units="points"),
+		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=title_colour),
+		plot.margin=ggplot2::unit(c(2,3,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
-		panel.margin=ggplot2::unit(0,"lines"),
+		panel.spacing=ggplot2::unit(0,"lines"),
 		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
@@ -259,13 +279,13 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 }
 
 
-forest_plot_names <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity")
+forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 {
 	if(bottom)
 	{
-		text_colour <- ggplot2::element_text(colour="black")
-		tick_colour <- ggplot2::element_line(colour="black")
-		xlabname <- xlab
+		text_colour <- ggplot2::element_text(colour="white")
+		tick_colour <- ggplot2::element_line(colour="white")
+		xlabname <- ""
 	} else {
 		text_colour <- ggplot2::element_blank()
 		tick_colour <- ggplot2::element_blank()
@@ -295,23 +315,15 @@ forest_plot_names <- function(dat, section=NULL, colour_group=NULL, colour_group
 		section_colour <- "white"
 	}
 
-	if(!is.null(colour_group))
-	{
-		dat <- subset(dat, exposure == colour_group)
-		point_plot <- ggplot2::geom_point(size=2)
-	} else {
-		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
-	}
+	point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
 
-	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
-	{
-		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
-		main_title <- section
-	} else {
-		outcome_labels <- NULL
-		lo <- lo_orig
-		main_title <- ""
-	}
+	outcome_labels <- ggplot2::geom_text(
+		ggplot2::aes(label=outcome), 
+		x=lo, 
+		y=mean(c(1, length(unique(dat$exposure)))), 
+		hjust=0, vjust=0.5, size=3.5
+	)
+	main_title <- section
 
 	if(! "lab" %in% names(dat))
 	{
@@ -326,7 +338,7 @@ forest_plot_names <- function(dat, section=NULL, colour_group=NULL, colour_group
 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::facet_grid(lab ~ .) +
-	ggplot2::scale_x_continuous(trans=trans, limits=c(lo, up)) +
+	ggplot2::scale_x_continuous(limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
 	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
 	ggplot2::theme(
@@ -337,16 +349,16 @@ forest_plot_names <- function(dat, section=NULL, colour_group=NULL, colour_group
 		axis.ticks.x=tick_colour, 
 		# strip.text.y=ggplot2::element_text(angle=360, hjust=0), 
 		strip.background=ggplot2::element_rect(fill="white", colour="white"),
-		strip.text=ggplot2::element_text(family="Courier New", face="bold", size=9),
+		strip.text=ggplot2::element_text(family="Courier New", face="bold", size=11),
 		legend.position="none",
 		legend.direction="vertical",
 		panel.grid.minor.x=ggplot2::element_blank(),
 		panel.grid.minor.y=ggplot2::element_blank(),
 		panel.grid.major.y=ggplot2::element_blank(),
 		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=section_colour),
-		plot.margin=ggplot2::unit(c(0,3,3,0), units="points"),
+		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
-		panel.margin=ggplot2::unit(0,"lines"),
+		panel.spacing=ggplot2::unit(0,"lines"),
 		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
@@ -370,7 +382,7 @@ forest_plot_names <- function(dat, section=NULL, colour_group=NULL, colour_group
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
 #' @param by_category Separate the results into sections by category? Default=TRUE
 #' @param in_columns Separate the exposures into different columns. Default=FALSE
-#' @param xlab x-axis label. Default=""
+#' @param xlab x-axis label. Only used if in_columns=FALSE. Default=""
 #' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL
 #' @param trans Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"
 #'
@@ -416,7 +428,12 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			return(forest_plot_basic(dat, bottom = TRUE, xlab=xlab) + ggplot2::theme(legend.position="left"))
 		} else {
 			l <- list()
-			count <- 1
+			l[[1]] <- forest_plot_names(
+				dat, 
+				section = NULL, 
+				bottom = TRUE
+			)
+			count <- 2
 			columns <- unique(dat$exposure)
 			for(i in 1:length(columns))
 			{
@@ -425,7 +442,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					section=NULL,
 					bottom = TRUE, 
 					colour_group=columns[i], 
-					colour_group_first = i == 1, 
+					colour_group_first = FALSE, 
 					xlab = paste0("Effect of ", columns[i]), 
 					trans = trans
 				)
@@ -435,9 +452,9 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 				cowplot::plot_grid(
 					gridExtra::arrangeGrob(
 						grobs=l, 
-						ncol=length(columns), 
+						ncol=length(columns) + 1, 
 						nrow=1, 
-						widths=c(1, rep(1 / 1.5, length(columns)-1))
+						widths=c(4, rep(5, length(columns)))
 					)
 				)
 			)
@@ -461,7 +478,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 		}
 		h <- h + 1
-		h[length(sec)] <- h[length(sec)] + 2
+		h[length(sec)] <- h[length(sec)] + 1
 
 		return(
 			cowplot::plot_grid(
@@ -484,11 +501,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			l[[count]] <- forest_plot_names(
 				dat, 
 				sec[i], 
-				bottom = i==length(sec), 
-				colour_group=NULL, 
-				colour_group_first = TRUE, 
-				xlab = "df", 
-				trans = trans
+				bottom = i==length(sec)
 			)
 			count <- count + 1
 			for(j in 1:length(columns))
@@ -506,7 +519,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			}
 		}
 		h <- h + 1
-		h[length(sec)] <- h[length(sec)] + 2
+		h[length(sec)] <- h[length(sec)] + 1
 
 		return(
 			cowplot::plot_grid(
@@ -515,7 +528,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					ncol=length(columns) + 1, 
 					nrow=length(h), 
 					heights=h,
-					widths=c(3, rep(5, length(columns)))
+					widths=c(4, rep(5, length(columns)))
 				)
 			)
 		)

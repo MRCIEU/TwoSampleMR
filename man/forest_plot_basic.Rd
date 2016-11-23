@@ -4,13 +4,16 @@
 \alias{forest_plot_basic}
 \title{A basic forest plot}
 \usage{
-forest_plot_basic(dat, section = NULL, xlab = NULL, bottom = TRUE,
+forest_plot_basic(dat, section = NULL, colour_group = NULL,
+  colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
   trans = "identity")
 }
 \arguments{
 \item{dat}{Output from format_mr_results()}
 
 \item{section}{Which category in dat to plot. If NULL then prints everything}
+
+\item{colour_group}{Which exposure to plot. If NULL then prints everything grouping by colour.}
 
 \item{xlab}{x-axis label. Default=NULL}
 
