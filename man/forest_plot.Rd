@@ -24,7 +24,7 @@ forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
 
 \item{in_columns}{Separate the exposures into different columns. Default=FALSE}
 
-\item{xlab}{x-axis label. Only used if in_columns=FALSE. Default=""}
+\item{xlab}{x-axis label. If in_columns=TRUE then the exposure values are appended to the end of xlab. e.g. if xlab="Effect of" then x-labels will read "Effect of exposure1", "Effect of exposure2" etc. Otherwise will be printed as is.}
 
 \item{xlim}{limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL}
 

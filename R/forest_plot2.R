@@ -16,6 +16,7 @@
 #' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
 #'
+#' @export
 #' @return data frame.
 format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE)
 {
@@ -382,7 +383,7 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
 #' @param by_category Separate the results into sections by category? Default=TRUE
 #' @param in_columns Separate the exposures into different columns. Default=FALSE
-#' @param xlab x-axis label. Only used if in_columns=FALSE. Default=""
+#' @param xlab x-axis label. If in_columns=TRUE then the exposure values are appended to the end of xlab. e.g. if xlab="Effect of" then x-labels will read "Effect of exposure1", "Effect of exposure2" etc. Otherwise will be printed as is.
 #' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL
 #' @param trans Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"
 #'
@@ -443,7 +444,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					bottom = TRUE, 
 					colour_group=columns[i], 
 					colour_group_first = FALSE, 
-					xlab = paste0("Effect of ", columns[i]), 
+					xlab = paste0(xlab, " ", columns[i]), 
 					trans = trans
 				)
 				count <- count + 1
@@ -512,7 +513,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					bottom = i==length(sec), 
 					colour_group=columns[j], 
 					colour_group_first = FALSE, 
-					xlab = paste0("Effect of ", columns[j]), 
+					xlab = paste0(xlab, " ", columns[j]), 
 					trans = trans
 				)
 				count <- count + 1

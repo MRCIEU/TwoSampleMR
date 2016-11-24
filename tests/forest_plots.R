@@ -9,7 +9,7 @@ load(system.file("data/forest_plot_example.rdata", package="TwoSampleMR"))
 
 # Create different forest plots
 
-forest_plot(mr_result, in_columns=TRUE, by_category=TRUE)
+forest_plot(mr_result, in_columns=TRUE, by_category=TRUE, xlab="Effect of")
 forest_plot(mr_result, in_columns=TRUE, by_category=TRUE, exponentiate=TRUE, trans="log2")
 
 forest_plot(mr_result, in_columns=TRUE, by_category=FALSE)

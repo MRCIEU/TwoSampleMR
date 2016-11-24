@@ -7,8 +7,8 @@
 #' @param p1 = 5e-8 Significance threshold
 #' @param clump = TRUE Whether to clump results
 #' @param p2 = 5e-8 Secondary clumping threshold
-#' @param r2 = 0.1 Clumping r2 cut off
-#' @param kb = 5000 Clumping distance cutoff
+#' @param r2 = 0.001 Clumping r2 cut off
+#' @param kb = 10000 Clumping distance cutoff
 #' @param access_token = get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data
 #'
 #' @export

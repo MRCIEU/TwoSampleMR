@@ -16,9 +16,9 @@ extract_instruments(outcomes, p1 = 5e-08, clump = TRUE, p2 = 5e-08,
 
 \item{p2}{= 5e-8 Secondary clumping threshold}
 
-\item{r2}{= 0.1 Clumping r2 cut off}
+\item{r2}{= 0.001 Clumping r2 cut off}
 
-\item{kb}{= 5000 Clumping distance cutoff}
+\item{kb}{= 10000 Clumping distance cutoff}
 
 \item{access_token}{= get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data}
 }
