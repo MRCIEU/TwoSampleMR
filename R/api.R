@@ -1,4 +1,26 @@
 
+#' Toggle API address between development and release
+#'
+#'
+#' @export
+#' @return NULL
+toggle_dev <- function()
+{
+	release <- "http://api.mrbase.org/"
+	if(options("mrbaseapi") == release)
+	{
+		message("Currently in release. Changing to development.")
+		options(mrbaseapi="http://localhost/")
+	} else {
+		message("Currently in development. Changing to release.")
+		options(mrbaseapi=release)
+	}	
+}
+
+
+
+
+
 #' Get access token for OAuth2 access to MR Base
 #'
 #'
