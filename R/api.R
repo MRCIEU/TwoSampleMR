@@ -1,20 +1,23 @@
 
 #' Toggle API address between development and release
 #'
+#' @param where Which API to use. Choice between "local", "release", "test". Default = "local"
 #'
 #' @export
 #' @return NULL
-toggle_dev <- function()
+toggle_dev <- function(where="local")
 {
+	stopifnot(where %in% c("local", "release", "test"))
 	release <- "http://api.mrbase.org/"
-	if(options("mrbaseapi") == release)
-	{
-		message("Currently in release. Changing to development.")
-		options(mrbaseapi="http://localhost/")
-	} else {
-		message("Currently in development. Changing to release.")
-		options(mrbaseapi=release)
-	}	
+
+	url <- switch(where,
+		local = "http://localhost/",
+		test = "http://apitest.mrbase.org/",
+		release = "http://api.mrbase.org/"
+	)
+
+	options(mrbaseapi=url)
+	message("Changing API to ", where, ": ", url)
 }
 
 

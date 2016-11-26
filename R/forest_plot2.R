@@ -174,9 +174,11 @@ create_label <- function(n1, nom)
 #' @param colour_group Which exposure to plot. If NULL then prints everything grouping by colour.
 #' @param xlab x-axis label. Default=NULL
 #' @param bottom Show x-axis? Default=FALSE
+#' @param trans Transformation of x axis
+#' @param xlim x-axis limits
 #'
 #' @return ggplot object
-forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity")
+forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL)
 {
 	if(bottom)
 	{
@@ -193,6 +195,15 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	# If CI are symmetric then log(OR)
 	# Use this to guess where to put the null line
 	null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
+
+	# Change lab
+	if(!is.null(xlim))
+	{
+		stopifnot(length(xlim) == 2)
+		stopifnot(xlim[1] < xlim[2])
+		dat$lo_ci <- pmax(dat$lo_ci, xlim[1], na.rm=TRUE)
+		dat$up_ci <- pmin(dat$up_ci, xlim[2], na.rm=TRUE)
+	}
 
 	up <- max(dat$up_ci, na.rm=TRUE)
 	lo <- min(dat$lo_ci, na.rm=TRUE)
@@ -405,15 +416,6 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 
 	dat$lab <- create_label(dat$sample_size, dat$outcome)
 
-	# Change lab
-	if(!is.null(xlim))
-	{
-		stopifnot(length(xlim) == 2)
-		stopifnot(xlim[1] < xlim[2])
-		dat$lo_ci <- pmax(dat$lo_ci, xlim[1], na.rm=TRUE)
-		dat$up_ci <- pmin(dat$up_ci, xlim[2], na.rm=TRUE)
-	}
-
 	legend <- cowplot::get_legend(
 		ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=outcome)) + 
 		ggplot2::geom_point(ggplot2::aes(colour=exposure)) + 
@@ -426,7 +428,13 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 	{
 		if(!in_columns)
 		{
-			return(forest_plot_basic(dat, bottom = TRUE, xlab=xlab) + ggplot2::theme(legend.position="left"))
+			return(forest_plot_basic(
+				dat, 
+				bottom = TRUE, 
+				xlab = xlab, 
+				trans = trans,
+				xlim = xlim
+			) + ggplot2::theme(legend.position="left"))
 		} else {
 			l <- list()
 			l[[1]] <- forest_plot_names(
@@ -445,7 +453,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					colour_group=columns[i], 
 					colour_group_first = FALSE, 
 					xlab = paste0(xlab, " ", columns[i]), 
-					trans = trans
+					trans = trans,
+					xlim = xlim
 				)
 				count <- count + 1
 			}
@@ -474,7 +483,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 				sec[i], 
 				bottom = i==length(sec), 
 				xlab = xlab, 
-				trans=trans
+				trans = trans,
+				xlim = xlim
 			)
 			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 		}
@@ -514,7 +524,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					colour_group=columns[j], 
 					colour_group_first = FALSE, 
 					xlab = paste0(xlab, " ", columns[j]), 
-					trans = trans
+					trans = trans,
+					xlim = xlim
 				)
 				count <- count + 1
 			}

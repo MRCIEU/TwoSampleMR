@@ -6,7 +6,7 @@
 \usage{
 forest_plot_basic(dat, section = NULL, colour_group = NULL,
   colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
-  trans = "identity")
+  trans = "identity", xlim = NULL)
 }
 \arguments{
 \item{dat}{Output from format_mr_results()}
@@ -18,6 +18,10 @@ forest_plot_basic(dat, section = NULL, colour_group = NULL,
 \item{xlab}{x-axis label. Default=NULL}
 
 \item{bottom}{Show x-axis? Default=FALSE}
+
+\item{trans}{Transformation of x axis}
+
+\item{xlim}{x-axis limits}
 }
 \value{
 ggplot object

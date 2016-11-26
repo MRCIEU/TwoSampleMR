@@ -600,7 +600,7 @@ ucsc_get_position <- function(snp)
 	message(query)
 	out <- dbSendQuery(mydb, query)
 	d <- fetch(out, n=-1)
-	dbClearResult(dbListResults(mydb)[[1]])
+	# dbClearResult(dbListResults(mydb)[[1]])
 	dbDisconnect(mydb)
 	return(d)
 

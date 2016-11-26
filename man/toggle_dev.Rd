@@ -4,7 +4,10 @@
 \alias{toggle_dev}
 \title{Toggle API address between development and release}
 \usage{
-toggle_dev()
+toggle_dev(where = "local")
+}
+\arguments{
+\item{where}{Which API to use. Choice between "local", "release", "test". Default = "local"}
 }
 \description{
 Toggle API address between development and release
