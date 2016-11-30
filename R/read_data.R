@@ -445,11 +445,7 @@ check_units <- function(x, id, col)
 
 #' Get data selected from GWAS catalog into correct format
 #'
-#' Subset the GWAS catalogue to have the rows you require for instrumenting a particular exposure and then run this command.
-#' Be careful to avoid using different phenotypes, phenotype types, or units together.
-#'
-#' @param gwas_catalog_subset Subset of rows from \code{data(gwas_catalog)}
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' DEPRECATED. Please use \code{format_data} instead
 #'
 #' @export
 #' @return Data frame
@@ -457,21 +453,12 @@ check_units <- function(x, id, col)
 #' data(gwas_catalog)
 #' require(MRInstruments)
 #' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
-#' bmi <- format_gwas_catalog(bmi)
+#' bmi <- format_data(bmi)
 #'}
 format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 {
-	stopifnot(type %in% c("exposure", "outcome"))
-
-	if(length(unique(gwas_catalog_subset$Phenotype)) > 1)
-	{
-		message("Separating the entries into the following phenotypes:\n", paste(unique(gwas_catalog_subset$Phenotype), collapse="\n"))
-	}
-	
-	dat <- format_data(gwas_catalog_subset, type=type)
-	dat[[paste0("data_source.", type)]] <- "gwas_catalog"
-
-	return(dat)
+	message("This function is now deprecated and has been replaced by 'format_data'.")
+	return(NULL)
 }
 
 
