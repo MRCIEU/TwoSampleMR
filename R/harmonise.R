@@ -67,8 +67,6 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 
 
 
-
-
 #' Convert TwoSampleMR format to MendelianRandomization format
 #'
 #' The MendelianRandomization package offers MR methods that can 
@@ -100,18 +98,6 @@ dat_to_MRInput <- function(dat)
 	})
 	return(out)
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 harmonise_cleanup_variables <- function(res.tab)
@@ -149,219 +135,6 @@ harmonise_make_snp_effects_positive <- function(res.tab)
 	return(res.tab)
 }
 
-#' Harmonisation function
-#'
-#' @param res.tab Data frame of exposure and outcome summary stats
-#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
-#'
-#' @return Data frame
-harmonise_function <- function(res.tab, action)
-{
-	if(action == 1)	
-	{
-		return(res.tab)
-	}
-
-	# Don't have eaf for some studies, e.g these studies 
-	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
-	eaf.outcome.notmiss.study <- TRUE
-	if(all(is.na(res.tab$eaf.outcome)))
-	{
-		eaf.outcome.notmiss.study <- FALSE
-	}
-	
-	# Make sure variables are correct class
-	res.tab <- harmonise_cleanup_variables(res.tab)
-
-	# Make effect alleles have positive effect
-	res.tab <- harmonise_make_snp_effects_positive(res.tab)
-
-	strand1 <- c("G","C","T","A")
-	strand2 <- c("C","G","A","T")
-
-	# When only the effect_allele.outcome is known, infer other_allele.outcome from effect_allele.exposure and other_allele.exposure
-	if(all(is.na(res.tab$other_allele.outcome)))
-	{
-		for(outcome in res.tab$outcome)
-		{
-			pos.keep <- which(res.tab$outcome == outcome & is.na(res.tab$other_allele.outcome))
-			res.tab.test <- res.tab[pos.keep,]
-			pos.all <- 1:nrow(res.tab)
-			res.tab.excl <- res.tab[pos.all[!pos.all %in% pos.keep],]
-	
-			if(!all(is.na(res.tab.test$effect_allele.outcome)))
-			{ 
-			#this line is necessary because for some studies both effect_allele.outcome and other_allele.outcome are missing; the script witihn this if statement does not get executed if all effect_allele.outcomes are missing
-				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]<-res.tab.test$other_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]
-				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]<-res.tab.test$effect_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]
-				#if other allele still missing then the strands are different; recode effect_allele.outcome to other strand
-				effect_allele.outcome_other_strand<-strand2[unlist(lapply(res.tab.test$effect_allele.outcome[is.na(res.tab.test$other_allele.outcome)],FUN=function(x) which(strand1==x)))]
-				res.tab.test$effect_allele.outcome[is.na(res.tab.test$other_allele.outcome)]<-effect_allele.outcome_other_strand
-				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]<-res.tab.test$other_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]
-				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]<-res.tab.test$effect_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]
-			}
-			res.tab<-rbind(res.tab.excl,res.tab.test) #put datasets back together
-		}
-	}
-	# res.tab.test[,c("outcome","effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.outcome","eaf.exposure")]
-
-	##################
-	#Fix disease SNPs#
-	##################
-	#code beta.outcome so that is per copy of the allele that increases the exposure
-	#But be careful that the alleles aren't different because of different strands or because palindromic 
-	
-
-	######################
-	#Fix palindromic SNPs#
-	######################
-
-	pos.amb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome==strand2[i]))))
-	pos.unamb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome!=strand2[i]))))
-
-	# print(pos.amb)
-
-	# Get the palidromic SNP names
-	palindromic_snp_names <- res.tab$SNP[pos.amb]
-
-	
-	if(eaf.outcome.notmiss.study){ #don't have eaf for some studies
-		#For ambiguous/palindromic SNPs, correct effect allele in disease GWAS to be same as effect allele in trait GWAS (allele that increases the trait, using EAF columns to infer the effect allele
-		#if the effect allele frequencies are different (eaf.outcome versus eaf.exposure) then effect alleles are different
-		amb.tab<-res.tab[pos.amb,]
-		length(unique(res.tab$SNP)) #number of SNPs
-		length(unique(amb.tab$SNP)) #number of ambiguous/palindromic SNPs
-		#exclude ambiguous SNPs where eaf is 0.42-0.58 because the effect allele cannot be reliably inferred
-		res.tab[,c("eaf.outcome","eaf.exposure")]
-		amb.tab.keep<-amb.tab[which(amb.tab$eaf.outcome<0.42 | amb.tab$eaf.outcome>0.58),] #keep ambiguous snps if eaf.outcome NOT 0.42-0.58
-		amb.tab.excl<-amb.tab[which(amb.tab$eaf.outcome>0.42 & amb.tab$eaf.outcome<0.58 | is.na(amb.tab$eaf.outcome)),] #exclude ambiguous SNPs if eaf.outcome is 0.42-0.58
-
-		length(unique(amb.tab.keep$snp)) #number of ambiguous SNPs kept because eaf.dos NOT 0.42-0.58 and eaf.outcome not missing
-		
-		length(unique(amb.tab.excl$snp)) #number of ambiguous SNPs excluded because eaf.outcome 0.42-0.58
-		amb.tab.keep$eaf.exposure[is.na(amb.tab.keep$eaf.exposure)]<-amb.tab.keep$eaf.outcome[is.na(amb.tab.keep$eaf.exposure)] #if eaf.exposure is missing replace with eaf.outcome
-		amb.tab.keep<-amb.tab.keep[amb.tab.keep$eaf.exposure<0.42 | amb.tab.keep$eaf.exposure>0.58,] #keep ambiguous SNPs if eaf.exposure NOT 0.42-0.58
-		#amb.tab.excl$eaf.exposure[is.na(amb.tab.excl$eaf.exposure)]<-amb.tab.excl$eaf.outcome[is.na(amb.tab.excl$eaf.exposure)] #if eaf.exposure is missing replace with eaf.outcome. This doesn't make sense to do 
-		amb.tab.excl2<-amb.tab.excl[amb.tab.excl$eaf.exposure>0.42 & amb.tab.excl$eaf.exposure<0.58,] #exclude ambiguous SNPs if eaf.exposure is 0.42-0.58
-		amb.tab.excl<-rbind(amb.tab.excl,amb.tab.excl2) #ambigous SNPs excluded because eaf.outcome or eaf.exposure is 0.42-0.58
-		length(unique(amb.tab.keep$snp)) #number of ambiguous SNPs kept because eaf.outcome or eaf.exposure NOT 0.42-0.58
-		length(unique(amb.tab.excl$snp)) #number of ambiguous SNPs excluded because eaf.outcome or eaf.exposure is 0.42-0.58
-		length(unique(amb.tab.excl2$snp)) #number of SNPs excluded because eaf.exposure is 0.42-0.58
-		
-		amb.tab1<-amb.tab.keep[(amb.tab.keep$eaf.outcome>0.5 & amb.tab.keep$eaf.exposure>0.5) | (amb.tab.keep$eaf.outcome<0.5 & amb.tab.keep$eaf.exposure<0.5),] #amb SNPs where effect alleles same
-		amb.tab2<-amb.tab.keep[(amb.tab.keep$eaf.outcome>0.5 & amb.tab.keep$eaf.exposure<0.5) | (amb.tab.keep$eaf.outcome<0.5 & amb.tab.keep$eaf.exposure>0.5),] #amb SNPs where effect alleles different
-		effect.allele<-amb.tab2$effect_allele.exposure
-		other.allele<-amb.tab2$other_allele.exposure
-		amb.tab2$effect_allele.outcome<-effect.allele
-		amb.tab2$other_allele.outcome<-other.allele
-		amb.tab2$eaf.outcome <-1-amb.tab2$eaf.outcome
-		amb.tab2$beta.outcome<-amb.tab2$beta.outcome*-1
-	#	amb.tab2[,c("eaf.outcome","eaf.exposure")]
-	#	amb.tab2[,c("effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","SNP","effect")]
-	}
-	
-	res.tab.unamb<-res.tab[pos.unamb,] #exclude palindromic SNPs from res.tab
-
-	######################
-	#non palindromic SNPs#
-	######################
-	#for non-palindromic SNPs, select SNPs coded using different strands between disease GWAS and trait GWAS
-		
-	strand.diff<-which(res.tab.unamb$effect_allele.outcome != res.tab.unamb$effect_allele.exposure & res.tab.unamb$effect_allele.outcome!=res.tab.unamb$other_allele.exposure) #get position of non-palindromic SNPs where alleles are coded using different strands
-	strand.same<-which(res.tab.unamb$effect_allele.outcome == res.tab.unamb$effect_allele.exposure & res.tab.unamb$other_allele.outcome==res.tab.unamb$other_allele.exposure 
-		| res.tab.unamb$effect_allele.outcome == res.tab.unamb$other_allele.exposure & res.tab.unamb$other_allele.outcome ==res.tab.unamb$effect_allele.exposure)   #get position of non-palindromic SNPs where alleles are coded using same strands
-
-	#	res.tab.unamb[strand.diff,c("SNP","effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","beta.outcome","chr")]
-	#	res.tab.unamb[strand.same,c("SNP","effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","beta.outcome","chr")]
-
-	#get position of different effect alleles when effects also coded using different strands
-
-	#if coded using different strands can use this code to correct
-	strdiff.tab<-res.tab.unamb[strand.diff,]
-	
-	ref.strand<-strdiff.tab$effect_allele.outcome
-	oth.strand<-strdiff.tab$other_allele.outcome
-	ref.pos<-unlist(lapply(ref.strand,FUN=function(i) which(strand1==i)))
-	oth.pos<-unlist(lapply(oth.strand,FUN=function(i) which(strand1==i)))
-
-	#create mirror copies of reference and other allele, ie what they look like on other strand
-	reference.allele.other.strand<-unlist(lapply(1:length(ref.pos),FUN=function(i) strand2[ref.pos[i]]))
-	other.allele.other.strand<-unlist(lapply(1:length(oth.pos),FUN=function(i) strand2[oth.pos[i]]))
-	
-	effect.allele<-reference.allele.other.strand
-	other.allele<-other.allele.other.strand
-	strdiff.tab$effect_allele.outcome<-effect.allele
-	strdiff.tab$other_allele.outcome<-other.allele
-	#find SNPs where effect allele in disease GWAS different from effect allele in trait GWAS
-	pos.eadiff<-strdiff.tab$effect_allele.outcome!=strdiff.tab$effect_allele.exposure & strdiff.tab$effect_allele.outcome==strdiff.tab$other_allele.exposure #effect alleles different
-	pos.easame<-strdiff.tab$effect_allele.outcome==strdiff.tab$effect_allele.exposure & strdiff.tab$effect_allele.outcome!=strdiff.tab$other_allele.exposure #effect alleles same 
-	ea.diff.tab1<-strdiff.tab[pos.eadiff ,]
-	effect.allele<-ea.diff.tab1$effect_allele.exposure
-	other.allele<-ea.diff.tab1$other_allele.exposure
-	ea.diff.tab1$effect_allele.outcome<-effect.allele #recode effect allele
-	ea.diff.tab1$other_allele.outcome<-other.allele #recode other allele
-	if(eaf.outcome.notmiss.study){ #don't have eaf for studies listed in database 
-		ea.diff.tab1$eaf.outcome <-1-ea.diff.tab1$eaf.outcome #recode eaf
-	}
-	ea.diff.tab1$beta.outcome<-ea.diff.tab1$beta.outcome*-1 #recode odds ratio
-	#ea.diff.tab1[,c("eaf.outcome","eaf.exposure")]
-	
-	ea.same.tab1<-strdiff.tab[pos.easame ,]
-			
-	#exclude non palindromic SNPs where alleles coded using different strands
-	res.tab.unamb.same.strand<-res.tab.unamb[strand.same,]
-	
-	#for non-palindromic SNPs, where strand is same between two databases, recode disease GWAS effect allele to the trait effect allele
-	pos.eadiff<-which(with(res.tab.unamb.same.strand, effect_allele.outcome != effect_allele.exposure & effect_allele.outcome==other_allele.exposure))
-	pos.easame<-which(with(res.tab.unamb.same.strand, effect_allele.outcome == effect_allele.exposure & effect_allele.outcome!=other_allele.exposure))
-
-	#		res.tab.unamb.same.strand[,c("effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.exposure")]
-	#		res.tab[,c("effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.exposure")]
-
-	ea.diff.tab2<-res.tab.unamb.same.strand[pos.eadiff,]	
-	effect.allele<-ea.diff.tab2$effect_allele.exposure
-	other.allele<-ea.diff.tab2$other_allele.exposure
-	ea.diff.tab2$effect_allele.outcome<-effect.allele #recode effect allele
-	ea.diff.tab2$other_allele.outcome<-other.allele #recode other allele
-	if(eaf.outcome.notmiss.study){ #don't have eaf for studies listed in database 
-		ea.diff.tab2$eaf.outcome <-1-ea.diff.tab2$eaf.outcome #recode eaf
-	}
-	ea.diff.tab2$beta.outcome<-ea.diff.tab2$beta.outcome*-1 #recode beta.outcome
-
-	#exclude non palindromic SNPs where coded using same strand and where effect alleles are different	
-	res.tab_unamb_same.strand_same.ea<-res.tab.unamb.same.strand[pos.easame,]
-
-	#rbind fixed tables to res.tab
-	#amb.tab1 #palindromic SNPs where effect alleles were same
-	#amb.tab2 #fixed palindromic SNPs where effect alleles different
-	#ea.same.tab1 #non-palindromic SNPs where strands different but effect alleles same
-	#ea.diff.tab1 #fixed non-palindromic SNPs where strands different and effect alleles different
-	#ea.diff.tab2 #fixed non-palindromic SNPs where strands same and effect alleles different
-	
-	if(eaf.outcome.notmiss.study){ 
-		fix.tab<-rbind(res.tab_unamb_same.strand_same.ea,amb.tab1)
-		fix.tab<-rbind(fix.tab,amb.tab2)
-		fix.tab<-rbind(fix.tab,ea.same.tab1)
-		fix.tab<-rbind(fix.tab,ea.diff.tab1)
-		fix.tab<-rbind(fix.tab,ea.diff.tab2)
-	}else{
-		fix.tab<-rbind(res.tab_unamb_same.strand_same.ea,ea.same.tab1)
-		fix.tab<-rbind(fix.tab,ea.diff.tab1)
-		fix.tab<-rbind(fix.tab,ea.diff.tab2)
-	}
-	dim(fix.tab)
-
-	if(action == 3)
-	{
-		message("The following SNPs are palindromic and will be excluded:\n", paste(palindromic_snp_names, collapse="\n"))
-		return(subset(fix.tab, !SNP %in% palindromic_snp_names))
-	}
-
-	return(fix.tab)
-}
-
-
-
 
 ## Refactoring
 
@@ -372,6 +145,7 @@ check_palindromic <- function(A1, A2)
 	(A1 == "G" & A2 == "C") |
 	(A1 == "C" & A2 == "G")
 }
+
 
 flip_alleles <- function(A1)
 {
@@ -657,5 +431,220 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 	d <- d[order(d$id.outcome), ]
 
 	return(d)
+}
+
+
+
+
+
+#' Harmonisation function
+#'
+#' @param res.tab Data frame of exposure and outcome summary stats
+#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
+#'
+#' @return Data frame
+harmonise_function <- function(res.tab, action)
+{
+	if(action == 1)	
+	{
+		return(res.tab)
+	}
+
+	# Don't have eaf for some studies, e.g these studies 
+	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
+	eaf.outcome.notmiss.study <- TRUE
+	if(all(is.na(res.tab$eaf.outcome)))
+	{
+		eaf.outcome.notmiss.study <- FALSE
+	}
+	
+	# Make sure variables are correct class
+	res.tab <- harmonise_cleanup_variables(res.tab)
+
+	# Make effect alleles have positive effect
+	res.tab <- harmonise_make_snp_effects_positive(res.tab)
+
+	strand1 <- c("G","C","T","A")
+	strand2 <- c("C","G","A","T")
+
+	# When only the effect_allele.outcome is known, infer other_allele.outcome from effect_allele.exposure and other_allele.exposure
+	if(all(is.na(res.tab$other_allele.outcome)))
+	{
+		for(outcome in res.tab$outcome)
+		{
+			pos.keep <- which(res.tab$outcome == outcome & is.na(res.tab$other_allele.outcome))
+			res.tab.test <- res.tab[pos.keep,]
+			pos.all <- 1:nrow(res.tab)
+			res.tab.excl <- res.tab[pos.all[!pos.all %in% pos.keep],]
+	
+			if(!all(is.na(res.tab.test$effect_allele.outcome)))
+			{ 
+			#this line is necessary because for some studies both effect_allele.outcome and other_allele.outcome are missing; the script witihn this if statement does not get executed if all effect_allele.outcomes are missing
+				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]<-res.tab.test$other_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]
+				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]<-res.tab.test$effect_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]
+				#if other allele still missing then the strands are different; recode effect_allele.outcome to other strand
+				effect_allele.outcome_other_strand<-strand2[unlist(lapply(res.tab.test$effect_allele.outcome[is.na(res.tab.test$other_allele.outcome)],FUN=function(x) which(strand1==x)))]
+				res.tab.test$effect_allele.outcome[is.na(res.tab.test$other_allele.outcome)]<-effect_allele.outcome_other_strand
+				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]<-res.tab.test$other_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]
+				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]<-res.tab.test$effect_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]
+			}
+			res.tab<-rbind(res.tab.excl,res.tab.test) #put datasets back together
+		}
+	}
+	# res.tab.test[,c("outcome","effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.outcome","eaf.exposure")]
+
+	##################
+	#Fix disease SNPs#
+	##################
+	#code beta.outcome so that is per copy of the allele that increases the exposure
+	#But be careful that the alleles aren't different because of different strands or because palindromic 
+	
+
+	######################
+	#Fix palindromic SNPs#
+	######################
+
+	pos.amb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome==strand2[i]))))
+	pos.unamb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome!=strand2[i]))))
+
+	# print(pos.amb)
+
+	# Get the palidromic SNP names
+	palindromic_snp_names <- res.tab$SNP[pos.amb]
+
+	
+	if(eaf.outcome.notmiss.study){ #don't have eaf for some studies
+		#For ambiguous/palindromic SNPs, correct effect allele in disease GWAS to be same as effect allele in trait GWAS (allele that increases the trait, using EAF columns to infer the effect allele
+		#if the effect allele frequencies are different (eaf.outcome versus eaf.exposure) then effect alleles are different
+		amb.tab<-res.tab[pos.amb,]
+		length(unique(res.tab$SNP)) #number of SNPs
+		length(unique(amb.tab$SNP)) #number of ambiguous/palindromic SNPs
+		#exclude ambiguous SNPs where eaf is 0.42-0.58 because the effect allele cannot be reliably inferred
+		res.tab[,c("eaf.outcome","eaf.exposure")]
+		amb.tab.keep<-amb.tab[which(amb.tab$eaf.outcome<0.42 | amb.tab$eaf.outcome>0.58),] #keep ambiguous snps if eaf.outcome NOT 0.42-0.58
+		amb.tab.excl<-amb.tab[which(amb.tab$eaf.outcome>0.42 & amb.tab$eaf.outcome<0.58 | is.na(amb.tab$eaf.outcome)),] #exclude ambiguous SNPs if eaf.outcome is 0.42-0.58
+
+		length(unique(amb.tab.keep$snp)) #number of ambiguous SNPs kept because eaf.dos NOT 0.42-0.58 and eaf.outcome not missing
+		
+		length(unique(amb.tab.excl$snp)) #number of ambiguous SNPs excluded because eaf.outcome 0.42-0.58
+		amb.tab.keep$eaf.exposure[is.na(amb.tab.keep$eaf.exposure)]<-amb.tab.keep$eaf.outcome[is.na(amb.tab.keep$eaf.exposure)] #if eaf.exposure is missing replace with eaf.outcome
+		amb.tab.keep<-amb.tab.keep[amb.tab.keep$eaf.exposure<0.42 | amb.tab.keep$eaf.exposure>0.58,] #keep ambiguous SNPs if eaf.exposure NOT 0.42-0.58
+		#amb.tab.excl$eaf.exposure[is.na(amb.tab.excl$eaf.exposure)]<-amb.tab.excl$eaf.outcome[is.na(amb.tab.excl$eaf.exposure)] #if eaf.exposure is missing replace with eaf.outcome. This doesn't make sense to do 
+		amb.tab.excl2<-amb.tab.excl[amb.tab.excl$eaf.exposure>0.42 & amb.tab.excl$eaf.exposure<0.58,] #exclude ambiguous SNPs if eaf.exposure is 0.42-0.58
+		amb.tab.excl<-rbind(amb.tab.excl,amb.tab.excl2) #ambigous SNPs excluded because eaf.outcome or eaf.exposure is 0.42-0.58
+		length(unique(amb.tab.keep$snp)) #number of ambiguous SNPs kept because eaf.outcome or eaf.exposure NOT 0.42-0.58
+		length(unique(amb.tab.excl$snp)) #number of ambiguous SNPs excluded because eaf.outcome or eaf.exposure is 0.42-0.58
+		length(unique(amb.tab.excl2$snp)) #number of SNPs excluded because eaf.exposure is 0.42-0.58
+		
+		amb.tab1<-amb.tab.keep[(amb.tab.keep$eaf.outcome>0.5 & amb.tab.keep$eaf.exposure>0.5) | (amb.tab.keep$eaf.outcome<0.5 & amb.tab.keep$eaf.exposure<0.5),] #amb SNPs where effect alleles same
+		amb.tab2<-amb.tab.keep[(amb.tab.keep$eaf.outcome>0.5 & amb.tab.keep$eaf.exposure<0.5) | (amb.tab.keep$eaf.outcome<0.5 & amb.tab.keep$eaf.exposure>0.5),] #amb SNPs where effect alleles different
+		effect.allele<-amb.tab2$effect_allele.exposure
+		other.allele<-amb.tab2$other_allele.exposure
+		amb.tab2$effect_allele.outcome<-effect.allele
+		amb.tab2$other_allele.outcome<-other.allele
+		amb.tab2$eaf.outcome <-1-amb.tab2$eaf.outcome
+		amb.tab2$beta.outcome<-amb.tab2$beta.outcome*-1
+	#	amb.tab2[,c("eaf.outcome","eaf.exposure")]
+	#	amb.tab2[,c("effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","SNP","effect")]
+	}
+	
+	res.tab.unamb<-res.tab[pos.unamb,] #exclude palindromic SNPs from res.tab
+
+	######################
+	#non palindromic SNPs#
+	######################
+	#for non-palindromic SNPs, select SNPs coded using different strands between disease GWAS and trait GWAS
+		
+	strand.diff<-which(res.tab.unamb$effect_allele.outcome != res.tab.unamb$effect_allele.exposure & res.tab.unamb$effect_allele.outcome!=res.tab.unamb$other_allele.exposure) #get position of non-palindromic SNPs where alleles are coded using different strands
+	strand.same<-which(res.tab.unamb$effect_allele.outcome == res.tab.unamb$effect_allele.exposure & res.tab.unamb$other_allele.outcome==res.tab.unamb$other_allele.exposure 
+		| res.tab.unamb$effect_allele.outcome == res.tab.unamb$other_allele.exposure & res.tab.unamb$other_allele.outcome ==res.tab.unamb$effect_allele.exposure)   #get position of non-palindromic SNPs where alleles are coded using same strands
+
+	#	res.tab.unamb[strand.diff,c("SNP","effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","beta.outcome","chr")]
+	#	res.tab.unamb[strand.same,c("SNP","effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","beta.outcome","chr")]
+
+	#get position of different effect alleles when effects also coded using different strands
+
+	#if coded using different strands can use this code to correct
+	strdiff.tab<-res.tab.unamb[strand.diff,]
+	
+	ref.strand<-strdiff.tab$effect_allele.outcome
+	oth.strand<-strdiff.tab$other_allele.outcome
+	ref.pos<-unlist(lapply(ref.strand,FUN=function(i) which(strand1==i)))
+	oth.pos<-unlist(lapply(oth.strand,FUN=function(i) which(strand1==i)))
+
+	#create mirror copies of reference and other allele, ie what they look like on other strand
+	reference.allele.other.strand<-unlist(lapply(1:length(ref.pos),FUN=function(i) strand2[ref.pos[i]]))
+	other.allele.other.strand<-unlist(lapply(1:length(oth.pos),FUN=function(i) strand2[oth.pos[i]]))
+	
+	effect.allele<-reference.allele.other.strand
+	other.allele<-other.allele.other.strand
+	strdiff.tab$effect_allele.outcome<-effect.allele
+	strdiff.tab$other_allele.outcome<-other.allele
+	#find SNPs where effect allele in disease GWAS different from effect allele in trait GWAS
+	pos.eadiff<-strdiff.tab$effect_allele.outcome!=strdiff.tab$effect_allele.exposure & strdiff.tab$effect_allele.outcome==strdiff.tab$other_allele.exposure #effect alleles different
+	pos.easame<-strdiff.tab$effect_allele.outcome==strdiff.tab$effect_allele.exposure & strdiff.tab$effect_allele.outcome!=strdiff.tab$other_allele.exposure #effect alleles same 
+	ea.diff.tab1<-strdiff.tab[pos.eadiff ,]
+	effect.allele<-ea.diff.tab1$effect_allele.exposure
+	other.allele<-ea.diff.tab1$other_allele.exposure
+	ea.diff.tab1$effect_allele.outcome<-effect.allele #recode effect allele
+	ea.diff.tab1$other_allele.outcome<-other.allele #recode other allele
+	if(eaf.outcome.notmiss.study){ #don't have eaf for studies listed in database 
+		ea.diff.tab1$eaf.outcome <-1-ea.diff.tab1$eaf.outcome #recode eaf
+	}
+	ea.diff.tab1$beta.outcome<-ea.diff.tab1$beta.outcome*-1 #recode odds ratio
+	#ea.diff.tab1[,c("eaf.outcome","eaf.exposure")]
+	
+	ea.same.tab1<-strdiff.tab[pos.easame ,]
+			
+	#exclude non palindromic SNPs where alleles coded using different strands
+	res.tab.unamb.same.strand<-res.tab.unamb[strand.same,]
+	
+	#for non-palindromic SNPs, where strand is same between two databases, recode disease GWAS effect allele to the trait effect allele
+	pos.eadiff<-which(with(res.tab.unamb.same.strand, effect_allele.outcome != effect_allele.exposure & effect_allele.outcome==other_allele.exposure))
+	pos.easame<-which(with(res.tab.unamb.same.strand, effect_allele.outcome == effect_allele.exposure & effect_allele.outcome!=other_allele.exposure))
+
+	#		res.tab.unamb.same.strand[,c("effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.exposure")]
+	#		res.tab[,c("effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.exposure")]
+
+	ea.diff.tab2<-res.tab.unamb.same.strand[pos.eadiff,]	
+	effect.allele<-ea.diff.tab2$effect_allele.exposure
+	other.allele<-ea.diff.tab2$other_allele.exposure
+	ea.diff.tab2$effect_allele.outcome<-effect.allele #recode effect allele
+	ea.diff.tab2$other_allele.outcome<-other.allele #recode other allele
+	if(eaf.outcome.notmiss.study){ #don't have eaf for studies listed in database 
+		ea.diff.tab2$eaf.outcome <-1-ea.diff.tab2$eaf.outcome #recode eaf
+	}
+	ea.diff.tab2$beta.outcome<-ea.diff.tab2$beta.outcome*-1 #recode beta.outcome
+
+	#exclude non palindromic SNPs where coded using same strand and where effect alleles are different	
+	res.tab_unamb_same.strand_same.ea<-res.tab.unamb.same.strand[pos.easame,]
+
+	#rbind fixed tables to res.tab
+	#amb.tab1 #palindromic SNPs where effect alleles were same
+	#amb.tab2 #fixed palindromic SNPs where effect alleles different
+	#ea.same.tab1 #non-palindromic SNPs where strands different but effect alleles same
+	#ea.diff.tab1 #fixed non-palindromic SNPs where strands different and effect alleles different
+	#ea.diff.tab2 #fixed non-palindromic SNPs where strands same and effect alleles different
+	
+	if(eaf.outcome.notmiss.study){ 
+		fix.tab<-rbind(res.tab_unamb_same.strand_same.ea,amb.tab1)
+		fix.tab<-rbind(fix.tab,amb.tab2)
+		fix.tab<-rbind(fix.tab,ea.same.tab1)
+		fix.tab<-rbind(fix.tab,ea.diff.tab1)
+		fix.tab<-rbind(fix.tab,ea.diff.tab2)
+	}else{
+		fix.tab<-rbind(res.tab_unamb_same.strand_same.ea,ea.same.tab1)
+		fix.tab<-rbind(fix.tab,ea.diff.tab1)
+		fix.tab<-rbind(fix.tab,ea.diff.tab2)
+	}
+	dim(fix.tab)
+
+	if(action == 3)
+	{
+		message("The following SNPs are palindromic and will be excluded:\n", paste(palindromic_snp_names, collapse="\n"))
+		return(subset(fix.tab, !SNP %in% palindromic_snp_names))
+	}
+
+	return(fix.tab)
 }
 
