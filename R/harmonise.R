@@ -114,6 +114,7 @@ harmonise_cleanup_variables <- function(res.tab)
 	res.tab$other_allele.exposure <- toupper(res.tab$other_allele.exposure)
 	res.tab$effect_allele.outcome <- toupper(res.tab$effect_allele.outcome)
 	res.tab$other_allele.outcome <- toupper(res.tab$other_allele.outcome)
+	res.tab$other_allele.outcome[res.tab$other_allele.outcome == ""] <- NA
 	
 	return(res.tab)	
 }
