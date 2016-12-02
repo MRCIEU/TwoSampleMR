@@ -176,9 +176,10 @@ create_label <- function(n1, nom)
 #' @param bottom Show x-axis? Default=FALSE
 #' @param trans Transformation of x axis
 #' @param xlim x-axis limits
+#' @param threshold p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied
 #'
 #' @return ggplot object
-forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL)
+forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, threshold=NULL)
 {
 	if(bottom)
 	{
@@ -222,9 +223,19 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	if(!is.null(colour_group))
 	{
 		dat <- subset(dat, exposure == colour_group)
-		point_plot <- ggplot2::geom_point(size=2)
+		if(!is.null(threshold))
+		{
+			point_plot <- ggplot2::geom_point(size=2, aes(colour = pval < threshold))
+		} else {
+			point_plot <- ggplot2::geom_point(size=2)
+		}
 	} else {
-		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
+		if(!is.null(threshold))
+		{
+			point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure, shape = pval < threshold), size=2)
+		} else {
+			point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
+		}
 	}
 
 	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
@@ -394,13 +405,14 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
 #' @param by_category Separate the results into sections by category? Default=TRUE
 #' @param in_columns Separate the exposures into different columns. Default=FALSE
+#' @param threshold p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied
 #' @param xlab x-axis label. If in_columns=TRUE then the exposure values are appended to the end of xlab. e.g. if xlab="Effect of" then x-labels will read "Effect of exposure1", "Effect of exposure2" etc. Otherwise will be printed as is.
 #' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL
 #' @param trans Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"
 #'
 #' @export
 #' @return grid plot object
-forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, in_columns=FALSE, xlab="", xlim=NULL, trans="identity")
+forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, in_columns=FALSE, threshold=NULL, xlab="", xlim=NULL, trans="identity")
 {
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
@@ -433,7 +445,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 				bottom = TRUE, 
 				xlab = xlab, 
 				trans = trans,
-				xlim = xlim
+				xlim = xlim,
+				threshold = threshold
 			) + ggplot2::theme(legend.position="left"))
 		} else {
 			l <- list()
@@ -454,7 +467,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					colour_group_first = FALSE, 
 					xlab = paste0(xlab, " ", columns[i]), 
 					trans = trans,
-					xlim = xlim
+					xlim = xlim,
+					threshold = threshold
 				)
 				count <- count + 1
 			}
@@ -484,7 +498,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 				bottom = i==length(sec), 
 				xlab = xlab, 
 				trans = trans,
-				xlim = xlim
+				xlim = xlim,
+				threshold = threshold
 			)
 			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 		}
@@ -525,7 +540,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					colour_group_first = FALSE, 
 					xlab = paste0(xlab, " ", columns[j]), 
 					trans = trans,
-					xlim = xlim
+					xlim = xlim,
+					threshold = threshold
 				)
 				count <- count + 1
 			}

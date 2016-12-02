@@ -7,7 +7,7 @@
 forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
   multi_snp_method = "Inverse variance weighted",
   group_single_categories = TRUE, by_category = TRUE, in_columns = FALSE,
-  xlab = "", xlim = NULL, trans = "identity")
+  threshold = NULL, xlab = "", xlim = NULL, trans = "identity")
 }
 \arguments{
 \item{mr_res}{Results from mr()}
@@ -23,6 +23,8 @@ forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
 \item{by_category}{Separate the results into sections by category? Default=TRUE}
 
 \item{in_columns}{Separate the exposures into different columns. Default=FALSE}
+
+\item{threshold}{p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied}
 
 \item{xlab}{x-axis label. If in_columns=TRUE then the exposure values are appended to the end of xlab. e.g. if xlab="Effect of" then x-labels will read "Effect of exposure1", "Effect of exposure2" etc. Otherwise will be printed as is.}
 
