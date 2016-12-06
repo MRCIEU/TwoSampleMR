@@ -160,7 +160,9 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 		stop("'proxies' argument should be TRUE or FALSE")
 	}
 
-	if((length(snps) < 5 & length(outcomes) < 100) | (length(outcomes) < 5 & length(snps) < 100))
+	splitsize <- 50
+
+	if((length(snps) < 5 & length(outcomes) < splitsize) | (length(outcomes) < 5 & length(snps) < splitsize))
 	{
 		snpfile <- upload_file_to_api(snps)
 		outcomefile <- upload_file_to_api(outcomes)
@@ -180,8 +182,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	} else if(length(snps) > length(outcomes)) {
 
 		# Split snps 
-		n <- length(snps)
-		splitsize <- 100
+		n <- length(snps)		
 		splits <- data.frame(snps=snps, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
 		d <- list()
 		for(i in 1:length(outcomes))
@@ -216,7 +217,6 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	} else {
 		# Split outcomes
 		n <- length(outcomes)
-		splitsize <- 100
 		splits <- data.frame(outcomes=outcomes, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
 		d <- list()
 		for(i in 1:length(snps))
@@ -249,8 +249,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 		d <- plyr::rbind.fill(d)
 
 	}
-
-	if(length(d) == 0)
+	if(is.null(nrow(d)) | nrow(d) == 0)
 	{
 		message("None of the requested SNPs were available in the specified GWASs.")
 		return(NULL)
