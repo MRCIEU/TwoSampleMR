@@ -26,6 +26,9 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 
 	# Get extra info on outcomes
 	ao <- available_outcomes()
+	ao$subcategory[ao$subcategory == "Cardiovascular"] <- "Cardiometabolic"
+	ao$subcategory[ao$trait == "Type 2 diabetes"] <- "Cardiometabolic"
+
 	dat <- subset(mr_res, (nsnp==1 & method==single_snp_method) | (nsnp > 1 & method == multi_snp_method))
 	dat$index <- 1:nrow(dat)
 	dat <- merge(dat, ao, by.x="id.outcome", by.y="id")
@@ -117,11 +120,11 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 
 	dat <- dat[order(dat$outcome), ]
 
-	temp1 <- subset(dat, category=="Cardiovascular")
+	temp1 <- subset(dat, category=="Cardiometabolic")
 	temp2 <- subset(dat, category=="Other")
 	dat <- rbind(
-		subset(dat, category=="Cardiovascular"), 
-		subset(dat, !category %in% c("Cardiovascular","Other")),
+		subset(dat, category=="Cardiometabolic"), 
+		subset(dat, !category %in% c("Cardiometabolic","Other")),
 		subset(dat, category=="Other")
 	)
 
