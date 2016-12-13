@@ -222,3 +222,31 @@ instruments_for_multivariable_mr <- function(id_exposure, snps=NULL)
 	keepsnps <- names(tab)[tab == length(id_exposure)-1]
 	d <- subset(d, SNP %in% keepsnps)
 # }
+
+
+
+library(MRInstruments)
+data(gwas_catalog)
+load("~/repo/mr_base_paper/results/lpa_ldl_trigs.RData")
+
+
+hdl_inst <- format_data(subset(gwas_catalog, grepl("HDL cholest", Phenotype) & Author == "Willer CJ" & Year == 2013))
+ldl_inst <- format_data(subset(gwas_catalog, grepl("LDL cholesterol", Phenotype) & Author == "Willer CJ" & Year == 2013))
+trig_inst <- format_data(subset(gwas_catalog, grepl("Triglycerides", Phenotype) & Author == "Willer CJ" & Year == 2013))
+
+hdl_inst$exposure <- "HDL cholesterol"
+ldl_inst$exposure <- "LDL cholesterol"
+
+inst <- rbind(hdl_inst, ldl_inst, trig_inst)
+
+snps <- inst$SNP
+exposure_dat 
+
+
+toggle_dev("test")
+ao <- available_outcomes()
+
+temp <- ao[order(ao$sample_size, decreasing=TRUE), ]
+temp <- subset(temp, !duplicated(trait))
+sum(temp$sample_size, na.rm=TRUE)
+
