@@ -81,10 +81,10 @@ multivariable_mr <- function(id_exposure, id_outcome)
 	stopifnot(length(id_outcome) == 1)
 
 	# Get best instruments for each exposure
-	exposure_dat <- extract_instruments(id_exposure, r2 = 0.0000001, kb=10000)
+	exposure_dat <- extract_instruments(id_exposure)
 	temp <- exposure_dat
 	temp$id.exposure <- 1
-	temp <- clump_data(temp, clump_r2=0.0000001)
+	temp <- clump_data(temp)
 	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
 
@@ -127,7 +127,8 @@ multivariable_mr <- function(id_exposure, id_outcome)
 	pval <- array(1:length(id_exposure))
 	for(i in 1:length(id_exposure))
 	{
-		mod <- summary(lm(lm(dat$beta.outcome ~ exposure_mat[,-c(i)])$res ~ exposure_mat[,i]))
+		mod <- summary(
+			lm(lm(dat$beta.outcome ~ exposure_mat[,-c(i)])$res ~ exposure_mat[,i]))
 		effs[i] <- mod$coef[2,1]
 		se[i] <- mod$coef[2,2]
 		pval[i] <- pnorm(abs(effs[i]) / se[i], lower.tail=FALSE)
@@ -165,3 +166,59 @@ convert_outcome_to_exposure <- function(outcome_dat)
 	return(exposure_dat)
 }
 
+
+
+instruments_for_multivariable_mr <- function(id_exposure, snps=NULL)
+{
+	require(reshape2)
+	message("Warning: This analysis is still experimental")
+	stopifnot(length(id_exposure) > 1)
+	if(is.null(snps))
+	{
+		exposure_dat <- extract_instruments(id_exposure)
+		temp <- exposure_dat
+		temp$id.exposure <- 1
+		temp <- clump_data(temp)
+		exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
+	} else {
+		exposure_dat <- convert_outcome_to_exposure(extract_outcome_data(snps, id_exposure))
+		temp <- exposure_dat
+		temp$id.exposure <- 1
+		temp <- clump_data(temp)
+		exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
+	}
+
+}
+
+
+
+
+# multivariable_mr <- function(id_exposure, id_outcome)
+# {
+# 	require(reshape2)
+# 	message("Warning: This analysis is still experimental")
+# 	stopifnot(length(id_exposure) > 1)
+# 	stopifnot(length(id_outcome) == 1)
+
+# 	# Get best instruments for each exposure
+# 	exposure_dat <- extract_instruments(id_exposure)
+# 	temp <- exposure_dat
+# 	temp$id.exposure <- 1
+# 	temp <- clump_data(temp)
+# 	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
+
+
+# 	# Get effects of each instrument from each exposure
+	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure)
+	d1 <- subset(d1, mr_keep.outcome)
+	d2 <- subset(d1, id.outcome != id_exposure[1])
+	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
+
+# 	# Harmonise against the first id
+	d <- harmonise_data(d1, d2)
+
+# 	# Only keep SNPs that are present in all
+	tab <- table(d$SNP)
+	keepsnps <- names(tab)[tab == length(id_exposure)-1]
+	d <- subset(d, SNP %in% keepsnps)
+# }
