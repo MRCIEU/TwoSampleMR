@@ -16,7 +16,14 @@ This package provides the following functionality to help perform two sample MR:
 - Two sample MR analysis methods and diagnostic tools
 - Plots and automatically generated reports
 
-A set of instruments from several sources including GWAS catalogs, metabolite QTLs, etc can be obtained from the `MRInstruments` package [https://github.com/MRCIEU/MRInstruments](https://github.com/MRCIEU/MRInstruments). Users can also specify instruments manually by providing a text file. The package uses the MR Base database, a host to hundreds of GWAS results, that can be queried as a resource for outcome data. Users can alternatively provide their own outcome summary associations. It also provides LD pruning on a remote server for exposure SNP data provided by the user. 
+A set of instruments from several sources including GWAS catalogs, metabolite QTLs, etc can be obtained from the `MRInstruments` package [https://github.com/MRCIEU/MRInstruments](https://github.com/MRCIEU/MRInstruments). Users can also specify instruments manually by providing a text file. The package uses the MR Base database, a host to hundreds of GWAS results, that can be queried as a resource for outcome data. Users can alternatively provide their own outcome summary associations. It also provides LD pruning on a remote server for exposure SNP data provided by the user.
+
+## Citation
+
+The preprint is on BioRxiv:
+
+[MR-Base: a platform for systematic causal inference across the phenome using billions of genetic associations. 
+bioRxiv. doi: https://doi.org/10.1101/078972](http://biorxiv.org/content/early/2016/12/16/078972)
 
 ## Installing the TwoSampleMR R package
 
