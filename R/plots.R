@@ -114,10 +114,11 @@ blank_plot <- function(message)
 #' Forest plot
 #'
 #' @param singlesnp_results from \code{mr_singlesnp}
+#' @param exponentiate Plot on exponential scale. Default=FALSE
 #'
 #' @export
 #' @return List of plots
-mr_forest_plot <- function(singlesnp_results)
+mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 {
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("plyr", quietly=TRUE)
@@ -146,8 +147,17 @@ mr_forest_plot <- function(singlesnp_results)
 		d$lo[nrow(d)-1] <- NA
 		d$SNP <- ordered(d$SNP, levels=c(am, "", nom))
 
+		xint <- 0
+		if(exponentiate)
+		{
+			d$b <- exp(d$b)
+			d$up <- exp(d$up)
+			d$lo <- exp(d$lo)
+			xint <- 1
+		}
+
 		ggplot2::ggplot(d, ggplot2::aes(y=SNP, x=b)) +
-		ggplot2::geom_vline(xintercept=0, linetype="dotted") +
+		ggplot2::geom_vline(xintercept=xint, linetype="dotted") +
 		# ggplot2::geom_errorbarh(ggplot2::aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=as.factor(tot), colour=as.factor(tot)), height=0) +
 		ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo, xmax=up, size=as.factor(tot), colour=as.factor(tot)), height=0) +
 		ggplot2::geom_point(ggplot2::aes(colour=as.factor(tot))) +

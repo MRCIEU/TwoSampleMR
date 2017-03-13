@@ -4,10 +4,12 @@
 \alias{mr_forest_plot}
 \title{Forest plot}
 \usage{
-mr_forest_plot(singlesnp_results)
+mr_forest_plot(singlesnp_results, exponentiate = FALSE)
 }
 \arguments{
 \item{singlesnp_results}{from \code{mr_singlesnp}}
+
+\item{exponentiate}{Plot on exponential scale. Default=FALSE}
 }
 \value{
 List of plots
