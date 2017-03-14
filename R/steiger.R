@@ -35,7 +35,7 @@ get_r_from_pn <- function(p, n)
 		n <- rep(n, length(p))
 	}
 
-	Fval <- qf(p, 1, n-1, low=FALSE)
+	Fval <- suppressWarnings(qf(p, 1, n-1, low=FALSE))
 	R2 <- Fval / (n - 2 + Fval)
 	index <- !is.finite(Fval)
 	if(any(index))
@@ -43,7 +43,7 @@ get_r_from_pn <- function(p, n)
 		index <- which(index)
 		for(i in 1:length(index))
 		{
-			R2[index[i]] <- optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par
+			R2[index[i]] <- suppressWarnings(optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par)
 		}
 	}
 	return(sqrt(R2))
