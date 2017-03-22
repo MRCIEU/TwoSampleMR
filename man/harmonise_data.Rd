@@ -40,4 +40,3 @@ This means the inputs must be dataframes with the following columns:
 - other_allele.exposure
 - eaf.exposure
 }
-

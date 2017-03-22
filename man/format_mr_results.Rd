@@ -6,8 +6,7 @@
 \usage{
 format_mr_results(mr_res, exponentiate = FALSE,
   single_snp_method = "Wald ratio",
-  multi_snp_method = "Inverse variance weighted",
-  group_single_categories = TRUE, own_slc = F)
+  multi_snp_method = "Inverse variance weighted", ao_slc = T)
 }
 \arguments{
 \item{mr_res}{Results from mr()}
@@ -18,9 +17,9 @@ format_mr_results(mr_res, exponentiate = FALSE,
 
 \item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"}
 
-\item{group_single_categories}{If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE}
+\item{ao_slc}{supply your own study level characteristics, including sample size and subcategory. Default is to use available_outcomes for the study level characteristics. If ao_slc is set to true, mr_res must contain the following additional columns: subcategory and sample_size. Subcategory is the variable you want to group the MR results on.}
 
-\item{own_slc}{supply your own study level characteristics, including sample size, subcategory and category. Default is to use available_outcomes for the study level characteristics. If own_slc is set to true, mr_res must contain the following additional columns: subcategory and sample_size. Subcategory is the variable you want to group the MR results on.}
+\item{group_single_categories}{If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE}
 }
 \value{
 data frame.
@@ -34,6 +33,5 @@ It creates a new data frame with the following:
 - exponentiated effects if required
 }
 \details{
-By default it uses the available_outcomes() function to retrieve the study level characteristics, such as outcome sample size, category and subcategory information. If own_slc set to TRUE then the user must supply their own study level characteristics.
+By default it uses the available_outcomes() function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If ao_slc set to TRUE then the user must supply their own study level characteris. This is useful when the user has supplied their own outcome GWAS results (ie they are not in MR-Base).
 }
-

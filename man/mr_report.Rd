@@ -27,4 +27,3 @@ folder specified in \code{output_path}.}
 Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
 A separate report is produced for each exposure - outcome pair that was analysed
 }
-

@@ -8,7 +8,7 @@ forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
   multi_snp_method = "Inverse variance weighted",
   group_single_categories = TRUE, by_category = TRUE, in_columns = FALSE,
   threshold = NULL, xlab = "", xlim = NULL, trans = "identity",
-  own_slc = F)
+  ao_slc = T)
 }
 \arguments{
 \item{mr_res}{Results from mr()}
@@ -33,7 +33,7 @@ forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
 
 \item{trans}{Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"}
 
-\item{own_slc}{Supply own study level characteristcs. If set to TRUE then mr_res must contain the following additional columns: sample_size and subcategory. The default behaviour is to use available_outcomes() to retrieve the relevant study level characteristics}
+\item{ao_slc}{retrive sample size and subcategory from available_outcomes(). If set to FALSE then mr_res must contain the following additional columns: sample_size and subcategory. The default behaviour is to use available_outcomes() to retrieve sample size and subcategory}
 }
 \value{
 grid plot object
@@ -41,4 +41,3 @@ grid plot object
 \description{
 Perform MR of multiple exposures and multiple outcomes. This plots the results
 }
-

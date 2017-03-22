@@ -15,4 +15,3 @@ Data frame
 \description{
 Format the returned table from the MySQL database
 }
-

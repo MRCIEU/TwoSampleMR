@@ -52,4 +52,3 @@ data frame
 \description{
 Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. If it is the exposure then looks up SNPs in biomaRt to get basic info.
 }
-

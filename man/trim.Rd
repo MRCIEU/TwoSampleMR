@@ -2,7 +2,7 @@
 % Please edit documentation in R/forest_plot2.R
 \name{trim}
 \alias{trim}
-\title{Trim function to remove leading and trailing blank spaces}
+\title{Trim function}
 \usage{
 trim(x)
 }
@@ -15,4 +15,3 @@ Character or array of character
 \description{
 Trim function to remove leading and trailing blank spaces
 }
-
