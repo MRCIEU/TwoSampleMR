@@ -26,4 +26,3 @@ Dataframe of summary statistics for all available outcomes
 \description{
 Any SNPs that have no beta or p value will be removed from the outcome results
 }
-

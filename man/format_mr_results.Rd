@@ -7,7 +7,7 @@
 format_mr_results(mr_res, exponentiate = FALSE,
   single_snp_method = "Wald ratio",
   multi_snp_method = "Inverse variance weighted",
-  group_single_categories = TRUE)
+  group_single_categories = TRUE, own_slc = F)
 }
 \arguments{
 \item{mr_res}{Results from mr()}
@@ -19,6 +19,8 @@ format_mr_results(mr_res, exponentiate = FALSE,
 \item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"}
 
 \item{group_single_categories}{If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE}
+
+\item{own_slc}{supply your own study level characteristics, including sample size, subcategory and category. Default is to use available_outcomes for the study level characteristics. If own_slc is set to true, mr_res must contain the following additional columns: subcategory and sample_size. Subcategory is the variable you want to group the MR results on.}
 }
 \value{
 data frame.
@@ -27,12 +29,10 @@ data frame.
 This function takes the results from mr() and is particularly useful
 if the MR has been applied using multiple exposures and multiple outcomes. 
 It creates a new data frame with the following:
-}
-\details{
 - exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
 - only one estimate for each exposure-outcome
 - exponentiated effects if required
-
-It uses the available_outcomes() function to retrieve the outcome sample size.
 }
-
+\details{
+By default it uses the available_outcomes() function to retrieve the study level characteristics, such as outcome sample size, category and subcategory information. If own_slc set to TRUE then the user must supply their own study level characteristics.
+}

@@ -21,4 +21,3 @@ Dataframe of study details
 \description{
 Get list of studies with available GWAS summary statistics
 }
-

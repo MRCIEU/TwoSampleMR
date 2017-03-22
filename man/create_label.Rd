@@ -17,4 +17,3 @@ text
 \description{
 Create fixed width label
 }
-
