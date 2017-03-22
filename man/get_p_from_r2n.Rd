@@ -11,6 +11,10 @@ get_p_from_r2n(r2, n)
 
 \item{n}{Sample size}
 }
+\value{
+P-value
+}
 \description{
 Calculate p-value from rsq and sample size
 }
+

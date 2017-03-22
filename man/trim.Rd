@@ -15,3 +15,4 @@ Character or array of character
 \description{
 Trim function to remove leading and trailing blank spaces
 }
+

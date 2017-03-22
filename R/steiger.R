@@ -6,7 +6,7 @@
 #' @param n Sample size
 #'
 #' @export
-#' @return
+#' @return P-value
 get_p_from_r2n <- function(r2, n)
 {
 	fval <- r2 * (n-2) / (1 - r2)

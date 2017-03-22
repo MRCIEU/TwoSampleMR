@@ -36,3 +36,4 @@ It creates a new data frame with the following:
 \details{
 By default it uses the available_outcomes() function to retrieve the study level characteristics, such as outcome sample size, category and subcategory information. If own_slc set to TRUE then the user must supply their own study level characteristics.
 }
+
