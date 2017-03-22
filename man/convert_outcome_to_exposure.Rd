@@ -15,3 +15,4 @@ data frame
 \description{
 Helper function to convert results from extract_outcome_data to exposure_dat format
 }
+

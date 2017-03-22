@@ -108,6 +108,14 @@ mr_method_list <- function()
 			heterogeneity_test=FALSE
 		),
 		list(
+			obj="mr_simple_median",
+			name="Simple median",
+			PubmedID="",
+			Description="",
+			use_by_default=FALSE,
+			heterogeneity_test=FALSE
+		),
+		list(
 			obj="mr_weighted_median",
 			name="Weighted median",
 			PubmedID="",
@@ -515,6 +523,33 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 }
 
 
+#' Simple median method
+#'
+#' Perform MR using summary statistics. Bootstraps used to calculate standard error.
+#'
+#' @param b_exp Vector of genetic effects on exposure
+#' @param b_out Vector of genetic effects on outcome
+#' @param se_exp Standard errors of genetic effects on exposure
+#' @param se_out Standard errors of genetic effects on outcome
+#' @param nboot Number of bootstraps to calculate se. Default 1000
+#'
+#' @export
+#' @return List with the following elements:
+#'         b: MR estimate
+#'         se: Standard error
+#'         pval: p-value
+mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters)
+{
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
+	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+
+	b_iv <- b_out / b_exp
+	b <- weighted_median(b_iv, rep(1/length(b_exp), length(b_exp)))
+	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, rep(1/length(b_exp), length(b_exp)), parameters$nboot)
+	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
+}
+
 
 
 #' Weighted median method
@@ -538,6 +573,17 @@ weighted_median <- function(b_iv, weights)
 	return(b)
 }
 
+weighted_median <- function(b_iv, weights)
+{
+	betaIV.order <- b_iv[order(b_iv)]
+	weights.order <- weights[order(b_iv)]
+	weights.sum <- cumsum(weights.order)-0.5*weights.order
+	weights.sum <- weights.sum/sum(weights.order)
+	below <- max(which(weights.sum<0.5))
+	b = betaIV.order[below] + (betaIV.order[below+1]-betaIV.order[below])*
+	(0.5-weights.sum[below])/(weights.sum[below+1]-weights.sum[below])
+	return(b)
+}
 
 
 

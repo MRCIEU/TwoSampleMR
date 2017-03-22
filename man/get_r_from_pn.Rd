@@ -17,3 +17,4 @@ r value
 \description{
 Calculate variance explained from p vals and sample size
 }
+

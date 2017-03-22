@@ -18,3 +18,4 @@ combine multiple datasets together so they can be analysed in one
 batch. Removes duplicate SNPs, preferentially keeping those usable
 in MR analysis
 }
+
