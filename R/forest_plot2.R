@@ -7,14 +7,14 @@
 #' - only one estimate for each exposure-outcome
 #' - exponentiated effects if required
 #'
-#' By default it uses the available_outcomes() function to retrieve the study level characteristics, such as outcome sample size, category and subcategory information. If own_slc set to TRUE then the user must supply their own study level characteristics.  
+#' By default it uses the available_outcomes() function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If own_slc set to TRUE then the user must supply their own study level characteris. This is useful when the user has supplied their own outcome GWAS results (ie they are not in MR-Base).  
 #' 
 #' @param mr_res Results from mr()
 #' @param exponentiate Convert effects to OR? Default=FALSE
 #' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"
 #' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
-#' @param own_slc supply your own study level characteristics, including sample size, subcategory and category. Default is to use available_outcomes for the study level characteristics. If own_slc is set to true, mr_res must contain the following additional columns: subcategory and sample_size. Subcategory is the variable you want to group the MR results on. 
+#' @param own_slc supply your own study level characteristics, including sample size and subcategory. Default is to use available_outcomes for the study level characteristics. If own_slc is set to true, mr_res must contain the following additional columns: subcategory and sample_size. Subcategory is the variable you want to group the MR results on. 
 #'
 #' @export
 #' @return data frame.
