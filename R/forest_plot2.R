@@ -43,13 +43,13 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 	dat <- dat[order(dat$b), ]
 
 	# Create CIs
-	dat$up_ci <- dat$b + 1.96 * dat$se
-	dat$lo_ci <- dat$b - 1.96 * dat$se
+	dat$up_ci <- as.numeric(dat$b) + 1.96 * as.numeric(dat$se)
+	dat$lo_ci <- as.numeric(dat$b) - 1.96 * as.numeric(dat$se)
 
 	# Exponentiate?
 	if(exponentiate)
 	{
-		dat$b <- exp(dat$b)
+		dat$b <- exp(as.numeric(dat$b))
 		dat$up_ci <- exp(dat$up_ci)
 		dat$lo_ci <- exp(dat$lo_ci)
 	}
