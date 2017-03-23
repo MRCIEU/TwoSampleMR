@@ -848,6 +848,23 @@ This function will create a separate report file for every exposure-outcome comb
 
 * * *
 
+# Reformat MR results
+
+MR results can be reformatted into other structures for further downstream processing by the user. For example:
+
+```{r }
+Res<-mr(dat)
+Het<-mr_heterogeneity(dat)
+Pleiotropy<-mr_pleiotropy_test(dat)
+Res_single <- mr_singlesnp(dat)
+res_all <- combine_all_mresults(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=T)
+res_all
+```
+
+This returns a data frame combining results from mr(dat), mr_heterogeneity(dat),-mr_pleiotropy_test(dat) and mr_singlesnp(dat). The function merges the data frame with  outcome study level characteristics from available_outcomes(), unless ao_slc is set to FALSE. If Exp is set to TRUE, then the results are exponentiated (e.g. if the user wants their log odds ratios expressed as odds ratios). 
+
+***
+
 # References
 
 <br/>
