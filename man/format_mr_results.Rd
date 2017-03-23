@@ -17,7 +17,7 @@ format_mr_results(mr_res, exponentiate = FALSE,
 
 \item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"}
 
-\item{ao_slc}{supply your own study level characteristics, including sample size and subcategory. Default is to use available_outcomes for the study level characteristics. If ao_slc is set to true, mr_res must contain the following additional columns: subcategory and sample_size. Subcategory is the variable you want to group the MR results on.}
+\item{ao_slc}{Logical; retrieve sample size and subcategory using available_outcomes(). If set to FALSE mr_res must contain the following additional columns: subcategory and sample_size.}
 
 \item{group_single_categories}{If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE}
 }

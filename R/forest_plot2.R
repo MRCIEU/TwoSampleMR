@@ -14,7 +14,7 @@
 #' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"
 #' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
-#' @param ao_slc supply your own study level characteristics, including sample size and subcategory. Default is to use available_outcomes for the study level characteristics. If ao_slc is set to true, mr_res must contain the following additional columns: subcategory and sample_size. Subcategory is the variable you want to group the MR results on. 
+#' @param ao_slc Logical; retrieve sample size and subcategory using available_outcomes(). If set to FALSE mr_res must contain the following additional columns: subcategory and sample_size. 
 #'
 #' @export
 #' @return data frame.
@@ -157,7 +157,6 @@ simple_cap <- function(x) {
 #'
 #' @param x Character or array of character
 #'
-#' @export
 #' @return Character or array of character
 trim <- function( x ) {
   gsub("(^[[:space:]]+|[[:space:]]+$)", "", x)
