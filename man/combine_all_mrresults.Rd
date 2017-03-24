@@ -4,17 +4,16 @@
 \alias{combine_all_mrresults}
 \title{Combine all mr results}
 \usage{
-combine_all_mrresults(Res, Het, Egger_intercept, SingleSNPs, ao_slc = T,
-  Exp = F)
+combine_all_mrresults(Res, Het, Pleiotropy, Res_single, ao_slc = T, Exp = F)
 }
 \arguments{
 \item{Res}{Results from mr()}
 
 \item{Het}{Results from mr_heterogeneity()}
 
-\item{Egger_intercept}{Results from mr_pleiotropy_test()}
+\item{Pleiotropy}{Results from mr_pleiotropy_test()}
 
-\item{SingleSNPs}{Results from mr_singlesnp()}
+\item{Res_single}{Results from mr_singlesnp()}
 
 \item{ao_slc}{Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE.}
 

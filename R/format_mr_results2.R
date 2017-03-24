@@ -65,15 +65,17 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 #'
 #' @param Res Results from mr()
 #' @param Het Results from mr_heterogeneity()
-#' @param Egger_intercept Results from mr_pleiotropy_test()
-#' @param SingleSNPs Results from mr_singlesnp()
+#' @param Pleiotropy Results from mr_pleiotropy_test()
+#' @param Res_single Results from mr_singlesnp()
 #' @param ao_slc Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE. 
 #' @param Exp Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE. 
 #' 
 #' @export
 #' @return data frame
-combine_all_mrresults <- function(Res,Het,Egger_intercept,SingleSNPs,ao_slc=T,Exp=F)
+combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 {
+	requireNamespace("plyr", quietly=TRUE)
+
 	Het<-Het[,c("id.outcome","method","Q","Q_df","Q_pval")]
 
 	# Convert all factors to character
@@ -89,24 +91,24 @@ combine_all_mrresults <- function(Res,Het,Egger_intercept,SingleSNPs,ao_slc=T,Ex
 		Het[,Pos[i]]<-as.character(Het[,Pos[i]])
 	}
 
-	# lapply(names(SingleSNPs), FUN=function(x) class(SingleSNPs[,x]))
-	Pos<-which(unlist(lapply(names(SingleSNPs), FUN=function(x) class(SingleSNPs[,x])))=="factor")
+	# lapply(names(Res_single), FUN=function(x) class(Res_single[,x]))
+	Pos<-which(unlist(lapply(names(Res_single), FUN=function(x) class(Res_single[,x])))=="factor")
 	for(i in 1:length(Pos)){
-		SingleSNPs[,Pos[i]]<-as.character(SingleSNPs[,Pos[i]])
+		Res_single[,Pos[i]]<-as.character(Res_single[,Pos[i]])
 	}
-	SingleSNPs<-SingleSNPs[grep("[:0-9:]",SingleSNPs$SNP),]
-	SingleSNPs$method<-"Wald ratio"
-	names(SingleSNPs)[names(SingleSNPs)=="p"]<-"pval"
+	Res_single<-Res_single[grep("[:0-9:]",Res_single$SNP),]
+	Res_single$method<-"Wald ratio"
+	names(Res_single)[names(Res_single)=="p"]<-"pval"
 
 	# Res<-Res[Res$method %in% c("MR Egger","Weighted median","Inverse variance weighted"),]
 
 	#method is also the name of an argument in the method function. this prevents all.x argument from working. rename method column
 	names(Res)[names(Res)=="method"]<-"Method"
 	names(Het)[names(Het)=="method"]<-"Method"
-	names(SingleSNPs)[names(SingleSNPs)=="method"]<-"Method"
+	names(Res_single)[names(Res_single)=="method"]<-"Method"
 
 	ResHet<-merge(Res,Het,by=c("id.outcome","Method"),all.x=T)
-	ResSNP<-rbind.fill(ResHet,SingleSNPs)
+	ResSNP<-plyr::rbind.fill(ResHet,Res_single)
 
 	if(ao_slc)
 	{
@@ -123,7 +125,7 @@ combine_all_mrresults <- function(Res,Het,Egger_intercept,SingleSNPs,ao_slc=T,Ex
 		Methods<-Methods[Methods!="Wald ratio"]
 		for(j in unique(Methods))
 		{
-			ResAo$snp[ResAo$id.outcome == i & ResAo$method==j]<-paste(ResAo$snp[ResAo$id.outcome == i & ResAo$method=="Wald ratio"],collapse=", ")
+			ResAo$snp[ResAo$id.outcome == i & ResAo$method==j]<-paste(ResAo$snp[ResAo$id.outcome == i & ResAo$method=="Wald ratio"],collapse="; ")
 		}
 	}
 
@@ -134,14 +136,14 @@ combine_all_mrresults <- function(Res,Het,Egger_intercept,SingleSNPs,ao_slc=T,Ex
 	}
 
 	# add intercept test from MR Egger
-	Egger_intercept<-Egger_intercept[,c("id.outcome","egger_intercept","se","pval")]
-	Egger_intercept$Method<-"MR Egger"
-	names(Egger_intercept)[names(Egger_intercept)=="egger_intercept"]<-"intercept"
-	names(Egger_intercept)[names(Egger_intercept)=="se"]<-"intercept_se"
-	names(Egger_intercept)[names(Egger_intercept)=="pval"]<-"intercept_pval"
+	Pleiotropy<-Pleiotropy[,c("id.outcome","egger_intercept","se","pval")]
+	Pleiotropy$Method<-"MR Egger"
+	names(Pleiotropy)[names(Pleiotropy)=="egger_intercept"]<-"intercept"
+	names(Pleiotropy)[names(Pleiotropy)=="se"]<-"intercept_se"
+	names(Pleiotropy)[names(Pleiotropy)=="pval"]<-"intercept_pval"
 
 
-	ResEgg<-merge(ResAo,Egger_intercept,by=c("id.outcome","Method"),all.x=T)
+	ResEgg<-merge(ResAo,Pleiotropy,by=c("id.outcome","Method"),all.x=T)
 
 	# names(ResSNP)<-tolower(names(ResSNP))
 	return(ResEgg)
