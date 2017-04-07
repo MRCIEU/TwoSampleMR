@@ -138,3 +138,7 @@ run_rucker(datB)
 
 
 
+
+
+# https://www.ncbi.nlm.nih.gov/pubmed/21473747
+# http://amstat.tandfonline.com/doi/abs/10.1080/00031305.2016.1165735
