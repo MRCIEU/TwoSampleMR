@@ -348,3 +348,120 @@ rucker_ivw_fe <- function(b_exp, b_out, se_exp, se_out)
 	return(mod)
 }
 
+
+PM <- function(y = y, s = s, Alpha = 0.1)
+{
+	K = length(y)
+	df = k - 1
+	sig = qnorm(1-Alpha/2)
+	low = qchisq((Alpha/2), df)
+	up = qchisq(1-(Alpha/2), df)
+	med = qchisq(0.5, df)
+	mn = df
+	mode = df-1
+	Quant = c(low, mode, mn, med, up) ; L = length(Quant)
+	Tausq = NULL
+	Isq = NULL
+	CI = matrix(nrow = L, ncol = 2)
+	MU = NULL
+	v = 1/s^2
+	sum.v = sum(v)
+	typS = sum(v*(k-1))/(sum.v^2 - sum(v^2))
+	for(j in 1:L)
+	{
+		tausq = 0 ; F = 1 ;TAUsq = NULL
+		while(F>0)
+		{
+			TAUsq = c(TAUsq, tausq)
+			w = 1/(s^2+tausq)
+			sum.w = sum(w)
+			w2 = w^2
+			yW = sum(y*w)/sum.w
+			Q1 = sum(w*(y-yW)^2)
+			Q2 = sum(w2*(y-yW)^2)
+			F = Q1-Quant[j]
+			Ftau = max(F,0)
+			delta = F/Q2
+			tausq = tausq + delta
+		}
+		MU[j] = yW
+		V = 1/sum(w)
+		Tausq[j] = max(tausq,0)
+		Isq[j] = Tausq[j]/(Tausq[j]+typS)
+		CI[j,] = yW + sig*c(-1,1) *sqrt(V)
+	}
+	return(list(tausq = Tausq, muhat = MU, Isq = Isq, CI = CI, quant = Quant))
+}
+
+
+run_rucker <- function(dat)
+{
+	nsnp <- nrow(dat)
+	b_exp <- dat$beta.exposure
+	b_out <- dat$beta.outcome
+	se_exp <- dat$se.exposure
+	se_out <- dat$se.outcome
+	w <- b_exp^2 / se_out^2
+	y <- b_out / se_out
+	x <- b_exp / se_out
+	i <- 1 / se_out
+
+
+	# IVW FE
+	mod_ivw_fe <- summary(lm(y ~ 0 + x))
+	b_ivw_fe <- coefficients(mod_ivw_fe)[1,1]
+	se_ivw_fe <- coefficients(mod_ivw_fe)[1,2] / min(1, mod_ivw_fe$sigma)
+	pval_ivw_fe <- coefficients(mod_ivw_fe)[1,4]
+	Q_ivw <- sum((y - x*b_ivw_fe)^2)
+	Q_df_ivw <- length(b_exp) - 1
+	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, low = FALSE)
+
+	print(mod_ivw_fe$sigma)
+
+	# IVW MRE
+	b_ivw_re <- b_ivw_fe
+	phi_ivw <- Q_ivw / (nsnp - 1)
+	se_ivw_re <- sqrt(phi_ivw / sum(w))
+	pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
+
+
+	# Egger MRE
+	mod_egger <- summary(lm(y ~ 0 + i + x))
+
+	b1_egger_fe <- coefficients(mod_egger)[2,1]
+	se1_egger_fe <- coefficients(mod_egger)[2,2] / min(1, mod_egger$sigma)
+	pval1_egger_fe <- pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+	b0_egger_fe <- coefficients(mod_egger)[1,1]
+	se0_egger_fe <- coefficients(mod_egger)[1,1] / min(1, mod_egger$sigma)
+	pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+
+	print(mod_egger$sigma)
+
+	# Egger FE
+	b1_egger_re <- coefficients(mod_egger)[2,1]
+	se1_egger_re <- coefficients(mod_egger)[2,2]
+	pval1_egger_re <- coefficients(mod_egger)[2,4]
+	b0_egger_re <- coefficients(mod_egger)[1,1]
+	se0_egger_re <- coefficients(mod_egger)[1,1]
+	pval0_egger_re <- coefficients(mod_egger)[1,4]
+
+
+	# This is equivalent to mod$sigma^2
+	# Q_egger <- sum(
+	# 	1 / se_out^2 * (b_out - (b0_egger_fe + b1_egger_fe * b_exp))^2
+	# )
+	Q_egger <- mod_egger$sigma^2 * (nsnp - 2)
+	Q_df_egger <- nsnp - 2
+	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, low=FALSE)
+
+
+	dat <- data.frame(
+		method = c("IVW fixed effects", "IVW random effects", "Egger fixed effects", "Egger random effects"),
+		b = c(b_ivw_fe, b_ivw_re, b1_egger_fe, b1_egger_re),
+		se = c(se_ivw_fe, se_ivw_re, se1_egger_fe, se1_egger_re),
+		pval = c(pval_ivw_fe, pval_ivw_re, pval1_egger_fe, pval1_egger_re),
+		nsnp = nsnp
+	)
+
+	return(dat)
+}

@@ -7,7 +7,12 @@ makePhen <- function(effs, indep, vy=1, vx=rep(1, length(effs)), my=0)
 	stopifnot(ncol(indep) == length(effs))
 	stopifnot(length(vx) == length(effs))
 	cors <- effs * vx / sqrt(vx) / sqrt(vy)
-	stopifnot(sum(cors^2) <= 1)
+	sc <- sum(cors^2)
+	if(sc >= 1)
+	{
+		print(sc)
+		stop("effects explain more than 100% of variance")
+	}
 	cors <- c(cors, sqrt(1-sum(cors^2)))
 	indep <- t(t(scale(cbind(indep, rnorm(nrow(indep))))) * cors * c(vx, 1))
 	y <- drop(scale(rowSums(indep)) * sqrt(vy)) + my
@@ -51,13 +56,13 @@ fastAssoc <- function(y, x)
 	# pval <- pf(Fval, 1, n-2, lowe=F)
 	p <- pf(fval, 1, n-2, lowe=F)
 	return(list(
-		ahat=ahat, bhat=bhat, se=se, fval=fval, pval=p
+		ahat=ahat, bhat=bhat, se=se, fval=fval, pval=p, n=n
 	))
 }
 
 gwas <- function(y, g)
 {
-	out <- matrix(0, ncol(g), 5)
+	out <- matrix(0, ncol(g), 6)
 	for(i in 1:ncol(g))
 	{
 		o <- fastAssoc(y, g[,i])
@@ -84,6 +89,8 @@ get_effs <- function(x, y, g)
 		se.outcome=gwasy$se,
 		pval.exposure=gwasx$pval,
 		pval.outcome=gwasy$pval,
+		samplesize.exposure=gwasx$n,
+		samplesize.outcome=gwasy$n,
 		mr_keep=TRUE
 	)
 	return(dat)
@@ -111,42 +118,56 @@ recode_dat <- function(dat)
 	return(dat)
 }
 
-make_effs <- function(ninst, var_gu, var_ux, var_uy, var_xy, var_gx, var_gy, mu_gy=0)
+make_effs <- function(ninst1, var_g1u=0, var_g1x, var_g1y=0, mu_g1y=0, var_xy, var_ux=0, var_uy=0, ninst2=0, var_g2u=0, var_g2x=0, var_g2y=0, mu_g2x=0, ninstu=0, var_guu=0)
 {
 	# 1 SNP influences one confounder
-	eff_gu <- rep(var_gu, ninst)
-	eff_ux <- chooseEffects(ninst, var_ux)
-	eff_uy <- chooseEffects(ninst, var_uy)
+	eff_g1u <- chooseEffects(ninst1, var_g1u)
+	eff_g1x <- chooseEffects(ninst1, var_g1x)
+	eff_g1y <- chooseEffects(ninst1, var_g1y, mua=mu_g1y)
+
+	eff_g2u <- chooseEffects(ninst2, var_g2u)
+	eff_g2x <- chooseEffects(ninst2, var_g2x, mua=mu_g2x)
+	eff_g2y <- chooseEffects(ninst2, var_g2y)
+
+	eff_guu <- chooseEffects(ninstu, var_guu)
+
 	eff_xy <- var_xy
-	eff_gx <- chooseEffects(ninst, var_gx)
-	eff_gy <- chooseEffects(ninst, var_gy, mua=mu_gy)
+	eff_ux <- var_ux
+	eff_uy <- var_uy
+
 	return(list(
-		eff_gu = eff_gu,
+		eff_g1u = eff_g1u,
+		eff_g1x = eff_g1x,
+		eff_g1y = eff_g1y,
+		eff_g2u = eff_g2u,
+		eff_g2x = eff_g2x,
+		eff_g2y = eff_g2y,
 		eff_ux = eff_ux,
 		eff_uy = eff_uy,
 		eff_xy = eff_xy,
-		eff_gx = eff_gx,
-		eff_gy = eff_gy
+		eff_guu = eff_guu
 	))
 }
 
-make_pop <- function(ninst, nid, effs)
+make_pop <- function(effs, nid)
 {
+	ninst1 <- length(effs$eff_g1x)
+	ninst2 <- length(effs$eff_g2x)
+	ninstu <- length(effs$eff_guu)
+	G1 <- matrix(rbinom(nid * ninst1, 2, 0.5), nid, ninst1)
+	G2 <- matrix(rbinom(nid * ninst2, 2, 0.5), nid, ninst2)
+	Gu <- matrix(rbinom(nid * ninstu, 2, 0.5), nid, ninstu)
 
-	G <- matrix(rbinom(nid * ninst, 2, 0.5), nid, ninst)
-	U <- matrix(0, nid, ninst)
-	for(i in 1:ninst)
-	{
-		U[,i] <- makePhen(effs$eff_gu[i], G[,i])
-	}
-
-	x <- makePhen(c(effs$eff_gx, effs$eff_ux), cbind(G, U))
-	y <- makePhen(c(effs$eff_xy, effs$eff_uy, effs$eff_gy), cbind(x, U, G))
+	u <- makePhen(c(effs$eff_g1u, effs$eff_g2u, effs$eff_guu), cbind(G1, G2, Gu))
+	x <- makePhen(c(effs$eff_g1x, effs$eff_g2x, effs$eff_ux), cbind(G1, G2, u))
+	y <- makePhen(c(effs$eff_xy, effs$eff_uy, effs$eff_g1y, effs$eff_g2y), cbind(x, u, G1, G2))
 	return(list(
 		x=x,
 		y=y,
-		U=U,
-		G=G
+		u=u,
+		G1=G1,
+		G2=G2,
+		Gu=Gu
 	))
 }
 

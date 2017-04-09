@@ -43,7 +43,13 @@ get_r_from_pn <- function(p, n)
 		index <- which(index)
 		for(i in 1:length(index))
 		{
-			R2[index[i]] <- suppressWarnings(optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par)
+			if(p[index[i]] == 0)
+			{
+				R2[index[i]] <- NA
+				warning("P-value of 0 cannot be converted to R value")
+			} else {
+				R2[index[i]] <- suppressWarnings(optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par)
+			}
 		}
 	}
 	return(sqrt(R2))
