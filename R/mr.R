@@ -519,7 +519,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
 	pval <- 2 * pnorm(abs(b/se), low=FALSE)
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
+	return(list(b=b, se=se, pval=pval, Q=NA, Q_df=NA, Q_pval=NA, nsnp=length(b_exp)))
 }
 
 
