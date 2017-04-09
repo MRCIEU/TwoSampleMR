@@ -32,3 +32,4 @@ List of with the following elements:
 \description{
 Egger's regression for Mendelian randomization
 }
+

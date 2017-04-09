@@ -25,3 +25,4 @@ Empirical standard error
 \description{
 Based on new script for weighted median confidence interval, update 31 July 2015
 }
+

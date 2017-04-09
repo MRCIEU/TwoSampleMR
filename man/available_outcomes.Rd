@@ -15,3 +15,4 @@ Dataframe of details for all available studies
 \description{
 Get list of studies with available GWAS summary statistics through API
 }
+

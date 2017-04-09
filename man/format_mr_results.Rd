@@ -35,3 +35,4 @@ It creates a new data frame with the following:
 \details{
 By default it uses the available_outcomes() function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If ao_slc set to TRUE then the user must supply their own study level characteris. This is useful when the user has supplied their own outcome GWAS results (ie they are not in MR-Base).
 }
+
