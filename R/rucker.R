@@ -1,5 +1,3 @@
-library(simex)
-
 walds <- function(b_exp, b_out, se_exp, se_out)
 {
 	bj <- b_out / b_exp
@@ -155,6 +153,7 @@ mr_ivw_mre <- function (b_exp, b_out, se_exp, se_out, parameters)
 
 mr_egger_fe <- function(b_exp, b_out, se_exp, se_out, isq_threshold = 0.95)
 {
+	require(simex)
 	res <- mr_egger_mre(b_exp, b_out, se_exp, se_out, isq_threshold=0)
 	res$se <- res$se / res$phi
 	res$se_i <- res$se_i / res$phi

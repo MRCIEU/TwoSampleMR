@@ -1,5 +1,3 @@
-library(tidyverse)
-
 
 makePhen <- function(effs, indep, vy=1, vx=rep(1, length(effs)), my=0)
 {
@@ -185,8 +183,8 @@ analyse_simulation <- function(dat, pop2)
 {
 	prs <- pop2$G %*% sign(dat$beta.exposure)
 	wprs <- pop2$G %*% dat$beta.exposure
-	mod1 <- summary(lm(pop2$y ~ prs)) %>% coefficients
-	mod2 <- summary(lm(pop2$y ~ wprs)) %>% coefficients
+	mod1 <- coefficients(summary(lm(pop2$y ~ prs)))
+	mod2 <- coefficients(summary(lm(pop2$y ~ wprs)))
 	scoreres <- data.frame(
 		id.exposure = "X", id.outcome = "Y", exposure = "X", outcome = "Y",
 		method = c("Basic PRS", "Weighted PRS"),
