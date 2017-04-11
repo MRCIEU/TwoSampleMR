@@ -358,7 +358,8 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 	med = qchisq(0.5, df)
 	mn = df
 	mode = df-1
-	Quant = c(low, mode, mn, med, up) ; L = length(Quant)
+	Quant = c(low, mode, mn, med, up)
+	L = length(Quant)
 	Tausq = NULL
 	Isq = NULL
 	CI = matrix(nrow = L, ncol = 2)
@@ -393,8 +394,20 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 }
 
 
-run_rucker <- function(dat)
+#' Rucker
+#'
+#' <full description>
+#'
+#' @param dat <what param does>
+#' @param random="multiplicative" <what param does>
+#' @param Qthresh=0.05 <what param does>
+#'
+#' @export
+#' @return
+run_rucker <- function(dat, random="multiplicative", Qthresh=0.05)
 {
+	stopifnot(random %in% c("multiplicative", "additive"))
+
 	nsnp <- nrow(dat)
 	b_exp <- dat$beta.exposure
 	b_out <- dat$beta.outcome
@@ -407,43 +420,31 @@ run_rucker <- function(dat)
 
 
 	# IVW FE
-	mod_ivw_fe <- summary(lm(y ~ 0 + x))
-	b_ivw_fe <- coefficients(mod_ivw_fe)[1,1]
-	se_ivw_fe <- coefficients(mod_ivw_fe)[1,2] / min(1, mod_ivw_fe$sigma)
-	pval_ivw_fe <- coefficients(mod_ivw_fe)[1,4]
+	mod_ivw <- summary(lm(y ~ 0 + x))
+	b_ivw_fe <- coefficients(mod_ivw)[1,1]
+
 	Q_ivw <- sum((y - x*b_ivw_fe)^2)
 	Q_df_ivw <- length(b_exp) - 1
 	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, low = FALSE)
+	phi_ivw <- Q_ivw / (nsnp - 1)
 
-	print(mod_ivw_fe$sigma)
+	se_ivw_fe <- coefficients(mod_ivw)[1,2] / phi_ivw
+	pval_ivw_fe <- pt(abs(b_ivw_fe/se_ivw_fe), nsnp-1, lower.tail=FALSE) * 2
+
 
 	# IVW MRE
 	b_ivw_re <- b_ivw_fe
-	phi_ivw <- Q_ivw / (nsnp - 1)
-	se_ivw_re <- sqrt(phi_ivw / sum(w))
-	pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
+	# se_ivw_re <- sqrt(phi_ivw / sum(w))
+	se_ivw_re <- coefficients(mod_ivw)[1,2]
+	# pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
+	pval_ivw_re <- coefficients(mod_ivw)[1,4]
 
 
-	# Egger MRE
+	# Egger FE
 	mod_egger <- summary(lm(y ~ 0 + i + x))
 
 	b1_egger_fe <- coefficients(mod_egger)[2,1]
-	se1_egger_fe <- coefficients(mod_egger)[2,2] / min(1, mod_egger$sigma)
-	pval1_egger_fe <- pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
 	b0_egger_fe <- coefficients(mod_egger)[1,1]
-	se0_egger_fe <- coefficients(mod_egger)[1,1] / min(1, mod_egger$sigma)
-	pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
-
-	print(mod_egger$sigma)
-
-	# Egger FE
-	b1_egger_re <- coefficients(mod_egger)[2,1]
-	se1_egger_re <- coefficients(mod_egger)[2,2]
-	pval1_egger_re <- coefficients(mod_egger)[2,4]
-	b0_egger_re <- coefficients(mod_egger)[1,1]
-	se0_egger_re <- coefficients(mod_egger)[1,1]
-	pval0_egger_re <- coefficients(mod_egger)[1,4]
-
 
 	# This is equivalent to mod$sigma^2
 	# Q_egger <- sum(
@@ -452,6 +453,22 @@ run_rucker <- function(dat)
 	Q_egger <- mod_egger$sigma^2 * (nsnp - 2)
 	Q_df_egger <- nsnp - 2
 	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, low=FALSE)
+	phi_egger <- Q_egger / (nsnp - 2)
+
+	se1_egger_fe <- coefficients(mod_egger)[2,2] / phi_egger
+	pval1_egger_fe <- pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+	se0_egger_fe <- coefficients(mod_egger)[1,2] / phi_egger
+	pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+
+	# Egger RE
+	b1_egger_re <- coefficients(mod_egger)[2,1]
+	se1_egger_re <- coefficients(mod_egger)[2,2]
+	pval1_egger_re <- coefficients(mod_egger)[2,4]
+	b0_egger_re <- coefficients(mod_egger)[1,1]
+	se0_egger_re <- coefficients(mod_egger)[1,2]
+	pval0_egger_re <- coefficients(mod_egger)[1,4]
+
+
 
 
 	dat <- data.frame(
@@ -462,5 +479,41 @@ run_rucker <- function(dat)
 		nsnp = nsnp
 	)
 
-	return(dat)
+
+	Qdiff <- max(0, Q_ivw - Q_egger)
+	Qdiff_p <- pchisq(Qdiff, 1, lower.tail=FALSE)
+
+	Q <- data.frame(
+		method=c("Q_ivw", "Q_egger", "Q_diff"),
+		Q=c(Q_ivw, Q_egger, Qdiff),
+		df=c(Q_df_ivw, Q_df_egger, 1),
+		pval=c(Q_pval_ivw, Q_pval_egger, Qdiff_p)
+	)
+
+	intercept <- data.frame(
+		method=c("Egger fixed effects", "Egger random effects"),
+		b = c(b0_egger_fe, b0_egger_fe),
+		se = c(se0_egger_fe, se0_egger_re),
+		pval = c(pval0_egger_fe, pval0_egger_re)
+	)
+
+	if(Q_pval_ivw <= Qthresh)
+	{
+		if(Qdiff_p <= Qthresh)
+		{
+			if(Q_pval_egger <= Qthresh)
+			{
+				res <- "D"
+			} else {
+				res <- "C"
+			}
+		} else {
+			res <- "B"
+		}
+	} else {
+		res <- "A"
+	}
+
+
+	return(list(dat=dat, intercept=intercept, Q=Q, res=res))
 }
