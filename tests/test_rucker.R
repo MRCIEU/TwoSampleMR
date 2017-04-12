@@ -21,14 +21,16 @@ plot(beta.outcome ~ beta.exposure, datA)
 
 with(datA, mr_mode(beta.exposure, beta.outcome, se.exposure, se.outcome))
 
-effs <- make_effs(ninst1=nsnp, var_xy=0.5, var_g1x=0.5, var_g1y=0.1, mu_g1y=0)
+effs <- make_effs(ninst1=nsnp, var_xy=0.05, var_g1x=0.5, var_g1y=0.03, mu_g1y=0)
 pop1 <- make_pop(effs, n1)
 pop2 <- make_pop(effs, n2)
 dat1 <- get_effs(pop1$x, pop1$y, pop1$G1)
 dat2 <- get_effs(pop2$x, pop2$y, pop2$G1)
 datB <- recode_dat(make_dat(dat1, dat2))
 run_rucker(datB)
+r <- rucker_bootstrap(datB)
 plot(beta.outcome ~ beta.exposure, datB)
+r$q_plot
 
 mr_pleiotropy_test(datB)
 

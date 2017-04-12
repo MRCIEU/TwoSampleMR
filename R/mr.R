@@ -159,7 +159,8 @@ default_parameters <- function()
 		Cov = 0,
 		penk = 20,
 		phi = 1,
-		alpha = 0.05
+		alpha = 0.05,
+		Qthresh = 0.05
 	)
 }
 
@@ -673,7 +674,7 @@ mr_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 	pm <- mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
 
 	res <- data.frame(
-		Method = c("Simple", "Weighted", "Penalised"),
+		Method = c("Simple median", "Weighted median", "Penalised median"),
 		Estimate = c(sm$b, wm$b, pm$b),
 		SE = c(sm$se, wm$se, pm$se)
 	)
@@ -1027,11 +1028,30 @@ mr_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters(
 	P_Mode <- pt(abs(beta_Mode/se_Mode), df=length(b_exp)-1, lower.tail=F)*2
 
 	#Vector to indicate the method referring to each row
-	Method <- rep(c('Simple', 'Weighted', 'Simple (NOME)', 'Weighted (NOME)'), each=length(phi))
+	Method <- rep(c('Simple mode', 'Weighted mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))
 
 	#Return a data frame containing the results
 	Results <- data.frame(Method, phi, beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)  
 	colnames(Results) <- c('Method', 'phi', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
 
 	return(Results)
+}
+
+
+#' Perform Rucker, Median and Mode
+#'
+#' @param dat <what param does>
+#' @param parameters=default_parameters() <what param does>
+#'
+#' @export
+#' @return list
+mr_all <- function(dat, parameters=default_parameters())
+{
+	dat <- subset(dat, mr_keep)
+	mrrucker <- rucker_bootstrap(dat, parameters)
+	mrmode <- with(dat, mr_mode(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
+	mrmedian <- with(dat, mr_median(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
+
+	res <- suppressWarnings(dplyr::bind_rows(mrrucker$res, mrmode, mrmedian))
+	return(list(res=res, rucker=mrrucker, mrmedian=mrmedian, mrmode=mrmode))
 }
