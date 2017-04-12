@@ -104,7 +104,8 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	mod_ivw <- summary(lm(y ~ 0 + x))
 	b_ivw_fe <- coefficients(mod_ivw)[1,1]
 
-	Q_ivw <- sum((y - x*b_ivw_fe)^2)
+	# Q_ivw <- sum((y - x*b_ivw_fe)^2)
+	Q_ivw <- mod_ivw$sigma^2 * (nsnp - 1)
 	Q_df_ivw <- length(b_exp) - 1
 	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, low = FALSE)
 	phi_ivw <- Q_ivw / (nsnp - 1)
