@@ -157,7 +157,9 @@ default_parameters <- function()
 	list(
 		nboot = 1000,
 		Cov = 0,
-		penk = 20
+		penk = 20,
+		phi = 1,
+		alpha = 0.05
 	)
 }
 
@@ -509,7 +511,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
@@ -538,7 +540,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
@@ -606,9 +608,9 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 {
 	med <- rep(0, nboot)
 	for(i in 1:nboot){
-		betaXG.boot = rnorm(length(b_exp), mean=b_exp, sd=se_exp)
-		betaYG.boot = rnorm(length(b_out), mean=b_out, sd=se_out)
-		betaIV.boot = betaYG.boot/betaXG.boot
+		b_exp.boot = rnorm(length(b_exp), mean=b_exp, sd=se_exp)
+		b_out.boot = rnorm(length(b_out), mean=b_out, sd=se_out)
+		betaIV.boot = b_out.boot/b_exp.boot
 		med[i] = weighted_median(betaIV.boot, weights)
 	}
 	return(sd(med)) 
@@ -633,7 +635,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
@@ -651,6 +653,36 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 }
 
 
+#' MR median estimators
+#'
+#' @param b_exp <what param does>
+#' @param b_out <what param does>
+#' @param se_exp <what param does>
+#' @param se_out <what param does>
+#' @param parameters=default_parameters() <what param does>
+#'
+#' @export
+#' @return data frame
+mr_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
+{
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
+	return(NULL)
+
+	sm <- mr_simple_median(b_exp, b_out, se_exp, se_out, parameters)
+	wm <- mr_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
+	pm <- mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
+
+	res <- data.frame(
+		Method = c("Simple", "Weighted", "Penalised"),
+		Estimate = c(sm$b, wm$b, pm$b),
+		SE = c(sm$se, wm$se, pm$se)
+	)
+	res$CI_low <- res$Estimate - qnorm(1-parameters$alpha/2) * res$SE
+	res$CI_upp <- res$Estimate + qnorm(1-parameters$alpha/2) * res$SE
+	res$P <- c(sm$pval, wm$pval, pm$pval)
+	return(res)
+}
+
 
 #' Inverse variance weighted regression
 #'
@@ -665,7 +697,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
@@ -885,4 +917,121 @@ mr_pleiotropy_test <- function(dat)
 		return(out)
 	})
 	return(ptab)
+}
+
+
+#' MR mode estimators
+#'
+#' <full description>
+#'
+#' @param b_exp <what param does>
+#' @param b_out <what param does>
+#' @param se_exp <what param does>
+#' @param se_out <what param does>
+#' @param parameters=default_parameters() <what param does>
+#'
+#' @export
+#' @return data frame
+mr_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
+{
+
+	#--------------------------------------#
+	#Function to compute the point estimate#
+	#--------------------------------------#
+	#BetaIV.in: ratio estimates
+	#seBetaIV.in: standard errors of ratio estimates
+	beta <- function(BetaIV.in, seBetaIV.in, phi)
+	{
+		#Bandwidth rule - modified Silverman's rule proposed by Bickel (2002)
+		s <- 0.9*(min(sd(BetaIV.in), mad(BetaIV.in)))/length(BetaIV.in)^(1/5)
+
+		#Standardised weights
+		weights <- seBetaIV.in^-2/sum(seBetaIV.in^-2)
+
+		beta <- NULL
+
+		for(cur_phi in phi)
+		{
+			#Define the actual bandwidth
+			h <- s*cur_phi
+			#Compute the smoothed empirical density function
+			densityIV <- density(BetaIV.in, weights=weights, bw=h)
+			#Extract the point with the highest density as the point estimate 
+			beta[length(beta)+1] <- densityIV$x[densityIV$y==max(densityIV$y)]
+		}
+		return(beta)
+	}
+
+	#------------------------------------------#
+	#Function to estimate SEs through bootstrap#
+	#------------------------------------------#
+	#BetaIV.in: ratio estimates
+	#seBetaIV.in: standard errors of ratio estimates
+	#beta_Mode.in: point causal effect estimates
+	boot <- function(BetaIV.in, seBetaIV.in, beta_Mode.in, nboot)
+	{
+		#Set up a matrix to store the results from each bootstrap iteration
+		beta.boot <- matrix(nrow=nboot, ncol=length(beta_Mode.in))
+
+		for(i in 1:nboot) 
+		{
+			#Re-sample each ratio estimate using SEs derived not assuming NOME
+			BetaIV.boot      <- rnorm(length(BetaIV.in), mean=BetaIV.in, sd=seBetaIV.in[,1])
+			#Re-sample each ratio estimate using SEs derived under NOME
+			BetaIV.boot_NOME <- rnorm(length(BetaIV.in), mean=BetaIV.in, sd=seBetaIV.in[,2])
+
+			#Simple mode, not assuming NOME
+			beta.boot[i,1:length(phi)] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
+			#Weighted mode, not assuming NOME
+			beta.boot[i,(length(phi)+1):(2*length(phi))] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=seBetaIV.in[,1], phi=phi)
+			#Simple mode, assuming NOME
+			beta.boot[i,(2*length(phi)+1):(3*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
+			#Weighted mode, assuming NOME
+			beta.boot[i,(3*length(phi)+1):(4*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=seBetaIV.in[,2], phi=phi)
+		}
+		return(beta.boot)
+	}
+
+	# Parameters
+	phi <- parameters$phi
+	nboot <- parameters$nboot
+	alpha <- parameters$alpha
+
+	#Ratio estimates
+	BetaIV   <- b_out/b_exp
+
+	#SEs of ratio estimates
+	seBetaIV <- cbind(sqrt((se_out^2)/(b_exp^2) + ((b_out^2)*(se_exp^2))/(b_exp^4)), #SEs NOT assuming NOME
+	se_out/abs(b_exp)) #SEs ASSUMING NOME
+
+	#Point causal effect estimate using the simple mode
+	beta_SimpleMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
+
+	#Point causal effect estimate using the weighted mode (not asusming NOME)
+	beta_WeightedMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,1], phi=phi)
+
+	#Point causal effect estimate using the weighted mode (asusming NOME)
+	beta_WeightedMode_NOME <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,2], phi=phi)
+
+	#Combine all point effect estimates in a single vector
+	beta_Mode <- rep(c(beta_SimpleMode, beta_WeightedMode,
+	beta_SimpleMode, beta_WeightedMode_NOME))
+
+	#Compute SEs, confidence intervals and P-value
+	beta_Mode.boot <- boot(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV, beta_Mode.in=beta_Mode, nboot=nboot)
+	se_Mode <- apply(beta_Mode.boot, 2, mad)
+
+	CIlow_Mode <- beta_Mode-qnorm(1-alpha/2)*se_Mode
+	CIupp_Mode <- beta_Mode+qnorm(1-alpha/2)*se_Mode
+
+	P_Mode <- pt(abs(beta_Mode/se_Mode), df=length(b_exp)-1, lower.tail=F)*2
+
+	#Vector to indicate the method referring to each row
+	Method <- rep(c('Simple', 'Weighted', 'Simple (NOME)', 'Weighted (NOME)'), each=length(phi))
+
+	#Return a data frame containing the results
+	Results <- data.frame(Method, phi, beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)  
+	colnames(Results) <- c('Method', 'phi', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
+
+	return(Results)
 }

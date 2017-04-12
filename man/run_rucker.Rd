@@ -13,6 +13,9 @@ run_rucker(dat, random = "multiplicative", Qthresh = 0.05)
 
 \item{Qthresh=0.05}{<what param does>}
 }
+\value{
+list
+}
 \description{
 <full description>
 }

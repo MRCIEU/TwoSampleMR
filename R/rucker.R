@@ -403,7 +403,7 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 #' @param Qthresh=0.05 <what param does>
 #'
 #' @export
-#' @return
+#' @return list
 run_rucker <- function(dat, random="multiplicative", Qthresh=0.05)
 {
 	stopifnot(random %in% c("multiplicative", "additive"))
@@ -515,5 +515,5 @@ run_rucker <- function(dat, random="multiplicative", Qthresh=0.05)
 	}
 
 
-	return(list(dat=dat, intercept=intercept, Q=Q, res=res))
+	return(list(rucker=dat, intercept=intercept, Q=Q, res=res))
 }

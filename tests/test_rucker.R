@@ -19,6 +19,7 @@ datA <- recode_dat(make_dat(dat1, dat2))
 run_rucker(datA)
 plot(beta.outcome ~ beta.exposure, datA)
 
+with(datA, mr_mode(beta.exposure, beta.outcome, se.exposure, se.outcome))
 
 effs <- make_effs(ninst1=nsnp, var_xy=0.5, var_g1x=0.5, var_g1y=0.1, mu_g1y=0)
 pop1 <- make_pop(effs, n1)
