@@ -101,7 +101,8 @@ mr_rucker <- function(dat, parameters=default_parameters())
 
 
 	# IVW FE
-	mod_ivw <- summary(lm(y ~ 0 + x))
+	lmod_ivw <- lm(y ~ 0 + x)
+	mod_ivw <- summary(lmod_ivw)
 	b_ivw_fe <- coefficients(mod_ivw)[1,1]
 
 	# Q_ivw <- sum((y - x*b_ivw_fe)^2)
@@ -123,7 +124,8 @@ mr_rucker <- function(dat, parameters=default_parameters())
 
 
 	# Egger FE
-	mod_egger <- summary(lm(y ~ 0 + i + x))
+	lmod_egger <- lm(y ~ 0 + i + x)
+	mod_egger <- summary(lmod_egger)
 
 	b1_egger_fe <- coefficients(mod_egger)[2,1]
 	b0_egger_fe <- coefficients(mod_egger)[1,1]
@@ -200,7 +202,14 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	selected <- results[c("A", "B", "C", "D") %in% res, ]
 	selected$Method <- "Rucker"
 
-	return(list(rucker=results, intercept=intercept, Q=Q, res=res, selected=selected))
+	if(res %in% c("A", "B"))
+	{
+		cd <- cooks.distance(lmod_ivw)
+	} else {
+		cd <- cooks.distance(lmod_egger)
+	}
+
+	return(list(rucker=results, intercept=intercept, Q=Q, res=res, selected=selected, cooksdistance=cd))
 }
 
 
@@ -214,12 +223,11 @@ mr_rucker <- function(dat, parameters=default_parameters())
 #'
 #' @export
 #' @return List
-rucker_bootstrap <- function(dat, parameters=default_parameters())
+mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
 	library(ggplot2)
 
 	nboot <- parameters$nboot
-	nboot <- 1000
 	nsnp <- nrow(dat)
 	Qthresh <- parameters$Qthresh
 
@@ -293,4 +301,42 @@ rucker_bootstrap <- function(dat, parameters=default_parameters())
 		ggplot2::labs(fill="Bootstrap estimates", colour="")
 
 	return(list(rucker=rucker, res=res, bootstrap_estimates=modsel, boostrap_q=bootstrap, q_plot=p1, e_plot=p2))
+}
+
+
+
+#' MR Rucker with outliers automatically detected and removed
+#'
+#' Uses Cook's distance D > 4/nsnp to iteratively remove outliers
+#'
+#' @param dat <what param does>
+#' @param parameters=default_parameters() <what param does>
+#'
+#' @export
+#' @return list
+mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
+{
+
+	dat_orig <- dat
+	rucker_orig <- mr_rucker(dat_orig, parameters)
+	rucker <- rucker_orig
+	cooks_threshold <- 4/nrow(dat)
+	index <- rucker_orig$cooksdistance > cooks_threshold
+
+	message("Evaluating outliers")
+	i <- 1
+	l <- list()
+	while(any(index)) 
+	{
+		message("Iteration ", i, ": ", sum(index), " outliers identified")
+		dat <- dat[!index, ]
+		cooks_threshold <- 4/nrow(dat)
+		rucker <- mr_rucker(dat, parameters)
+		l[[i]] <- rucker
+		index <- rucker$cooksdistance > cooks_threshold
+		i <- i + 1
+	}
+	
+	rucker$removed_snps <- dat_orig$SNP[! dat_orig$SNP %in% dat$SNP]
+	return(rucker)
 }
