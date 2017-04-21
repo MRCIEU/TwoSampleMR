@@ -656,18 +656,25 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 
 #' MR median estimators
 #'
-#' @param b_exp <what param does>
-#' @param b_out <what param does>
-#' @param se_exp <what param does>
-#' @param se_out <what param does>
+#' @param dat Output from harmonise_data()
 #' @param parameters=default_parameters() <what param does>
 #'
 #' @export
 #' @return data frame
-mr_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
+mr_median <- function(dat, parameters=default_parameters())
 {
-	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
-	return(NULL)
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
+
+	if(nrow(dat) < 3) 
+	{
+		warning("Need at least 3 SNPs")
+		return(NULL)
+	}
+
+	b_exp <- dat$beta.exposure
+	b_out <- dat$beta.outcome
+	se_exp <- dat$se.exposure
+	se_out <- dat$se.outcome
 
 	sm <- mr_simple_median(b_exp, b_out, se_exp, se_out, parameters)
 	wm <- mr_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
@@ -675,6 +682,7 @@ mr_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 
 	res <- data.frame(
 		Method = c("Simple median", "Weighted median", "Penalised median"),
+		nsnp = length(b_exp),
 		Estimate = c(sm$b, wm$b, pm$b),
 		SE = c(sm$se, wm$se, pm$se)
 	)
@@ -925,16 +933,25 @@ mr_pleiotropy_test <- function(dat)
 #'
 #' <full description>
 #'
-#' @param b_exp <what param does>
-#' @param b_out <what param does>
-#' @param se_exp <what param does>
-#' @param se_out <what param does>
+#' @param dat Output from harmonise_data()
 #' @param parameters=default_parameters() <what param does>
 #'
 #' @export
 #' @return data frame
-mr_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
+mr_mode <- function(dat, parameters=default_parameters()) 
 {
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
+
+	if(nrow(dat) < 3) 
+	{
+		warning("Need at least 3 SNPs")
+		return(NULL)
+	}
+
+	b_exp <- dat$beta.exposure
+	b_out <- dat$beta.outcome
+	se_exp <- dat$se.exposure
+	se_out <- dat$se.outcome
 
 	#--------------------------------------#
 	#Function to compute the point estimate#
@@ -1031,8 +1048,8 @@ mr_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters(
 	Method <- rep(c('Simple mode', 'Weighted mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))
 
 	#Return a data frame containing the results
-	Results <- data.frame(Method, phi, beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)  
-	colnames(Results) <- c('Method', 'phi', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
+	Results <- data.frame(Method, length(b_exp), phi, beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)  
+	colnames(Results) <- c('Method', 'nsnp', 'phi', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
 
 	return(Results)
 }
@@ -1048,10 +1065,16 @@ mr_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters(
 mr_all <- function(dat, parameters=default_parameters())
 {
 	dat <- subset(dat, mr_keep)
-	mrrucker <- rucker_bootstrap(dat, parameters)
-	mrmode <- with(dat, mr_mode(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
-	mrmedian <- with(dat, mr_median(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
+	mrrucker <- mr_rucker(dat, parameters)
+	mrruckercd <- mr_rucker_cooksdistance(dat, parameters)
+	mrmode <- mr_mode(dat, parameters)
+	mrmedian <- mr_median(dat, parameters)
 
-	res <- suppressWarnings(dplyr::bind_rows(mrrucker$res, mrmode, mrmedian))
-	return(list(res=res, rucker=mrrucker, mrmedian=mrmedian, mrmode=mrmode))
+	res <- suppressWarnings(dplyr::bind_rows(
+		mrrucker$selected, 
+		mrruckercd$selected,
+		mrmode, 
+		mrmedian
+	))
+	return(list(res=res, rucker=mrrucker, ruckercd=mrruckercd, mrmedian=mrmedian, mrmode=mrmode))
 }

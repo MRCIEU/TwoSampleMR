@@ -4,16 +4,10 @@
 \alias{mr_median}
 \title{MR median estimators}
 \usage{
-mr_median(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
+mr_median(dat, parameters = default_parameters())
 }
 \arguments{
-\item{b_exp}{<what param does>}
-
-\item{b_out}{<what param does>}
-
-\item{se_exp}{<what param does>}
-
-\item{se_out}{<what param does>}
+\item{dat}{Output from harmonise_data()}
 
 \item{parameters=default_parameters()}{<what param does>}
 }

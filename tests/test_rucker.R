@@ -12,8 +12,10 @@ bp$mr_keep <- TRUE
 bp$id.exposure <- bp$id.outcome <- bp$exposure <- bp$outcome <- 1
 bp$SNP <- paste0("SNP", 1:nrow(bp))
 
-r1 <- mr_rucker(bp)
-r2 <- mr_rucker_cooksdistance(bp)
+a <- mr_all(bp)
+
+r1 <- mr_rucker(bp[1:3,])
+r2 <- mr_rucker_cooksdistance(bp[1:3,])
 
 r1$selected
 r2$selected
@@ -31,7 +33,7 @@ gridExtra::grid.arrange(
 	b$e_plot + labs(title="All variants Rucker bootstrap"),
 	c$e_plot + labs(title="Excluding Cooks D > 4/n Rucker bootstrap"),
 	ncol=2
-)
+	)
 dev.off()
 
 # permutations

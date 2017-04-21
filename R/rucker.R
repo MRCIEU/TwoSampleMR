@@ -171,6 +171,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 
 	results <- data.frame(
 		Method = c("IVW fixed effects", "IVW random effects", "Egger fixed effects", "Egger random effects"),
+		nsnp = nsnp,
 		Estimate = c(b_ivw_fe, b_ivw_re, b1_egger_fe, b1_egger_re),
 		SE = c(se_ivw_fe, se_ivw_re, se1_egger_fe, se1_egger_re)
 	)
@@ -276,6 +277,7 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 
 	rucker_median <- data.frame(
 		Method = "Rucker median",
+		nsnp = nsnp,
 		Estimate = median(modsel$Estimate),
 		SE = mad(modsel$Estimate),
 		CI_low = quantile(modsel$Estimate, 0.025),
@@ -285,6 +287,7 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 
 	rucker_mean <- data.frame(
 		Method = "Rucker mean",
+		nsnp = nsnp,
 		Estimate = mean(modsel$Estimate),
 		SE = sd(modsel$Estimate)
 	)
@@ -358,5 +361,6 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 	}
 	
 	rucker$removed_snps <- dat_orig$SNP[! dat_orig$SNP %in% dat$SNP]
+	rucker$selected$Method <- "Rucker (No outliers)"
 	return(rucker)
 }
