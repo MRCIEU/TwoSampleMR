@@ -86,6 +86,8 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 #' @return list
 mr_rucker <- function(dat, parameters=default_parameters())
 {
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
+
 	Qthresh <- parameters$Qthresh
 	alpha <- parameters$alpha
 
@@ -225,7 +227,9 @@ mr_rucker <- function(dat, parameters=default_parameters())
 #' @return List
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
-	library(ggplot2)
+	requireNamespace("ggplot2", quietly=TRUE)
+
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
 	nboot <- parameters$nboot
 	nsnp <- nrow(dat)
@@ -316,6 +320,8 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 #' @return list
 mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 {
+
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
 	dat_orig <- dat
 	rucker_orig <- mr_rucker(dat_orig, parameters)
