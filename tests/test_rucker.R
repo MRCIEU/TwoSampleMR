@@ -3,25 +3,26 @@ library(devtools)
 load_all()
 
 
-bp <- read.table("../inst/data/DebbieData_2.txt")
+## Minimal example
+devtools::install_github("MRCIEU/TwoSampleMR")
+library(TwoSampleMR)
+bp <- read.table(system.file(package="TwoSampleMR", "data/DebbieData_2.txt"))
 names(bp) <- c("beta.exposure", "se.exposure", "beta.outcome", "se.outcome")
 bp$mr_keep <- TRUE
-bp$id.exposure <- 1
-bp$id.outcome <- 1
-bp$exposure <- 1
-bp$outcome <- 1
+bp$id.exposure <- bp$id.outcome <- bp$exposure <- bp$outcome <- 1
 bp$SNP <- paste0("SNP", 1:nrow(bp))
-dat <- bp
-mod <- lm(beta.outcome ~ 0 + beta.exposure, data=bp, weights=1/bp$se.outcome^2)
+
+r1 <- mr_rucker(bp)
+r2 <- mr_rucker_cooksdistance(bp)
+
+r1$selected
+r2$selected
 
 a1 <- mr_rucker(bp)
 a <- mr_rucker_cooksdistance(bp)
-b <- rucker_bootstrap(bp)
+b <- mr_rucker_bootstrap(bp)
 bp2 <- subset(bp, ! SNP %in% a$removed_snps)
-p <- default_parameters()
-p$nboot <- 5000
-c <- rucker_bootstrap(bp2, p)
-c$q_plot
+c <- mr_rucker_bootstrap(bp2)
 
 pdf("rucker_bootstrap.pdf", width=10, height=10)
 gridExtra::grid.arrange(
@@ -186,3 +187,33 @@ mi <- rep(40, 5)         # number of mice exposed
 summary(lmI <- glm(cbind(yi, mi -yi) ~ xi, family = binomial))
 signif(cooks.distance(lmI), 3)   # ~= Ci in Table 3, p.184
 (imI <- influence.measures(lmI))
+
+
+
+for(i in 1:BootSim){
+BXG = rnorm(length(BetaXG),BetaXG,seBetaXG)
+BYG = rnorm(length(BetaYG),BetaYG,seBetaYG)
+
+if(weights==1){W = BXG^2/seBetaYG^2}
+if(weights==2){W = 1/(seBetaYG^2/BXG^2 + (BYG^2)*seBetaXG^2/BXG^4)}
+
+            BIVw = BIV*sqrt(W)
+            sW   = sqrt(W)
+IR          = lm(BIVw ~ -1+sW);IVW[i] = IR$coef[1]
+MR          = lm(BIVw ~    sW);E[i]   = MR$coef[2]
+
+DF1      = length(BetaYG)-1
+phi_IVW  = summary(IR)$sigma^2
+QQ[i]    = DF1*phi_IVW
+DF2      = length(BetaYG)-2
+phi_E    = summary(MR)$sigma^2
+QQd[i]   = DF2*phi_E
+
+Qp       = 1-pchisq(Q,DF1)
+
+if(QQ[i] <= qchisq(1-alpha,DF1)){Mod[i]=1}
+if(QQ[i] >= qchisq(1-alpha,DF1)){Mod[i]=2}
+if(QQ[i] >= qchisq(1-alpha,DF1) & QQ[i] - QQd[i] >= qchisq(1-alpha,1)){Mod[i]=3}
+if(QQ[i] >= qchisq(1-alpha,DF1)& QQ[i] - QQd[i] >= qchisq(1-alpha,1)& QQd[i] >=qchisq(1-alpha,DF2)){Mod[i]=4}
+
+}

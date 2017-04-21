@@ -88,6 +88,20 @@ mr_rucker <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
+	if(nrow(dat) < 3) 
+	{
+		warning("Need at least 3 SNPs")
+		return(NULL)
+	}
+
+
+    sign0 <- function(x) {
+		x[x == 0] <- 1
+		return(sign(x))
+    }
+	dat$beta.outcome <- dat$beta.outcome * sign0(dat$beta.exposure)
+	dat$beta.exposure <- abs(dat$beta.exposure)
+
 	Qthresh <- parameters$Qthresh
 	alpha <- parameters$alpha
 
@@ -332,7 +346,7 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 	message("Evaluating outliers")
 	i <- 1
 	l <- list()
-	while(any(index)) 
+	while(any(index) & sum(!index) > 3)
 	{
 		message("Iteration ", i, ": ", sum(index), " outliers identified")
 		dat <- dat[!index, ]
