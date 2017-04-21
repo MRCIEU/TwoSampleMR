@@ -1048,8 +1048,8 @@ mr_mode <- function(dat, parameters=default_parameters())
 	Method <- rep(c('Simple mode', 'Weighted mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))
 
 	#Return a data frame containing the results
-	Results <- data.frame(Method, length(b_exp), phi, beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)  
-	colnames(Results) <- c('Method', 'nsnp', 'phi', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
+	Results <- data.frame(Method, length(b_exp), beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)
+	colnames(Results) <- c('Method', 'nsnp', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
 
 	return(Results)
 }
