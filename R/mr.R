@@ -1071,7 +1071,9 @@ mr_all <- function(dat, parameters=default_parameters())
 	mrmedian <- mr_median(dat, parameters)
 
 	res <- suppressWarnings(dplyr::bind_rows(
+		mrrucker$rucker,
 		mrrucker$selected, 
+		mrruckercd$rucker,
 		mrruckercd$selected,
 		mrmode, 
 		mrmedian

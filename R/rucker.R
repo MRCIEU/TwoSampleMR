@@ -361,6 +361,7 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 	}
 	
 	rucker$removed_snps <- dat_orig$SNP[! dat_orig$SNP %in% dat$SNP]
-	rucker$selected$Method <- "Rucker (No outliers)"
+	rucker$selected$Method <- "Rucker (CD)"
+	rucker$rucker$Method <- paste0(rucker$rucker$Method, " (CD)")
 	return(rucker)
 }
