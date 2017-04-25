@@ -70,10 +70,11 @@
 #'
 #' @param id_exposure Array of ids from \code{available_outcomes}
 #' @param id_outcome Single id from \code{available_outcomes}
+#' @param pval_threshold Threshold to use to include SNPs in MR, default = 5e-8
 #'
 #' @export
 #' @return List of results table, exposure effects and outcome effects
-multivariable_mr <- function(id_exposure, id_outcome)
+multivariable_mr <- function(id_exposure, id_outcome, pval_threshold=5e-8)
 {
 	require(reshape2)
 	message("Warning: This analysis is still experimental")
@@ -103,31 +104,40 @@ multivariable_mr <- function(id_exposure, id_outcome)
 	d <- subset(d, SNP %in% keepsnps)
 	
 	# Reshape exposures
-	dh1 <- subset(d, id.outcome == id.outcome[1], select=c(SNP, exposure, id.exposure, effect_allele.exposure, other_allele.exposure, beta.exposure, se.exposure))
-	dh2 <- subset(d, select=c(SNP, outcome, id.outcome, effect_allele.outcome, other_allele.outcome, beta.outcome, se.outcome))
+	dh1 <- subset(d, id.outcome == id.outcome[1], select=c(SNP, exposure, id.exposure, effect_allele.exposure, other_allele.exposure, beta.exposure, se.exposure, pval.exposure))
+	dh2 <- subset(d, select=c(SNP, outcome, id.outcome, effect_allele.outcome, other_allele.outcome, beta.outcome, se.outcome, pval.outcome))
 	names(dh2) <- gsub("outcome", "exposure", names(dh2))
 	dh <- rbind(dh1, dh2)
 	exposure_mat <- reshape2::dcast(dh, SNP ~ exposure, value.var="beta.exposure")
+	exposure_matp <- reshape2::dcast(dh, SNP ~ exposure, value.var="pval.exposure")
 
 
 	# Get outcome data
 	outcome_dat <- extract_outcome_data(keepsnps, id_outcome)
 	dat <- harmonise_data(d1, outcome_dat)
 	exposure_mat <- subset(exposure_mat, SNP %in% dat$SNP)
+	exposure_matp <- subset(exposure_matp, SNP %in% dat$SNP)
 	dat$SNP <- as.character(dat$SNP)
 	exposure_mat$SNP <- as.character(exposure_mat$SNP)
+	exposure_matp$SNP <- as.character(exposure_matp$SNP)
 	index <- match(exposure_mat$SNP, dat$SNP)
 	dat <- dat[index, ]
 	stopifnot(all(dat$SNP == exposure_mat$SNP))
+	stopifnot(all(dat$SNP == exposure_matp$SNP))
 
 	exposure_mat <- as.matrix(exposure_mat[,-1])
+	exposure_matp <- as.matrix(exposure_matp[,-1])
 	rownames(exposure_mat) <- dat$SNP
+	rownames(exposure_matp) <- dat$SNP
 	effs <- array(1:length(id_exposure))
 	se <- array(1:length(id_exposure))
 	pval <- array(1:length(id_exposure))
+	nsnp <- array(1:length(id_exposure))
 	for(i in 1:length(id_exposure))
 	{
-		mod <- summary(lm(lm(dat$beta.outcome ~ exposure_mat[,-c(i)])$res ~ exposure_mat[,i]))
+		index <- exposure_matp[,i] < pval_threshold
+		mod <- summary(lm(lm(dat$beta.outcome ~ exposure_mat[,-c(i)])$res[index] ~ exposure_mat[index,i]))
+		nsnp[i] <- sum(index)
 		effs[i] <- mod$coef[2,1]
 		se[i] <- mod$coef[2,2]
 		pval[i] <- pnorm(abs(effs[i]) / se[i], lower.tail=FALSE)
@@ -138,12 +148,14 @@ multivariable_mr <- function(id_exposure, id_outcome)
 		results = data.frame(
 			exposure=nom,
 			outcome=unique(dat$outcome),
+			nsnp=nsnp,
 			b=effs,
 			se=se,
 			pval=pval,
 			stringsAsFactors=FALSE
 		),
 		exposure_effects = exposure_mat,
+		exposure_pvals = exposure_matp,
 		outcome_effects  = dat$beta.outcome
 	))
 }
@@ -165,3 +177,35 @@ convert_outcome_to_exposure <- function(outcome_dat)
 	return(exposure_dat)
 }
 
+mv_mr <- function(beta.outcome, beta.exposure, pval.exposure)
+{
+	nexp <- ncol(beta.exposure)
+	effs <- array(1:nexp)
+	se <- array(1:nexp)
+	pval <- array(1:nexp)
+	nsnp <- array(1:nexp)
+	marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
+	p <- list()
+	nom <- colnames(beta.exposure)
+	for (i in 1:nexp) {
+		index <- pval.exposure[,i] < 5e-8
+		marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
+		mod <- summary(lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
+		effs[i] <- mod$coef[2, 1]
+		se[i] <- mod$coef[2, 2]
+		pval[i] <- pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		nsnp[i] <- sum(index)
+
+		d <- data.frame(outcome=marginal_outcome[,i], exposure=beta.exposure[,i])
+		flip <- sign(d$exposure) == -1
+		d$outcome[flip] <- d$outcome[flip] * -1
+		d$exposure <- abs(d$exposure)
+		p[[i]] <- ggplot(d[index,], aes(x=exposure, y=outcome)) +
+		geom_point() +
+		# geom_abline(intercept=0, slope=effs[i]) +
+		stat_smooth(method="lm") +
+		labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+	}
+
+	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), marginal_outcome=marginal_outcome, plots=p))
+}

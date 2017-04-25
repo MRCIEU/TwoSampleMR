@@ -113,11 +113,13 @@ run_rucker <- function(dat)
 	pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
 
 
-	# Egger FE
+	# Egger MRE
 	i <- 1 / se_out
 	mod_egger <- summary(lm(y ~ 0 + i + x))
 	b_egger_fe <- coefficients(mod_egger)[2,1]
 	se_egger_fe <- coefficients(mod_egger)[2,1]
+
+	se_egger_fe
 
 
 	# 
