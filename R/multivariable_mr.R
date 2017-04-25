@@ -77,6 +77,7 @@ multivariable_mr <- function(id_exposure, id_outcome)
 {
 	require(reshape2)
 	message("Warning: This analysis is still experimental")
+	message("Testing the regression based multivariable MR")
 	stopifnot(length(id_exposure) > 1)
 	stopifnot(length(id_outcome) == 1)
 
