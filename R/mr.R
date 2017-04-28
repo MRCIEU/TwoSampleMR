@@ -149,7 +149,8 @@ default_parameters <- function()
 	list(
 		nboot = 1000,
 		Cov = 0,
-		penk = 20
+		penk = 20,
+		outliers_per_iteration = 1
 	)
 }
 

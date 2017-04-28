@@ -85,7 +85,7 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 #'
 #' @export
 #' @return list
-mr_rucker <- function(dat, parameters=default_parameters())
+mr_rucker_simple <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
@@ -351,6 +351,7 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 	rucker_orig <- mr_rucker(dat_orig, parameters)
 	rucker <- rucker_orig
 	cooks_threshold <- 4/nrow(dat)
+	outliers_per_iteration <- parameters$outliers_per_iteration
 	index <- rucker_orig$cooksdistance > cooks_threshold
 
 	message("Evaluating outliers")
@@ -358,7 +359,10 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 	l <- list()
 	while(any(index) & sum(!index) > 3)
 	{
-		message("Iteration ", i, ": ", sum(index), " outliers identified")
+		nrem <- min(outliers_per_iteration, sum(index))
+		message("Iteration ", i, ": ", sum(index), " outliers identified. Removing ", nrem)
+		ord <- order(rucker$cooksdistance)[1:outliers_per_iteration]
+		rucker$cooksdistance[ord]
 		dat <- dat[!index, ]
 		cooks_threshold <- 4/nrow(dat)
 		rucker <- mr_rucker(dat, parameters)
@@ -399,8 +403,9 @@ rucker_function <- function(dat, parameters=default_parameters(), method="simple
 		stop("Method must be one of 'simple' or 'cooksdistance'")
 	}
 
-	out <- plyr::dlply(dat, c("id.exposure", "id.outcome"), function(x)
+	out <- plyr::dlply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
+		x <- subset(x1, mr_keep)
 		fn(x, parameters=parameters)
 	})
 	
