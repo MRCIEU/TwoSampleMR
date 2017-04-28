@@ -1064,26 +1064,18 @@ mr_mode <- function(dat, parameters=default_parameters())
 #' @return list
 mr_all <- function(dat, parameters=default_parameters())
 {
-	out <- group_by_(dat, "id.exposure", "id.outcome") %>%
-	do({
-		dat <- subset(dat, mr_keep)
-		if(nrow(dat) == 1)
-		{
-			res <- mr_ivw()
-		}
-		mrrucker <- mr_rucker(dat, parameters)
-		mrruckercd <- mr_rucker_cooksdistance(dat, parameters)
-		mrmode <- mr_mode(dat, parameters)
-		mrmedian <- mr_median(dat, parameters)
+	mrrucker <- mr_rucker(dat, parameters)
+	mrruckercd <- mr_rucker_cooksdistance(dat, parameters)
+	mrmode <- mr_mode(dat, parameters)
+	mrmedian <- mr_median(dat, parameters)
 
-		res <- suppressWarnings(dplyr::bind_rows(
-			mrrucker$rucker,
-			mrrucker$selected, 
-			mrruckercd$rucker,
-			mrruckercd$selected,
-			mrmode, 
-			mrmedian
-		))
-	})
+	res <- suppressWarnings(dplyr::bind_rows(
+		mrrucker$rucker,
+		mrrucker$selected, 
+		mrruckercd$rucker,
+		mrruckercd$selected,
+		mrmode, 
+		mrmedian
+	))
 	return(list(res=res, rucker=mrrucker, ruckercd=mrruckercd, mrmedian=mrmedian, mrmode=mrmode))
 }
