@@ -912,7 +912,7 @@ mr_pleiotropy_test <- function(dat)
 		x <- subset(x1, mr_keep)
 		if(nrow(x) < 2)
 		{
-			message("Not enough SNPs available for Heterogeneity analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
+			message("Not enough SNPs available for pleiotropy analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
 			return(NULL)
 		}
 		res <- mr_egger_regression(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, default_parameters())
@@ -1064,19 +1064,26 @@ mr_mode <- function(dat, parameters=default_parameters())
 #' @return list
 mr_all <- function(dat, parameters=default_parameters())
 {
-	dat <- subset(dat, mr_keep)
-	mrrucker <- mr_rucker(dat, parameters)
-	mrruckercd <- mr_rucker_cooksdistance(dat, parameters)
-	mrmode <- mr_mode(dat, parameters)
-	mrmedian <- mr_median(dat, parameters)
+	out <- group_by_(dat, "id.exposure", "id.outcome") %>%
+	do({
+		dat <- subset(dat, mr_keep)
+		if(nrow(dat) == 1)
+		{
+			res <- mr_ivw()
+		}
+		mrrucker <- mr_rucker(dat, parameters)
+		mrruckercd <- mr_rucker_cooksdistance(dat, parameters)
+		mrmode <- mr_mode(dat, parameters)
+		mrmedian <- mr_median(dat, parameters)
 
-	res <- suppressWarnings(dplyr::bind_rows(
-		mrrucker$rucker,
-		mrrucker$selected, 
-		mrruckercd$rucker,
-		mrruckercd$selected,
-		mrmode, 
-		mrmedian
-	))
+		res <- suppressWarnings(dplyr::bind_rows(
+			mrrucker$rucker,
+			mrrucker$selected, 
+			mrruckercd$rucker,
+			mrruckercd$selected,
+			mrmode, 
+			mrmedian
+		))
+	})
 	return(list(res=res, rucker=mrrucker, ruckercd=mrruckercd, mrmedian=mrmedian, mrmode=mrmode))
 }
