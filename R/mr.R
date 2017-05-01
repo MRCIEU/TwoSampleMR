@@ -1124,7 +1124,3 @@ mr_all <- function(dat, parameters=default_parameters())
 
 	return(res)
 }
-
-
-a <- mr_all(rbind(dat[1000,], dat[1:4,], dat[10000:10004,]))
-a %>% as.data.frame
