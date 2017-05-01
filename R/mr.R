@@ -1070,7 +1070,7 @@ mr_all <- function(dat, parameters=default_parameters())
 			x <- .
 			if(nrow(x) == 1)
 			{
-				a <- mr_wald_ratio(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+				a <- mr_wald_ratio(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
 				out <- tibble(
 					exposure = x$exposure[1],
 					outcome = x$outcome[1],
@@ -1086,7 +1086,7 @@ mr_all <- function(dat, parameters=default_parameters())
 				)
 				return(out)
 			} else if(nrow(x) <= 3) {
-				a <- mr_ivw(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+				a <- mr_ivw(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
 				out <- tibble(
 					exposure = x$exposure[1],
 					outcome = x$outcome[1],
@@ -1102,10 +1102,10 @@ mr_all <- function(dat, parameters=default_parameters())
 				)
 				return(out)
 			} else {
-				mrrucker <- mr_rucker(dat, parameters)
-				mrruckercd <- mr_rucker_cooksdistance(dat, parameters)
-				mrmode <- mr_mode(dat, parameters)
-				mrmedian <- mr_median(dat, parameters)
+				mrrucker <- mr_rucker(x, parameters)
+				mrruckercd <- mr_rucker_cooksdistance(x, parameters)
+				mrmode <- mr_mode(x, parameters)
+				mrmedian <- mr_median(x, parameters)
 				out <- suppressWarnings(dplyr::bind_rows(
 					mrrucker$rucker,
 					mrrucker$selected, 
@@ -1114,9 +1114,17 @@ mr_all <- function(dat, parameters=default_parameters())
 					mrmode, 
 					mrmedian
 				))
+				out$exposure <- x$exposure[1]
+				out$outcome <- x$outcome[1]
+				out$id.exposure <- x$id.exposure[1]
+				out$id.outcome <- x$id.outcome[1]
 				return(out)
 			}
 		})
 
 	return(res)
 }
+
+
+a <- mr_all(rbind(dat[1000,], dat[1:4,], dat[10000:10004,]))
+a %>% as.data.frame
