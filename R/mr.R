@@ -1064,18 +1064,59 @@ mr_mode <- function(dat, parameters=default_parameters())
 #' @return list
 mr_all <- function(dat, parameters=default_parameters())
 {
-	mrrucker <- mr_rucker(dat, parameters)
-	mrruckercd <- mr_rucker_cooksdistance(dat, parameters)
-	mrmode <- mr_mode(dat, parameters)
-	mrmedian <- mr_median(dat, parameters)
+	dat <- subset(dat, mr_keep)
+	res <- dplyr::group_by(dat, exposure, outcome) %>%
+		do({
+			x <- .
+			if(nrow(x) == 1)
+			{
+				a <- mr_wald_ratio(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+				out <- tibble(
+					exposure = x$exposure[1],
+					outcome = x$outcome[1],
+					id.exposure = x$id.exposure[1],
+					id.outcome = x$id.outcome[1],
+					Method = "Wald ratio",
+					Estimate = a$b,
+					SE = a$se,
+					CI_low = a$b - 1.96 * a$se,
+					CI_upp = a$b + 1.96 * a$se,
+					P = a$pval,
+					nsnp = 1
+				)
+				return(out)
+			} else if(nrow(x) <= 3) {
+				a <- mr_ivw(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+				out <- tibble(
+					exposure = x$exposure[1],
+					outcome = x$outcome[1],
+					id.exposure = x$id.exposure[1],
+					id.outcome = x$id.outcome[1],
+					Method = "IVW fixed effects",
+					Estimate = a$b,
+					SE = a$se,
+					CI_low = a$b - 1.96 * a$se,
+					CI_upp = a$b + 1.96 * a$se,
+					P = a$pval,
+					nsnp = nrow(x)
+				)
+				return(out)
+			} else {
+				mrrucker <- mr_rucker(dat, parameters)
+				mrruckercd <- mr_rucker_cooksdistance(dat, parameters)
+				mrmode <- mr_mode(dat, parameters)
+				mrmedian <- mr_median(dat, parameters)
+				out <- suppressWarnings(dplyr::bind_rows(
+					mrrucker$rucker,
+					mrrucker$selected, 
+					mrruckercd$rucker,
+					mrruckercd$selected,
+					mrmode, 
+					mrmedian
+				))
+				return(out)
+			}
+		})
 
-	res <- suppressWarnings(dplyr::bind_rows(
-		mrrucker$rucker,
-		mrrucker$selected, 
-		mrruckercd$rucker,
-		mrruckercd$selected,
-		mrmode, 
-		mrmedian
-	))
-	return(list(res=res, rucker=mrrucker, ruckercd=mrruckercd, mrmedian=mrmedian, mrmode=mrmode))
+	return(res)
 }

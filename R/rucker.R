@@ -346,12 +346,10 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 	cooks_threshold <- 4/nrow(dat)
 	index <- rucker_orig$cooksdistance > cooks_threshold
 
-	message("Evaluating outliers")
 	i <- 1
 	l <- list()
 	while(any(index) & sum(!index) > 3)
 	{
-		message("Iteration ", i, ": ", sum(index), " outliers identified")
 		dat <- dat[!index, ]
 		cooks_threshold <- 4/nrow(dat)
 		rucker <- mr_rucker(dat, parameters)
