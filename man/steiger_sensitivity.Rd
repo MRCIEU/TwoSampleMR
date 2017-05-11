@@ -24,4 +24,3 @@ List
 \description{
 Evaluate the Steiger test's sensitivity to measurement error
 }
-

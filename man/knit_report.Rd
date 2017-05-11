@@ -27,4 +27,3 @@ Supposedly this error can also be avoided by setting the following option:
      options(knitr.duplicate.label='allow')
 I tried this but it didn't seem to help.
 }
-

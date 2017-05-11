@@ -29,4 +29,3 @@ List with the following elements:
 Modification to standard weighted median MR
 Updated based on Burgess 2016 "Robust instrumental variable methods using multiple candidate instruments with application to Mendelian randomization"
 }
-

@@ -20,4 +20,3 @@ Data frame
 \description{
 Get heterogeneity stats
 }
-

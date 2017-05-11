@@ -24,4 +24,3 @@ List with the following elements:
 \description{
 Perform 2 sample IV using Wald ratio
 }
-

@@ -24,4 +24,3 @@ Data frame
 \description{
 Uses PLINK clumping method, where SNPs in LD within a particular window will be pruned. The SNP with the lowest p-value is retained.
 }
-

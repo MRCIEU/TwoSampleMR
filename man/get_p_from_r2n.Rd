@@ -17,4 +17,3 @@ P-value
 \description{
 Calculate p-value from rsq and sample size
 }
-

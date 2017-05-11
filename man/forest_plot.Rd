@@ -41,4 +41,3 @@ grid plot object
 \description{
 Perform MR of multiple exposures and multiple outcomes. This plots the results
 }
-
