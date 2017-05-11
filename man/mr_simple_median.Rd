@@ -4,7 +4,8 @@
 \alias{mr_simple_median}
 \title{Simple median method}
 \usage{
-mr_simple_median(b_exp, b_out, se_exp, se_out, parameters)
+mr_simple_median(b_exp, b_out, se_exp, se_out,
+  parameters = default_parameters())
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

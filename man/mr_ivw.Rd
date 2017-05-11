@@ -4,7 +4,7 @@
 \alias{mr_ivw}
 \title{Inverse variance weighted regression}
 \usage{
-mr_ivw(b_exp, b_out, se_exp, se_out, parameters)
+mr_ivw(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

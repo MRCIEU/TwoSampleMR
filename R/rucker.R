@@ -1,40 +1,3 @@
-walds <- function(b_exp, b_out, se_exp, se_out)
-{
-	bj <- b_out / b_exp
-	wj_1 <- b_exp^2 / se_out^2
-	wj_2 <- 1 / (se_out^2 / b_exp^2 + b_out^2 * se_exp^2 / b_exp^4)
-	b_ivw <- sum(wj_2 * bj) / sum(wj_2)
-	wj_3 <- 1 / (se_out^2 / b_exp^2 + b_ivw^2 * se_exp^2 / b_exp^2)
-	l <- list(
-		"First order" = list(bj=bj, wj=wj_1),
-		"Second order" = list(bj=bj, wj=wj_2),
-		"Modified second order" = list(bj=bj, wj=wj_3)
-	)
-	return(l)
-}
-
-recode_dat <- function(dat)
-{
-	a <- lm(beta.outcome ~ beta.exposure, dat)$coefficients[1]
-	index <- dat$beta.exposure < 0
-	dat$beta.exposure[index] <- dat$beta.exposure[index] * -1
-	dat$beta.outcome[index] <- dat$beta.outcome[index] * -1 + 2 * a
-	dat$index <- index
-	return(dat)
-}
-
-dat_sign <- function(dat)
-{
-	sign0 <- function(x) {
-		x[x == 0] <- 1
-		return(sign(x))
-	}
-	index <- sign0(dat$beta.exposure) == -1
-	dat$beta.exposure <- abs(dat$beta.exposure)
-	dat$beta.outcome[index] <- dat$beta.outcome[index] * -1
-	return(dat)
-}
-
 Isq <- function(y,s)
 {
 	k <- length(y)
@@ -46,7 +9,6 @@ Isq <- function(y,s)
 	Isq <- max(0,Isq)
 	return(Isq)
 }
-
 
 # mr_ivw_fe <- function (b_exp, b_out, se_exp, se_out)
 # {
@@ -67,290 +29,9 @@ Isq <- function(y,s)
 # }
 
 
-
-mr_ivw_fe <- function (b_exp, b_out, se_exp, se_out)
-{
-	bj <- b_out / b_exp
-	wj <- b_exp^2 / se_out^2
-	b <- sum(wj * bj) / sum(wj)
-	se <- sqrt(1 / sum(wj))
-	pval <- 2 * pnorm(abs(b/se), low = FALSE)
-	Q <- sum(wj * (bj - b)^2)
-	Q_df <- length(b_exp) - 1
-	Q_pval <- pchisq(Q, Q_df, low = FALSE)
-	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
-}
-
-
-mr_ivw_are <- function (b_exp, b_out, se_exp, se_out, parameters)
-{
-	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2) {
-		return(list(b = NA, se = NA, pval = NA, nsnp = NA, Q = NA, Q_df = NA, Q_pval = NA, tau_sq=NA))
-	}
-
-	bj <- b_out/b_exp
-	sej <- sqrt((se_out^2/b_exp^2))
-
-	res <- meta::metagen(bj, sej)
-
-	# var(alpha)
-	tau_sq <- res$tau^2
-
-	b <- res$TE.random
-	se <- res$seTE.random
-	pval <- res$pval.random
-	Q_pval <- pchisq(res$Q, res$df.Q, low = FALSE)
-	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval, tau_sq=tau_sq))
-}
-
-mr_ivw_mre <- function (b_exp, b_out, se_exp, se_out, parameters) 
-{
-	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2) {
-		return(list(b = NA, se = NA, pval = NA, nsnp = NA, Q = NA, Q_df = NA, Q_pval = NA))
-	}
-
-	wj <- b_exp^2 / se_out^2
-	bj <- b_out / b_exp
-
-	b <- sum(wj * bj) / sum(wj)
-
-	Q <- sum(wj * (bj - b)^2)
-	phi <- Q / (length(b_exp) - 1)
-
-	se <- sqrt(phi / sum(wj))
-
-	pval <- 2 * pnorm(abs(b/se), low = FALSE)
-
-	Q_df <- length(b_exp) - 1
-	Q_pval <- pchisq(Q, Q_df, low = FALSE)
-	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
-}
-
-# mr_egger_fe <- function (b_exp, b_out, se_exp, se_out, parameters)
-# {
-# 	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3) {
-# 		return(list(b = NA, se = NA, pval = NA, nsnp = NA, Q = NA, Q_df = NA, Q_pval = NA))
-# 	}
-
-# 	Z <- cbind(1 / se_out, b_exp / se_out)
-
-# 	G <- matrix(b_out / se_out, length(b_out))
-# 	p1 <- solve(t(Z) %*% Z)
-# 	b <- p1 %*% t(Z) %*% G
-# 	se <- sqrt(diag(p1))
-
-# 	wj <- b_exp^2 / se_out^2
-# 	bj <- b_out / b_exp
-
-# 	Q <- sum(wj * (bj - b[1]/b_exp - b[2])^2)
-
-# 	pval <- 2 * pnorm(abs(b/se), low = FALSE)
-
-# 	Q_df <- length(b_exp) - 2
-# 	Q_pval <- pchisq(Q, Q_df, low = FALSE)
-# 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
-# }
-
-mr_egger_fe <- function(b_exp, b_out, se_exp, se_out, isq_threshold = 0.95)
-{
-	require(simex)
-	res <- mr_egger_mre(b_exp, b_out, se_exp, se_out, isq_threshold=0)
-	res$se <- res$se / res$phi
-	res$se_i <- res$se_i / res$phi
-	res$pval <- 2 * pt(abs(res$b/res$se), length(b_exp) - 2, lower.tail = FALSE)
-	res$pval_i <- 2 * pt(abs(res$b_i/res$se_i), length(b_exp) - 2, lower.tail = FALSE)
-
-	if(res$isq < isq_threshold)
-	{
-		mod.sim <- simex(
-			res$mod,
-			B=1000,
-			measurement.error = se_exp,
-			SIMEXvariable = "beta.exposure",
-			fitting.method = "quad",
-			asymptotic = "FALSE"
-		)
-		smod.sim <- summary(mod.sim)
-		res$simex_mod <- mod.sim
-		res$simex_smod <- smod.sim
-		res$simex.b <- smod.sim$coefficients$jackknife[2,1]
-		res$simex.b_i <- smod.sim$coefficients$jackknife[1,1]
-		res$simex.se <- smod.sim$coefficients$jackknife[2,2] / res$phi
-		res$simex.se_i <- smod.sim$coefficients$jackknife[1,2] / res$phi
-		res$pval <- 2 * pt(abs(res$simex.b/res$simex.se), length(b_exp) - 2, lower.tail = FALSE)
-		res$pval_i <- 2 * pt(abs(res$simex.b_i/res$simex.se_i), length(b_exp) - 2, lower.tail = FALSE)
-	}
-	return(res)
-}
-
-# mr_egger_mre <- function (b_exp, b_out, se_exp, se_out, parameters)
-# {
-# 	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3) {
-# 		return(list(b = NA, se = NA, pval = NA, nsnp = NA, Q = NA, Q_df = NA, Q_pval = NA))
-# 	}
-
-# 	Z <- cbind(1 / se_out, b_exp / se_out)
-
-# 	G <- matrix(b_out / se_out, length(b_out))
-# 	p1 <- solve(t(Z) %*% Z)
-# 	b <- p1 %*% t(Z) %*% G
-# 	se <- sqrt(diag(p1))
-
-# 	wj <- b_exp^2 / se_out^2
-# 	bj <- b_out / b_exp
-
-# 	Q <- sum(wj * (bj - b[1]/b_exp - b[2])^2)
-# 	phi <- Q / (length(b_exp) - 2)
-
-# 	se <- se * phi
-# 	pval <- 2 * pnorm(abs(b/se), low = FALSE)
-
-# 	Q_df <- length(b_exp) - 2
-# 	Q_pval <- pchisq(Q, Q_df, low = FALSE)
-# 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
-# }
-
-
-mr_egger_mre <- function(b_exp, b_out, se_exp, se_out, isq_threshold = 0.95)
-{
-	stopifnot(length(b_exp) == length(b_out))
-	stopifnot(length(se_exp) == length(se_out))
-	stopifnot(length(b_exp) == length(se_out))
-	nulllist <- list(b = NA, se = NA, pval = NA, nsnp = NA, b_i = NA, se_i = NA, pval_i = NA, Q = NA, Q_df = NA, Q_pval = NA, mod = NA, smod = NA, dat = NA)
-
-	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3) 
-	{
-		return(nulllist)
-	}
-
-	
-	mod <- lm(beta.outcome ~ beta.exposure, data=dat, weights = 1/dat$se.outcome^2, x=TRUE, y=TRUE)
-
-	to_flip <- b_exp < 0
-	b_exp[to_flip] <- b_exp[to_flip] * -1
-	b_out[to_flip] = b_out[to_flip] * -1 + 2 * mod$coefficients[1]
-
-	dat <- data.frame(beta.exposure = b_exp, beta.outcome = b_out, se.exposure = se_exp, se.outcome = se_out, flipped = to_flip)
-
-	mod <- lm(beta.outcome ~ beta.exposure, data=dat, weights = 1/dat$se.outcome^2, x=TRUE, y=TRUE)
-	smod <- summary(mod)
-
-	
-	if (nrow(coefficients(smod)) <= 1) 
-	{
-		warning("Collinearities in MR Egger, try LD pruning the exposure variables.")
-		return(nulllist)
-	}
-
-	b <- coefficients(smod)[2, 1]
-	se <- coefficients(smod)[2, 2]/min(1, smod$sigma)
-	pval <- 2 * pt(abs(b/se), length(b_exp) - 2, lower.tail = FALSE)
-	b_i <- coefficients(smod)[1, 1]
-	se_i <- coefficients(smod)[1, 2]/min(1, smod$sigma)
-	pval_i <- 2 * pt(abs(b_i/se_i), length(b_exp) - 2, lower.tail = FALSE)
-	# Q <- smod$sigma^2 * (length(b_exp) - 2)
-	w <- b_exp^2 / se_out^2
-	Q <- sum(w * (b_out / b_exp - b_i / b_exp - b)^2)
-	Q_df <- length(b_exp) - 2
-	Q_pval <- pchisq(Q, Q_df, low = FALSE)
-	phi <- Q / (length(b_exp) - 2)
-	isq <- Isq(b_exp/se_out, se_exp/se_out)
-
-	l <- list(b = b, se = se, pval = pval, nsnp = length(b_exp), b_i = b_i, se_i = se_i, pval_i = pval_i, Q = Q, Q_df = Q_df, Q_pval = Q_pval, mod = mod, smod=smod, dat = dat, isq = isq, phi = phi)
-
-	if(isq < isq_threshold)
-	{
-		mod.sim <- simex(
-			mod,
-			B=1000,
-			measurement.error = se_exp,
-			SIMEXvariable = "beta.exposure",
-			fitting.method="quad",
-			asymptotic = "FALSE"
-		)
-		smod.sim <- summary(mod.sim)
-		l$simex_mod <- mod.sim
-		l$simex_smod <- smod.sim
-		l$simex.b <- smod.sim$coefficients$jackknife[2,1]
-		l$simex.b_i <- smod.sim$coefficients$jackknife[1,1]
-		l$simex.se <- smod.sim$coefficients$jackknife[2,2]
-		l$simex.se_i <- smod.sim$coefficients$jackknife[1,2]
-		l$simex.pval <- smod.sim$coefficients$jackknife[2,4]
-		l$simex.pval_i <- smod.sim$coefficients$jackknife[1,4]
-
-	}
-
-	return(l)
-}
-
-
-
-rucker <- function(dat, Qthresh = 0.05, Igxthresh = 0.9)
-{
-	A <- mr_ivw_fe(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
-	B <- mr_ivw_mre(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
-	C <- mr_egger_fe(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, Igxthresh)
-	D <- mr_egger_mre(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, Igxthresh)
-
-	mods <- data.frame(
-		mod = LETTERS[1:4],
-		b = sapply(list(A,B,C,D), function(x) x$b),
-		se = sapply(list(A,B,C,D), function(x) x$se),
-		pval = sapply(list(A,B,C,D), function(x) x$pval),
-		Q = sapply(list(A,B,C,D), function(x) x$Q),
-		Q_pval = sapply(list(A,B,C,D), function(x) x$Q_pval)
-	)
-
-	Qdiff <- max(0, A$Q - C$Q)
-	Qdiff_p <- pchisq(Qdiff, 1, lower.tail=FALSE)
-
-
-	if(A$Q_pval <= Qthresh)
-	{
-		if(Qdiff_p <= Qthresh)
-		{
-			if(C$Q_pval <= Qthresh)
-			{
-				res <- D
-				res$model <- "D"				
-			} else {
-				res <- C
-				res$model <- "C"
-			}
-		} else {
-			res <- B
-			res$model <- "B"			
-		}
-	} else {
-		res <- A
-		res$model <- "A"
-	}
-
-	res$Qdiff <- Qdiff
-	res$Qdiff_p <- Qdiff_p
-	res$Qr <- C$Q / A$Q
-
-	info <- data.frame(
-		key = c("best model", "isq", "egger intercept", "Qdiff", "Qr"),
-		value = c(res$model, C$isq, C$b_i, Qdiff, C$Q / A$Q),
-		pval = c(NA, NA, C$pval_i, Qdiff_p, NA)
-	)
-
-	return(list(res=res, mods=mods, info=info))
-}
-
-
-
-rucker_ivw_fe <- function(b_exp, b_out, se_exp, se_out)
-{
-	mod <- summary(lm(b_out / se_out ~ -1 + b_exp/se_out))
-	return(mod)
-}
-
-
 PM <- function(y = y, s = s, Alpha = 0.1)
 {
-	K = length(y)
+	k = length(y)
 	df = k - 1
 	sig = qnorm(1-Alpha/2)
 	low = qchisq((Alpha/2), df)
@@ -358,7 +39,8 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 	med = qchisq(0.5, df)
 	mn = df
 	mode = df-1
-	Quant = c(low, mode, mn, med, up) ; L = length(Quant)
+	Quant = c(low, mode, mn, med, up)
+	L = length(Quant)
 	Tausq = NULL
 	Isq = NULL
 	CI = matrix(nrow = L, ncol = 2)
@@ -393,8 +75,36 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 }
 
 
-run_rucker <- function(dat)
+#' MR Rucker framework
+#'
+#' <full description>
+#'
+#' @param dat <what param does>
+#' @param parameters List of Qthresh for determing transition between models, and alpha values for calculating confidence intervals. Defaults to 0.05 for both in default_parameters() 
+#'
+#' @export
+#' @return list
+mr_rucker <- function(dat, parameters=default_parameters())
 {
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
+
+	if(nrow(dat) < 3) 
+	{
+		warning("Need at least 3 SNPs")
+		return(NULL)
+	}
+
+
+    sign0 <- function(x) {
+		x[x == 0] <- 1
+		return(sign(x))
+    }
+	dat$beta.outcome <- dat$beta.outcome * sign0(dat$beta.exposure)
+	dat$beta.exposure <- abs(dat$beta.exposure)
+
+	Qthresh <- parameters$Qthresh
+	alpha <- parameters$alpha
+
 	nsnp <- nrow(dat)
 	b_exp <- dat$beta.exposure
 	b_out <- dat$beta.outcome
@@ -407,43 +117,34 @@ run_rucker <- function(dat)
 
 
 	# IVW FE
-	mod_ivw_fe <- summary(lm(y ~ 0 + x))
-	b_ivw_fe <- coefficients(mod_ivw_fe)[1,1]
-	se_ivw_fe <- coefficients(mod_ivw_fe)[1,2] / min(1, mod_ivw_fe$sigma)
-	pval_ivw_fe <- coefficients(mod_ivw_fe)[1,4]
-	Q_ivw <- sum((y - x*b_ivw_fe)^2)
+	lmod_ivw <- lm(y ~ 0 + x)
+	mod_ivw <- summary(lmod_ivw)
+	b_ivw_fe <- coefficients(mod_ivw)[1,1]
+
+	# Q_ivw <- sum((y - x*b_ivw_fe)^2)
+	Q_ivw <- mod_ivw$sigma^2 * (nsnp - 1)
 	Q_df_ivw <- length(b_exp) - 1
 	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, low = FALSE)
+	phi_ivw <- Q_ivw / (nsnp - 1)
 
-	print(mod_ivw_fe$sigma)
+	se_ivw_fe <- coefficients(mod_ivw)[1,2] / phi_ivw
+	pval_ivw_fe <- pt(abs(b_ivw_fe/se_ivw_fe), nsnp-1, lower.tail=FALSE) * 2
+
 
 	# IVW MRE
 	b_ivw_re <- b_ivw_fe
-	phi_ivw <- Q_ivw / (nsnp - 1)
-	se_ivw_re <- sqrt(phi_ivw / sum(w))
-	pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
+	# se_ivw_re <- sqrt(phi_ivw / sum(w))
+	se_ivw_re <- coefficients(mod_ivw)[1,2]
+	# pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
+	pval_ivw_re <- coefficients(mod_ivw)[1,4]
 
-
-	# Egger MRE
-	mod_egger <- summary(lm(y ~ 0 + i + x))
-
-	b1_egger_fe <- coefficients(mod_egger)[2,1]
-	se1_egger_fe <- coefficients(mod_egger)[2,2] / min(1, mod_egger$sigma)
-	pval1_egger_fe <- pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
-	b0_egger_fe <- coefficients(mod_egger)[1,1]
-	se0_egger_fe <- coefficients(mod_egger)[1,1] / min(1, mod_egger$sigma)
-	pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
-
-	print(mod_egger$sigma)
 
 	# Egger FE
-	b1_egger_re <- coefficients(mod_egger)[2,1]
-	se1_egger_re <- coefficients(mod_egger)[2,2]
-	pval1_egger_re <- coefficients(mod_egger)[2,4]
-	b0_egger_re <- coefficients(mod_egger)[1,1]
-	se0_egger_re <- coefficients(mod_egger)[1,1]
-	pval0_egger_re <- coefficients(mod_egger)[1,4]
+	lmod_egger <- lm(y ~ 0 + i + x)
+	mod_egger <- summary(lmod_egger)
 
+	b1_egger_fe <- coefficients(mod_egger)[2,1]
+	b0_egger_fe <- coefficients(mod_egger)[1,1]
 
 	# This is equivalent to mod$sigma^2
 	# Q_egger <- sum(
@@ -452,15 +153,213 @@ run_rucker <- function(dat)
 	Q_egger <- mod_egger$sigma^2 * (nsnp - 2)
 	Q_df_egger <- nsnp - 2
 	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, low=FALSE)
+	phi_egger <- Q_egger / (nsnp - 2)
+
+	se1_egger_fe <- coefficients(mod_egger)[2,2] / phi_egger
+	pval1_egger_fe <- pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+	se0_egger_fe <- coefficients(mod_egger)[1,2] / phi_egger
+	pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+
+	# Egger RE
+	b1_egger_re <- coefficients(mod_egger)[2,1]
+	se1_egger_re <- coefficients(mod_egger)[2,2]
+	pval1_egger_re <- coefficients(mod_egger)[2,4]
+	b0_egger_re <- coefficients(mod_egger)[1,1]
+	se0_egger_re <- coefficients(mod_egger)[1,2]
+	pval0_egger_re <- coefficients(mod_egger)[1,4]
 
 
-	dat <- data.frame(
-		method = c("IVW fixed effects", "IVW random effects", "Egger fixed effects", "Egger random effects"),
-		b = c(b_ivw_fe, b_ivw_re, b1_egger_fe, b1_egger_re),
-		se = c(se_ivw_fe, se_ivw_re, se1_egger_fe, se1_egger_re),
-		pval = c(pval_ivw_fe, pval_ivw_re, pval1_egger_fe, pval1_egger_re),
-		nsnp = nsnp
+	results <- data.frame(
+		Method = c("IVW fixed effects", "IVW random effects", "Egger fixed effects", "Egger random effects"),
+		nsnp = nsnp,
+		Estimate = c(b_ivw_fe, b_ivw_re, b1_egger_fe, b1_egger_re),
+		SE = c(se_ivw_fe, se_ivw_re, se1_egger_fe, se1_egger_re)
+	)
+	results$CI_low <- results$Estimate - qnorm(1-alpha/2) * results$SE
+	results$CI_upp <- results$Estimate + qnorm(1-alpha/2) * results$SE
+	results$P <- c(pval_ivw_fe, pval_ivw_re, pval1_egger_fe, pval1_egger_re)
+
+	Qdiff <- max(0, Q_ivw - Q_egger)
+	Qdiff_p <- pchisq(Qdiff, 1, lower.tail=FALSE)
+
+
+	Q <- data.frame(
+		Method=c("Q_ivw", "Q_egger", "Q_diff"),
+		Q=c(Q_ivw, Q_egger, Qdiff),
+		df=c(Q_df_ivw, Q_df_egger, 1),
+		P=c(Q_pval_ivw, Q_pval_egger, Qdiff_p)
 	)
 
-	return(dat)
+	intercept <- data.frame(
+		Method=c("Egger fixed effects", "Egger random effects"),
+		Estimate = c(b0_egger_fe, b0_egger_fe),
+		SE = c(se0_egger_fe, se0_egger_re)
+	)
+	intercept$CI_low <- intercept$Estimate - qnorm(1-alpha/2) * intercept$SE
+	intercept$CI_upp <- intercept$Estimate + qnorm(1-alpha/2) * intercept$SE
+	intercept$P <- c(pval0_egger_fe, pval0_egger_re)
+
+	if(Q_pval_ivw <= Qthresh)
+	{
+		if(Qdiff_p <= Qthresh)
+		{
+			if(Q_pval_egger <= Qthresh)
+			{
+				res <- "D"
+			} else {
+				res <- "C"
+			}
+		} else {
+			res <- "B"
+		}
+	} else {
+		res <- "A"
+	}
+
+	selected <- results[c("A", "B", "C", "D") %in% res, ]
+	selected$Method <- "Rucker"
+
+	if(res %in% c("A", "B"))
+	{
+		cd <- cooks.distance(lmod_ivw)
+	} else {
+		cd <- cooks.distance(lmod_egger)
+	}
+
+	return(list(rucker=results, intercept=intercept, Q=Q, res=res, selected=selected, cooksdistance=cd))
+}
+
+
+
+#' Run rucker with bootstrap estimates
+#'
+#' <full description>
+#'
+#' @param dat <what param does>
+#' @param parameters=default_parameters() <what param does>
+#'
+#' @export
+#' @return List
+mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
+{
+	requireNamespace("ggplot2", quietly=TRUE)
+
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
+
+	nboot <- parameters$nboot
+	nsnp <- nrow(dat)
+	Qthresh <- parameters$Qthresh
+
+	# Main result
+	rucker <- mr_rucker(dat, parameters)
+	dat2 <- dat
+	l <- list()
+	for(i in 1:nboot)
+	{
+		dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
+		dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
+		l[[i]] <- mr_rucker(dat2, parameters)
+	}
+
+	modsel <- plyr::rbind.fill(lapply(l, function(x) x$selected))
+	modsel$model <- sapply(l, function(x) x$res)
+
+	bootstrap <- data.frame(
+		Q = c(rucker$Q$Q[1], sapply(l, function(x) x$Q$Q[1])),
+		Qdash = c(rucker$Q$Q[2], sapply(l, function(x) x$Q$Q[2])),
+		model = c(rucker$res, sapply(l, function(x) x$res)),
+		i = c("Full", rep("Bootstrap", nboot))
+	)
+
+	# Get the median estimate
+	rucker_point <- rucker$selected
+	rucker_point$Method <- "Rucker point estimate"
+
+	rucker_median <- data.frame(
+		Method = "Rucker median",
+		nsnp = nsnp,
+		Estimate = median(modsel$Estimate),
+		SE = mad(modsel$Estimate),
+		CI_low = quantile(modsel$Estimate, 0.025),
+		CI_upp = quantile(modsel$Estimate, 0.975)
+	)
+	rucker_median$P <- 2 * pt(abs(rucker_median$Estimate/rucker_median$SE), nsnp-1, lower.tail=FALSE)
+
+	rucker_mean <- data.frame(
+		Method = "Rucker mean",
+		nsnp = nsnp,
+		Estimate = mean(modsel$Estimate),
+		SE = sd(modsel$Estimate)
+	)
+	rucker_mean$CI_low <- rucker_mean$Estimate - qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
+	rucker_mean$CI_upp <- rucker_mean$Estimate + qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
+	rucker_mean$P <- 2 * pt(abs(rucker_mean$Estimate/rucker_mean$SE), nsnp-1, lower.tail=FALSE)
+
+
+	res <- rbind(rucker$rucker, rucker_point, rucker_mean, rucker_median)
+	rownames(res) <- NULL
+
+	p1 <- ggplot2::ggplot(bootstrap, ggplot2::aes_string(x="Q", y="Qdash")) +
+		ggplot2::geom_point(ggplot2::aes_string(colour="model")) +
+		ggplot2::geom_point(data=subset(bootstrap, i=="Full")) +
+		ggplot2::scale_colour_brewer(type="qual") +
+		ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
+		ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
+		ggplot2::geom_abline(slope=1, colour="grey") +
+		ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, low=FALSE), linetype="dotted") +
+		ggplot2::geom_hline(yintercept = qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
+		ggplot2::geom_vline(xintercept = qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
+		ggplot2::labs(x="Q", y="Q'")
+
+	modsel$model_name <- "IVW"
+	modsel$model_name[modsel$model %in% c("C", "D")] <- "Egger"
+
+	p2 <- ggplot2::ggplot(modsel, ggplot2::aes_string(x="Estimate")) +
+		ggplot2::geom_density(ggplot2::aes_string(fill="model_name"), alpha=0.4) +
+		ggplot2::geom_vline(data=res, ggplot2::aes_string(xintercept="Estimate", colour="Method")) +
+		ggplot2::scale_colour_brewer(type="qual") +
+		ggplot2::scale_fill_brewer(type="qual") + 
+		ggplot2::labs(fill="Bootstrap estimates", colour="")
+
+	return(list(rucker=rucker, res=res, bootstrap_estimates=modsel, boostrap_q=bootstrap, q_plot=p1, e_plot=p2))
+}
+
+
+
+#' MR Rucker with outliers automatically detected and removed
+#'
+#' Uses Cook's distance D > 4/nsnp to iteratively remove outliers
+#'
+#' @param dat <what param does>
+#' @param parameters=default_parameters() <what param does>
+#'
+#' @export
+#' @return list
+mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
+{
+
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
+
+	dat_orig <- dat
+	rucker_orig <- mr_rucker(dat_orig, parameters)
+	rucker <- rucker_orig
+	cooks_threshold <- 4/nrow(dat)
+	index <- rucker_orig$cooksdistance > cooks_threshold
+
+	i <- 1
+	l <- list()
+	while(any(index) & sum(!index) > 3)
+	{
+		dat <- dat[!index, ]
+		cooks_threshold <- 4/nrow(dat)
+		rucker <- mr_rucker(dat, parameters)
+		l[[i]] <- rucker
+		index <- rucker$cooksdistance > cooks_threshold
+		i <- i + 1
+	}
+	
+	rucker$removed_snps <- dat_orig$SNP[! dat_orig$SNP %in% dat$SNP]
+	rucker$selected$Method <- "Rucker (CD)"
+	rucker$rucker$Method <- paste0(rucker$rucker$Method, " (CD)")
+	return(rucker)
 }
