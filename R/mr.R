@@ -636,8 +636,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param penk Constant term in penalisation. Default=20 
-#' @param nboot Number of bootstraps to calculate SE. Default 1000
+#' @param parameters List containing "penk" - Constant term in penalisation, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=20 and nboot=1000
 #'
 #' @export
 #' @return List with the following elements:
@@ -666,11 +665,17 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'
 #' Weighted mode estimator
 #'
-#' @param dat Output from harmonise_data()
-#' @param parameters=default_parameters() <what param does>
+#' @param b_exp Vector of genetic effects on exposure
+#' @param b_out Vector of genetic effects on outcome
+#' @param se_exp Standard errors of genetic effects on exposure
+#' @param se_out Standard errors of genetic effects on outcome
+#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
 #'
 #' @export
-#' @return data frame
+#' @return List with the following elements:
+#'         b: MR estimate
+#'         se: Standard error
+#'         pval: p-value
 mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
@@ -1188,17 +1193,13 @@ mr_mode <- function(dat, parameters=default_parameters())
 }
 
 
-
-
-
-
 #' Perform Rucker, Median and Mode
 #'
-#' @param dat <what param does>
-#' @param parameters=default_parameters() <what param does>
+#' @param dat Output from harmonise_data
+#' @param parameters=default_parameters()
 #'
 #' @export
-#' @return list
+#' @return Data frame
 mr_all <- function(dat, parameters=default_parameters())
 {
 	dat <- subset(dat, mr_keep)

@@ -7,12 +7,12 @@
 mr_all(dat, parameters = default_parameters())
 }
 \arguments{
-\item{dat}{<what param does>}
+\item{dat}{Output from harmonise_data}
 
-\item{parameters=default_parameters()}{<what param does>}
+\item{parameters=default_parameters()}{}
 }
 \value{
-list
+Data frame
 }
 \description{
 Perform Rucker, Median and Mode
