@@ -12,4 +12,3 @@ character vector of method names
 \description{
 Get list of available MR methods
 }
-

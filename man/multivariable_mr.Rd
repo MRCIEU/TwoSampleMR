@@ -22,4 +22,3 @@ WARNING: EXPERIMENTAL, needs more testing
 4. create matrix of exposure effects
 5. perform multivariable MR
 }
-

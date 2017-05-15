@@ -17,4 +17,3 @@ Data frame
 \description{
 See \code{format_data}
 }
-

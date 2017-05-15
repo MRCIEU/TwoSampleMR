@@ -15,4 +15,3 @@ List of plots
 \description{
 Plot results from leaveoneout analysis
 }
-
