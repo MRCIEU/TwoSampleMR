@@ -326,6 +326,99 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 
 
 
+#' Run rucker with jackknife estimates
+#'
+#' @param dat Output from harmonise_data
+#' @param parameters=default_parameters()
+#'
+#' @export
+#' @return List
+mr_rucker_jackknife <- function(dat, parameters=default_parameters())
+{
+	requireNamespace("ggplot2", quietly=TRUE)
+
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
+
+	nboot <- parameters$nboot
+	nsnp <- nrow(dat)
+	Qthresh <- parameters$Qthresh
+
+	# Main result
+	rucker <- mr_rucker(dat, parameters)
+	l <- list()
+	for(i in 1:nboot)
+	{
+		# dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
+		# dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
+		dat2 <- dat[sample(1:nrow(dat), nrow(dat), replace=TRUE), ]
+		l[[i]] <- mr_rucker(dat2, parameters)
+	}
+
+	modsel <- plyr::rbind.fill(lapply(l, function(x) x$selected))
+	modsel$model <- sapply(l, function(x) x$res)
+
+	bootstrap <- data.frame(
+		Q = c(rucker$Q$Q[1], sapply(l, function(x) x$Q$Q[1])),
+		Qdash = c(rucker$Q$Q[2], sapply(l, function(x) x$Q$Q[2])),
+		model = c(rucker$res, sapply(l, function(x) x$res)),
+		i = c("Full", rep("Jackknife", nboot))
+	)
+
+	# Get the median estimate
+	rucker_point <- rucker$selected
+	rucker_point$Method <- "Rucker point estimate"
+
+	rucker_median <- data.frame(
+		Method = "Rucker median (JK)",
+		nsnp = nsnp,
+		Estimate = median(modsel$Estimate),
+		SE = mad(modsel$Estimate),
+		CI_low = quantile(modsel$Estimate, 0.025),
+		CI_upp = quantile(modsel$Estimate, 0.975)
+	)
+	rucker_median$P <- 2 * pt(abs(rucker_median$Estimate/rucker_median$SE), nsnp-1, lower.tail=FALSE)
+
+	rucker_mean <- data.frame(
+		Method = "Rucker mean (JK)",
+		nsnp = nsnp,
+		Estimate = mean(modsel$Estimate),
+		SE = sd(modsel$Estimate)
+	)
+	rucker_mean$CI_low <- rucker_mean$Estimate - qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
+	rucker_mean$CI_upp <- rucker_mean$Estimate + qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
+	rucker_mean$P <- 2 * pt(abs(rucker_mean$Estimate/rucker_mean$SE), nsnp-1, lower.tail=FALSE)
+
+
+	res <- rbind(rucker$rucker, rucker_point, rucker_mean, rucker_median)
+	rownames(res) <- NULL
+
+	p1 <- ggplot2::ggplot(bootstrap, ggplot2::aes_string(x="Q", y="Qdash")) +
+		ggplot2::geom_point(ggplot2::aes_string(colour="model")) +
+		ggplot2::geom_point(data=subset(bootstrap, i=="Full")) +
+		ggplot2::scale_colour_brewer(type="qual") +
+		ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
+		ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
+		ggplot2::geom_abline(slope=1, colour="grey") +
+		ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, low=FALSE), linetype="dotted") +
+		ggplot2::geom_hline(yintercept = qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
+		ggplot2::geom_vline(xintercept = qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
+		ggplot2::labs(x="Q", y="Q'")
+
+	modsel$model_name <- "IVW"
+	modsel$model_name[modsel$model %in% c("C", "D")] <- "Egger"
+
+	p2 <- ggplot2::ggplot(modsel, ggplot2::aes_string(x="Estimate")) +
+		ggplot2::geom_density(ggplot2::aes_string(fill="model_name"), alpha=0.4) +
+		ggplot2::geom_vline(data=res, ggplot2::aes_string(xintercept="Estimate", colour="Method")) +
+		ggplot2::scale_colour_brewer(type="qual") +
+		ggplot2::scale_fill_brewer(type="qual") + 
+		ggplot2::labs(fill="Bootstrap estimates", colour="")
+
+	return(list(rucker=rucker, res=res, bootstrap_estimates=modsel, boostrap_q=bootstrap, q_plot=p1, e_plot=p2))
+}
+
+
+
 #' MR Rucker with outliers automatically detected and removed
 #'
 #' Uses Cook's distance D > 4/nsnp to iteratively remove outliers

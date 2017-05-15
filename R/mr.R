@@ -1197,10 +1197,11 @@ mr_mode <- function(dat, parameters=default_parameters())
 #'
 #' @param dat Output from harmonise_data
 #' @param parameters=default_parameters()
+#' @param methods Named methods to use. Options are "rucker", "rucker jackknife", "rucker bootstrap", "rucker cooksdistance", "mode", "median"
 #'
 #' @export
 #' @return Data frame
-mr_all <- function(dat, parameters=default_parameters())
+run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackknife", "mode", "median"))
 {
 	dat <- subset(dat, mr_keep)
 	res <- dplyr::group_by(dat, exposure, outcome) %>%
@@ -1240,18 +1241,29 @@ mr_all <- function(dat, parameters=default_parameters())
 				)
 				return(out)
 			} else {
-				mrrucker <- mr_rucker(x, parameters)
-				mrruckercd <- mr_rucker_cooksdistance(x, parameters)
-				mrmode <- mr_mode(x, parameters)
-				mrmedian <- mr_median(x, parameters)
-				out <- suppressWarnings(dplyr::bind_rows(
-					mrrucker$rucker,
-					mrrucker$selected, 
-					mrruckercd$rucker,
-					mrruckercd$selected,
-					mrmode, 
-					mrmedian
-				))
+				l <- list()
+				i <- 1
+				if("rucker" %in% methods & !"rucker jackknife" %in% methods)
+				{
+					l[[i]] <- mr_rucker(x, parameters)$results
+					i <- i + 1
+				}
+				if("rucker jackknife" %in% methods)
+				{
+					l[[i]] <- mr_rucker_jackknife(x, parameters)$res
+					i <- i + 1
+				}
+				if("median" %in% methods)
+				{
+					l[[i]] <- mr_mode(x, parameters)
+					i <- i + 1
+				}
+				if("mode" %in% methods)
+				{
+					l[[i]] <- mr_median(x, parameters)
+					i <- i + 1
+				}
+				out <- suppressWarnings(dplyr::bind_rows(l))
 				out$exposure <- x$exposure[1]
 				out$outcome <- x$outcome[1]
 				out$id.exposure <- x$id.exposure[1]
