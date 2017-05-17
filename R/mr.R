@@ -1280,12 +1280,17 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 						i <- i + 1
 					}
 				}
-				out <- suppressWarnings(dplyr::bind_rows(l))
-				out$exposure <- x$exposure[1]
-				out$outcome <- x$outcome[1]
-				out$id.exposure <- x$id.exposure[1]
-				out$id.outcome <- x$id.outcome[1]
-				return(out)
+				if(length(l) > 0)
+				{
+					out <- suppressWarnings(dplyr::bind_rows(l))
+					out$exposure <- x$exposure[1]
+					out$outcome <- x$outcome[1]
+					out$id.exposure <- x$id.exposure[1]
+					out$id.outcome <- x$id.outcome[1]
+					return(out)
+				} else {
+					return(NULL)
+				}
 			}
 		})
 
