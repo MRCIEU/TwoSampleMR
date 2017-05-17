@@ -1207,6 +1207,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 	res <- dplyr::group_by(dat, exposure, outcome) %>%
 		do({
 			x <- .
+			message(x$exposure[1], " - ", x$outcome[1])
 			if(nrow(x) == 1)
 			{
 				a <- mr_wald_ratio(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
