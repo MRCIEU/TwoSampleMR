@@ -1225,7 +1225,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 					nsnp = 1
 				)
 				return(out)
-			} else if(nrow(x) <= 3) {
+			} else if(nrow(x) <= 5) {
 				a <- mr_ivw(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
 				out <- tibble(
 					exposure = x$exposure[1],
