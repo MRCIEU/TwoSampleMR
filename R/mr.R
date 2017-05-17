@@ -1245,23 +1245,39 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 				i <- 1
 				if("rucker" %in% methods & !"rucker jackknife" %in% methods)
 				{
-					l[[i]] <- mr_rucker(x, parameters)$results
-					i <- i + 1
+					temp <- try(mr_rucker(x, parameters)$results)
+					if(class(temp) != "try-error")
+					{
+						l[[i]] <- temp
+						i <- i + 1
+					}
 				}
 				if("rucker jackknife" %in% methods)
 				{
-					l[[i]] <- mr_rucker_jackknife(x, parameters)$res
-					i <- i + 1
+					temp <- try(mr_rucker_jackknife(x, parameters)$res)
+					if(class(temp) != "try-error")
+					{
+						l[[i]] <- temp
+						i <- i + 1
+					}
 				}
 				if("median" %in% methods)
 				{
-					l[[i]] <- mr_mode(x, parameters)
-					i <- i + 1
+					temp <- try(mr_mode(x, parameters))
+					if(class(temp) != "try-error")
+					{
+						l[[i]] <- temp
+						i <- i + 1
+					}
 				}
 				if("mode" %in% methods)
 				{
-					l[[i]] <- mr_median(x, parameters)
-					i <- i + 1
+					temp <- try(mr_median(x, parameters))
+					if(class(temp) != "try-error")
+					{
+						l[[i]] <- temp
+						i <- i + 1
+					}
 				}
 				out <- suppressWarnings(dplyr::bind_rows(l))
 				out$exposure <- x$exposure[1]
