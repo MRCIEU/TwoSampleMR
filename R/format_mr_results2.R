@@ -107,32 +107,32 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 	names(Het)[names(Het)=="method"]<-"Method"
 	names(Res_single)[names(Res_single)=="method"]<-"Method"
 
-	ResHet<-merge(Res,Het,by=c("id.outcome","Method"),all.x=T)
-	ResSNP<-plyr::rbind.fill(ResHet,Res_single)
+	Res<-merge(Res,Het,by=c("id.outcome","Method"),all.x=T)
+	Res<-plyr::rbind.fill(Res,Res_single)
 
 	if(ao_slc)
 	{
 		ao<-available_outcomes()
 		names(ao)[names(ao)=="nsnp" ]<-"nsnps.outcome.array"
-		ResAo<-merge(ResSNP,ao[,!names(ao) %in% c("unit","priority","sd","path","note","filename","access","mr")],by.x="id.outcome",by.y="id")
+		Res<-merge(Res,ao[,!names(ao) %in% c("unit","priority","sd","path","note","filename","access","mr")],by.x="id.outcome",by.y="id")
 	}
 
-	ResAo$nsnp[is.na(ResAo$nsnp)]<-1
+	Res$nsnp[is.na(Res$nsnp)]<-1
 
-	for(i in unique(ResAo$id.outcome))
+	for(i in unique(Res$id.outcome))
 	{
-		Methods<-unique(ResAo$method[ResAo$id.outcome==i])
+		Methods<-unique(Res$method[Res$id.outcome==i])
 		Methods<-Methods[Methods!="Wald ratio"]
 		for(j in unique(Methods))
 		{
-			ResAo$snp[ResAo$id.outcome == i & ResAo$method==j]<-paste(ResAo$snp[ResAo$id.outcome == i & ResAo$method=="Wald ratio"],collapse="; ")
+			Res$snp[Res$id.outcome == i & Res$method==j]<-paste(Res$snp[Res$id.outcome == i & Res$method=="Wald ratio"],collapse="; ")
 		}
 	}
 
 	if(Exp){
-		ResAo$or<-exp(ResAo$b)
-		ResAo$or_lci95<-exp(ResAo$b-ResAo$se*1.96)
-		ResAo$or_uci95<-exp(ResAo$b+ResAo$se*1.96)
+		Res$or<-exp(Res$b)
+		Res$or_lci95<-exp(Res$b-Res$se*1.96)
+		Res$or_uci95<-exp(Res$b+Res$se*1.96)
 	}
 
 	# add intercept test from MR Egger
@@ -143,10 +143,10 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 	names(Pleiotropy)[names(Pleiotropy)=="pval"]<-"intercept_pval"
 
 
-	ResEgg<-merge(ResAo,Pleiotropy,by=c("id.outcome","Method"),all.x=T)
+	Res<-merge(Res,Pleiotropy,by=c("id.outcome","Method"),all.x=T)
 
 	# names(ResSNP)<-tolower(names(ResSNP))
-	return(ResEgg)
+	return(Res)
 }
 
 
