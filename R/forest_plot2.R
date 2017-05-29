@@ -15,10 +15,11 @@
 #' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
 #' @param ao_slc Logical; retrieve sample size and subcategory using available_outcomes(). If set to FALSE mr_res must contain the following additional columns: subcategory and sample_size. 
+#' @param priority Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"
 #'
 #' @export
 #' @return data frame.
-format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", ao_slc=T)
+format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", ao_slc=T, priority="Cardiometabolic")
 {
 
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -131,13 +132,21 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 
 	dat <- dat[order(dat$outcome), ]
 
-	temp1 <- subset(dat, category=="Cardiometabolic")
-	temp2 <- subset(dat, category=="Other")
-	dat <- rbind(
-		subset(dat, category=="Cardiometabolic"), 
-		subset(dat, !category %in% c("Cardiometabolic","Other")),
-		subset(dat, category=="Other")
-	)
+	stopifnot(length(priority) == 1)
+
+	if(priority %in% dat$category)
+	{
+
+		temp1 <- subset(dat, category==priority)
+		temp2 <- subset(dat, category=="Other")
+		dat <- rbind(
+			subset(dat, category==priority), 
+			subset(dat, !category %in% c(priority,"Other")),
+			subset(dat, category=="Other")
+		)
+
+	}
+
 
 	return(dat)
 }
