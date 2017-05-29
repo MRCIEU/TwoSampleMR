@@ -444,10 +444,11 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 #' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL
 #' @param trans Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"
 #' @param ao_slc retrive sample size and subcategory from available_outcomes(). If set to FALSE then mr_res must contain the following additional columns: sample_size and subcategory. The default behaviour is to use available_outcomes() to retrieve sample size and subcategory
+#' @param priority Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"
 #'
 #' @export
 #' @return grid plot object
-forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, in_columns=FALSE, threshold=NULL, xlab="", xlim=NULL, trans="identity",ao_slc=T)
+forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, in_columns=FALSE, threshold=NULL, xlab="", xlim=NULL, trans="identity",ao_slc=T, priority="Cardiometabolic")
 {
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
@@ -459,7 +460,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		single_snp_method=single_snp_method,
 		multi_snp_method=multi_snp_method,
 		# group_single_categories=group_single_categories,
-		ao_slc=ao_slc
+		ao_slc=ao_slc,
+		priority=priority
 	)
 	if(group_single_categories)
 	{
