@@ -20,3 +20,4 @@ data frame.
 \description{
 This function takes MR results from mr() and restricts to a single method per exposure x disease combination
 }
+

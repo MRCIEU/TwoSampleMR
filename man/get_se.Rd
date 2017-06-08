@@ -17,3 +17,4 @@ array
 \description{
 Get SE from effect size and pval
 }
+

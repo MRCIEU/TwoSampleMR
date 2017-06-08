@@ -23,3 +23,4 @@ Convert outcome format to exposure format
 
 Helper function to convert results from extract_outcome_data to exposure_dat format
 }
+
