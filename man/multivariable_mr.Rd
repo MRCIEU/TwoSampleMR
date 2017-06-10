@@ -4,7 +4,7 @@
 \alias{multivariable_mr}
 \title{Perform multivariable MR}
 \usage{
-multivariable_mr(id_exposure, id_outcome)
+multivariable_mr(id_exposure, id_outcome, harmonise_strictness = 2)
 }
 \arguments{
 \item{id_exposure}{Array of ids from \code{available_outcomes}}
@@ -22,3 +22,4 @@ WARNING: EXPERIMENTAL, needs more testing
 4. create matrix of exposure effects
 5. perform multivariable MR
 }
+

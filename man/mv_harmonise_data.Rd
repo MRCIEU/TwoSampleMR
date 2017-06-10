@@ -4,7 +4,7 @@
 \alias{mv_harmonise_data}
 \title{Harmonise exposure and outcome for multivariable MR}
 \usage{
-mv_harmonise_data(exposure_dat, outcome_dat)
+mv_harmonise_data(exposure_dat, outcome_dat, harmonise_strictness = 2)
 }
 \arguments{
 \item{exposure_dat}{Output from \code{mv_extract_exposures}}

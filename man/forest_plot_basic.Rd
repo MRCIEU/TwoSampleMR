@@ -33,3 +33,4 @@ This function is used to create a basic forest plot.
 It requires the output from format_mr_results().
 It is
 }
+
