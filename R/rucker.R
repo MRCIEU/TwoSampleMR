@@ -226,7 +226,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 		cd <- cooks.distance(lmod_egger)
 	}
 
-	return(list(rucker=results, intercept=intercept, Q=Q, res=res, selected=selected, cooksdistance=cd))
+	return(list(rucker=results, intercept=intercept, Q=Q, res=res, selected=selected, cooksdistance=cd, lmod_ivw=lmod_ivw, lmod_egger=lmod_egger))
 }
 
 
