@@ -1204,95 +1204,140 @@ mr_mode <- function(dat, parameters=default_parameters())
 run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackknife", "mode", "median"))
 {
 	dat <- subset(dat, mr_keep)
-	res <- dplyr::group_by(dat, exposure, outcome) %>%
-		do({
-			x <- .
-			message(x$exposure[1], " - ", x$outcome[1])
-			if(nrow(x) == 1)
+	d <- subset(dat, !duplicated(paste(exposure, outcome)), select=c(exposure, outcome))
+	res <- list()
+	for(j in 1:nrow(d))
+	{
+		res[[j]] <- list()
+		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
+		x <- dplyr::select(x, SNP, a1=effect_allele.exposure, a2=other_allele.exposure, beta.exposure, se.exposure, pval.exposure, beta.outcome, se.outcome, pval.outcome, samplesize.exposure, samplesize.outcome)
+		message(x$exposure[1], " - ", x$outcome[1])
+		res[[j]]$exposure <- x$exposure[1]
+		res[[j]]$outcome <- x$outcome[1]
+		res[[j]]$id.exposure <- x$id.exposure[1]
+		res[[j]]$id.outcome <- x$id.outcome[1]
+
+		if(nrow(x) == 1)
+		{
+			a <- mr_wald_ratio(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
+			out <- tibble(
+				# exposure = x$exposure[1],
+				# outcome = x$outcome[1],
+				# id.exposure = x$id.exposure[1],
+				# id.outcome = x$id.outcome[1],
+				Method = "Wald ratio",
+				Estimate = a$b,
+				SE = a$se,
+				CI_low = a$b - 1.96 * a$se,
+				CI_upp = a$b + 1.96 * a$se,
+				P = a$pval,
+				nsnp = 1
+			)
+			res[[j]]$out <- out
+		} else if(nrow(x) <= 3) {
+			a <- mr_ivw(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
+			out <- tibble(
+				# exposure = x$exposure[1],
+				# outcome = x$outcome[1],
+				# id.exposure = x$id.exposure[1],
+				# id.outcome = x$id.outcome[1],
+				Method = "IVW fixed effects",
+				Estimate = a$b,
+				SE = a$se,
+				CI_low = a$b - 1.96 * a$se,
+				CI_upp = a$b + 1.96 * a$se,
+				P = a$pval,
+				nsnp = nrow(x)
+			)
+			res[[j]]$out <- out
+		} else {
+			l <- list()
+			r <- list()
+			p <- list()
+			i <- 1
+			if("rucker" %in% methods & !"rucker jackknife" %in% methods & FALSE)
 			{
-				a <- mr_wald_ratio(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
-				out <- tibble(
-					exposure = x$exposure[1],
-					outcome = x$outcome[1],
-					id.exposure = x$id.exposure[1],
-					id.outcome = x$id.outcome[1],
-					Method = "Wald ratio",
-					Estimate = a$b,
-					SE = a$se,
-					CI_low = a$b - 1.96 * a$se,
-					CI_upp = a$b + 1.96 * a$se,
-					P = a$pval,
-					nsnp = 1
-				)
-				return(out)
-			} else if(nrow(x) <= 5) {
-				a <- mr_ivw(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
-				out <- tibble(
-					exposure = x$exposure[1],
-					outcome = x$outcome[1],
-					id.exposure = x$id.exposure[1],
-					id.outcome = x$id.outcome[1],
-					Method = "IVW fixed effects",
-					Estimate = a$b,
-					SE = a$se,
-					CI_low = a$b - 1.96 * a$se,
-					CI_upp = a$b + 1.96 * a$se,
-					P = a$pval,
-					nsnp = nrow(x)
-				)
-				return(out)
-			} else {
-				l <- list()
-				i <- 1
-				if("rucker" %in% methods & !"rucker jackknife" %in% methods)
+				message("r")
+				temp <- try(mr_rucker(x, parameters)$results)
+				if(class(temp) != "try-error")
 				{
-					temp <- try(mr_rucker(x, parameters)$results)
-					if(class(temp) != "try-error")
-					{
-						l[[i]] <- temp
-						i <- i + 1
-					}
-				}
-				if("rucker jackknife" %in% methods)
-				{
-					temp <- try(mr_rucker_jackknife(x, parameters)$res)
-					if(class(temp) != "try-error")
-					{
-						l[[i]] <- temp
-						i <- i + 1
-					}
-				}
-				if("median" %in% methods)
-				{
-					temp <- try(mr_mode(x, parameters))
-					if(class(temp) != "try-error")
-					{
-						l[[i]] <- temp
-						i <- i + 1
-					}
-				}
-				if("mode" %in% methods)
-				{
-					temp <- try(mr_median(x, parameters))
-					if(class(temp) != "try-error")
-					{
-						l[[i]] <- temp
-						i <- i + 1
-					}
-				}
-				if(length(l) > 0)
-				{
-					out <- suppressWarnings(dplyr::bind_rows(l))
-					out$exposure <- x$exposure[1]
-					out$outcome <- x$outcome[1]
-					out$id.exposure <- x$id.exposure[1]
-					out$id.outcome <- x$id.outcome[1]
-					return(out)
-				} else {
-					return(NULL)
+					l[[i]] <- temp
+					i <- i + 1
 				}
 			}
-		})
+			if("rucker jackknife" %in% methods | TRUE)
+			{
+				message("rj")
+				temp <- try(mr_rucker_jackknife(x, parameters))
+				if(class(temp) != "try-error")
+				{
+					l[[i]] <- temp$res
+					p$rucker1 <- temp$q_plot
+					p$rucker2 <- temp$e_plot
+					r$intercept <- temp$rucker$intercept
+					r$Q <- temp$Q
+					i <- i + 1
+				}
+			}
+			if("median" %in% methods | TRUE)
+			{
+				message("med")
+				temp <- try(mr_mode(x, parameters))
+				if(class(temp) != "try-error")
+				{
+					l[[i]] <- temp
+					i <- i + 1
+				}
+			}
+			if("mode" %in% methods | TRUE)
+			{
+				message("mod")
+				temp <- try(mr_median(x, parameters))
+				if(class(temp) != "try-error")
+				{
+					l[[i]] <- temp
+					i <- i + 1
+				}
+			}
+			if(length(l) > 0)
+			{
+				out <- suppressWarnings(dplyr::bind_rows(l))
+				# out$exposure <- x$exposure[1]
+				# out$outcome <- x$outcome[1]
+				# out$id.exposure <- x$id.exposure[1]
+				# out$id.outcome <- x$id.outcome[1]
+
+				ind <- sign(x$beta.exposure) == -1
+				x$beta.exposure <- abs(x$beta.exposure)
+				x$beta.outcome[ind] <- x$beta.outcome[ind] * -1
+
+				temp <- left_join(out, dplyr::select(r$intercept, Method=Method, intercept=Estimate), by="Method")
+				temp$intercept[is.na(temp$intercept)] <- 0
+
+				temp <- subset(temp, Method %in% c("IVW random effects", "Egger random effects", "Weighted mode", "Weighted median"))
+
+				p$sc <- ggplot(x, aes(x=beta.exposure, y=beta.outcome)) +
+				geom_errorbar(aes(ymin=beta.outcome-se.outcome * 1.96, ymax=beta.outcome+se.outcome * 1.96), width=0, colour="grey") +
+				geom_errorbarh(aes(xmin=beta.exposure-se.exposure * 1.96, xmax=beta.exposure+se.exposure * 1.96), width=0, colour="grey") +
+				geom_point() +
+				geom_abline(data=temp, aes(slope=Estimate, intercept=intercept, colour=Method)) +
+				scale_colour_brewer(type="qual") +
+				labs(x=res[[j]]$exposure, y=res[[j]]$outcome)
+
+				res[[j]]$out <- out
+				res[[j]]$r <- r
+				res[[j]]$p <- p
+			}
+		}
+		res[[j]]$isq <- Isq(x$beta.exposure, x$se.exposure)
+		res[[j]]$dat <- as_data_frame(x)
+
+	}
+
+	# temp <- res
+
+
+	# ggplot(dat, aes(x=))
 
 	return(res)
 }
