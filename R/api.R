@@ -7,13 +7,14 @@
 #' @return NULL
 toggle_dev <- function(where="local")
 {
-	stopifnot(where %in% c("local", "release", "test"))
+	stopifnot(where %in% c("local", "release", "test", "jojo"))
 	release <- "http://api.mrbase.org/"
 
 	url <- switch(where,
 		local = "http://localhost/",
 		test = "http://apitest.mrbase.org/",
-		release = "http://api.mrbase.org/"
+		release = "http://api.mrbase.org/",
+		jojo = "http://jojo.epi.bris.ac.uk:8019/"
 	)
 
 	options(mrbaseapi=url)
@@ -178,6 +179,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			"&maf_threshold=", maf_threshold
 		)
 		d <- fromJSON_safe(url)
+		if(!is.data.frame(d)) d <- data.frame()
 
 	} else if(length(snps) > length(outcomes)) {
 
@@ -255,8 +257,12 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 		return(NULL)
 	}
 	d <- format_d(d)
-	d$data_source.outcome <- "mrbase"
-	return(d)
+	if (nrow(d)>0){
+		d$data_source.outcome <- "mrbase"
+		return(d)
+	} else {
+		return(NULL)
+	}
 }
 
 

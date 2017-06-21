@@ -129,3 +129,37 @@ get_snp_positions_biomart <- function(dat)
 	return(dat)
 }
 
+
+#' Get LD matrix for list of SNPs
+#'
+#' @param snps List of SNPs
+#'
+#' @export
+#' @return Matrix of LD r values
+ld_matrix <- function(snps)
+{
+
+	if(length(snps) > 500)
+	{
+		stop("SNP list must be smaller than 500")
+	}
+
+	snpfile <- upload_file_to_api(data.frame(SNP=snps), header=FALSE)
+	url <- paste0(options()$mrbaseapi, "ld?snpfile=", snpfile)
+	res <- fromJSON_safe(url)
+	if(all(is.na(res))) stop("None of the requested SNPs were found")
+	snps2 <- res[1,]
+	res <- res[-1,, drop=FALSE]
+	res <- matrix(as.numeric(res), nrow(res), ncol(res))
+	rownames(res) <- snps2
+	colnames(res) <- snps2
+	missing <- snps[!snps %in% snps2]
+	if(length(missing) > 0)
+	{
+		warning("The following SNPs are not present in the LD reference panel\n", paste(missing, collapse="\n"))
+	}
+	ord <- match(snps2, snps)
+	res <- res[order(ord), order(ord)]
+	return(res)
+}
+

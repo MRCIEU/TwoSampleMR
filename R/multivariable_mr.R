@@ -73,7 +73,7 @@
 #'
 #' @export
 #' @return List of results table, exposure effects and outcome effects
-multivariable_mr <- function(id_exposure, id_outcome)
+multivariable_mr <- function(id_exposure, id_outcome, harmonise_strictness=2)
 {
 	require(reshape2)
 	message("Warning: This analysis is still experimental")
@@ -96,7 +96,7 @@ multivariable_mr <- function(id_exposure, id_outcome)
 	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
 
 	# Harmonise against the first id
-	d <- harmonise_data(d1, d2)
+	d <- harmonise_data(d1, d2, action=harmonise_strictness)
 
 	# Only keep SNPs that are present in all
 	tab <- table(d$SNP)
@@ -113,7 +113,7 @@ multivariable_mr <- function(id_exposure, id_outcome)
 
 	# Get outcome data
 	outcome_dat <- extract_outcome_data(keepsnps, id_outcome)
-	dat <- harmonise_data(d1, outcome_dat)
+	dat <- harmonise_data(d1, outcome_dat, action=harmonise_strictness)
 	exposure_mat <- subset(exposure_mat, SNP %in% dat$SNP)
 	dat$SNP <- as.character(dat$SNP)
 	exposure_mat$SNP <- as.character(exposure_mat$SNP)
@@ -182,7 +182,7 @@ convert_outcome_to_exposure <- function(outcome_dat)
 #'
 #' @export
 #' @return data frame in exposure_dat format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.01, clump_kb=10000)
+mv_extract_exposures <- function(id_exposure, clump_r2=0.01, clump_kb=10000, harmonise_strictness=2)
 {
 	require(reshape2)
 	message("Warning: This analysis is still experimental")
@@ -204,7 +204,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.01, clump_kb=10000)
 	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
 
 	# Harmonise against the first id
-	d <- harmonise_data(d1, d2)
+	d <- harmonise_data(d1, d2, action=harmonise_strictness)
 
 	# Only keep SNPs that are present in all
 	tab <- table(d$SNP)
@@ -228,7 +228,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.01, clump_kb=10000)
 #'
 #' @export
 #' @return List of vectors and matrices required for mv analysis. exposure_beta is a matrix of beta coefficients, rows correspond to SNPs and columns correspond to exposures. exposure_pval is the same as exposure_beta, but for p-values. exposure_se is the same as exposure_beta, but for standard errors. outcome_beta is an array of effects for the outcome, corresponding to the SNPs in exposure_beta. outcome_se and outcome_pval are as in outcome_beta.
-mv_harmonise_data <- function(exposure_dat, outcome_dat)
+mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 {
 
 	stopifnot(all(c("SNP", "exposure", "effect_allele.exposure", "beta.exposure", "se.exposure", "pval.exposure") %in% names(exposure_dat)))
@@ -243,7 +243,7 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat)
 
 
 	# Get outcome data
-	dat <- harmonise_data(subset(exposure_dat, exposure == exposure_dat$exposure[1]), outcome_dat)
+	dat <- harmonise_data(subset(exposure_dat, exposure == exposure_dat$exposure[1]), outcome_dat, action=harmonise_strictness)
 	dat <- subset(dat, mr_keep)
 	dat$SNP <- as.character(dat$SNP)
 
