@@ -4,8 +4,8 @@
 \alias{run_mr}
 \title{Perform Rucker, Median and Mode}
 \usage{
-run_mr(dat, parameters = default_parameters(), methods = c("rucker",
-  "rucker jackknife", "mode", "median"))
+run_mr(dat, parameters = default_parameters(),
+  methods = c("rucker jackknife", "mode", "median"))
 }
 \arguments{
 \item{dat}{Output from harmonise_data}
