@@ -1201,10 +1201,10 @@ mr_mode <- function(dat, parameters=default_parameters())
 #'
 #' @export
 #' @return Data frame
-run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackknife", "mode", "median"))
+run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackknife", "mode", "median"), plots=FALSE)
 {
 	dat <- subset(dat, mr_keep)
-	d <- subset(dat, !duplicated(paste(exposure, outcome)), select=c(exposure, outcome))
+	d <- subset(dat, !duplicated(paste(exposure, outcome)), select=c(exposure, outcome, id.exposure, id.outcome))
 	res <- list()
 	for(j in 1:nrow(d))
 	{
@@ -1316,26 +1316,28 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 
 				temp <- subset(temp, Method %in% c("IVW random effects", "Egger random effects", "Weighted mode", "Weighted median"))
 
-				p$sc <- ggplot(x, aes(x=beta.exposure, y=beta.outcome)) +
-				geom_errorbar(aes(ymin=beta.outcome-se.outcome * 1.96, ymax=beta.outcome+se.outcome * 1.96), width=0, colour="grey") +
-				geom_errorbarh(aes(xmin=beta.exposure-se.exposure * 1.96, xmax=beta.exposure+se.exposure * 1.96), height=0, colour="grey") +
-				geom_point() +
-				geom_abline(data=temp, aes(slope=Estimate, intercept=intercept, colour=Method)) +
-				scale_colour_brewer(type="qual") +
-				labs(x=res[[j]]$exposure, y=res[[j]]$outcome)
 
 				res[[j]]$out <- out
 				res[[j]]$r <- r
-				res[[j]]$p <- p
+				if(plots)
+				{
+					p$sc <- ggplot(x, aes(x=beta.exposure, y=beta.outcome)) +
+						geom_errorbar(aes(ymin=beta.outcome-se.outcome * 1.96, ymax=beta.outcome+se.outcome * 1.96), width=0, colour="grey") +
+						geom_errorbarh(aes(xmin=beta.exposure-se.exposure * 1.96, xmax=beta.exposure+se.exposure * 1.96), height=0, colour="grey") +
+						geom_point() +
+						geom_abline(data=temp, aes(slope=Estimate, intercept=intercept, colour=Method)) +
+						scale_colour_brewer(type="qual") +
+						labs(x=res[[j]]$exposure, y=res[[j]]$outcome)
+					res[[j]]$p <- p
+				}
 			}
 		}
 		res[[j]]$isq <- Isq(x$beta.exposure, x$se.exposure)
 		res[[j]]$dat <- as_data_frame(x)
-
 	}
 
 	# temp <- res
-
+	attributes(res) <- d
 
 	# ggplot(dat, aes(x=))
 
