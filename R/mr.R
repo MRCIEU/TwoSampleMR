@@ -1257,7 +1257,6 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 			i <- 1
 			if("rucker" %in% methods & !"rucker jackknife" %in% methods & FALSE)
 			{
-				print(temp)
 				message("r")
 				temp <- try(mr_rucker(x, parameters)$results)
 				if(class(temp) != "try-error")
