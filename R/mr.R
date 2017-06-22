@@ -1210,8 +1210,8 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 	{
 		res[[j]] <- list()
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
-		x <- dplyr::select(x, SNP, a1=effect_allele.exposure, a2=other_allele.exposure, beta.exposure, se.exposure, pval.exposure, beta.outcome, se.outcome, pval.outcome, samplesize.exposure, samplesize.outcome)
 		message(x$exposure[1], " - ", x$outcome[1])
+		x <- dplyr::select(x, SNP, a1=effect_allele.exposure, a2=other_allele.exposure, beta.exposure, se.exposure, pval.exposure, beta.outcome, se.outcome, pval.outcome, samplesize.exposure, samplesize.outcome)
 		res[[j]]$exposure <- x$exposure[1]
 		res[[j]]$outcome <- x$outcome[1]
 		res[[j]]$id.exposure <- x$id.exposure[1]
@@ -1257,6 +1257,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 			i <- 1
 			if("rucker" %in% methods & !"rucker jackknife" %in% methods & FALSE)
 			{
+				print(temp)
 				message("r")
 				temp <- try(mr_rucker(x, parameters)$results)
 				if(class(temp) != "try-error")
@@ -1318,7 +1319,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 
 				p$sc <- ggplot(x, aes(x=beta.exposure, y=beta.outcome)) +
 				geom_errorbar(aes(ymin=beta.outcome-se.outcome * 1.96, ymax=beta.outcome+se.outcome * 1.96), width=0, colour="grey") +
-				geom_errorbarh(aes(xmin=beta.exposure-se.exposure * 1.96, xmax=beta.exposure+se.exposure * 1.96), width=0, colour="grey") +
+				geom_errorbarh(aes(xmin=beta.exposure-se.exposure * 1.96, xmax=beta.exposure+se.exposure * 1.96), height=0, colour="grey") +
 				geom_point() +
 				geom_abline(data=temp, aes(slope=Estimate, intercept=intercept, colour=Method)) +
 				scale_colour_brewer(type="qual") +

@@ -343,8 +343,19 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	nsnp <- nrow(dat)
 	Qthresh <- parameters$Qthresh
 
+
 	# Main result
 	rucker <- mr_rucker(dat, parameters)
+	rucker_point <- rucker$selected
+	rucker_point$Method <- "Rucker point estimate"
+
+
+	if(nrow(dat) < 15)
+	{
+		message("Too few SNPs for jackknife")
+
+	} else {
+
 	l <- list()
 	for(i in 1:nboot)
 	{
@@ -365,8 +376,6 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	)
 
 	# Get the median estimate
-	rucker_point <- rucker$selected
-	rucker_point$Method <- "Rucker point estimate"
 
 	rucker_median <- data.frame(
 		Method = "Rucker median (JK)",
@@ -387,6 +396,8 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	rucker_mean$CI_low <- rucker_mean$Estimate - qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
 	rucker_mean$CI_upp <- rucker_mean$Estimate + qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
 	rucker_mean$P <- 2 * pt(abs(rucker_mean$Estimate/rucker_mean$SE), nsnp-1, lower.tail=FALSE)
+
+	}
 
 
 	res <- rbind(rucker$rucker, rucker_point, rucker_mean, rucker_median)
