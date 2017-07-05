@@ -129,6 +129,36 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 }
 
 
+extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+{
+	outcomes <- unique(outcomes)
+	snps <- unique(snps)
+	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token)
+
+
+	if(proxies)
+	{
+
+		for(i in 1:length(outcomes))
+		{
+			missedsnps <- snps[!snps %in% subset(firstpass, id.outcome == outcomes[i])$SNP]
+			if(length(missedsnps)>0)
+			{
+				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
+				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token)
+				if(!is.null(temp))
+				{
+					firstpass <- plyr::rbind.fill(firstpass, temp)
+				}
+			}
+		}
+
+	}
+
+	return(firstpass)
+}
+
+
 
 # Extract summary statistics from MySQL db through API given a list of SNPs and outcomes
 #'
@@ -145,7 +175,7 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
@@ -253,7 +283,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	}
 	if(is.null(nrow(d)) | nrow(d) == 0)
 	{
-		message("None of the requested SNPs were available in the specified GWASs.")
+		# message("None of the requested SNPs were available in the specified GWASs.")
 		return(NULL)
 	}
 	d <- format_d(d)
@@ -263,39 +293,6 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	} else {
 		return(NULL)
 	}
-}
-
-
-
-extract_outcome_data_simple <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
-{
-	snps <- unique(snps)
-	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
-	outcomes <- unique(outcomes)
-
-	snpfile <- upload_file_to_api(snps)
-	outcomefile <- upload_file_to_api(outcomes)
-
-	url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-		"access_token=", access_token, 
-		"&outcomefile=", outcomefile, 
-		"&snpfile=", snpfile,
-		"&proxies=", proxies,
-		"&rsq=", rsq,
-		"&align_alleles=", align_alleles,
-		"&palindromes=", palindromes,
-		"&maf_threshold=", maf_threshold
-	)
-	d <- fromJSON_safe(url)
-
-	if(length(d) == 0)
-	{
-		message("None of the requested SNPs were available in the specified GWASs.")
-		return(NULL)
-	}
-	d <- format_d(d)
-	d$data_source.outcome <- "mrbase"
-	return(d)
 }
 
 
