@@ -48,6 +48,8 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 
 
 	d$phenotype <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
+	d$ncase <- as.numeric(d$ncase)
+	d$ncontrol <- as.numeric(d$ncontrol)
 	d <- format_data(
 		d,
 		type="exposure",
