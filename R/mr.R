@@ -59,30 +59,30 @@ mr_method_list <- function()
 			use_by_default=TRUE,
 			heterogeneity_test=FALSE
 		),
-		list(
-			obj="mr_meta_fixed_simple",
-			name="Fixed effects meta analysis (simple SE)",
-			PubmedID="",
-			Description="",
-			use_by_default=FALSE,
-			heterogeneity_test=FALSE
-		),
-		list(
-			obj="mr_meta_fixed",
-			name="Fixed effects meta analysis (delta method)",
-			PubmedID="",
-			Description="",
-			use_by_default=FALSE,
-			heterogeneity_test=TRUE
-		),
-		list(
-			obj="mr_meta_random",
-			name="Random effects meta analysis (delta method)",
-			PubmedID="",
-			Description="",
-			use_by_default=FALSE,
-			heterogeneity_test=TRUE
-		),
+		# list(
+		# 	obj="mr_meta_fixed_simple",
+		# 	name="Fixed effects meta analysis (simple SE)",
+		# 	PubmedID="",
+		# 	Description="",
+		# 	use_by_default=FALSE,
+		# 	heterogeneity_test=FALSE
+		# ),
+		# list(
+		# 	obj="mr_meta_fixed",
+		# 	name="Fixed effects meta analysis (delta method)",
+		# 	PubmedID="",
+		# 	Description="",
+		# 	use_by_default=FALSE,
+		# 	heterogeneity_test=TRUE
+		# ),
+		# list(
+		# 	obj="mr_meta_random",
+		# 	name="Random effects meta analysis (delta method)",
+		# 	PubmedID="",
+		# 	Description="",
+		# 	use_by_default=FALSE,
+		# 	heterogeneity_test=TRUE
+		# ),
 		list(
 			obj="mr_two_sample_ml",
 			name="Maximum likelihood",
@@ -140,8 +140,32 @@ mr_method_list <- function()
 			heterogeneity_test=TRUE
 		),
 		list(
+			obj="mr_simple_mode",
+			name="Simple mode",
+			PubmedID="",
+			Description="",
+			use_by_default=TRUE,
+			heterogeneity_test=FALSE
+		),
+		list(
 			obj="mr_weighted_mode",
 			name="Weighted mode",
+			PubmedID="",
+			Description="",
+			use_by_default=TRUE,
+			heterogeneity_test=FALSE
+		),
+		list(
+			obj="mr_weighted_mode_nome",
+			name="Weighted mode (NOME)",
+			PubmedID="",
+			Description="",
+			use_by_default=TRUE,
+			heterogeneity_test=FALSE
+		),
+		list(
+			obj="mr_simple_mode_nome",
+			name="Simple mode (NOME)",
 			PubmedID="",
 			Description="",
 			use_by_default=TRUE,
@@ -661,136 +685,6 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 }
 
 
-#' MR weighted mode estimators
-#'
-#' Weighted mode estimator
-#'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
-#'
-#' @export
-#' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
-{
-	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
-	if(sum(index) < 3)
-	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
-
-	b_exp <- b_exp[index]
-	b_out <- b_out[index]
-	se_exp <- se_exp[index]
-	se_out <- se_out[index]
-
-	#--------------------------------------#
-	#Function to compute the point estimate#
-	#--------------------------------------#
-	#BetaIV.in: ratio estimates
-	#seBetaIV.in: standard errors of ratio estimates
-	beta <- function(BetaIV.in, seBetaIV.in, phi)
-	{
-		#Bandwidth rule - modified Silverman's rule proposed by Bickel (2002)
-		s <- 0.9*(min(sd(BetaIV.in), mad(BetaIV.in)))/length(BetaIV.in)^(1/5)
-
-		#Standardised weights
-		weights <- seBetaIV.in^-2/sum(seBetaIV.in^-2)
-
-		beta <- NULL
-
-		for(cur_phi in phi)
-		{
-			#Define the actual bandwidth
-			h <- s*cur_phi
-			#Compute the smoothed empirical density function
-			densityIV <- density(BetaIV.in, weights=weights, bw=h)
-			#Extract the point with the highest density as the point estimate 
-			beta[length(beta)+1] <- densityIV$x[densityIV$y==max(densityIV$y)]
-		}
-		return(beta)
-	}
-
-	#------------------------------------------#
-	#Function to estimate SEs through bootstrap#
-	#------------------------------------------#
-	#BetaIV.in: ratio estimates
-	#seBetaIV.in: standard errors of ratio estimates
-	#beta_Mode.in: point causal effect estimates
-	boot <- function(BetaIV.in, seBetaIV.in, beta_Mode.in, nboot)
-	{
-		#Set up a matrix to store the results from each bootstrap iteration
-		beta.boot <- matrix(nrow=nboot, ncol=length(beta_Mode.in))
-
-		for(i in 1:nboot) 
-		{
-			#Re-sample each ratio estimate using SEs derived not assuming NOME
-			BetaIV.boot      <- rnorm(length(BetaIV.in), mean=BetaIV.in, sd=seBetaIV.in[,1])
-			#Re-sample each ratio estimate using SEs derived under NOME
-			BetaIV.boot_NOME <- rnorm(length(BetaIV.in), mean=BetaIV.in, sd=seBetaIV.in[,2])
-
-			#Simple mode, not assuming NOME
-			beta.boot[i,1:length(phi)] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
-			#Weighted mode, not assuming NOME
-			beta.boot[i,(length(phi)+1):(2*length(phi))] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=seBetaIV.in[,1], phi=phi)
-			#Simple mode, assuming NOME
-			beta.boot[i,(2*length(phi)+1):(3*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
-			#Weighted mode, assuming NOME
-			beta.boot[i,(3*length(phi)+1):(4*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=seBetaIV.in[,2], phi=phi)
-		}
-		return(beta.boot)
-	}
-
-	# Parameters
-	phi <- parameters$phi
-	nboot <- parameters$nboot
-	alpha <- parameters$alpha
-
-	#Ratio estimates
-	BetaIV   <- b_out/b_exp
-
-	#SEs of ratio estimates
-	seBetaIV <- cbind(sqrt((se_out^2)/(b_exp^2) + ((b_out^2)*(se_exp^2))/(b_exp^4)), #SEs NOT assuming NOME
-	se_out/abs(b_exp)) #SEs ASSUMING NOME
-
-	#Point causal effect estimate using the simple mode
-	beta_SimpleMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
-
-	#Point causal effect estimate using the weighted mode (not asusming NOME)
-	beta_WeightedMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,1], phi=phi)
-
-	#Point causal effect estimate using the weighted mode (asusming NOME)
-	beta_WeightedMode_NOME <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,2], phi=phi)
-
-	#Combine all point effect estimates in a single vector
-	beta_Mode <- rep(c(beta_SimpleMode, beta_WeightedMode,
-	beta_SimpleMode, beta_WeightedMode_NOME))
-
-	#Compute SEs, confidence intervals and P-value
-	beta_Mode.boot <- boot(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV, beta_Mode.in=beta_Mode, nboot=nboot)
-	se_Mode <- apply(beta_Mode.boot, 2, mad)
-
-	CIlow_Mode <- beta_Mode-qnorm(1-alpha/2)*se_Mode
-	CIupp_Mode <- beta_Mode+qnorm(1-alpha/2)*se_Mode
-
-	P_Mode <- pt(abs(beta_Mode/se_Mode), df=length(b_exp)-1, lower.tail=F)*2
-
-	#Vector to indicate the method referring to each row
-	Method <- rep(c('Simple mode', 'Weighted mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))
-
-	#Return a data frame containing the results
-	Results <- data.frame(Method, length(b_exp), beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)
-	colnames(Results) <- c('Method', 'nsnp', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
-
-	i <- which(Method == "Weighted mode")
-
-	return(list(b = Results$Estimate[i], se = Results$SE[i], pval=Results$P[i], nsnp=length(b_exp)))
-}
-
-
 
 #' MR median estimators
 #'
@@ -863,483 +757,3 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 
 
 
-#' Leave one out sensitivity analysis
-#'
-#' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_ivw Choose which method to use
-#'
-#' @export
-#' @return List of data frames
-mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
-{
-	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
-	{
-		x <- subset(X, mr_keep)
-		nsnp <- nrow(x)
-		if(nsnp == 0)
-		{
-			x <- X[1,]
-			d <- data.frame(
-				SNP = "All",
-				b = NA,
-				se = NA,
-				p = NA,
-				samplesize = NA,
-				outcome = x$outcome[1],
-				exposure = x$exposure[1]
-			)
-			return(d)
-		}
-		if(nsnp > 2)
-		{
-			l <- lapply(1:nsnp, function(i)
-			{
-				with(x, method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i], parameters))
-			})
-			l[[nsnp+1]] <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
-			d <- data.frame(
-				SNP = c(as.character(x$SNP), "All"),
-				b = sapply(l, function(y) y$b),
-				se = sapply(l, function(y) y$se),
-				p = sapply(l, function(y) y$pval),
-				samplesize = x$samplesize.outcome[1]
-			)
-			d$outcome <- x$outcome[1]
-			d$exposure <- x$exposure[1]
-
-		} else {
-			a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
-			d <- data.frame(
-				SNP = "All",
-				b = a$b,
-				se = a$se,
-				p = a$pval,
-				samplesize = x$samplesize.outcome[1]
-			)
-			d$outcome <- x$outcome[1]
-			d$exposure <- x$exposure[1]
-		}
-		return(d)
-	})
-	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p))
-	return(res)
-}
-
-
-#' Perform 2 sample MR on each SNP individually
-#'
-#' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_two_sample_ml Function to use for MR analysis
-#'
-#' @export
-#' @return List of data frames
-mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr_wald_ratio", all_method=c("mr_ivw", "mr_egger_regression"))
-{
-	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
-	{
-		x <- subset(X, mr_keep)
-		nsnp <- nrow(x)
-		if(nsnp == 0)
-		{
-			x <- X[1,]
-			d <- data.frame(
-				SNP = "No available data",
-				b = NA,
-				se = NA,
-				p = NA,
-				samplesize = NA,
-				outcome = x$outcome[1],
-				exposure = x$exposure[1]
-			)
-			return(d)
-		}
-		l <- lapply(1:nsnp, function(i)
-		{
-			with(x, get(single_method)(beta.exposure[i], beta.outcome[i], se.exposure[i], se.outcome[i], parameters))
-		})
-		nom <- c()
-		for(i in 1:length(all_method))
-		{
-			l[[nsnp+i]] <- with(x, get(all_method[i])(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
-
-			nom <- c(nom, paste0("All - ", subset(mr_method_list(), obj==all_method[i])$name))
-		}
-
-		d <- data.frame(
-			SNP = c(as.character(x$SNP), nom),
-			b = sapply(l, function(y) y$b),
-			se = sapply(l, function(y) y$se),
-			p = sapply(l, function(y) y$pval),
-			samplesize = x$samplesize.outcome[1]
-		)
-		d$outcome <- x$outcome[1]
-		d$exposure <- x$exposure[1]
-		return(d)
-	})
-	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p))
-	return(res)
-}
-
-
-#' Get heterogeneity stats
-#'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param parameters Parameters to be used for various MR methods. Default is output from \code{dafault_param}.
-#' @param method_list List of methods to use in analysis. See \code{mr_method_list()} for details.
-#'
-#' @export
-#' @return Data frame
-mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list = subset(mr_method_list(), heterogeneity_test)$obj)
-{
-	het_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
-	{
-		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
-		x <- subset(x1, mr_keep)
-		if(nrow(x) < 2)
-		{
-			message("Not enough SNPs available for Heterogeneity analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
-			return(NULL)
-		}
-		res <- lapply(method_list, function(meth)
-		{
-			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
-		})
-		methl <- mr_method_list()
-		het_tab <- data.frame(
-			outcome = x$outcome[1],
-			exposure = x$exposure[1],
-			method = methl$name[methl$obj %in% method_list],
-			Q = sapply(res, function(x) x$Q),
-			Q_df = sapply(res, function(x) x$Q_df),
-			Q_pval = sapply(res, function(x) x$Q_pval)
-		)
-		het_tab <- subset(het_tab, !(is.na(Q) & is.na(Q_df) & is.na(Q_pval)))
-		return(het_tab)
-	})
-
-	return(het_tab)
-}
-
-
-Isq <- function(y,s)
-{
-	k = length(y)
-	w = 1/s^2; 
-	sum.w = sum(w)
-	mu.hat = sum(y*w)/sum.w
-	Q = sum(w*(y-mu.hat)^2)
-	Isq = (Q - (k-1))/Q
-	Isq = max(0,Isq)
-	return(Isq)
-}
-
-
-
-#' Test for horizontal pleiotropy in MR analysis
-#'
-#' Performs MR Egger and returns intercept values
-#'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#'
-#' @export
-#' @return data frame
-mr_pleiotropy_test <- function(dat)
-{
-	ptab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
-	{
-		x <- subset(x1, mr_keep)
-		if(nrow(x) < 2)
-		{
-			message("Not enough SNPs available for pleiotropy analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
-			return(NULL)
-		}
-		res <- mr_egger_regression(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, default_parameters())
-		out <- data.frame(
-			outcome = x$outcome[1],
-			exposure = x$exposure[1],
-			egger_intercept = res$b_i,
-			se = res$se_i,
-			pval = res$pval_i
-		)
-		return(out)
-	})
-	return(ptab)
-}
-
-
-#' MR mode estimators
-#'
-#' <full description>
-#'
-#' @param dat Output from harmonise_data()
-#' @param parameters=default_parameters() <what param does>
-#'
-#' @export
-#' @return data frame
-mr_mode <- function(dat, parameters=default_parameters()) 
-{
-	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
-
-	if(nrow(dat) < 3) 
-	{
-		warning("Need at least 3 SNPs")
-		return(NULL)
-	}
-
-	b_exp <- dat$beta.exposure
-	b_out <- dat$beta.outcome
-	se_exp <- dat$se.exposure
-	se_out <- dat$se.outcome
-
-	#--------------------------------------#
-	#Function to compute the point estimate#
-	#--------------------------------------#
-	#BetaIV.in: ratio estimates
-	#seBetaIV.in: standard errors of ratio estimates
-	beta <- function(BetaIV.in, seBetaIV.in, phi)
-	{
-		#Bandwidth rule - modified Silverman's rule proposed by Bickel (2002)
-		s <- 0.9*(min(sd(BetaIV.in), mad(BetaIV.in)))/length(BetaIV.in)^(1/5)
-
-		#Standardised weights
-		weights <- seBetaIV.in^-2/sum(seBetaIV.in^-2)
-
-		beta <- NULL
-
-		for(cur_phi in phi)
-		{
-			#Define the actual bandwidth
-			h <- s*cur_phi
-			#Compute the smoothed empirical density function
-			densityIV <- density(BetaIV.in, weights=weights, bw=h)
-			#Extract the point with the highest density as the point estimate 
-			beta[length(beta)+1] <- densityIV$x[densityIV$y==max(densityIV$y)]
-		}
-		return(beta)
-	}
-
-	#------------------------------------------#
-	#Function to estimate SEs through bootstrap#
-	#------------------------------------------#
-	#BetaIV.in: ratio estimates
-	#seBetaIV.in: standard errors of ratio estimates
-	#beta_Mode.in: point causal effect estimates
-	boot <- function(BetaIV.in, seBetaIV.in, beta_Mode.in, nboot)
-	{
-		#Set up a matrix to store the results from each bootstrap iteration
-		beta.boot <- matrix(nrow=nboot, ncol=length(beta_Mode.in))
-
-		for(i in 1:nboot) 
-		{
-			#Re-sample each ratio estimate using SEs derived not assuming NOME
-			BetaIV.boot      <- rnorm(length(BetaIV.in), mean=BetaIV.in, sd=seBetaIV.in[,1])
-			#Re-sample each ratio estimate using SEs derived under NOME
-			BetaIV.boot_NOME <- rnorm(length(BetaIV.in), mean=BetaIV.in, sd=seBetaIV.in[,2])
-
-			#Simple mode, not assuming NOME
-			beta.boot[i,1:length(phi)] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
-			#Weighted mode, not assuming NOME
-			beta.boot[i,(length(phi)+1):(2*length(phi))] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=seBetaIV.in[,1], phi=phi)
-			#Simple mode, assuming NOME
-			beta.boot[i,(2*length(phi)+1):(3*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
-			#Weighted mode, assuming NOME
-			beta.boot[i,(3*length(phi)+1):(4*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=seBetaIV.in[,2], phi=phi)
-		}
-		return(beta.boot)
-	}
-
-	# Parameters
-	phi <- parameters$phi
-	nboot <- parameters$nboot
-	alpha <- parameters$alpha
-
-	#Ratio estimates
-	BetaIV   <- b_out/b_exp
-
-	#SEs of ratio estimates
-	seBetaIV <- cbind(sqrt((se_out^2)/(b_exp^2) + ((b_out^2)*(se_exp^2))/(b_exp^4)), #SEs NOT assuming NOME
-	se_out/abs(b_exp)) #SEs ASSUMING NOME
-
-	#Point causal effect estimate using the simple mode
-	beta_SimpleMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
-
-	#Point causal effect estimate using the weighted mode (not asusming NOME)
-	beta_WeightedMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,1], phi=phi)
-
-	#Point causal effect estimate using the weighted mode (asusming NOME)
-	beta_WeightedMode_NOME <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,2], phi=phi)
-
-	#Combine all point effect estimates in a single vector
-	beta_Mode <- rep(c(beta_SimpleMode, beta_WeightedMode,
-	beta_SimpleMode, beta_WeightedMode_NOME))
-
-	#Compute SEs, confidence intervals and P-value
-	beta_Mode.boot <- boot(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV, beta_Mode.in=beta_Mode, nboot=nboot)
-	se_Mode <- apply(beta_Mode.boot, 2, mad)
-
-	CIlow_Mode <- beta_Mode-qnorm(1-alpha/2)*se_Mode
-	CIupp_Mode <- beta_Mode+qnorm(1-alpha/2)*se_Mode
-
-	P_Mode <- pt(abs(beta_Mode/se_Mode), df=length(b_exp)-1, lower.tail=F)*2
-
-	#Vector to indicate the method referring to each row
-	Method <- rep(c('Simple mode', 'Weighted mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))
-
-	#Return a data frame containing the results
-	Results <- data.frame(Method, length(b_exp), beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)
-	colnames(Results) <- c('Method', 'nsnp', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
-
-	return(Results)
-}
-
-
-#' Perform Rucker, Median and Mode
-#'
-#' @param dat Output from harmonise_data
-#' @param parameters=default_parameters()
-#' @param methods Named methods to use. Options are "rucker", "rucker jackknife", "rucker bootstrap", "rucker cooksdistance", "mode", "median"
-#'
-#' @export
-#' @return Data frame
-run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackknife", "mode", "median"), plots=FALSE)
-{
-	dat <- subset(dat, mr_keep)
-	d <- subset(dat, !duplicated(paste(exposure, outcome)), select=c(exposure, outcome, id.exposure, id.outcome))
-	res <- list()
-	for(j in 1:nrow(d))
-	{
-		res[[j]] <- list()
-		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
-		message(x$exposure[1], " - ", x$outcome[1])
-		x <- dplyr::select(x, SNP, a1=effect_allele.exposure, a2=other_allele.exposure, beta.exposure, se.exposure, pval.exposure, beta.outcome, se.outcome, pval.outcome, samplesize.exposure, samplesize.outcome)
-		res[[j]]$exposure <- x$exposure[1]
-		res[[j]]$outcome <- x$outcome[1]
-		res[[j]]$id.exposure <- x$id.exposure[1]
-		res[[j]]$id.outcome <- x$id.outcome[1]
-
-		if(nrow(x) == 1)
-		{
-			a <- mr_wald_ratio(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
-			out <- tibble(
-				# exposure = x$exposure[1],
-				# outcome = x$outcome[1],
-				# id.exposure = x$id.exposure[1],
-				# id.outcome = x$id.outcome[1],
-				Method = "Wald ratio",
-				Estimate = a$b,
-				SE = a$se,
-				CI_low = a$b - 1.96 * a$se,
-				CI_upp = a$b + 1.96 * a$se,
-				P = a$pval,
-				nsnp = 1
-			)
-			res[[j]]$out <- out
-		} else if(nrow(x) <= 3) {
-			a <- mr_ivw(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
-			out <- tibble(
-				# exposure = x$exposure[1],
-				# outcome = x$outcome[1],
-				# id.exposure = x$id.exposure[1],
-				# id.outcome = x$id.outcome[1],
-				Method = "IVW fixed effects",
-				Estimate = a$b,
-				SE = a$se,
-				CI_low = a$b - 1.96 * a$se,
-				CI_upp = a$b + 1.96 * a$se,
-				P = a$pval,
-				nsnp = nrow(x)
-			)
-			res[[j]]$out <- out
-		} else {
-			l <- list()
-			r <- list()
-			p <- list()
-			i <- 1
-			if("rucker" %in% methods & !"rucker jackknife" %in% methods & FALSE)
-			{
-				message("r")
-				temp <- try(mr_rucker(x, parameters)$results)
-				if(class(temp) != "try-error")
-				{
-					l[[i]] <- temp
-					i <- i + 1
-				}
-			}
-			if("rucker jackknife" %in% methods | TRUE)
-			{
-				message("rj")
-				temp <- try(mr_rucker_jackknife(x, parameters))
-				if(class(temp) != "try-error")
-				{
-					l[[i]] <- temp$res
-					p$rucker1 <- temp$q_plot
-					p$rucker2 <- temp$e_plot
-					r$intercept <- temp$rucker$intercept
-					r$Q <- temp$Q
-					i <- i + 1
-				}
-			}
-			if("median" %in% methods | TRUE)
-			{
-				message("med")
-				temp <- try(mr_mode(x, parameters))
-				if(class(temp) != "try-error")
-				{
-					l[[i]] <- temp
-					i <- i + 1
-				}
-			}
-			if("mode" %in% methods | TRUE)
-			{
-				message("mod")
-				temp <- try(mr_median(x, parameters))
-				if(class(temp) != "try-error")
-				{
-					l[[i]] <- temp
-					i <- i + 1
-				}
-			}
-			if(length(l) > 0)
-			{
-				out <- suppressWarnings(dplyr::bind_rows(l))
-				# out$exposure <- x$exposure[1]
-				# out$outcome <- x$outcome[1]
-				# out$id.exposure <- x$id.exposure[1]
-				# out$id.outcome <- x$id.outcome[1]
-
-				ind <- sign(x$beta.exposure) == -1
-				x$beta.exposure <- abs(x$beta.exposure)
-				x$beta.outcome[ind] <- x$beta.outcome[ind] * -1
-
-				temp <- left_join(out, dplyr::select(r$intercept, Method=Method, intercept=Estimate), by="Method")
-				temp$intercept[is.na(temp$intercept)] <- 0
-
-				temp <- subset(temp, Method %in% c("IVW random effects", "Egger random effects", "Weighted mode", "Weighted median"))
-
-
-				res[[j]]$out <- out
-				res[[j]]$r <- r
-				if(plots)
-				{
-					p$sc <- ggplot(x, aes(x=beta.exposure, y=beta.outcome)) +
-						geom_errorbar(aes(ymin=beta.outcome-se.outcome * 1.96, ymax=beta.outcome+se.outcome * 1.96), width=0, colour="grey") +
-						geom_errorbarh(aes(xmin=beta.exposure-se.exposure * 1.96, xmax=beta.exposure+se.exposure * 1.96), height=0, colour="grey") +
-						geom_point() +
-						geom_abline(data=temp, aes(slope=Estimate, intercept=intercept, colour=Method)) +
-						scale_colour_brewer(type="qual") +
-						labs(x=res[[j]]$exposure, y=res[[j]]$outcome)
-					res[[j]]$p <- p
-				}
-			}
-		}
-		res[[j]]$isq <- Isq(x$beta.exposure, x$se.exposure)
-		res[[j]]$dat <- as_data_frame(x)
-	}
-
-	# temp <- res
-	attributes(res) <- d
-
-	# ggplot(dat, aes(x=))
-
-	return(res)
-}

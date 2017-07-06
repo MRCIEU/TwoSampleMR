@@ -86,6 +86,29 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 #' @return list
 mr_rucker <- function(dat, parameters=default_parameters())
 {
+	dat <- subset(dat, mr_keep)
+	d <- subset(dat, !duplicated(paste(id.exposure, " - ", id.outcome)), select=c(exposure, outcome, id.exposure, id.outcome))
+	res <- list()
+	attributes(res)$id.exposure <- d$id.exposure
+	attributes(res)$id.outcome <- d$id.outcome
+	attributes(res)$exposure <- d$exposure
+	attributes(res)$outcome <- d$id.exposure
+	for(j in 1:nrow(d))
+	{
+		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
+		message(x$exposure[1], " - ", x$outcome[1])
+		res[[i]] <- mr_rucker_internal(x, parameters)
+	}
+	return(res)
+}
+
+
+
+
+
+
+mr_rucker_internal <- function(dat, parameters=default_parameters())
+{
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
 	if(nrow(dat) < 3) 
@@ -238,7 +261,6 @@ mr_rucker <- function(dat, parameters=default_parameters())
 #' @param dat <what param does>
 #' @param parameters=default_parameters() <what param does>
 #'
-#' @export
 #' @return List
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
@@ -325,7 +347,6 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 }
 
 
-
 #' Run rucker with jackknife estimates
 #'
 #' @param dat Output from harmonise_data
@@ -334,6 +355,25 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 #' @export
 #' @return List
 mr_rucker_jackknife <- function(dat, parameters=default_parameters())
+{
+	dat <- subset(dat, mr_keep)
+	d <- subset(dat, !duplicated(paste(id.exposure, " - ", id.outcome)), select=c(exposure, outcome, id.exposure, id.outcome))
+	res <- list()
+	attributes(res)$id.exposure <- d$id.exposure
+	attributes(res)$id.outcome <- d$id.outcome
+	attributes(res)$exposure <- d$exposure
+	attributes(res)$outcome <- d$id.exposure
+	for(j in 1:nrow(d))
+	{
+		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
+		message(x$exposure[1], " - ", x$outcome[1])
+		res[[i]] <- mr_rucker_jackknife_internal(x, parameters)
+	}
+	return(res)
+}
+
+
+mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
 
@@ -437,7 +477,6 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 #' @param dat <what param does>
 #' @param parameters=default_parameters() <what param does>
 #'
-#' @export
 #' @return list
 mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 {

@@ -69,5 +69,6 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		min_pval=1e-200
 	)
 	d$data_source.exposure <- "mrbase"
+	
 	return(d)
 }
