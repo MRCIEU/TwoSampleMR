@@ -70,37 +70,6 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 
 
 
-#' Convert TwoSampleMR format to MendelianRandomization format
-#'
-#' The MendelianRandomization package offers MR methods that can 
-#' be used with the same data used in the TwoSampleMR package. This
-#' function converts from the TwoSampleMR format to the MRInput class.
-#'
-#' @param dat Output from the \code{harmonise_data} function
-#'
-#' @export
-#' @return List of MRInput objects for each exposure/outcome combination
-dat_to_MRInput <- function(dat)
-{
-	library(MendelianRandomization)
-	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
-	{
-		x <- plyr::mutate(x)
-		MendelianRandomization::mr_input(
-			bx = dat$beta.exposure,
-			bxse = dat$se.exposure,
-			by = dat$beta.outcome,
-			byse = dat$se.outcome,
-			exposure = dat$exposure[1],
-			outcome = dat$outcome[1],
-			snps = dat$SNP,
-			effect_allele=dat$effect_allele.exposure,
-			other_allele=dat$other_allele.exposure,
-			eaf = dat$eaf.exposure
-		)
-	})
-	return(out)
-}
 
 
 harmonise_cleanup_variables <- function(res.tab)
