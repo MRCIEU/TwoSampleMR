@@ -45,7 +45,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		return(NULL)
 	}
 
-
+print(head(d))
 
 	d$phenotype <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
 	d$ncase <- as.numeric(d$ncase)
@@ -66,9 +66,10 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		ncase_col="ncase",
 		ncontrol_col="ncontrol",
 		samplesize_col="n",
-		min_pval=1e-200
+		min_pval=1e-200,
+		id_col="id"
 	)
 	d$data_source.exposure <- "mrbase"
-	
+
 	return(d)
 }
