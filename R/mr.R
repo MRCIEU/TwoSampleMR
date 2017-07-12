@@ -160,7 +160,7 @@ mr_method_list <- function()
 			name="Weighted mode (NOME)",
 			PubmedID="",
 			Description="",
-			use_by_default=TRUE,
+			use_by_default=FALSE,
 			heterogeneity_test=FALSE
 		),
 		list(
@@ -168,7 +168,7 @@ mr_method_list <- function()
 			name="Simple mode (NOME)",
 			PubmedID="",
 			Description="",
-			use_by_default=TRUE,
+			use_by_default=FALSE,
 			heterogeneity_test=FALSE
 		)
 	)
