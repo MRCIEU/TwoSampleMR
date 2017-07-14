@@ -97,7 +97,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
 		message(x$exposure[1], " - ", x$outcome[1])
-		res[[i]] <- mr_rucker_internal(x, parameters)
+		res[[j]] <- mr_rucker_internal(x, parameters)
 	}
 	return(res)
 }
@@ -367,7 +367,7 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
 		message(x$exposure[1], " - ", x$outcome[1])
-		res[[i]] <- mr_rucker_jackknife_internal(x, parameters)
+		res[[j]] <- mr_rucker_jackknife_internal(x, parameters)
 	}
 	return(res)
 }
@@ -385,7 +385,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 
 
 	# Main result
-	rucker <- mr_rucker(dat, parameters)
+	rucker <- mr_rucker_internal(dat, parameters)
 	rucker_point <- rucker$selected
 	rucker_point$Method <- "Rucker point estimate"
 
@@ -404,7 +404,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 			# dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
 			# dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
 			dat2 <- dat[sample(1:nrow(dat), nrow(dat), replace=TRUE), ]
-			l[[i]] <- mr_rucker(dat2, parameters)
+			l[[i]] <- mr_rucker_internal(dat2, parameters)
 		}
 
 		modsel <- plyr::rbind.fill(lapply(l, function(x) x$selected))

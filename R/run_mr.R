@@ -16,7 +16,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 		res[[j]] <- list()
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
 		message(x$exposure[1], " - ", x$outcome[1])
-		x <- dplyr::select(x, SNP, a1=effect_allele.exposure, a2=other_allele.exposure, beta.exposure, se.exposure, pval.exposure, beta.outcome, se.outcome, pval.outcome, samplesize.exposure, samplesize.outcome)
+		x <- dplyr::select(x, SNP, a1=effect_allele.exposure, a2=other_allele.exposure, beta.exposure, se.exposure, pval.exposure, beta.outcome, se.outcome, pval.outcome, samplesize.exposure, samplesize.outcome, mr_keep)
 		res[[j]]$exposure <- x$exposure[1]
 		res[[j]]$outcome <- x$outcome[1]
 		res[[j]]$id.exposure <- x$id.exposure[1]
@@ -63,7 +63,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 			if("rucker" %in% methods & !"rucker jackknife" %in% methods & FALSE)
 			{
 				message("r")
-				temp <- try(mr_rucker(x, parameters)$results)
+				temp <- try(mr_rucker_internal(x, parameters)$results)
 				if(class(temp) != "try-error")
 				{
 					l[[i]] <- temp
@@ -73,7 +73,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 			if("rucker jackknife" %in% methods | TRUE)
 			{
 				message("rj")
-				temp <- try(mr_rucker_jackknife(x, parameters))
+				temp <- try(mr_rucker_jackknife_internal(x, parameters))
 				if(class(temp) != "try-error")
 				{
 					l[[i]] <- temp$res
@@ -87,7 +87,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 			if("median" %in% methods | TRUE)
 			{
 				message("med")
-				temp <- try(mr_mode(x, parameters))
+				temp <- try(mr_median(x, parameters))
 				if(class(temp) != "try-error")
 				{
 					l[[i]] <- temp
@@ -97,7 +97,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 			if("mode" %in% methods | TRUE)
 			{
 				message("mod")
-				temp <- try(mr_median(x, parameters))
+				temp <- try(mr_mode(x, parameters))
 				if(class(temp) != "try-error")
 				{
 					l[[i]] <- temp
