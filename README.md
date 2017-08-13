@@ -25,6 +25,10 @@ The preprint is on BioRxiv:
 [MR-Base: a platform for systematic causal inference across the phenome using billions of genetic associations. 
 bioRxiv. doi: https://doi.org/10.1101/078972](http://biorxiv.org/content/early/2016/12/16/078972)
 
+## License
+
+This project is licensed under GNU GPL v3.
+
 ## Installing the TwoSampleMR R package
 
 The package is hosted on github, and this allows installation and update to be very easy. First make sure you have the `biomaRt` and `devtools` packages installed:
