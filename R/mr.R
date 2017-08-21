@@ -380,7 +380,8 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         se_i: Standard error of intercept
 #'         pval_i: p-value of intercept
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#'         mod: Summary of regression
+#'         mod: regression model
+#'         smod: Summary of regression
 #'         dat: Original data used for MR Egger regression
 mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
@@ -438,7 +439,8 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 		warning("Collinearities in MR Egger, try LD pruning the exposure variables.")
 		return(nulllist)
 	}
- 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), b_i = b_i, se_i = se_i, pval_i = pval_i, Q = Q, Q_df = Q_df, Q_pval = Q_pval, mod = smod, dat = dat))
+ 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), b_i = b_i, se_i = se_i, pval_i = pval_i, 
+		    Q = Q, Q_df = Q_df, Q_pval = Q_pval, mod = mod, smod=smod, dat = dat))
 }
 
 
