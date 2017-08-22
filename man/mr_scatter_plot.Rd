@@ -4,12 +4,14 @@
 \alias{mr_scatter_plot}
 \title{Create scatter plot with lines showing the causal estimate for different MR tests}
 \usage{
-mr_scatter_plot(mr_results, dat)
+mr_scatter_plot(mr_results, dat, ci = FALSE)
 }
 \arguments{
 \item{mr_results}{Output from \code{mr}}
 
 \item{dat}{Output from \code{harmonise_exposure_outcome}}
+
+\item{ci}{logical; when \code{TRUE} adds 95% CI around MR Egger fitted line.}
 }
 \value{
 List of plots
@@ -17,4 +19,3 @@ List of plots
 \description{
 Requires dev version of ggplot2
 }
-

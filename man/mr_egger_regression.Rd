@@ -26,10 +26,10 @@ List of with the following elements:
         se_i: Standard error of intercept
         pval_i: p-value of intercept
         Q, Q_df, Q_pval: Heterogeneity stats
-        mod: Summary of regression
+        mod: regression model
+        smod: Summary of regression
         dat: Original data used for MR Egger regression
 }
 \description{
 Egger's regression for Mendelian randomization
 }
-
