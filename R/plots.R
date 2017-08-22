@@ -50,7 +50,7 @@ mr_scatter_plot <- function(mr_results, dat, ci=FALSE)
 			ggplot2::labs(colour="MR Test", x=paste("SNP effect on", d$exposure[1]), y=paste("SNP effect on", d$outcome[1])) +
 			ggplot2::theme(legend.position="top", legend.direction="vertical") +
 			ggplot2::guides(colour=ggplot2::guide_legend(ncol=2))
-		if (ci=TRUE) {
+		if (ci==TRUE) {
 			mr_scatter_plot <- mr_scatter_plot + 
 				ggplot2::geom_line(data=eggerci, aes(y=lwr), linetype="dashed", colour=method) + 
 				ggplot2::geom_line(data=eggerci, aes(y=upr), linetype="dashed", colour=method)
