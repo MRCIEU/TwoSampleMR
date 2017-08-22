@@ -6,6 +6,7 @@
 #' 
 #' @param mr_results Output from \code{mr}
 #' @param dat Output from \code{harmonise_exposure_outcome}
+#' @param ci logical; when \code{TRUE} adds 95% CI around MR Egger fitted line.
 #' @export
 #' @return List of plots
 mr_scatter_plot <- function(mr_results, dat, ci=FALSE)
