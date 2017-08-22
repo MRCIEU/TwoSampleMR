@@ -30,7 +30,7 @@ mr_scatter_plot <- function(mr_results, dat, ci=FALSE)
 			temp <- mr_egger_regression(d$beta.exposure, d$beta.outcome, d$se.exposure, d$se.outcome, default_parameters())
 			mrres$a[mrres$method == "MR Egger"] <- temp$b_i
 			if (ci==TRUE) {
-				eggerci <- predict(temp$mod, interval="confidence", level=0.95)
+				eggerci <- as.data.frame(predict(temp$mod, interval="confidence", level=0.95))
 			} 
 		}
 
