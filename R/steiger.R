@@ -87,12 +87,15 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 	d$rgx <- rgx_o / d$rxx_o
 	d$z <- d$rgy - d$rgx
 	d$z[d$type=="A"] <- 0
+	mycolors.trans = rgb(c(255,0), c(0,0), 
+               c(0,255),alpha = c(70,255), maxColorValue = 255) 
+
 	temp <- lattice::wireframe(
 		z ~ rxx_o * ryy_o, 
 		groups=type, 
 		data=d, 
 		scales=list(arrows=FALSE), 
-		col.groups = colorRampPalette(c("red", "blue"))(2), 
+		col.groups = mycolors.trans, 
 		drape=FALSE, 
 		ylab=expression(rho[xx[o]]), 
 		xlab=expression(rho[yy[o]]),
