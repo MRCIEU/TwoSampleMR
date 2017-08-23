@@ -129,6 +129,21 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 }
 
 
+# Extract summary statistics from MySQL db through API given a list of SNPs and outcomes
+#'
+#' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
+#'
+#' @param snps Array of SNP rs IDs
+#' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
+#' @param proxies Look for LD tags? Default is TRUE.
+#' @param rsq Minimum LD rsq value (if proxies = 1). Default = 0.8.
+#' @param align_alleles = 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no
+#' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
+#' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#'
+#' @export
+#' @return Dataframe of summary statistics for all available outcomes
 extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
 {
 	outcomes <- unique(outcomes)
@@ -166,21 +181,6 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 
 
 
-# Extract summary statistics from MySQL db through API given a list of SNPs and outcomes
-#'
-#' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
-#'
-#' @param snps Array of SNP rs IDs
-#' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
-#' @param proxies Look for LD tags? Default is TRUE.
-#' @param rsq Minimum LD rsq value (if proxies = 1). Default = 0.8.
-#' @param align_alleles = 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no
-#' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
-#' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
-#'
-#' @export
-#' @return Dataframe of summary statistics for all available outcomes
 extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
 {
 	snps <- unique(snps)
