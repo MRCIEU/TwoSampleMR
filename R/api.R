@@ -135,13 +135,19 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	snps <- unique(snps)
 	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token)
 
+	print(firstpass)
 
 	if(proxies)
 	{
 
 		for(i in 1:length(outcomes))
 		{
-			missedsnps <- snps[!snps %in% subset(firstpass, id.outcome == outcomes[i])$SNP]
+			if(class(firstpass) == "NULL")
+			{
+				missedsnps <- snps
+			} else {
+				missedsnps <- snps[!snps %in% subset(firstpass, id.outcome == outcomes[i])$SNP]
+			}
 			if(length(missedsnps)>0)
 			{
 				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
