@@ -17,33 +17,33 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE)
 		x <- plyr::mutate(x)
 		if(get_correlations)
 		{
-			ld <- ld_matrix(unique(dat$SNP))
+			ld <- ld_matrix(unique(x$SNP))
 			MendelianRandomization::mr_input(
-				bx = dat$beta.exposure,
-				bxse = dat$se.exposure,
-				by = dat$beta.outcome,
-				byse = dat$se.outcome,
-				exposure = dat$exposure[1],
-				outcome = dat$outcome[1],
-				snps = dat$SNP,
-				effect_allele=dat$effect_allele.exposure,
-				other_allele=dat$other_allele.exposure,
-				eaf = dat$eaf.exposure,
+				bx = x$beta.exposure,
+				bxse = x$se.exposure,
+				by = x$beta.outcome,
+				byse = x$se.outcome,
+				exposure = x$exposure[1],
+				outcome = x$outcome[1],
+				snps = x$SNP,
+				effect_allele=x$effect_allele.exposure,
+				other_allele=x$other_allele.exposure,
+				eaf = x$eaf.exposure,
 				correlation = ld
 			)
 
 		} else {
 			MendelianRandomization::mr_input(
-				bx = dat$beta.exposure,
-				bxse = dat$se.exposure,
-				by = dat$beta.outcome,
-				byse = dat$se.outcome,
-				exposure = dat$exposure[1],
-				outcome = dat$outcome[1],
-				snps = dat$SNP,
-				effect_allele=dat$effect_allele.exposure,
-				other_allele=dat$other_allele.exposure,
-				eaf = dat$eaf.exposure
+				bx = x$beta.exposure,
+				bxse = x$se.exposure,
+				by = x$beta.outcome,
+				byse = x$se.outcome,
+				exposure = x$exposure[1],
+				outcome = x$outcome[1],
+				snps = x$SNP,
+				effect_allele=x$effect_allele.exposure,
+				other_allele=x$other_allele.exposure,
+				eaf = x$eaf.exposure
 			)
 		}
 	})
