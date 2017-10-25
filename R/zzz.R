@@ -26,7 +26,8 @@
 
 	# options(mrbaseapi="http://scmv-webapps.epi.bris.ac.uk:5000/")
 	options(mrbaseapi="http://api.mrbase.org/")
-	
+	options(googleAuthR.httr_oauth_cache = ".httr-oauth")
+
 	invisible()
 
 }
