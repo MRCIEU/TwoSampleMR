@@ -7,8 +7,10 @@
 	)
 	op <- options()
 	op.googleAuthR <- list(
-		googleAuthR.httr_oauth_cache = TRUE,
+		googleAuthR.httr_oauth_cache = ".httr-oauth",
 		googleAuthR.verbose = 3,
+		googleAuthR.client_id = "906514199468-1jpkqgngur8emoqfg9j460s47fdo2euo.apps.googleusercontent.com",
+		googleAuthR.client_secret = "I7Gqp83Ku4KJxL9zHWYxG_gD",
 		googleAuthR.webapp.client_id = "906514199468-1jpkqgngur8emoqfg9j460s47fdo2euo.apps.googleusercontent.com",
 		googleAuthR.webapp.client_secret = "I7Gqp83Ku4KJxL9zHWYxG_gD",
 		googleAuthR.webapp.port = 4018,
@@ -26,7 +28,6 @@
 
 	# options(mrbaseapi="http://scmv-webapps.epi.bris.ac.uk:5000/")
 	options(mrbaseapi="http://api.mrbase.org/")
-	options(googleAuthR.httr_oauth_cache = ".httr-oauth")
 
 	invisible()
 
