@@ -213,13 +213,20 @@ mr_moe <- function(dat, rf)
 {
 	require(randomForest)
 	dat <- suppressMessages(get_rsq(dat))
-	st <- psych::r.test(n = dat$samplesize.exposure, n2 = dat$samplesize.outcome, r12 = sqrt(dat$rsq.exposure) * sign(dat$beta.exposure), r34 = sqrt(dat$rsq.outcome) * sign(dat$beta.outcome))
+	st <- psych::r.test(
+		n = dat$samplesize.exposure, 
+		n2 = dat$samplesize.outcome, 
+		r12 = sqrt(dat$rsq.exposure), 
+		r34 = sqrt(dat$rsq.outcome)
+	)
 
-	dat$steiger_dir <- as.logical(sign(st$z))
+	dat$steiger_dir <- dat$rsq.exposure > dat$rsq.outcome
 	dat$steiger_pval <- st$p
 
 	dat <- subset(dat, mr_keep)
-	d <- subset(dat, !duplicated(paste(id.exposure, " - ", id.outcome)), select=c(exposure, outcome, id.exposure, id.outcome))
+	d <- subset(dat, !duplicated(paste(id.exposure, " - ", id.outcome)), 
+		select=c(exposure, outcome, id.exposure, id.outcome)
+	)
 	res <- list()
 
 	for(j in 1:nrow(d))
