@@ -12,6 +12,7 @@ toggle_dev <- function(where="local")
 
 	url <- switch(where,
 		local = "http://localhost/",
+		localtest = "http://localhost:8019/",
 		test = "http://apitest.mrbase.org/",
 		release = "http://api.mrbase.org/",
 		jojo = "http://jojo.epi.bris.ac.uk:8019/"
