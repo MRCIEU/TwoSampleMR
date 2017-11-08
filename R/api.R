@@ -7,7 +7,7 @@
 #' @return NULL
 toggle_dev <- function(where="local")
 {
-	stopifnot(where %in% c("local", "release", "test", "jojo"))
+	stopifnot(where %in% c("local", "release", "test", "jojo", "elastic"))
 	release <- "http://api.mrbase.org/"
 
 	url <- switch(where,
@@ -15,7 +15,8 @@ toggle_dev <- function(where="local")
 		localtest = "http://localhost:8019/",
 		test = "http://apitest.mrbase.org/",
 		release = "http://api.mrbase.org/",
-		jojo = "http://jojo.epi.bris.ac.uk:8019/"
+		jojo = "http://jojo.epi.bris.ac.uk:8019/",
+		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
 	)
 
 	options(mrbaseapi=url)
