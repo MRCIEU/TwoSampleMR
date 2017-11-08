@@ -10,7 +10,9 @@ Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
 			 )
 Description: See title
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.1.0),
+    googleAuthR,
+    httpuv
 Suggests:
     ggplot2,
     gridExtra,
@@ -30,8 +32,7 @@ Imports:
     meta,
     jsonlite,
     RCurl,
-    data.table,
-    googleAuthR
+    data.table
 License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr
