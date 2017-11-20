@@ -14,7 +14,7 @@ This package provides the following functionality to help perform two sample MR:
 - LD pruning of exposure SNPs
 - Harmonisation of direction of effects between exposure and outcome associations
 - Two sample MR analysis methods and diagnostic tools
-	- Including the MR Steiger test to orient causal directions, described here [http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
+	- Including the MR Steiger test for orienting causal directions, described here [http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
 - Plots and automatically generated reports
 
 
