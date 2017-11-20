@@ -14,16 +14,25 @@ This package provides the following functionality to help perform two sample MR:
 - LD pruning of exposure SNPs
 - Harmonisation of direction of effects between exposure and outcome associations
 - Two sample MR analysis methods and diagnostic tools
+	- Including the MR Steiger test to orient causal directions, described here [http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
 - Plots and automatically generated reports
+
 
 A set of instruments from several sources including GWAS catalogs, metabolite QTLs, etc can be obtained from the `MRInstruments` package [https://github.com/MRCIEU/MRInstruments](https://github.com/MRCIEU/MRInstruments). Users can also specify instruments manually by providing a text file. The package uses the MR Base database, a host to hundreds of GWAS results, that can be queried as a resource for outcome data. Users can alternatively provide their own outcome summary associations. It also provides LD pruning on a remote server for exposure SNP data provided by the user.
 
 ## Citation
 
-The preprint is on BioRxiv:
+If using MR-Base or the TwoSampleMR R package:
 
-[MR-Base: a platform for systematic causal inference across the phenome using billions of genetic associations. 
+[Gibran Hemani, Jie Zheng, Kaitlin H Wade, Charles Laurin, Benjamin Elsworth, Stephen Burgess, Jack Bowden, Ryan Langdon, Vanessa Tan, James Yarmolinsky, Hashem A. Shihab, Nicholas Timpson, David M Evans, Caroline Relton, Richard M Martin, George Davey Smith, Tom R Gaunt, Philip C Haycock, The MR-Base Collaboration.
+MR-Base: a platform for systematic causal inference across the phenome using billions of genetic associations. 
 bioRxiv. doi: https://doi.org/10.1101/078972](http://biorxiv.org/content/early/2016/12/16/078972)
+
+If also using the MR-Steiger test:
+
+[Hemani G, Tilling K, Davey Smith G. 
+Orienting the causal relationship between imprecisely measured traits using GWAS summary data. 
+PLoS Genetics. 2017. 13(11).](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
 
 ## License
 
