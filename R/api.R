@@ -553,6 +553,7 @@ format_d <- function(d)
 
 	d$originalname.outcome <- d$outcome
 	d$outcome <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
+	# d$outcome <- paste0(d$outcome, " || id:", d$id.outcome)
 
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
 	d <- subset(d, !rem)

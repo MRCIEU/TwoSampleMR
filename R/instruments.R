@@ -45,6 +45,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		return(NULL)
 	}
 
+	# d$phenotype <- paste0(d$trait, " || id:", d$id)
 	d$phenotype <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
 	d$ncase <- as.numeric(d$ncase)
 	d$ncontrol <- as.numeric(d$ncontrol)
