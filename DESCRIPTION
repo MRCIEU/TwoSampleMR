@@ -1,11 +1,15 @@
 Package: TwoSampleMR
 Title: Two Sample MR functions and interface to MR Base database
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
                   role = c("aut")),
              person("Jie", "Zheng", email = "Jie.Zheng@bristol.ac.uk",
+                  role = c("aut")),
+             person("Tom", "Gaunt", email = "Tom.Gaunt@bristol.ac.uk",
+                  role = c("aut"))
+             person("Ben", "Elsworth", email = "Ben.Elsworth@bristol.ac.uk",
                   role = c("aut"))
 			 )
 Description: See title
@@ -31,7 +35,7 @@ Imports:
     jsonlite,
     RCurl,
     data.table,
-    googleAuthR,
+    googleAuthR (>= 0.6.2),
     httpuv
 License: Artistic-2.0
 LazyData: true
