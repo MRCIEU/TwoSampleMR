@@ -7,7 +7,7 @@
 	)
 	op <- options()
 	op.googleAuthR <- list(
-		googleAuthR.httr_oauth_cache = ".httr-oauth",
+		googleAuthR.httr_oauth_cache = "mrbase.oauth",
 		googleAuthR.verbose = 3,
 		# googleAuthR.client_id = "906514199468-1jpkqgngur8emoqfg9j460s47fdo2euo.apps.googleusercontent.com",
 		# googleAuthR.client_secret = "I7Gqp83Ku4KJxL9zHWYxG_gD",

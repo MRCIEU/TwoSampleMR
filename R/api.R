@@ -152,11 +152,8 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	snps <- unique(snps)
 	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token)
 
-	print(firstpass)
-
 	if(proxies)
 	{
-
 		for(i in 1:length(outcomes))
 		{
 			if(class(firstpass) == "NULL")
@@ -453,7 +450,6 @@ extract_outcome_data2 <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, ali
 		d$target_a2 <- d$other_allele
 		d$proxy_a1 <- d$effect_allele
 		d$proxy_a2 <- d$other_allele
-		print(dim(d))
 		d <- plyr::rbind.fill(d, d2)
 	}
 
