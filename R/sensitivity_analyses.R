@@ -7,6 +7,19 @@
 #' @return List of data frames
 mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 {
+	if(!"samplesize.outcome" %in% names(dat))
+	{
+		dat$samplesize.outcome <- NA
+	}
+
+	stopifnot("outcome" %in% names(dat))
+	stopifnot("exposure" %in% names(dat))
+	stopifnot("beta.exposure" %in% names(dat))
+	stopifnot("beta.outcome" %in% names(dat))
+	stopifnot("se.exposure" %in% names(dat))
+	stopifnot("se.outcome" %in% names(dat))
+
+
 	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
 	{
 		x <- subset(X, mr_keep)
@@ -70,6 +83,19 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #' @return List of data frames
 mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr_wald_ratio", all_method=c("mr_ivw", "mr_egger_regression"))
 {
+
+	if(!"samplesize.outcome" %in% names(dat))
+	{
+		dat$samplesize.outcome <- NA
+	}
+
+	stopifnot("outcome" %in% names(dat))
+	stopifnot("exposure" %in% names(dat))
+	stopifnot("beta.exposure" %in% names(dat))
+	stopifnot("beta.outcome" %in% names(dat))
+	stopifnot("se.exposure" %in% names(dat))
+	stopifnot("se.outcome" %in% names(dat))
+
 	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
 	{
 		x <- subset(X, mr_keep)
