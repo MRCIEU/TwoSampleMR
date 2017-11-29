@@ -44,7 +44,7 @@ get_mrbase_access_token <- function()
 	} else {
 		unlink(tf)
 	}
-	a <- googleAuthR::gar_auth("mrbase.oauth")
+	a <- googleAuthR::gar_auth()
 	if(! a$validate())
 	{
 		a$refresh()

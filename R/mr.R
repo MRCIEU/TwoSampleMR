@@ -11,8 +11,6 @@
 #'         extra: Table of extra results
 mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_method_list(), use_by_default)$obj)
 {
-	dat$id.exposure <- as.character(dat$id.exposure)
-	dat$id.outcome <- as.character(dat$id.outcome)
 	mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing MR analysis of '", x1$id.exposure[1], "' on '", x18WII58$id.outcome[1], "'")
@@ -47,7 +45,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 
 
 #' Get list of available MR methods
-#'
+#'8
 #' @export
 #' @return character vector of method names
 mr_method_list <- function()
