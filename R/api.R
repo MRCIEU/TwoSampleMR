@@ -143,14 +143,15 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
 #' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#' @param ... Other options to pass to internal extraction function
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), ...)
 {
 	outcomes <- unique(outcomes)
 	snps <- unique(snps)
-	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token)
+	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token, ...)
 
 	if(proxies)
 	{
@@ -165,7 +166,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			if(length(missedsnps)>0)
 			{
 				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
-				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token)
+				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, ...)
 				if(!is.null(temp))
 				{
 					firstpass <- plyr::rbind.fill(firstpass, temp)
@@ -180,7 +181,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 
 
 
-extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=50)
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
@@ -195,8 +196,6 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 	} else {
 		stop("'proxies' argument should be TRUE or FALSE")
 	}
-
-	splitsize <- 50
 
 	if((length(snps) < 5 & length(outcomes) < splitsize) | (length(outcomes) < 5 & length(snps) < splitsize))
 	{
