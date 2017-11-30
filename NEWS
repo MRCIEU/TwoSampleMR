@@ -1,3 +1,14 @@
+TwoSampleMR v0.3.4 (Release date: 2017-11-30)
+==============
+
+Changes:
+
+* Moving over to elastic search database so the request batching is changing from 50 SNPs per chunk to 10000. This can be modified through extract_outcome_data(splitsize=50)
+* Changing harmonise_data behaviour - now does not discard the bad SNPs but retains them with the mr_keep column indicating whether or not they will be used by the mr analysis functions
+* Fixed issue with oauth token
+* Updated scatter plot to register the mr_keep column.
+
+
 TwoSampleMR v0.3.3 (Release date: 2017-11-23)
 ==============
 

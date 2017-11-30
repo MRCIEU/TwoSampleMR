@@ -59,7 +59,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 		return(x)
 	})
 	mr_cols <- c("beta.exposure", "beta.outcome", "se.exposure", "se.outcome")
-	fix.tab$mr_keep <- apply(fix.tab[, mr_cols], 1, function(x) !any(is.na(x)))
+	fix.tab$mr_keep[apply(fix.tab[, mr_cols], 1, function(x) any(is.na(x)))] <- FALSE
 	# fix.tab <- harmonise_make_snp_effects_positive(fix.tab)
 	if(!"samplesize.outcome" %in% names(fix.tab))
 	{
@@ -380,28 +380,57 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 	d11 <- harmonise_11(SNP[i11], A1[i11], B1[i11], betaA[i11], betaB[i11], fA[i11], fB[i11], tolerance, action)
 
 	d <- rbind(d21, d22, d12, d11)
+	d <- merge(d, dat, by="SNP", all.x=TRUE)
+	d <- d[order(d$id.outcome), ]
+	d$mr_keep <- TRUE
+
 	if(action == 3)
 	{
-		d1 <- subset(d, !palindromic & !remove & !ambiguous)
+		# d1 <- subset(d, !palindromic & !remove & !ambiguous)
+		d$mr_keep[d$palindromic | d$remove | d$ambiguous] <- FALSE
+		if(any(d$palindromic))
+		{
+			message("Removing the following SNPs for being palindromic:\n", paste(d$SNP[d$palindromic], collapse=", "))
+		}
+		if(any(d$remove))
+		{
+			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
+		}
+		if(any(d$ambiguous & !d$palindromic))
+		{
+			message("Removing the following SNPs for having incompatible allele frequencies:\n", paste(d$SNP[d$ambiguous], collapse=", "))
+		}
 	}
 	if(action == 2)
 	{
-		d1 <- subset(d, !remove & !ambiguous)
+		# d1 <- subset(d, !remove & !ambiguous)
+		d$mr_keep[d$remove | d$ambiguous] <- FALSE
+		if(any(d$remove))
+		{
+			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
+		}
+		if(any(d$ambiguous))
+		{
+			message("Removing the following SNPs for being palindromic with intermediate allele frequencies:\n", paste(d$SNP[d$ambiguous], collapse=", "))
+		}
 	}
 	if(action == 1)
 	{
-		d1 <- subset(d, !remove)
+		# d1 <- subset(d, !remove)
+		d$mr_keep[d$remove] <- FALSE
+		if(any(d$remove))
+		{
+			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
+		}
 	}
 
-	if(nrow(d1) != nrow(d))
-	{
-		message("Removing the following SNPs due to harmonising issues:\n",
-			paste(subset(d, ! SNP %in% d1$SNP)$SNP, collapse="\n")
-		)
-	}
+	# if(nrow(d1) != nrow(d))
+	# {
+	# 	message("Removing the following SNPs due to harmonising issues:\n",
+	# 		paste(subset(d, ! SNP %in% d1$SNP)$SNP, collapse="\n")
+	# 	)
+	# }
 
-	d <- merge(d1, dat, by="SNP", all.x=TRUE)
-	d <- d[order(d$id.outcome), ]
 
 	return(d)
 }
