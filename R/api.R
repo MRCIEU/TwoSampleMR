@@ -234,7 +234,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		stop("'proxies' argument should be TRUE or FALSE")
 	}
 
-	if((length(snps) < 5 & length(outcomes) < splitsize) | (length(outcomes) < 5 & length(snps) < splitsize))
+	if((length(snps) < splitsize & length(outcomes) < splitsize) | (length(outcomes) < splitsize & length(snps) < splitsize))
 	{
 		snpfile <- upload_file_to_api(snps)
 		outcomefile <- upload_file_to_api(outcomes)

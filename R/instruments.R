@@ -13,9 +13,43 @@
 #'
 #' @export
 #' @return data frame
-extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token())
+extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(), force_server=FALSE)
 {
 	outcomes <- unique(outcomes)
+
+	if(clump & p1 == 5e-8 & r2 == 0.001 & kb == 10000 & !force_server)
+	{
+		message("Requesting default values. Extracting from pre-clumped data")
+		a <- require(MRInstruments)
+		if(!a)
+		{
+			message("MRInstruments package not available")
+			message("To install: devtools::install_github('MRCIEU/MRInstruments')")
+			message("and then try again")
+			return(NULL)
+		}
+
+		data(mrbase_instrumensfsats)
+		a <- exists("mrbase_instruments")
+		print(a)
+		if(!a)
+		{
+			message("Pre-clumped dataset is not available. You might have an old version of the MRInstruments package")
+			message("To update: devtools::install_github('MRCIEU/MRInstruments')")
+			message("and then try again")
+			return(NULL)
+		}
+
+		a <- subset(mrbase_instruments, id.exposure %in% outcomes)
+
+		if(nrow(a) == 0)
+		{
+			message("None of the requested outcomes had GWAS hits at the specified threshold.")
+			return(NULL)
+		}
+		return(a)
+	}
+
 	message("Extracting data from ", length(unique(outcomes)), " GWAS(s)")
 	if(clump) message("and performing LD clumping")
 
