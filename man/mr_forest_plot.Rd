@@ -17,4 +17,3 @@ List of plots
 \description{
 Forest plot
 }
-

@@ -20,4 +20,3 @@ data frame in exposure_dat format
 \description{
 Requires a list of IDs from \code{available_outcomes()}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.
 }
-

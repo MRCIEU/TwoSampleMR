@@ -15,4 +15,3 @@ Character or array of character
 \description{
 Simple attempt at correcting string case
 }
-

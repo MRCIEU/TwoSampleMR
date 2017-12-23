@@ -21,4 +21,3 @@ Population allele frequency
 \description{
 Estimate the allele frequency in population from case/control summary data
 }
-
