@@ -1,6 +1,6 @@
 Package: TwoSampleMR
 Title: Two Sample MR functions and interface to MR Base database
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
@@ -40,4 +40,4 @@ Imports:
 License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

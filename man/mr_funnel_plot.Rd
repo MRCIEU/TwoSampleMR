@@ -15,4 +15,3 @@ List of plots
 \description{
 Create funnel plot from single SNP analyses
 }
-

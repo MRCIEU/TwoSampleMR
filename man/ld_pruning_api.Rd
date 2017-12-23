@@ -24,4 +24,3 @@ Data frame of only independent SNPs
 \description{
 Perform clumping on the chosen SNPs using through API
 }
-

@@ -22,4 +22,3 @@ get_r_from_lor(lor, af, ncase, ncontrol, prevalence, model = "logit")
 \description{
 This uses equation 10 in Genetic Epidemiology 36 : 214–224 (2012)
 }
-

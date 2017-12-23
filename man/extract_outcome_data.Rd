@@ -6,7 +6,7 @@
 \usage{
 extract_outcome_data(snps, outcomes, proxies = TRUE, rsq = 0.8,
   align_alleles = 1, palindromes = 1, maf_threshold = 0.3,
-  access_token = get_mrbase_access_token())
+  access_token = get_mrbase_access_token(), ...)
 }
 \arguments{
 \item{snps}{Array of SNP rs IDs}
@@ -24,6 +24,8 @@ extract_outcome_data(snps, outcomes, proxies = TRUE, rsq = 0.8,
 \item{maf_threshold}{= 0.3 MAF threshold to try to infer palindromic SNPs.}
 
 \item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data}
+
+\item{...}{Other options to pass to internal extraction function}
 }
 \value{
 Dataframe of summary statistics for all available outcomes
@@ -31,4 +33,3 @@ Dataframe of summary statistics for all available outcomes
 \description{
 Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 }
-

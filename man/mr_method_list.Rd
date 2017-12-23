@@ -2,7 +2,8 @@
 % Please edit documentation in R/mr.R
 \name{mr_method_list}
 \alias{mr_method_list}
-\title{Get list of available MR methods}
+\title{Get list of available MR methods
+8}
 \usage{
 mr_method_list()
 }
@@ -11,5 +12,5 @@ character vector of method names
 }
 \description{
 Get list of available MR methods
+8
 }
-

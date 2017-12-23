@@ -10,6 +10,7 @@
 #' @param r2 = 0.001 Clumping r2 cut off
 #' @param kb = 10000 Clumping distance cutoff
 #' @param access_token = get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data
+#' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package
 #'
 #' @export
 #' @return data frame
@@ -29,9 +30,8 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 			return(NULL)
 		}
 
-		data(mrbase_instrumensfsats)
+		data(mrbase_instruments)
 		a <- exists("mrbase_instruments")
-		print(a)
 		if(!a)
 		{
 			message("Pre-clumped dataset is not available. You might have an old version of the MRInstruments package")

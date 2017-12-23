@@ -53,4 +53,3 @@ Grouped forest plot
 mr_forest_plot()
 
 }
-
