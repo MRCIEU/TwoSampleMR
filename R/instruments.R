@@ -30,7 +30,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 			return(NULL)
 		}
 
-		data(mrbase_instruments)
+		data(mrbase_instruments, envir=environment())
 		a <- exists("mrbase_instruments")
 		if(!a)
 		{
