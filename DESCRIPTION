@@ -29,7 +29,9 @@ Suggests:
     rmarkdown,
     MRInstruments,
     MendelianRandomization,
-    MRPRESSO
+    MRPRESSO,
+    dplyr,
+    igraph
 Imports:
     meta,
     jsonlite,

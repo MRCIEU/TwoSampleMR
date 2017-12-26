@@ -11,17 +11,9 @@ devs <- function()
 
 	dat <- harmonise_data(a, b)
 
-	outlierscan <- outlier_scan(dat)
+	# outlierscan <- outlier_scan(dat)
 	outlierscan <- outlier_scan(dat, mr_method="mr_ivw")
-
-	# radial <- RadialMR(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP, "IVW", "YES", "NO", 0.05/nrow(dat), "NO")
-	radial$outliers
-	dim(dat)
-	mr_heterogeneity(dat)
-	mr(dat)
-
-	b[[1]]$Out$Pval
-
+	outlierplot <- outlier_graph(outlierscan)
 }
 
 #' Outlier scan
@@ -259,9 +251,25 @@ mr_strategy1 <- function(dat, het_threshold=0.05, ivw_max_snp=1)
 
 #' Plot results from outlier)scan
 #' 
+#' Creates a simple graph depicting the connections between outlier instruments, the original exposure and outcome traits, and the detected candidate associations
+#' 
 #' @param outlierscan Output from outlier_scan function
+#' @export
+#' @return Prints plot, and returns dataframe of the connections
 outlier_graph <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold = 0.05)
 {
+
+	a <- require(igraph)
+	if(!a)
+	{
+		stop("Please install the igraph R package")
+	}
+	a <- require(dplyr)
+	if(!a)
+	{
+		stop("Please install the dplyr R package")
+	}
+
 
 	stopifnot("candidate_outcome_mr" %in% names(outlierscan))
 	stopifnot("candidate_exposure_mr" %in% names(outlierscan))
@@ -286,13 +294,7 @@ outlier_graph <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold
 
 
 	ao <- available_outcomes()
-
 	grp <- rbind(
-		data.frame(
-			from=ao$trait[ao$id == outlierscan$dat$id.exposure[1]],
-			to=ao$trait[ao$id == outlierscan$dat$id.outcome[1]],
-			what="Main hypothesis"
-		),
 		# Instruments for exposure
 		data.frame(
 			from=outlierscan$outliers,
@@ -316,21 +318,134 @@ outlier_graph <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold
 			from=subset(outlierscan$candidate_outcome_mr, sig)$exposure,
 			to=ao$trait[ao$id == outlierscan$dat$id.outcome[1]],
 			what="Candidate traits to outcome"
+		),
+		data.frame(
+			from=ao$trait[ao$id == outlierscan$dat$id.exposure[1]],
+			to=ao$trait[ao$id == outlierscan$dat$id.outcome[1]],
+			what="Main hypothesis"
 		)
 	)
 
-	grp <- graph_from_data_frame(grp, directed=TRUE)
-	return(grp)
 
-	
-	# number of non-outlier instruments associated with exposure
-	# candidate traits associated with exposure
-	# instruments with candidate traits
-	# candidate traits associated with outcome
+	l <- list()
+	i <- 1
+	temp <- ao$id %in% subset(outlierscan$candidate_exposure_mr, sig)$id.exposure & ao$id %in% subset(outlierscan$candidate_outcome_mr, sig)$id.exposure
+	if(sum(temp) > 0)
+	{
+		l[[i]] <- data.frame(
+			name=ao$trait[temp],
+			id=ao$id[temp],
+			what="both"
+		)
+		i <- i + 1
+	}
+	temp <- ao$id %in% subset(outlierscan$candidate_exposure_mr, sig)$id.exposure
+	if(sum(temp) > 0)
+	{
+		l[[i]] <- data.frame(
+			name=ao$trait[temp],
+			id=ao$id[temp],
+			what="exposure"
+		)
+		i <- i + 1
+	}
+	temp <- ao$id %in% subset(outlierscan$candidate_outcome_mr, sig)$id.exposure
+	if(sum(temp) > 0)
+	{
+		l[[i]] <- data.frame(
+			name=ao$trait[temp],
+			id=ao$id[temp],
+			what="outcome"
+		)
+		i <- i + 1
+	}
+	temp <- ao$id %in% subset(outlierscan$search, sig)$id.outcome
+	if(sum(temp) > 0)
+	{
+		l[[i]] <- data.frame(
+			name=ao$trait[temp],
+			id=ao$id[temp],
+			what="search"
+		)
+		i <- i + 1
+	}
+	sig <- bind_rows(l) %>% filter(!duplicated(id))
 
-	# Make graph of how each thing relates to exposure and outcome
+
+	nodes <- rbind(
+		data.frame(
+			name=c(
+				ao$trait[ao$id %in% outlierscan$dat$id.exposure[1]],
+				ao$trait[ao$id %in% outlierscan$dat$id.outcome[1]]),
+			id=c(outlierscan$dat$id.exposure[1], outlierscan$dat$id.outcome[1]),
+			what=c("original")
+		),
+		data.frame(
+			name=unique(outlierscan$outliers),
+			id=NA,
+			what="Outlier instruments"
+		),
+		sig
+	)
+
+	nodes$size <- 15
+	nodes$size[nodes$what != "original"] <- 3
+	nodes$label <- nodes$name
+	nodes$label[! nodes$what %in% c("original")] <- NA
+	nodes$colour <- "#386cb0"
+	nodes$colour[nodes$what == "original"] <- "white"
+	nodes$colour[nodes$what == "Outlier instruments"] <- "#f0027f"
 
 
+	# Make layout
+	layoutd <- group_by(nodes, what) %>%
+		do({
+			x <- .
+			a <- as.data.frame(t(combn(as.character(x$name), 2)))
+			# a <- data.frame(from=x$name[1], to=x$name[-1])
+			names(a) <- c("from", "to")
+			a$what <- x$what[1]
+			a
+		})
+
+	layoutd2 <- rbind(as.data.frame(layoutd), 
+		data.frame(
+			from=subset(nodes, what != "original")$name,
+			to=sample(subset(nodes, what == "original")$name, length(subset(nodes, what != "original")$name), replace=TRUE),
+			what="temp"
+		)
+	)
+
+	# Different colours for different edge types
+	# Original should be large
+	# original nodes should be large
+	# no labels for confounders
+
+	grp$colour <- "black"
+	grp$colour[grp$what == "Outlier instruments"] <- "#7fc97f"
+	grp$colour[grp$what == "Search associations"] <- "#beaed4"
+	grp$colour[grp$what == "Candidate traits to outcome"] <- "#fdc086"
+	grp$colour[grp$what == "Candidate traits to exposure"] <- "#bf5b17"
+	grp$size <- 0.1
+	grp$size[grp$what == "Main hypothesis"] <- 0.5
+
+	layoutg <- graph_from_data_frame(layoutd2, vertices=nodes)
+	l <- layout_with_fr(layoutg)
+	grl <- graph_from_data_frame(grp, directed=TRUE, vertices=nodes)
+	plot(grl, 
+		layout=l, 
+		vertex.size=V(grl)$size, 
+		vertex.label=V(grl)$label,
+		# edge.arrow.size=E(grl)$size, 
+		edge.arrow.size=0.3,
+		edge.color=E(grl)$colour,
+		vertex.label.cex=0.5, 
+		vertex.label.family="sans", 
+		vertex.label.color="black", 
+		vertex.color=V(grl)$colour,
+		edge.color="red"
+	)
+	return(sig=dplyr::as_data_frame(sig))
 }
 
 
