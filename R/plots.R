@@ -161,7 +161,7 @@ mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 		ggplot2::geom_vline(xintercept=xint, linetype="dotted") +
 		# ggplot2::geom_errorbarh(ggplot2::aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=as.factor(tot), colour=as.factor(tot)), height=0) +
 		ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo, xmax=up, size=as.factor(tot), colour=as.factor(tot)), height=0) +
-		ggplot2::geom_point(ggplot2::aes(colour=as.factor(tot))) +
+		ggplot2::geom_point(ggplot2::aes(colour=as.factor(tot), text=paste("SNP:", SNP))) +
 		ggplot2::geom_hline(ggplot2::aes(yintercept = which(levels(SNP) %in% "")), colour="grey") +
 		ggplot2::scale_colour_manual(values=c("black", "red")) +
 		ggplot2::scale_size_manual(values=c(0.3, 1)) +
@@ -247,7 +247,7 @@ mr_funnel_plot <- function(singlesnp_results)
 		d$SNP <- gsub("All - ", "", d$SNP)
 		am <- gsub("All - ", "", am)
 		ggplot2::ggplot(subset(d, ! SNP %in% am), ggplot2::aes(y = 1/se, x=b)) +
-		ggplot2::geom_point() +
+		ggplot2::geom_point(aes(text=paste("SNP:", SNP))) +
 		ggplot2::geom_vline(data=subset(d, SNP %in% am), ggplot2::aes(xintercept=b, colour = SNP)) +
 		# ggplot2::scale_colour_brewer(type="qual") +
 		ggplot2::scale_colour_manual(values = c("#a6cee3", 
