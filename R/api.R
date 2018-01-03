@@ -587,8 +587,9 @@ format_d <- function(d)
 	}
 
 	d$originalname.outcome <- d$outcome
-	d$outcome <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
-	# d$outcome <- paste0(d$outcome, " || id:", d$id.outcome)
+	d$outcome.deprecated <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
+	warning("From version 0.4.2 the outcome format has changed. You can find the deprecated version of the output name in outcome.deprecated")
+	d$outcome <- paste0(d$outcome, " || id:", d$id.outcome)
 
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
 	d <- subset(d, !rem)

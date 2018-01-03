@@ -30,7 +30,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 			return(NULL)
 		}
 
-		data(mrbase_instruments)
+		data(mrbase_instruments, envir=environment())
 		a <- exists("mrbase_instruments")
 		if(!a)
 		{
@@ -41,6 +41,8 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		}
 
 		a <- subset(mrbase_instruments, id.exposure %in% outcomes)
+		a$exposure <- paste0(a$exposure, " || id:", a$id)
+		warning("From version 0.4.2 the exposure name format has changed.")
 
 		if(nrow(a) == 0)
 		{
@@ -79,8 +81,9 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		return(NULL)
 	}
 
-	# d$phenotype <- paste0(d$trait, " || id:", d$id)
-	d$phenotype <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
+	# d$phenotype.deprecated <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
+	d$phenotype <- paste0(d$trait, " || id:", d$id)
+	warning("From version 0.4.2 the phenotype format has changed.")
 	d$ncase <- as.numeric(d$ncase)
 	d$ncontrol <- as.numeric(d$ncontrol)
 	d <- format_data(

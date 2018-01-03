@@ -10,8 +10,12 @@
 #'
 #' @export
 #' @return Data frame
-clump_data <- function(dat, clump_kb=10000, clump_r2=0.01, clump_p1=1, clump_p2=1)
+clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1)
 {
+	if(missing(clump_r2))
+	{
+		message("Warning: since v0.4.2 the default r2 value for clumping has changed from 0.01 to 0.001")
+	}
 	if(!is.data.frame(dat))
 	{
 		stop("Expecting data frame returned from format_data")
