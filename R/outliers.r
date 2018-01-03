@@ -1,4 +1,22 @@
-devs <- function()
+## To Do
+
+## Plot
+# categorise traits
+# print SNP names or gene names
+# option to have no names
+# automate volcano plot
+
+## Scan
+# Implement cooks distance as option for finding outliers
+# Implement MR PRESSO as option for finding outliers
+
+## Scan output
+# calculate significant associations (currently in plot function - should remove from here)
+
+## Analysis
+# Simulate improvement in multiple testing correction when filtering by outlier associations
+
+testing_commands <- function()
 {
 
 	library(devtools)
@@ -8,12 +26,18 @@ devs <- function()
 
 	a <- extract_instruments(300)
 	b <- extract_outcome_data(a$SNP, 7)
-
 	dat <- harmonise_data(a, b)
-
-	# outlierscan <- outlier_scan(dat)
 	outlierscan <- outlier_scan(dat, mr_method="mr_ivw")
 	outlierplot <- outlier_graph(outlierscan)
+
+
+	urate <- extract_instruments(1055)
+	egfr <- extract_outcome_data(a$SNP, 1105)
+	urate_egfr <- harmonise_data(urate, egfr)
+	outlierscan <- outlier_scan(dat, mr_method="mr_strategy1")
+	outlierplot <- outlier_graph(outlierscan)
+ 
+
 }
 
 #' Outlier scan
