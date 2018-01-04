@@ -74,7 +74,6 @@ outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thr
 	# Get outliers
 
 	output <- list()
-
 	if(length(unique(dat$id.exposure)) > 1 | length(unique(dat$id.outcome)) > 1)
 	{
 		message("Warning! Multiple exposure/outcome combinations found")
@@ -90,6 +89,11 @@ outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thr
 	{
 		message("Using RadialMR package to detect outliers")
 		cpg <- require(RadialMR)
+		if(!cpg)
+		{
+			stop("Please install the RadialMR package\ndevtools::install_github('WSpiller/RadialMR')")
+		}
+		cpg <- require(dplyr)
 		if(!cpg)
 		{
 			stop("Please install the RadialMR package\ndevtools::install_github('WSpiller/RadialMR')")
@@ -333,13 +337,13 @@ outlier_graph <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold
 		),
 		# candidate traits associated with exposure
 		data.frame(
-			from=subset(outlierscan$candidate_exposure_mr, sig)$exposure,
+			from=ao$trait[ao$id %in% subset(outlierscan$candidate_exposure_mr, sig)$id.exposure],
 			to=ao$trait[ao$id == outlierscan$dat$id.exposure[1]],
 			what="Candidate traits to exposure"
 		),
 		# candidate traits associated with outcome
 		data.frame(
-			from=subset(outlierscan$candidate_outcome_mr, sig)$exposure,
+			from=ao$trait[ao$id %in% subset(outlierscan$candidate_outcome_mr, sig)$id.exposure],
 			to=ao$trait[ao$id == outlierscan$dat$id.outcome[1]],
 			what="Candidate traits to outcome"
 		),
@@ -397,14 +401,14 @@ outlier_graph <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold
 
 
 	nodes <- rbind(
-		data.frame(
+		data_frame(
 			name=c(
 				ao$trait[ao$id %in% outlierscan$dat$id.exposure[1]],
 				ao$trait[ao$id %in% outlierscan$dat$id.outcome[1]]),
 			id=c(outlierscan$dat$id.exposure[1], outlierscan$dat$id.outcome[1]),
 			what=c("original")
 		),
-		data.frame(
+		data_frame(
 			name=unique(outlierscan$outliers),
 			id=NA,
 			what="Outlier instruments"
