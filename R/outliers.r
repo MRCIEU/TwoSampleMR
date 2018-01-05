@@ -4,7 +4,6 @@
 # categorise traits
 # print SNP names or gene names
 # option to have no names
-# automate volcano plot
 
 ## Scan
 # Implement cooks distance as option for finding outliers
@@ -18,7 +17,6 @@
 
 testing_commands <- function()
 {
-
 	library(devtools)
 	load_all()
 	library(RadialMR)
@@ -32,13 +30,124 @@ testing_commands <- function()
 
 
 	urate <- extract_instruments(1055)
-	egfr <- extract_outcome_data(a$SNP, 1105)
+	egfr <- extract_outcome_data(urate$SNP, 1105)
 	urate_egfr <- harmonise_data(urate, egfr)
-	outlierscan <- outlier_scan(dat, mr_method="mr_strategy1")
-	outlierplot <- outlier_graph(outlierscan)
- 
+	outlierscan <- outlier_scan(urate_egfr, mr_method="mr_ivw")
+	outlierscan <- outlier_sig(outlierscan)
+	mr_volcano_plot(rbind(outlierscan$candidate_exposure_mr, outlierscan$candidate_outcome_mr))
+	outlier_network(outlierscan)
+}
+
+
+#' Plot volcano plot of many MR analyses
+#' 
+#' @param res Dataframe similar to output from mr() function, requiring id.exposure, id.outcome. Ideally only provide one MR estimate for each exposure-outcome hypothesis. Also provide a sig column of TRUE/FALSE to determine if that association is to be labelled
+#' @param what Whether to plot many exposures against few outcomes (default: exposure) or few exposures against many outcomes (outcome). If e.g. 'exposure' and there are multiple outcomes then will facet by outcome
+#' @export
+#' @return ggplot of volcano plots
+mr_volcano_plot <- function(res, what="exposure")
+{
+	cpg <- require(ggplot2)
+	if(!cpg)
+	{
+		stop("Please install the ggplot2 package")
+	}
+	cpg <- require(ggrepel)
+	if(!cpg)
+	{
+		stop("Please install the ggrepel package")
+	}
+
+	stopifnot(all(c("outcome", "exposure", "b", "se", "pval") %in% names(res)))
+	if(!"sig" %in% names(res))
+	{
+		warning("Significant associations not defined. Defaulting to p < 0.05 cutoff")
+		res$sig <- res$pval < 0.05
+	}
+
+	if(what == "exposure")
+	{
+		form <- as.formula(". ~ outcome")
+		nout <- length(unique(res$outcome))
+		if(nout > 5)
+			warning(nout, " might be too many outcomes to plot clearly")
+
+	} else if(what == "outcome"){
+		form <- as.formula(". ~ exposure")
+		nout <- length(unique(res$exposure))
+		if(nout > 5)
+			warning(nout, " might be too many outcomes to plot clearly")
+	} else {
+		stop("'what' argument should be 'exposure' or 'outcome'")
+	}
+
+	ggplot(res, aes(x=b, y=-log10(pval))) +
+	geom_vline(xintercept=0, linetype="dotted") +
+	geom_errorbarh(aes(xmin=b-1.96*se, xmax=b+1.96*se)) +
+	geom_point(aes(colour=sig)) +
+	facet_grid(form, scale="free") +
+	geom_label_repel(data=subset(res, sig), aes(label=exposure), colour="black", segment.colour="black", point.padding = unit(0.7, "lines"), box.padding = unit(0.7, "lines"), segment.size=0.5, force=2, max.iter=3e3) +
+	# geom_text_repel(data=subset(res, sig), aes(label=outcome, colour=category)) +
+	geom_point(aes(colour=sig)) +
+	theme_bw() + 
+	theme(panel.grid.major = element_blank(), 
+	      panel.grid.minor = element_blank(),
+	      strip.text.x=element_text(size=16)
+	) +
+	# scale_colour_brewer(type="qual", palette="Dark2") +
+	# scale_fill_brewer(type="qual", palette="Dark2") +
+	labs(x="MR effect size")
+}
+
+
+outlier_adjustment <- function(outlierscan)
+{
+	# for each outlier find the candidate MR analyses
+	# if only exposure then ignore
+	# if only outcome then re-estimate the snp-outcome association
+	# if exposure and outcome then re-estimate the snp-exposure and snp-outcome association
+	# outlier
+	# candidate
+	# what 
+	# old.beta.exposure
+	# adj.beta.exposure
+	# old.beta.outcome
+	# adj.beta.outcome
+	# old.deviation
+	# new.deviation
+
+	l <- list()
+	sig <- subset(outlierscan$search, sig)
+	sige <- subset(outlierscan$candidate_exposure_mr, sig)
+	sigo <- subset(outlierscan$candidate_outcome_mr, sig)
+
+	dat <- outlierscan$dat
+
+	for(i in 1:nrow(sig))
+	{
+		a <- subset(dat, SNP == sig$SNP[i], select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome))
+		if(sig$id.outcome[i] %in% sigo$id.exposure)
+		{
+			a$candidate <- sig$outcome[i]
+			if(sig$id.outcome[i] %in% sige$id.exposure)
+			{
+				message("both: ", a$SNP, " - ", sig$outcome[i])
+				a$what <- "both"
+				a$adj.beta.exposure <- a$beta.exposure - sig$beta.outcome[i] * sige$b[sige$id.exposure == sig$id.outcome[i]]
+				a$adj.beta.outcome <- a$beta.outcome - sig$beta.outcome[i] * sigo$b[sigo$id.exposure == sig$id.outcome[i]]
+			} else {
+				message("outcome: ", a$SNP, " - ", sig$outcome[i])
+				a$what <- "outcome"
+				a$adj.beta.exposure <- a$beta.exposure
+				a$adj.beta.outcome <- a$beta.outcome - sig$beta.outcome[i] * sigo$b[sigo$id.exposure == sig$id.outcome[i]]
+			}
+			l[[i]] <- a
+		}
+	}
+	l <- bind_rows(l)
 
 }
+
 
 #' Outlier scan
 #' 
@@ -277,31 +386,17 @@ mr_strategy1 <- function(dat, het_threshold=0.05, ivw_max_snp=1)
 	}
 }
 
-#' Plot results from outlier)scan
+
+#' Identify putatively significant associations in the outlier scan
 #' 
-#' Creates a simple graph depicting the connections between outlier instruments, the original exposure and outcome traits, and the detected candidate associations
-#' 
-#' @param outlierscan Output from outlier_scan function
+#' @param mr_threshold_method This is the argument to be passed to \code{p.adjust}. Default is "fdr". If no p-value adjustment is to be applied then specify "unadjusted"
+#' @param mr_threshold Threshold to declare significance
 #' @export
-#' @return Prints plot, and returns dataframe of the connections
-outlier_graph <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold = 0.05)
+#' @return Same as outlier_scan but the candidate_exposure_mr and candidate_outcome_mr objects have an extra pval_adj and sig column each
+outlier_sig <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold = 0.05)
 {
-
-	a <- require(igraph)
-	if(!a)
-	{
-		stop("Please install the igraph R package")
-	}
-	a <- require(dplyr)
-	if(!a)
-	{
-		stop("Please install the dplyr R package")
-	}
-
-
 	stopifnot("candidate_outcome_mr" %in% names(outlierscan))
 	stopifnot("candidate_exposure_mr" %in% names(outlierscan))
-
 
 	# Use threshold to retain causal relationships
 	stopifnot(length(mr_threshold_method) == 1)
@@ -319,6 +414,37 @@ outlier_graph <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold
 
 	message("Number of candidate - outcome associations: ", sum(outlierscan$candidate_outcome_mr$sig))
 	message("Number of candidate - exposure associations: ", sum(outlierscan$candidate_exposure_mr$sig))
+	return(outlierscan)
+}
+
+#' Plot results from outlier_scan in a network
+#' 
+#' Creates a simple network depicting the connections between outlier instruments, the original exposure and outcome traits, and the detected candidate associations
+#' 
+#' @param outlierscan Output from outlier_scan function
+#' @export
+#' @return Prints plot, and returns dataframe of the connections
+outlier_network <- function(outlierscan)
+{
+
+	a <- require(igraph)
+	if(!a)
+	{
+		stop("Please install the igraph R package")
+	}
+	a <- require(dplyr)
+	if(!a)
+	{
+		stop("Please install the dplyr R package")
+	}
+
+	stopifnot("candidate_outcome_mr" %in% names(outlierscan))
+	stopifnot("candidate_exposure_mr" %in% names(outlierscan))
+
+	if(!"sig" %in% names(outlierscan$candidate_outcome_mr) | !"sig" %in% names(outlierscan$candidate_exposure_mr))
+	{
+		stop("Significant hits have not been specified. Please run outlier_sig.")
+	}
 
 
 	ao <- available_outcomes()
@@ -473,7 +599,6 @@ outlier_graph <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold
 		vertex.color=V(grl)$colour,
 		edge.color="red"
 	)
-	return(sig=dplyr::as_data_frame(sig))
 }
 
 
