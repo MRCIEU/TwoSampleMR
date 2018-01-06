@@ -26,7 +26,26 @@ testing_commands <- function()
 	b <- extract_outcome_data(a$SNP, 7)
 	dat <- harmonise_data(a, b)
 	outlierscan <- outlier_scan(dat, mr_method="mr_ivw")
-	outlierplot <- outlier_graph(outlierscan)
+
+	temp <- subset(outlierscan$search, pval.outcome < 5e-8)
+	# remove any cholesterol related traits
+	temp <- subset(temp, 
+		!grepl("simvastatin", outcome, ignore.case = TRUE) &
+		!grepl("atorvastatin", outcome, ignore.case = TRUE) &
+		!grepl("cholesterol", outcome, ignore.case = TRUE) &
+		!grepl("heart disease", outcome, ignore.case = TRUE) &
+		!grepl("HDL", outcome, ignore.case = TRUE) &
+		!grepl("LDL", outcome, ignore.case = TRUE) &
+		!grepl("myocardial", outcome, ignore.case = TRUE) &
+		!grepl("ischaemic", outcome, ignore.case = TRUE) &
+		!grepl("angina", outcome, ignore.case = TRUE)
+	)
+
+temp$outcome[grepl("mass", temp$outcome, ignore.case=TRUE)]
+temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
+
+	outlierscan <- outlier_sig(outlierscan)
+	outlier_network(outlierscan)
 
 
 	urate <- extract_instruments(1055)
@@ -36,6 +55,17 @@ testing_commands <- function()
 	outlierscan <- outlier_sig(outlierscan)
 	mr_volcano_plot(rbind(outlierscan$candidate_exposure_mr, outlierscan$candidate_outcome_mr))
 	outlier_network(outlierscan)
+
+	temp <- outlier_adjustment(outlierscan)
+
+	res <- mr(dat)
+	ind <- dat$beta.exposure < 0
+	dat$beta.exposure[ind] <- abs(dat$beta.exposure[ind])
+	dat$beta.outcome[ind] <- dat$beta.outcome[ind] * -1
+	mr_scatter_plot(res, dat)[[1]] +
+	geom_point(data=subset(dat, SNP %in% l$SNP), colour="red") +
+	geom_point()
+
 }
 
 
@@ -45,7 +75,7 @@ testing_commands <- function()
 #' @param what Whether to plot many exposures against few outcomes (default: exposure) or few exposures against many outcomes (outcome). If e.g. 'exposure' and there are multiple outcomes then will facet by outcome
 #' @export
 #' @return ggplot of volcano plots
-mr_volcano_plot <- function(res, what="exposure")
+volcano_plot <- function(res, what="exposure")
 {
 	cpg <- require(ggplot2)
 	if(!cpg)
@@ -99,7 +129,13 @@ mr_volcano_plot <- function(res, what="exposure")
 	labs(x="MR effect size")
 }
 
-
+#' Outlier adjustment estimation
+#' 
+#' How much of the heterogeneity due to the outlier can be explained by alternative pathways?
+#' 
+#' @param outlierscan Output from outlier_scan
+#' @export
+#' @return data frame of adjusted effect estimates and heterogeneity stats
 outlier_adjustment <- function(outlierscan)
 {
 	# for each outlier find the candidate MR analyses
@@ -113,6 +149,10 @@ outlier_adjustment <- function(outlierscan)
 	# adj.beta.exposure
 	# old.beta.outcome
 	# adj.beta.outcome
+	# candidate.beta.outcome
+	# candidate.se.outcome
+	# candidate.beta.exposure
+	# candidate.se.exposure
 	# old.deviation
 	# new.deviation
 
@@ -121,33 +161,78 @@ outlier_adjustment <- function(outlierscan)
 	sige <- subset(outlierscan$candidate_exposure_mr, sig)
 	sigo <- subset(outlierscan$candidate_outcome_mr, sig)
 
+
 	dat <- outlierscan$dat
+	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+	dat$Q <- sum(dat$qi)
 
 	for(i in 1:nrow(sig))
 	{
-		a <- subset(dat, SNP == sig$SNP[i], select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome))
+		a <- subset(dat, SNP == sig$SNP[i], select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome, qi, Q))
 		if(sig$id.outcome[i] %in% sigo$id.exposure)
 		{
 			a$candidate <- sig$outcome[i]
+			a$i <- i
 			if(sig$id.outcome[i] %in% sige$id.exposure)
 			{
 				message("both: ", a$SNP, " - ", sig$outcome[i])
 				a$what <- "both"
-				a$adj.beta.exposure <- a$beta.exposure - sig$beta.outcome[i] * sige$b[sige$id.exposure == sig$id.outcome[i]]
-				a$adj.beta.outcome <- a$beta.outcome - sig$beta.outcome[i] * sigo$b[sigo$id.exposure == sig$id.outcome[i]]
+				a$candidate.beta.exposure <- sige$b[sige$id.exposure == sig$id.outcome[i]]
+				a$candidate.se.exposure <- sige$se[sige$id.exposure == sig$id.outcome[i]]
+				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
+				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
+				b <- bootstrap_path(a$beta.exposure, a$se.exposure, sig$beta.outcome[i], sig$se.outcome[i], sige$b[sige$id.exposure == sig$id.outcome[i]], sige$se[sige$id.exposure == sig$id.outcome[i]])
+				a$adj.beta.exposure <- b[1]
+				a$adj.se.exposure <- b[2]
+				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
+				a$adj.beta.outcome <- b[1]
+				a$adj.se.outcome <- b[2]
 			} else {
 				message("outcome: ", a$SNP, " - ", sig$outcome[i])
 				a$what <- "outcome"
+				a$candidate.beta.exposure <- NA
+				a$candidate.se.exposure <- NA
+				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
+				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
+				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
 				a$adj.beta.exposure <- a$beta.exposure
-				a$adj.beta.outcome <- a$beta.outcome - sig$beta.outcome[i] * sigo$b[sigo$id.exposure == sig$id.outcome[i]]
+				a$adj.se.exposure <- a$se.exposure
+				a$adj.beta.outcome <- b[1]
+				a$adj.se.outcome <- b[2]
 			}
+			temp <- dat
+			temp$beta.exposure[temp$SNP == a$SNP] <- a$adj.beta.exposure
+			temp$beta.exposure.se[temp$SNP == a$SNP] <- a$adj.beta.exposure.se
+			temp$beta.outcome[temp$SNP == a$SNP] <- a$adj.beta.outcome
+			temp$beta.outcome.se[temp$SNP == a$SNP] <- a$adj.beta.outcome.se
+			temp$qi <- cochrans_q(temp$beta.outcome / temp$beta.exposure, temp$se.outcome / abs(temp$beta.exposure))
+			a$adj.qi <- temp$qi[temp$SNP == a$SNP]
+			a$adj.Q <- sum(temp$qi)
+
 			l[[i]] <- a
 		}
+
 	}
 	l <- bind_rows(l)
-
 }
 
+cochrans_q <- function(b, se)
+{
+	xw <- sum(b / se^2) / sum(1/se^2)
+	qi <- (1/se^2) * (b - xw)^2
+	return(qi)
+}
+
+bootstrap_path <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
+{
+	res <- rep(0, nboot)
+	for(i in 1:nboot)
+	{
+		res[i] <- rnorm(1, gx, gx.se) - rnorm(1, gp, gp.se) * rnorm(1, px, px.se)
+	}
+	pe <- gx - gp * px
+	return(c(pe, sd(res)))
+}
 
 #' Outlier scan
 #' 
