@@ -50,13 +50,21 @@ temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
 
 	urate <- extract_instruments(1055)
 	egfr <- extract_outcome_data(urate$SNP, 1105)
+	chd <- extract_outcome_data(urate$SNP, 7)
 	urate_egfr <- harmonise_data(urate, egfr)
+	urate_chd <- harmonise_data(urate, chd)
 	outlierscan <- outlier_scan(urate_egfr, mr_method="mr_ivw")
 	outlierscan <- outlier_sig(outlierscan)
 	mr_volcano_plot(rbind(outlierscan$candidate_exposure_mr, outlierscan$candidate_outcome_mr))
 	outlier_network(outlierscan)
-
 	temp <- outlier_adjustment(outlierscan)
+
+	outlierscan2 <- outlier_scan(urate_chd, mr_method="mr_ivw")
+	outlierscan2 <- outlier_sig(outlierscan2)
+	temp2 <- outlier_adjustment(outlierscan2)
+
+	table(temp2$adj.qi / temp2$adj.Q < temp2$qi / temp2$Q)
+
 
 	res <- mr(dat)
 	ind <- dat$beta.exposure < 0
@@ -247,7 +255,7 @@ bootstrap_path <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
 #' @param search_threshold The p-value threshold for detecting an association between an outlier and a candidate trait. Default is 5e-8
 #' @param id_list The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes()
 #' @param include_outliers When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.
-#' @param mr_method Method to use for candidate trait - exposure/outcome analysis. Default is mr_strategy1. Can also provide basic MR methods e.g. mr_ivw, mr_weighted_mode etc
+#' @param mr_method Method to use for candidate trait - exposure/outcome analysis. Default is strategy1. Can also provide basic MR methods e.g. mr_ivw, mr_weighted_mode etc
 #'
 #' @export
 #' @return List
@@ -263,7 +271,7 @@ bootstrap_path <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
 #' candidate_exposure   Extracted instrument SNPs from exposure
 #' candidate_exposure_dat  Harmonised candidate - exposure dataset
 #' candidate_exposure_mr  MR analysis of candidates against exposure
-outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_threshold=5e-8, id_list="default", include_outliers=FALSE, mr_method="mr_strategy1")
+outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_threshold=5e-8, id_list="default", include_outliers=FALSE, mr_method="strategy1")
 {
 	# Get outliers
 
@@ -277,7 +285,7 @@ outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thr
 	output$dat <- dat
 
 	stopifnot(length(mr_method) == 1)
-	stopifnot(mr_method %in% mr_method_list()$obj | mr_method == "mr_strategy1")
+	stopifnot(mr_method %in% mr_method_list()$obj | mr_method == "strategy1")
 
 	if(outliers[1] == "RadialMR")
 	{
@@ -386,9 +394,9 @@ outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thr
 	}
 
 	message("Performing MR of ", length(unique(output$candidate_outcome_dat$id.exposure)), " candidate traits against ", dat$outcome[1])
-	if(mr_method == "mr_strategy1")
+	if(mr_method == "strategy1")
 	{
-		temp <- mr_strategy1(output$candidate_outcome_dat)
+		temp <- strategy1(output$candidate_outcome_dat)
 		output$candidate_outcome_mr <- temp$res
 		output$candidate_outcome_mr_full <- temp
 	} else {
@@ -416,9 +424,9 @@ outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thr
 	}
 
 	message("Performing MR of ", length(unique(output$candidate_exposure_dat$id.exposure)), " candidate traits against ", dat$exposure[1])
-	if(mr_method == "mr_strategy1")
+	if(mr_method == "strategy1")
 	{
-		temp <- mr_strategy1(output$candidate_exposure_dat)
+		temp <- strategy1(output$candidate_exposure_dat)
 		output$candidate_exposure_mr <- temp$res
 		output$candidate_exposure_mr_full <- temp
 	} else {
@@ -440,7 +448,7 @@ outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thr
 #' @param dat Output from harmonise_data function
 #' @param het_threshold The p-value threshold for Cochran's Q - if lower than this threshold then run weighted mode. Default p = 0.05
 #' @param ivw_max_snp Maximum SNPs to allow IVW result even if heterogeneity is high. Default = 1
-mr_strategy1 <- function(dat, het_threshold=0.05, ivw_max_snp=1)
+strategy1 <- function(dat, het_threshold=0.05, ivw_max_snp=1)
 {
 	message("First pass: running ", length(unique(paste(dat$id.exposure, dat$id.outcome))), " analyses with Wald ratio or IVW")
 	a <- suppressMessages(mr(dat, method_list=c("mr_ivw", "mr_wald_ratio")))
