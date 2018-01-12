@@ -6,7 +6,7 @@
 \usage{
 outlier_scan(dat, outliers = "RadialMR", use_proxies = FALSE,
   search_threshold = 5e-08, id_list = "default", include_outliers = FALSE,
-  mr_method = "mr_strategy1")
+  mr_method = "strategy1")
 }
 \arguments{
 \item{dat}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used}
@@ -21,7 +21,7 @@ outlier_scan(dat, outliers = "RadialMR", use_proxies = FALSE,
 
 \item{include_outliers}{When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.}
 
-\item{mr_method}{Method to use for candidate trait - exposure/outcome analysis. Default is mr_strategy1. Can also provide basic MR methods e.g. mr_ivw, mr_weighted_mode etc}
+\item{mr_method}{Method to use for candidate trait - exposure/outcome analysis. Default is strategy1. Can also provide basic MR methods e.g. mr_ivw, mr_weighted_mode etc}
 }
 \value{
 List
