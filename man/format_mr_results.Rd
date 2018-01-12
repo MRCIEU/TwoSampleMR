@@ -6,8 +6,8 @@
 \usage{
 format_mr_results(mr_res, exponentiate = FALSE,
   single_snp_method = "Wald ratio",
-  multi_snp_method = "Inverse variance weighted",
-  group_single_categories = TRUE)
+  multi_snp_method = "Inverse variance weighted", ao_slc = T,
+  priority = "Cardiometabolic")
 }
 \arguments{
 \item{mr_res}{Results from mr()}
@@ -18,6 +18,10 @@ format_mr_results(mr_res, exponentiate = FALSE,
 
 \item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"}
 
+\item{ao_slc}{Logical; retrieve sample size and subcategory using available_outcomes(). If set to FALSE mr_res must contain the following additional columns: subcategory and sample_size.}
+
+\item{priority}{Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"}
+
 \item{group_single_categories}{If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE}
 }
 \value{
@@ -27,12 +31,10 @@ data frame.
 This function takes the results from mr() and is particularly useful
 if the MR has been applied using multiple exposures and multiple outcomes. 
 It creates a new data frame with the following:
-}
-\details{
 - exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
 - only one estimate for each exposure-outcome
 - exponentiated effects if required
-
-It uses the available_outcomes() function to retrieve the outcome sample size.
 }
-
+\details{
+By default it uses the available_outcomes() function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If ao_slc set to TRUE then the user must supply their own study level characteris. This is useful when the user has supplied their own outcome GWAS results (ie they are not in MR-Base).
+}

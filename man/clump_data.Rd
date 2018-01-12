@@ -4,7 +4,7 @@
 \alias{clump_data}
 \title{Perform LD clumping on SNP data}
 \usage{
-clump_data(dat, clump_kb = 10000, clump_r2 = 0.01, clump_p1 = 1,
+clump_data(dat, clump_kb = 10000, clump_r2 = 0.001, clump_p1 = 1,
   clump_p2 = 1)
 }
 \arguments{
@@ -24,4 +24,3 @@ Data frame
 \description{
 Uses PLINK clumping method, where SNPs in LD within a particular window will be pruned. The SNP with the lowest p-value is retained.
 }
-

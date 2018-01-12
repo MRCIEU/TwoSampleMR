@@ -20,11 +20,12 @@
 #' @param ncontrol_col="ncontrol" Optional column name for number of controls.
 #' @param samplesize_col="samplesize" Optional column name for sample size.
 #' @param gene_col="gene" Optional column name for gene name.
+#' @param id_col="id" Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination
 #' @param min_pval=1e-200 Minimum allowed pval
 #'
 #' @export
 #' @return data frame
-read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
 {
 	outcome_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	outcome_dat <- format_data(
@@ -44,6 +45,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 		ncontrol_col=ncontrol_col,
 		samplesize_col=samplesize_col,
 		gene_col=gene_col,
+		id_col=id_col,
 		min_pval=min_pval
 	)
 	outcome_dat$data_source.outcome <- "textfile"
@@ -69,11 +71,12 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #' @param ncontrol_col="ncontrol" Optional column name for number of controls.
 #' @param samplesize_col="samplesize" Optional column name for sample size.
 #' @param gene_col="gene" Optional column name for gene name.
+#' @param id_col="id" Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination
 #' @param min_pval=1e-200 Minimum allowed pval
 #'
 #' @export
 #' @return data frame
-read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
 {
 	exposure_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
@@ -93,6 +96,7 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 		ncontrol_col=ncontrol_col,
 		samplesize_col=samplesize_col,
 		gene_col=gene_col,
+		id_col=id_col,
 		min_pval=min_pval
 	)
 	exposure_dat$data_source.exposure <- "textfile"
@@ -127,9 +131,9 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", min_pval=1e-200)
+format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
 {
-	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col)
+	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col)
 
 	i <- names(dat) %in% all_cols
 	if(sum(i) == 0)
@@ -394,7 +398,13 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	}
 
 	# Create id column
-	dat$id.outcome <- create_ids(dat[[type]])
+	if(id_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == id_col)[1]] <- "id.outcome"
+		dat$id.outcome <- as.character(dat$id.outcome)
+	} else {
+		dat$id.outcome <- create_ids(dat[[type]])
+	}
 
 	if(any(dat$mr_keep.outcome))
 	{

@@ -7,21 +7,61 @@
 #' @return NULL
 toggle_dev <- function(where="local")
 {
-	stopifnot(where %in% c("local", "release", "test"))
-	release <- "http://api.mrbase.org/"
+	warning("This function has will soon be deprecated. Please use toggle_api.")
 
 	url <- switch(where,
 		local = "http://localhost/",
+		localtest = "http://localhost:8019/",
 		test = "http://apitest.mrbase.org/",
-		release = "http://api.mrbase.org/"
+		release = "http://api.mrbase.org/",
+		jojo = "http://jojo.epi.bris.ac.uk:8019/",
+		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
 	)
+	if(is.null(url))
+	{
+		url <- options()$mrbaseapi
+		warning("A valid API was not selected. No change")
+	}
 
 	options(mrbaseapi=url)
-	message("Changing API to ", where, ": ", url)
+	message("API: ", where, ": ", url)
 }
 
+#' Toggle API address between development and release
+#'
+#' @param where Which API to use. Choice between "local", "release", "test". Default = "local"
+#'
+#' @export
+#' @return NULL
+toggle_api <- function(where="release")
+{
+	url <- switch(where,
+		local = "http://localhost/",
+		localtest = "http://localhost:8019/",
+		test = "http://apitest.mrbase.org/",
+		release = "http://api.mrbase.org/",
+		jojo = "http://jojo.epi.bris.ac.uk:8019/",
+		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
+	)
+	if(is.null(url))
+	{
+		url <- options()$mrbaseapi
+		warning("A valid API was not selected. No change")
+	}
 
+	options(mrbaseapi=url)
+	message("API: ", where, ": ", url)
+}
 
+where="locals"
+a <- switch(where,
+		local = "http://localhost/",
+		localtest = "http://localhost:8019/",
+		test = "http://apitest.mrbase.org/",
+		release = "http://api.mrbase.org/",
+		jojo = "http://jojo.epi.bris.ac.uk:8019/",
+		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
+	)
 
 
 #' Get access token for OAuth2 access to MR Base
@@ -128,7 +168,6 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 }
 
 
-
 # Extract summary statistics from MySQL db through API given a list of SNPs and outcomes
 #'
 #' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
@@ -141,10 +180,45 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
 #' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#' @param ... Other options to pass to internal extraction function
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), ...)
+{
+	outcomes <- unique(outcomes)
+	snps <- unique(snps)
+	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token, ...)
+
+	if(proxies)
+	{
+		for(i in 1:length(outcomes))
+		{
+			if(class(firstpass) == "NULL")
+			{
+				missedsnps <- snps
+			} else {
+				missedsnps <- snps[!snps %in% subset(firstpass, id.outcome == outcomes[i])$SNP]
+			}
+			if(length(missedsnps)>0)
+			{
+				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
+				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, ...)
+				if(!is.null(temp))
+				{
+					firstpass <- plyr::rbind.fill(firstpass, temp)
+				}
+			}
+		}
+
+	}
+
+	return(firstpass)
+}
+
+
+
+extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000)
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
@@ -160,7 +234,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 		stop("'proxies' argument should be TRUE or FALSE")
 	}
 
-	if((length(snps) < 5 & length(outcomes) < 100) | (length(outcomes) < 5 & length(snps) < 100))
+	if((length(snps) < splitsize & length(outcomes) < splitsize) | (length(outcomes) < splitsize & length(snps) < splitsize))
 	{
 		snpfile <- upload_file_to_api(snps)
 		outcomefile <- upload_file_to_api(outcomes)
@@ -176,12 +250,12 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			"&maf_threshold=", maf_threshold
 		)
 		d <- fromJSON_safe(url)
+		if(!is.data.frame(d)) d <- data.frame()
 
 	} else if(length(snps) > length(outcomes)) {
 
 		# Split snps 
-		n <- length(snps)
-		splitsize <- 100
+		n <- length(snps)		
 		splits <- data.frame(snps=snps, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
 		d <- list()
 		for(i in 1:length(outcomes))
@@ -216,7 +290,6 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	} else {
 		# Split outcomes
 		n <- length(outcomes)
-		splitsize <- 100
 		splits <- data.frame(outcomes=outcomes, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
 		d <- list()
 		for(i in 1:length(snps))
@@ -249,41 +322,175 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 		d <- plyr::rbind.fill(d)
 
 	}
-
-	if(length(d) == 0)
+	if(is.null(nrow(d)) | nrow(d) == 0)
 	{
-		message("None of the requested SNPs were available in the specified GWASs.")
+		# message("None of the requested SNPs were available in the specified GWASs.")
 		return(NULL)
 	}
 	d <- format_d(d)
-	d$data_source.outcome <- "mrbase"
-	return(d)
+	if (nrow(d)>0){
+		d$data_source.outcome <- "mrbase"
+		return(d)
+	} else {
+		return(NULL)
+	}
 }
 
-
-
-extract_outcome_data_simple <- function(snps, outcomes, proxies = 0, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+# Extract summary statistics from MySQL db through API given a list of SNPs and outcomes
+#'
+#' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
+#'
+#' @param snps Array of SNP rs IDs
+#' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
+#' @param proxies Look for LD tags? Default is TRUE.
+#' @param rsq Minimum LD rsq value (if proxies = 1). Default = 0.8.
+#' @param align_alleles = 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no
+#' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
+#' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#'
+#' @return Dataframe of summary statistics for all available outcomes
+extract_outcome_data2 <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
 	outcomes <- unique(outcomes)
 
-	snpfile <- upload_file_to_api(snps)
-	outcomefile <- upload_file_to_api(outcomes)
+	splitsize <- 50
 
-	url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-		"access_token=", access_token, 
-		"&outcomefile=", outcomefile, 
-		"&snpfile=", snpfile,
-		"&proxies=", proxies,
-		"&rsq=", rsq,
-		"&align_alleles=", align_alleles,
-		"&palindromes=", palindromes,
-		"&maf_threshold=", maf_threshold
-	)
-	d <- fromJSON_safe(url)
+	if((length(snps) < 5 & length(outcomes) < splitsize) | (length(outcomes) < 5 & length(snps) < splitsize))
+	{
+		snpfile <- upload_file_to_api(snps)
+		outcomefile <- upload_file_to_api(outcomes)
 
-	if(length(d) == 0)
+		url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
+			"access_token=", access_token,
+			"&outcomefile=", outcomefile,
+			"&snpfile=", snpfile,
+			"&proxies=", 0,
+			"&rsq=", rsq,
+			"&align_alleles=", align_alleles,
+			"&palindromes=", palindromes,
+			"&maf_threshold=", maf_threshold
+		)
+		d <- fromJSON_safe(url)
+
+	} else if(length(snps) > length(outcomes)) {
+
+		# Split snps 
+		n <- length(snps)		
+		splits <- data.frame(snps=snps, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
+		d <- list()
+		for(i in 1:length(outcomes))
+		{
+			message(i, " of ", length(outcomes), " outcomes")
+			
+			d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x)
+			{
+				x <- plyr::mutate(x)
+				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
+				snpfile <- upload_file_to_api(x$snps)
+				outcomefile <- upload_file_to_api(outcomes[i])
+
+				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
+					"access_token=", access_token,
+					"&outcomefile=", outcomefile,
+					"&snpfile=", snpfile,
+					"&proxies=", 0,
+					"&rsq=", rsq,
+					"&align_alleles=", align_alleles,
+					"&palindromes=", palindromes,
+					"&maf_threshold=", maf_threshold
+				)
+				out <- fromJSON_safe(url)
+				if(!is.data.frame(out)) out <- data.frame()
+				return(out)
+			})
+		}
+
+		d <- plyr::rbind.fill(d)
+
+	} else {
+		# Split outcomes
+		n <- length(outcomes)
+		splits <- data.frame(outcomes=outcomes, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
+		d <- list()
+		for(i in 1:length(snps))
+		{
+			message(i, " of ", length(snps), " snps")
+			
+			d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x)
+			{
+				x <- plyr::mutate(x)
+				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
+				snpfile <- upload_file_to_api(snps[i])
+				outcomefile <- upload_file_to_api(x$outcomes)
+
+				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
+					"access_token=", access_token,
+					"&outcomefile=", outcomefile,
+					"&snpfile=", snpfile,
+					"&proxies=", 0,
+					"&rsq=", rsq,
+					"&align_alleles=", align_alleles,
+					"&palindromes=", palindromes,
+					"&maf_threshold=", maf_threshold
+				)
+				out <- fromJSON_safe(url)
+				if(!is.data.frame(out)) out <- data.frame()
+				return(out)
+			})
+		}
+
+		d <- plyr::rbind.fill(d)
+
+	}
+
+	if(proxies == TRUE)
+	{
+		# For each outcome, find how many SNPs were identified
+		# Get list of SNPs that weren't identified
+		# Run analysis for that outcome again, using just the missing SNPs
+
+		nsnp <- length(snps)
+		d2 <- list()
+		for(i in 1:length(outcomes))
+		{
+			temp <- subset(d, id == outcomes[i])
+			if(nrow(temp) < nsnp)
+			{
+				message("Only found ", nrow(temp), " out of ", nsnp, " SNPs for outcome ", outcomes[i], ", searching for proxies")
+				snpsleft <- snps[!snps %in% temp$name]
+
+				snpfile <- upload_file_to_api(snpsleft)
+				outcomefile <- upload_file_to_api(outcomes[i])
+
+				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
+					"access_token=", access_token,
+					"&outcomefile=", outcomefile,
+					"&snpfile=", snpfile,
+					"&proxies=", 1,
+					"&rsq=", rsq,
+					"&align_alleles=", align_alleles,
+					"&palindromes=", palindromes,
+					"&maf_threshold=", maf_threshold
+				)
+				d2[[i]] <- fromJSON_safe(url)
+			}
+		}
+		d2 <- plyr::rbind.fill(d2)
+		d$proxy_snp <- d$name
+		d$target_snp <- d$name
+		d$target_a1 <- d$effect_allele
+		d$target_a2 <- d$other_allele
+		d$proxy_a1 <- d$effect_allele
+		d$proxy_a2 <- d$other_allele
+		d <- plyr::rbind.fill(d, d2)
+	}
+
+
+
+	if(is.null(nrow(d)) | nrow(d) == 0)
 	{
 		message("None of the requested SNPs were available in the specified GWASs.")
 		return(NULL)
@@ -292,8 +499,6 @@ extract_outcome_data_simple <- function(snps, outcomes, proxies = 0, rsq = 0.8, 
 	d$data_source.outcome <- "mrbase"
 	return(d)
 }
-
-
 
 #' Avoid issues in MR by finding impossible vals and setting to NA
 #'
@@ -382,7 +587,9 @@ format_d <- function(d)
 	}
 
 	d$originalname.outcome <- d$outcome
-	d$outcome <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
+	d$outcome.deprecated <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
+	warning("From version 0.4.2 the outcome format has changed. You can find the deprecated version of the output name in outcome.deprecated")
+	d$outcome <- paste0(d$outcome, " || id:", d$id.outcome)
 
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
 	d <- subset(d, !rem)

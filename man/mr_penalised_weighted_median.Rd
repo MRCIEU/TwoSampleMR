@@ -4,7 +4,8 @@
 \alias{mr_penalised_weighted_median}
 \title{Penalised weighted median MR}
 \usage{
-mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
+mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out,
+  parameters = default_parameters())
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}
@@ -15,9 +16,7 @@ mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
 
 \item{se_out}{Standard errors of genetic effects on outcome}
 
-\item{penk}{Constant term in penalisation. Default=20}
-
-\item{nboot}{Number of bootstraps to calculate SE. Default 1000}
+\item{parameters}{List containing "penk" - Constant term in penalisation, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=20 and nboot=1000}
 }
 \value{
 List with the following elements:
@@ -29,4 +28,3 @@ List with the following elements:
 Modification to standard weighted median MR
 Updated based on Burgess 2016 "Robust instrumental variable methods using multiple candidate instruments with application to Mendelian randomization"
 }
-

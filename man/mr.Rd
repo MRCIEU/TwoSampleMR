@@ -22,4 +22,3 @@ List with the following elements:
 \description{
 Perform all Mendelian randomization tests
 }
-

@@ -45,7 +45,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 
 
 #' Get list of available MR methods
-#'
+#'8
 #' @export
 #' @return character vector of method names
 mr_method_list <- function()
@@ -59,36 +59,36 @@ mr_method_list <- function()
 			use_by_default=TRUE,
 			heterogeneity_test=FALSE
 		),
-		list(
-			obj="mr_meta_fixed_simple",
-			name="Fixed effects meta analysis (simple SE)",
-			PubmedID="",
-			Description="",
-			use_by_default=TRUE,
-			heterogeneity_test=FALSE
-		),
-		list(
-			obj="mr_meta_fixed",
-			name="Fixed effects meta analysis (delta method)",
-			PubmedID="",
-			Description="",
-			use_by_default=TRUE,
-			heterogeneity_test=TRUE
-		),
-		list(
-			obj="mr_meta_random",
-			name="Random effects meta analysis (delta method)",
-			PubmedID="",
-			Description="",
-			use_by_default=TRUE,
-			heterogeneity_test=TRUE
-		),
+		# list(
+		# 	obj="mr_meta_fixed_simple",
+		# 	name="Fixed effects meta analysis (simple SE)",
+		# 	PubmedID="",
+		# 	Description="",
+		# 	use_by_default=FALSE,
+		# 	heterogeneity_test=FALSE
+		# ),
+		# list(
+		# 	obj="mr_meta_fixed",
+		# 	name="Fixed effects meta analysis (delta method)",
+		# 	PubmedID="",
+		# 	Description="",
+		# 	use_by_default=FALSE,
+		# 	heterogeneity_test=TRUE
+		# ),
+		# list(
+		# 	obj="mr_meta_random",
+		# 	name="Random effects meta analysis (delta method)",
+		# 	PubmedID="",
+		# 	Description="",
+		# 	use_by_default=FALSE,
+		# 	heterogeneity_test=TRUE
+		# ),
 		list(
 			obj="mr_two_sample_ml",
 			name="Maximum likelihood",
 			PubmedID="",
 			Description="",
-			use_by_default=TRUE,
+			use_by_default=FALSE,
 			heterogeneity_test=TRUE
 		),
 		list(
@@ -103,6 +103,14 @@ mr_method_list <- function()
 			obj="mr_egger_regression_bootstrap",
 			name="MR Egger (bootstrap)",
 			PubmedID="26050253",
+			Description="",
+			use_by_default=FALSE,
+			heterogeneity_test=FALSE
+		),
+		list(
+			obj="mr_simple_median",
+			name="Simple median",
+			PubmedID="",
 			Description="",
 			use_by_default=FALSE,
 			heterogeneity_test=FALSE
@@ -130,6 +138,38 @@ mr_method_list <- function()
 			Description="",
 			use_by_default=TRUE,
 			heterogeneity_test=TRUE
+		),
+		list(
+			obj="mr_simple_mode",
+			name="Simple mode",
+			PubmedID="",
+			Description="",
+			use_by_default=TRUE,
+			heterogeneity_test=FALSE
+		),
+		list(
+			obj="mr_weighted_mode",
+			name="Weighted mode",
+			PubmedID="",
+			Description="",
+			use_by_default=TRUE,
+			heterogeneity_test=FALSE
+		),
+		list(
+			obj="mr_weighted_mode_nome",
+			name="Weighted mode (NOME)",
+			PubmedID="",
+			Description="",
+			use_by_default=FALSE,
+			heterogeneity_test=FALSE
+		),
+		list(
+			obj="mr_simple_mode_nome",
+			name="Simple mode (NOME)",
+			PubmedID="",
+			Description="",
+			use_by_default=FALSE,
+			heterogeneity_test=FALSE
 		)
 	)
 	a <- lapply(a, as.data.frame)
@@ -149,7 +189,10 @@ default_parameters <- function()
 	list(
 		nboot = 1000,
 		Cov = 0,
-		penk = 20
+		penk = 20,
+		phi = 1,
+		alpha = 0.05,
+		Qthresh = 0.05
 	)
 }
 
@@ -501,7 +544,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
@@ -511,9 +554,36 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
 	pval <- 2 * pnorm(abs(b/se), low=FALSE)
-	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
+	return(list(b=b, se=se, pval=pval, Q=NA, Q_df=NA, Q_pval=NA, nsnp=length(b_exp)))
 }
 
+
+#' Simple median method
+#'
+#' Perform MR using summary statistics. Bootstraps used to calculate standard error.
+#'
+#' @param b_exp Vector of genetic effects on exposure
+#' @param b_out Vector of genetic effects on outcome
+#' @param se_exp Standard errors of genetic effects on exposure
+#' @param se_out Standard errors of genetic effects on outcome
+#' @param nboot Number of bootstraps to calculate se. Default 1000
+#'
+#' @export
+#' @return List with the following elements:
+#'         b: MR estimate
+#'         se: Standard error
+#'         pval: p-value
+mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
+{
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
+	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+
+	b_iv <- b_out / b_exp
+	b <- weighted_median(b_iv, rep(1/length(b_exp), length(b_exp)))
+	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, rep(1/length(b_exp), length(b_exp)), parameters$nboot)
+	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
+}
 
 
 
@@ -538,6 +608,17 @@ weighted_median <- function(b_iv, weights)
 	return(b)
 }
 
+weighted_median <- function(b_iv, weights)
+{
+	betaIV.order <- b_iv[order(b_iv)]
+	weights.order <- weights[order(b_iv)]
+	weights.sum <- cumsum(weights.order)-0.5*weights.order
+	weights.sum <- weights.sum/sum(weights.order)
+	below <- max(which(weights.sum<0.5))
+	b = betaIV.order[below] + (betaIV.order[below+1]-betaIV.order[below])*
+	(0.5-weights.sum[below])/(weights.sum[below+1]-weights.sum[below])
+	return(b)
+}
 
 
 
@@ -560,9 +641,9 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 {
 	med <- rep(0, nboot)
 	for(i in 1:nboot){
-		betaXG.boot = rnorm(length(b_exp), mean=b_exp, sd=se_exp)
-		betaYG.boot = rnorm(length(b_out), mean=b_out, sd=se_out)
-		betaIV.boot = betaYG.boot/betaXG.boot
+		b_exp.boot = rnorm(length(b_exp), mean=b_exp, sd=se_exp)
+		b_out.boot = rnorm(length(b_out), mean=b_out, sd=se_out)
+		betaIV.boot = b_out.boot/b_exp.boot
 		med[i] = weighted_median(betaIV.boot, weights)
 	}
 	return(sd(med)) 
@@ -579,15 +660,14 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param penk Constant term in penalisation. Default=20 
-#' @param nboot Number of bootstraps to calculate SE. Default 1000
+#' @param parameters List containing "penk" - Constant term in penalisation, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=20 and nboot=1000
 #'
 #' @export
 #' @return List with the following elements:
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
@@ -606,6 +686,45 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 
 
 
+#' MR median estimators
+#'
+#' @param dat Output from harmonise_data()
+#' @param parameters=default_parameters() <what param does>
+#'
+#' @export
+#' @return data frame
+mr_median <- function(dat, parameters=default_parameters())
+{
+	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
+
+	if(nrow(dat) < 3) 
+	{
+		warning("Need at least 3 SNPs")
+		return(NULL)
+	}
+
+	b_exp <- dat$beta.exposure
+	b_out <- dat$beta.outcome
+	se_exp <- dat$se.exposure
+	se_out <- dat$se.outcome
+
+	sm <- mr_simple_median(b_exp, b_out, se_exp, se_out, parameters)
+	wm <- mr_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
+	pm <- mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
+
+	res <- data.frame(
+		Method = c("Simple median", "Weighted median", "Penalised median"),
+		nsnp = length(b_exp),
+		Estimate = c(sm$b, wm$b, pm$b),
+		SE = c(sm$se, wm$se, pm$se)
+	)
+	res$CI_low <- res$Estimate - qnorm(1-parameters$alpha/2) * res$SE
+	res$CI_upp <- res$Estimate + qnorm(1-parameters$alpha/2) * res$SE
+	res$P <- c(sm$pval, wm$pval, pm$pval)
+	return(res)
+}
+
+
 #' Inverse variance weighted regression
 #'
 #' @param b_exp Vector of genetic effects on exposure
@@ -619,7 +738,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
@@ -638,296 +757,3 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 
 
-#' Leave one out sensitivity analysis
-#'
-#' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_ivw Choose which method to use
-#'
-#' @export
-#' @return List of data frames
-mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
-{
-	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
-	{
-		x <- subset(X, mr_keep)
-		nsnp <- nrow(x)
-		if(nsnp == 0)
-		{
-			x <- X[1,]
-			d <- data.frame(
-				SNP = "All",
-				b = NA,
-				se = NA,
-				p = NA,
-				samplesize = NA,
-				outcome = x$outcome[1],
-				exposure = x$exposure[1]
-			)
-			return(d)
-		}
-		if(nsnp > 2)
-		{
-			l <- lapply(1:nsnp, function(i)
-			{
-				with(x, method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i], parameters))
-			})
-			l[[nsnp+1]] <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
-			d <- data.frame(
-				SNP = c(as.character(x$SNP), "All"),
-				b = sapply(l, function(y) y$b),
-				se = sapply(l, function(y) y$se),
-				p = sapply(l, function(y) y$pval),
-				samplesize = x$samplesize.outcome[1]
-			)
-			d$outcome <- x$outcome[1]
-			d$exposure <- x$exposure[1]
-
-		} else {
-			a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
-			d <- data.frame(
-				SNP = "All",
-				b = a$b,
-				se = a$se,
-				p = a$pval,
-				samplesize = x$samplesize.outcome[1]
-			)
-			d$outcome <- x$outcome[1]
-			d$exposure <- x$exposure[1]
-		}
-		return(d)
-	})
-	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p))
-	return(res)
-}
-
-
-#' Perform 2 sample MR on each SNP individually
-#'
-#' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_two_sample_ml Function to use for MR analysis
-#'
-#' @export
-#' @return List of data frames
-mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr_wald_ratio", all_method=c("mr_ivw", "mr_egger_regression"))
-{
-	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
-	{
-		x <- subset(X, mr_keep)
-		nsnp <- nrow(x)
-		if(nsnp == 0)
-		{
-			x <- X[1,]
-			d <- data.frame(
-				SNP = "No available data",
-				b = NA,
-				se = NA,
-				p = NA,
-				samplesize = NA,
-				outcome = x$outcome[1],
-				exposure = x$exposure[1]
-			)
-			return(d)
-		}
-		l <- lapply(1:nsnp, function(i)
-		{
-			with(x, get(single_method)(beta.exposure[i], beta.outcome[i], se.exposure[i], se.outcome[i], parameters))
-		})
-		nom <- c()
-		for(i in 1:length(all_method))
-		{
-			l[[nsnp+i]] <- with(x, get(all_method[i])(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
-
-			nom <- c(nom, paste0("All - ", subset(mr_method_list(), obj==all_method[i])$name))
-		}
-
-		d <- data.frame(
-			SNP = c(as.character(x$SNP), nom),
-			b = sapply(l, function(y) y$b),
-			se = sapply(l, function(y) y$se),
-			p = sapply(l, function(y) y$pval),
-			samplesize = x$samplesize.outcome[1]
-		)
-		d$outcome <- x$outcome[1]
-		d$exposure <- x$exposure[1]
-		return(d)
-	})
-	res <- subset(res, select=c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p))
-	return(res)
-}
-
-
-#' Calculate variance explained from p vals and sample size
-#'
-#' @param p Array of pvals
-#' @param n Array of sample sizes
-#'
-#' @export
-#' @return r value
-get_r_from_pn <- function(p, n)
-{
-	# qval <- qf(p, 1, n-2, low=FALSE)
-	p[p == 1] <- 0.999
-	p[p == 0] <- 1e-200
-	qval <- qchisq(p, 1, low=F) / (qchisq(p, n-2, low=F)/(n-2))
-	r <- sqrt(sum(qval / (n - qval)))
-
-	if(r >= 1)
-	{
-		warning("Correlation greater than 1, make sure SNPs are pruned for LD.")
-	}
-	return(r)
-}
-
-
-#' MR Steiger test of directionality
-#'
-#' A statistical test for whether the assumption that exposure causes outcome is valid
-#'
-#' @param p_exp Vector of p-values of SNP-exposure
-#' @param p_out Vector of p-values of SNP-outcome
-#' @param n_exp Sample sizes for p_exp
-#' @param n_out Sample sizes for p_out
-#'
-#' @export
-#' @return List. correct_causal_direction evaluates if the exposure -> outcome assumption holds. steiger_test evaluates the confidence of the correct_causal_direction value
-mr_steiger <- function(p_exp, p_out, n_exp, n_out)
-{
-	requireNamespace("psych", quietly=TRUE)
-	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
-	p_exp <- p_exp[!index]
-	p_out <- p_out[!index]
-	n_exp <- n_exp[!index]
-	n_out <- n_out[!index]
-
-	r_exp <- get_r_from_pn(p_exp, n_exp)
-	r_out <- get_r_from_pn(p_out, n_out)
-
-	rtest <- psych::r.test(n=mean(n_exp), n2=mean(n_out), r12=r_exp, r34=r_out)
-
-	l <- list(
-		r2_exp = r_exp^2,
-		r2_out = r_out^2,
-		correct_causal_direction = r_exp > r_out,
-		steiger_test = rtest$p
-	)
-	return(l)
-}
-
-
-#' Perform MR Steiger test of directionality
-#'
-#' A statistical test for whether the assumption that exposure causes outcome is valid
-#'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#'
-#' @export
-#' @return data frame
-directionality_test <- function(dat)
-{
-	if(! all(c("pval.exposure", "pval.outcome", "samplesize.exposure", "samplesize.outcome") %in% names(dat)))
-	{
-		message("Data requires p-values and sample sizes for outcomes and exposures")
-		return(NULL)
-	}
-	dtest <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x)
-	{
-		b <- mr_steiger(x$pval.exposure, x$pval.outcome, x$samplesize.exposure, x$samplesize.outcome)
-		a <- data.frame(
-			exposure = x$exposure[1],
-			outcome = x$outcome[1],
-			snp_r2.exposure = b$r2_exp,
-			snp_r2.outcome = b$r2_out,
-			correct_causal_direction = b$correct_causal_direction,
-			steiger_pval = b$steiger_test
-		)
-		return(a)
-	})
-
-	return(dtest)
-}
-
-
-#' Get heterogeneity stats
-#'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param parameters Parameters to be used for various MR methods. Default is output from \code{dafault_param}.
-#' @param method_list List of methods to use in analysis. See \code{mr_method_list()} for details.
-#'
-#' @export
-#' @return Data frame
-mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list = subset(mr_method_list(), heterogeneity_test)$obj)
-{
-	het_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
-	{
-		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
-		x <- subset(x1, mr_keep)
-		if(nrow(x) < 2)
-		{
-			message("Not enough SNPs available for Heterogeneity analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
-			return(NULL)
-		}
-		res <- lapply(method_list, function(meth)
-		{
-			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
-		})
-		methl <- mr_method_list()
-		het_tab <- data.frame(
-			outcome = x$outcome[1],
-			exposure = x$exposure[1],
-			method = methl$name[methl$obj %in% method_list],
-			Q = sapply(res, function(x) x$Q),
-			Q_df = sapply(res, function(x) x$Q_df),
-			Q_pval = sapply(res, function(x) x$Q_pval)
-		)
-		het_tab <- subset(het_tab, !(is.na(Q) & is.na(Q_df) & is.na(Q_pval)))
-		return(het_tab)
-	})
-
-	return(het_tab)
-}
-
-
-Isq <- function(y,s)
-{
-	k = length(y)
-	w = 1/s^2; 
-	sum.w = sum(w)
-	mu.hat = sum(y*w)/sum.w
-	Q = sum(w*(y-mu.hat)^2)
-	Isq = (Q - (k-1))/Q
-	Isq = max(0,Isq)
-	return(Isq)
-}
-
-
-
-#' Test for horizontal pleiotropy in MR analysis
-#'
-#' Performs MR Egger and returns intercept values
-#'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#'
-#' @export
-#' @return data frame
-mr_pleiotropy_test <- function(dat)
-{
-	ptab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
-	{
-		x <- subset(x1, mr_keep)
-		if(nrow(x) < 2)
-		{
-			message("Not enough SNPs available for Heterogeneity analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
-			return(NULL)
-		}
-		res <- mr_egger_regression(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, default_parameters())
-		out <- data.frame(
-			outcome = x$outcome[1],
-			exposure = x$exposure[1],
-			egger_intercept = res$b_i,
-			se = res$se_i,
-			pval = res$pval_i
-		)
-		return(out)
-	})
-	return(ptab)
-}

@@ -5,7 +5,8 @@
 \title{Find instruments for use in MR from the MR Base database}
 \usage{
 extract_instruments(outcomes, p1 = 5e-08, clump = TRUE, p2 = 5e-08,
-  r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token())
+  r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(),
+  force_server = FALSE)
 }
 \arguments{
 \item{outcomes}{Array of outcome IDs (see \code{available_outcomes})}
@@ -21,6 +22,8 @@ extract_instruments(outcomes, p1 = 5e-08, clump = TRUE, p2 = 5e-08,
 \item{kb}{= 10000 Clumping distance cutoff}
 
 \item{access_token}{= get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data}
+
+\item{force_server}{Force the analysis to extract results from the server rather than the MRInstruments package}
 }
 \value{
 data frame
@@ -29,4 +32,3 @@ data frame
 This function searches for GWAS significant SNPs (for a given p-value) for a specified set of outcomes.
 It then performs LD based clumping to return only independent significant associations.
 }
-

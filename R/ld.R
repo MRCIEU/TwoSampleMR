@@ -10,8 +10,12 @@
 #'
 #' @export
 #' @return Data frame
-clump_data <- function(dat, clump_kb=10000, clump_r2=0.01, clump_p1=1, clump_p2=1)
+clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1)
 {
+	if(missing(clump_r2))
+	{
+		message("Warning: since v0.4.2 the default r2 value for clumping has changed from 0.01 to 0.001")
+	}
 	if(!is.data.frame(dat))
 	{
 		stop("Expecting data frame returned from format_data")
@@ -127,5 +131,39 @@ get_snp_positions_biomart <- function(dat)
 	dat <- dat[order(dat$row_index), ]
 	dat <- subset(dat, select=-c(row_index))
 	return(dat)
+}
+
+
+#' Get LD matrix for list of SNPs
+#'
+#' @param snps List of SNPs
+#'
+#' @export
+#' @return Matrix of LD r values
+ld_matrix <- function(snps)
+{
+
+	if(length(snps) > 500)
+	{
+		stop("SNP list must be smaller than 500")
+	}
+
+	snpfile <- upload_file_to_api(data.frame(SNP=snps), header=FALSE)
+	url <- paste0(options()$mrbaseapi, "ld?snpfile=", snpfile)
+	res <- fromJSON_safe(url)
+	if(all(is.na(res))) stop("None of the requested SNPs were found")
+	snps2 <- res[1,]
+	res <- res[-1,, drop=FALSE]
+	res <- matrix(as.numeric(res), nrow(res), ncol(res))
+	rownames(res) <- snps2
+	colnames(res) <- snps2
+	missing <- snps[!snps %in% snps2]
+	if(length(missing) > 0)
+	{
+		warning("The following SNPs are not present in the LD reference panel\n", paste(missing, collapse="\n"))
+	}
+	ord <- match(snps2, snps)
+	res <- res[order(ord), order(ord)]
+	return(res)
 }
 

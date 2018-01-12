@@ -9,7 +9,8 @@ read_outcome_data(filename, snps = NULL, sep = " ",
   se_col = "se", eaf_col = "eaf", effect_allele_col = "effect_allele",
   other_allele_col = "other_allele", pval_col = "pval",
   units_col = "units", ncase_col = "ncase", ncontrol_col = "ncontrol",
-  samplesize_col = "samplesize", gene_col = "gene", min_pval = 1e-200)
+  samplesize_col = "samplesize", gene_col = "gene", id_col = "id",
+  min_pval = 1e-200)
 }
 \arguments{
 \item{filename}{Filename. Must have header with at least SNP column present.}
@@ -44,6 +45,8 @@ read_outcome_data(filename, snps = NULL, sep = " ",
 
 \item{gene_col="gene"}{Optional column name for gene name.}
 
+\item{id_col="id"}{Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination}
+
 \item{min_pval=1e-200}{Minimum allowed pval}
 }
 \value{
@@ -52,4 +55,3 @@ data frame
 \description{
 Reads in outcome data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se.
 }
-

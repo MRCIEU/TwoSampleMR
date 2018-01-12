@@ -6,7 +6,7 @@
 \usage{
 forest_plot_basic(dat, section = NULL, colour_group = NULL,
   colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
-  trans = "identity", xlim = NULL)
+  trans = "identity", xlim = NULL, threshold = NULL)
 }
 \arguments{
 \item{dat}{Output from format_mr_results()}
@@ -22,6 +22,8 @@ forest_plot_basic(dat, section = NULL, colour_group = NULL,
 \item{trans}{Transformation of x axis}
 
 \item{xlim}{x-axis limits}
+
+\item{threshold}{p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied}
 }
 \value{
 ggplot object
@@ -31,4 +33,3 @@ This function is used to create a basic forest plot.
 It requires the output from format_mr_results().
 It is
 }
-

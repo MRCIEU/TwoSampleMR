@@ -14,9 +14,29 @@ This package provides the following functionality to help perform two sample MR:
 - LD pruning of exposure SNPs
 - Harmonisation of direction of effects between exposure and outcome associations
 - Two sample MR analysis methods and diagnostic tools
+	- Including the MR Steiger test for orienting causal directions, described here [http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
 - Plots and automatically generated reports
 
-A set of instruments from several sources including GWAS catalogs, metabolite QTLs, etc can be obtained from the `MRInstruments` package [https://github.com/MRCIEU/MRInstruments](https://github.com/MRCIEU/MRInstruments). Users can also specify instruments manually by providing a text file. The package uses the MR Base database, a host to hundreds of GWAS results, that can be queried as a resource for outcome data. Users can alternatively provide their own outcome summary associations. It also provides LD pruning on a remote server for exposure SNP data provided by the user. 
+
+A set of instruments from several sources including GWAS catalogs, metabolite QTLs, etc can be obtained from the `MRInstruments` package [https://github.com/MRCIEU/MRInstruments](https://github.com/MRCIEU/MRInstruments). Users can also specify instruments manually by providing a text file. The package uses the MR Base database, a host to hundreds of GWAS results, that can be queried as a resource for outcome data. Users can alternatively provide their own outcome summary associations. It also provides LD pruning on a remote server for exposure SNP data provided by the user.
+
+## Citation
+
+If using MR-Base or the TwoSampleMR R package:
+
+[Hemani G, Zheng J, Wade KH, Laurin C, Elsworth B, Burgess S, Bowden J, Langdon R, Tan V, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration.</br>
+**MR-Base: a platform for systematic causal inference across the phenome using billions of genetic associations.** <br/>
+bioRxiv. doi: https://doi.org/10.1101/078972](http://biorxiv.org/content/early/2016/12/16/078972)
+
+If also using the MR-Steiger test:
+
+[Hemani G, Tilling K, Davey Smith G.<br/>
+**Orienting the causal relationship between imprecisely measured traits using GWAS summary data.**<br/>
+PLoS Genetics. 2017. 13(11).](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
+
+## License
+
+This project is licensed under GNU GPL v3.
 
 ## Installing the TwoSampleMR R package
 

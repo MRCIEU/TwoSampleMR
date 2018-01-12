@@ -15,4 +15,3 @@ Boolean whether password is accepted or not.
 \description{
 Check password for MR Base API
 }
-

@@ -10,12 +10,48 @@
 #' @param r2 = 0.001 Clumping r2 cut off
 #' @param kb = 10000 Clumping distance cutoff
 #' @param access_token = get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data
+#' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package
 #'
 #' @export
 #' @return data frame
-extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token())
+extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(), force_server=FALSE)
 {
 	outcomes <- unique(outcomes)
+
+	if(clump & p1 == 5e-8 & r2 == 0.001 & kb == 10000 & !force_server)
+	{
+		message("Requesting default values. Extracting from pre-clumped data")
+		a <- require(MRInstruments)
+		if(!a)
+		{
+			message("MRInstruments package not available")
+			message("To install: devtools::install_github('MRCIEU/MRInstruments')")
+			message("and then try again")
+			return(NULL)
+		}
+
+		data(mrbase_instruments, envir=environment())
+		a <- exists("mrbase_instruments")
+		if(!a)
+		{
+			message("Pre-clumped dataset is not available. You might have an old version of the MRInstruments package")
+			message("To update: devtools::install_github('MRCIEU/MRInstruments')")
+			message("and then try again")
+			return(NULL)
+		}
+
+		a <- subset(mrbase_instruments, id.exposure %in% outcomes)
+		a$exposure <- paste0(a$exposure, " || id:", a$id)
+		warning("From version 0.4.2 the exposure name format has changed.")
+
+		if(nrow(a) == 0)
+		{
+			message("None of the requested outcomes had GWAS hits at the specified threshold.")
+			return(NULL)
+		}
+		return(a)
+	}
+
 	message("Extracting data from ", length(unique(outcomes)), " GWAS(s)")
 	if(clump) message("and performing LD clumping")
 
@@ -45,9 +81,11 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		return(NULL)
 	}
 
-
-
-	d$phenotype <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
+	# d$phenotype.deprecated <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
+	d$phenotype <- paste0(d$trait, " || id:", d$id)
+	warning("From version 0.4.2 the phenotype format has changed.")
+	d$ncase <- as.numeric(d$ncase)
+	d$ncontrol <- as.numeric(d$ncontrol)
 	d <- format_data(
 		d,
 		type="exposure",
@@ -64,8 +102,10 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		ncase_col="ncase",
 		ncontrol_col="ncontrol",
 		samplesize_col="n",
-		min_pval=1e-200
+		min_pval=1e-200,
+		id_col="id"
 	)
 	d$data_source.exposure <- "mrbase"
+
 	return(d)
 }
