@@ -167,6 +167,7 @@ outlier_adjustment <- function(outlierscan)
 	l <- list()
 	sig <- subset(outlierscan$search, sig)
 	sige <- subset(outlierscan$candidate_exposure_mr, sig)
+	sigc <- subset(outlierscan$exposure_candidate_mr, sig)
 	sigo <- subset(outlierscan$candidate_outcome_mr, sig)
 
 
@@ -181,7 +182,7 @@ outlier_adjustment <- function(outlierscan)
 		{
 			a$candidate <- sig$outcome[i]
 			a$i <- i
-			if(sig$id.outcome[i] %in% sige$id.exposure)
+			if(sig$id.outcome[i] %in% sige$id.exposure | sig$id.out
 			{
 				message("both: ", a$SNP, " - ", sig$outcome[i])
 				a$what <- "both"
@@ -433,6 +434,52 @@ outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thr
 		output$candidate_exposure_mr <- suppressMessages(mr(output$candidate_exposure_dat, method_list=c("mr_wald_ratio", mr_method)))
 	}
 
+#####
+
+	message("Looking up exposure instruments for ", length(unique(out2$id.outcome)), " candidate traits")
+	output$exposure_candidate <- extract_outcome_data(unique(output$dat$SNP), unique(out2$id.outcome), proxies=use_proxies)
+	if(is.null(output$exposure_candidate))
+	{
+		message("None of the candidate trait instruments available for ", dat$exposure[1])
+		return(output)
+	}
+	message(nrow(output$candidate_exposure), " instruments extracted")
+	
+	temp <- subset(output$dat, select=c(SNP, beta.exposure, se.exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, id.exposure, exposure, units.exposure))
+
+	if(!include_outliers)
+	{
+		message("Removing outlier SNPs from candidate trait outcome lists")
+		n1 <- nrow(output$exposure_candidate)
+		output$exposure_candidate <- group_by(output$exposure_candidate, id.outcome) %>%
+			do({
+				x <- .
+				y <- subset(out2, id.outcome == x$id.outcome[1])
+				x <- subset(x, !SNP %in% y$SNP)
+				x
+			})
+		message("Removed ", n1 - nrow(output$exposure_candidate), " outlier SNPs")
+	}
+
+
+	output$exposure_candidate_dat <- suppressMessages(harmonise_data(temp, output$exposure_candidate))
+	output$exposure_candidate_dat <- subset(output$exposure_candidate_dat, mr_keep)
+	if(nrow(output$exposure_candidate_dat) == 0)
+	{
+		message("None of the candidate traits have the ", dat$exposure[1], " instruments after harmonising")
+		return(output)
+	}
+
+	message("Performing MR of ", dat$exposure[1], " against ", length(unique(output$exposure_candidate_dat$id.outcome)), " candidate traits")
+	if(mr_method == "strategy1")
+	{
+		temp <- strategy1(output$exposure_candidate_dat)
+		output$exposure_candidate_mr <- temp$res
+		output$exposure_candidate_mr_full <- temp
+	} else {
+		output$exposure_candidate_mr <- suppressMessages(mr(output$exposure_candidate_dat, method_list=c("mr_wald_ratio", mr_method)))
+	}
+
 	return(output)
 }
 
@@ -500,13 +547,17 @@ outlier_sig <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold =
 		outlierscan$candidate_outcome_mr$sig <- outlierscan$candidate_outcome_mr$pval_adj < mr_threshold
 		outlierscan$candidate_exposure_mr$pval_adj <- p.adjust(outlierscan$candidate_exposure_mr$pval, mr_threshold_method)
 		outlierscan$candidate_exposure_mr$sig <- outlierscan$candidate_exposure_mr$pval_adj < mr_threshold
+		outlierscan$exposure_candidate_mr$pval_adj <- p.adjust(outlierscan$exposure_candidate_mr$pval, mr_threshold_method)
+		outlierscan$exposure_candidate_mr$sig <- outlierscan$exposure_candidate_mr$pval_adj < mr_threshold
 	} else {
 		outlierscan$candidate_outcome_mr$sig <- outlierscan$candidate_outcome_mr$pval < mr_threshold
 		outlierscan$candidate_exposure_mr$sig <- outlierscan$candidate_exposure_mr$pval < mr_threshold
+		outlierscan$exposure_candidate_mr$sig <- outlierscan$exposure_candidate_mr$pval < mr_threshold
 	}
 
 	message("Number of candidate - outcome associations: ", sum(outlierscan$candidate_outcome_mr$sig))
 	message("Number of candidate - exposure associations: ", sum(outlierscan$candidate_exposure_mr$sig))
+	message("Number of exposure - candidate associations: ", sum(outlierscan$exposure_candidate_mr$sig))
 	return(outlierscan)
 }
 
@@ -559,6 +610,11 @@ outlier_network <- function(outlierscan)
 			from=ao$trait[ao$id %in% subset(outlierscan$candidate_exposure_mr, sig)$id.exposure],
 			to=ao$trait[ao$id == outlierscan$dat$id.exposure[1]],
 			what="Candidate traits to exposure"
+		),
+		data.frame(
+			from=ao$trait[ao$id == outlierscan$dat$id.exposure[1]],
+			to=ao$trait[ao$id %in% subset(outlierscan$exposure_candidate_mr, sig)$id.exposure],
+			what="Exposure to candidate traits"
 		),
 		# candidate traits associated with outcome
 		data.frame(
