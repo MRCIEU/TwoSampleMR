@@ -425,6 +425,15 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), plots=p))
 }
 
+#' Perform basic multivariable MR
+#' 
+#' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
+#'
+#' @param mvdat Output from \code{mv_harmonise_data}
+#' @param pval_threshold=5e-8 P-value threshold to include instruments
+#'
+#' @export
+#' @return List of results
 mv_basic <- function(mvdat, pval_threshold=5e-8)
 {
 	# This is a matrix of 

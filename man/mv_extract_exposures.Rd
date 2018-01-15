@@ -4,7 +4,7 @@
 \alias{mv_extract_exposures}
 \title{Extract exposure variables for multivariable MR}
 \usage{
-mv_extract_exposures(id_exposure, clump_r2 = 0.01, clump_kb = 10000,
+mv_extract_exposures(id_exposure, clump_r2 = 0.001, clump_kb = 10000,
   harmonise_strictness = 2)
 }
 \arguments{
