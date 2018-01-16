@@ -159,6 +159,34 @@ volcano_plot <- function(res, what="exposure")
 	labs(x="MR effect size")
 }
 
+
+radialmr <- function(dat, outlier=NULL)
+{
+	library(ggplot2)
+	beta.exposure <- dat$beta.exposure
+	beta.outcome <- dat$beta.outcome
+	se.outcome <- dat$se.outcome
+	w <- sqrt(beta.exposure^2 / se.outcome^2)
+	ratio <- beta.outcome / beta.exposure
+	ratiow <- ratio*w
+	dat <- data.frame(w=w, ratio=ratio, ratiow=ratiow)
+	if(is.null(outlier))
+	{
+		dat2 <- dat
+	} else {
+		dat2 <- dat[-c(outlier), ]
+	}
+	mod <- lm(ratiow ~ -1 + w, dat2)$coefficients[1]
+	print(mod)
+	ggplot(dat, aes(x=w, y=ratiow)) +
+	geom_point() +
+	geom_abline(slope=mod, intercept=0)
+}
+
+
+
+
+
 #' Outlier adjustment estimation
 #' 
 #' How much of the heterogeneity due to the outlier can be explained by alternative pathways?
@@ -189,12 +217,18 @@ outlier_adjustment <- function(outlierscan)
 	l <- list()
 	sig <- subset(outlierscan$search, sig)
 	sige <- subset(outlierscan$candidate_exposure_mr, sig)
-	sigc <- subset(outlierscan$exposure_candidate_mr, sig)
 	sigo <- subset(outlierscan$candidate_outcome_mr, sig)
+	if(!is.null(outlierscan$exposure_candidate_mr) & is.data.frame(outlierscan$exposure_candidate_mr))
+	{
+		sigc <- subset(outlierscan$exposure_candidate_mr, sig)		
+	} else {
+		sigc <- sige[1,]
+	}
 
 
 	dat <- outlierscan$dat
 	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+	print(dat$qi)
 	dat$Q <- sum(dat$qi)
 
 	for(i in 1:nrow(sig))
@@ -283,7 +317,11 @@ plot_outliers <- function(outlierscan, adj)
 	dat$what <- "Unadjusted"
 	dat$candidate <- "NA"
 	temp <- subset(adj, select=c(SNP, adj.beta.exposure, adj.beta.outcome, adj.se.exposure, adj.se.outcome, candidate))
-	temp$candidate <- sapply(strsplit(temp$candidate, split=" \\|"), function(x) x[[1]])
+	ind <- grepl("\\|", temp$candidate)
+	if(any(ind))
+	{
+		temp$candidate[ind] <- sapply(strsplit(temp$candidate[ind], split=" \\|"), function(x) x[[1]])
+	}
 	names(temp) <- gsub("adj.", "", names(temp))
 	temp$what <- "Adjusted"
 	temp$ratio <- temp$beta.outcome / temp$beta.exposure
@@ -842,4 +880,106 @@ outlier_network <- function(outlierscan)
 	)
 }
 
+
+
+
+
+simulate <- function(nid)
+{
+	# Simulate 3 outliers
+	# scenario 1 - pleiotropy g -> u -> y
+	# scenario 2 - confounder g -> u; u -> x; u -> y
+	# (ignore for now) scenario 3 - pathway g -> u; x -> u; u -> y
+
+	out <- list()
+
+	library(simulateGP)
+
+	gx <- make_geno(nid, 10, 0.5)
+	gu1 <- cbind(gx[,1], make_geno(nid, 6, 0.5))
+	gu2 <- cbind(gx[,2], make_geno(nid, 6, 0.5))
+	gu3 <- cbind(make_geno(nid, 7, 0.5))
+
+	u1 <- gu1 %*% c(1, runif(6)) + rnorm(nid, sd=6)
+	u2 <- gu2 %*% c(1, runif(6)) + rnorm(nid, sd=6)
+	x <- gx %*% c(0.5, runif(9)) + u1 * -3 + u2 * -3 + rnorm(nid, sd=16)
+	# u3 <- gu %*% c(0.5, runif(6)) + x * -3 + rnorm(nid, sd=6)
+	u3 <- gu %*% c(0.5, runif(6)) + rnorm(nid, sd=6)
+	y <- x * 4 + u1 * -3 + u2 * -3 + u3 * -3 + rnorm(nid, sd=10)
+
+	out$dat <- get_effs(x, y, gx, "X", "Y")
+	# radial <- RadialMR::RadialMR(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP, "IVW", "YES", "NO", 0.05/nrow(out$dat), "NO")
+
+	# radialmr(out$dat, 1:2)
+
+	outliers <- as.character(1:2)
+	# output$radialmr <- radial
+	nout <- length(outliers)
+	outliers <- subset(out$dat, SNP %in% outliers)$SNP
+	out$outliers <- outliers
+	out$id_list <- c("U1", "U2", "U3")
+
+	temp1 <- gwas(u1, gx[,1:2])
+	temp1$SNP <- 1:2
+	temp1$outcome <- "U1"
+	temp2 <- gwas(u2, gx[,1:2])
+	temp2$SNP <- 1:2
+	temp2$outcome <- "U2"
+	temp <- rbind(temp1, temp2)
+	out$search <- data.frame(SNP=temp$SNP, beta.outcome=temp$bhat, se.outcome=temp$se, pval.outcome=temp$pval, id.outcome=temp$outcome, outcome=temp$outcome, mr_keep=TRUE, effect_allele.outcome="A", other_allele.outcome="G", eaf.outcome=0.5)
+	out$search$sig <- out$search$pval.outcome < 5e-8
+
+
+	## get effects
+	u1x <- get_effs(u1, x, gu1, "U1", "X")
+	u1y <- get_effs(u1, y, gu1, "U1", "Y")
+	u1x$SNP <- u1y$SNP <- c(1, paste0("u1_",1:6))
+	u1x$effect_allele.exposure <- u1y$effect_allele.exposure <- "A"
+	u1x$other_allele.exposure <- u1y$other_allele.exposure <- "G"
+	u1x$effect_allele.outcome <- u1y$effect_allele.outcome <- "A"
+	u1x$other_allele.outcome <- u1y$other_allele.outcome <- "G"
+	u1x$eaf.exposure <- u1y$eaf.exposure <- 0.5
+	u1x$eaf.outcome <- u1y$eaf.outcome <- 0.5
+
+	u2x <- get_effs(u2, x, gu2, "U2", "X")
+	u2y <- get_effs(u2, y, gu2, "U2", "Y")
+	u2x$SNP <- u2y$SNP <- c(2, paste0("u2_",1:6))
+	u2x$effect_allele.exposure <- u2y$effect_allele.exposure <- "A"
+	u2x$other_allele.exposure <- u2y$other_allele.exposure <- "G"
+	u2x$effect_allele.outcome <- u2y$effect_allele.outcome <- "A"
+	u2x$other_allele.outcome <- u2y$other_allele.outcome <- "G"
+	u2x$eaf.exposure <- u2y$eaf.exposure <- 0.5
+	u2x$eaf.outcome <- u2y$eaf.outcome <- 0.5
+
+
+	out$candidate_instruments <- subset(rbind(u1x, u2x), select=c(
+		SNP, beta.exposure, se.exposure, id.exposure, exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, pval.exposure
+	))
+	out2 <- subset(out$search, sig)
+	out$candidate_instruments <- group_by(out$candidate_instruments, id.exposure) %>%
+		do({
+			x <- .
+			y <- subset(out2, id.outcome == x$id.exposure[1])
+			x <- subset(x, !SNP %in% y$SNP)
+			x
+		})
+
+	out$candidate_outcome <- subset(rbind(u1y, u2y), select=c(
+		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
+	))
+
+	out$candidate_outcome_dat <- suppressMessages(harmonise_data(out$candidate_instruments, out$candidate_outcome))
+	out$candidate_outcome_mr <- suppressMessages(mr(out$candidate_outcome_dat, method_list="mr_ivw"))
+
+
+	out$candidate_exposure <- subset(rbind(u1x, u2x), select=c(
+		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
+	))
+
+	out$candidate_exposure_dat <- suppressMessages(harmonise_data(out$candidate_instruments, out$candidate_exposure))
+	out$candidate_exposure_mr <- suppressMessages(mr(out$candidate_exposure_dat, method_list="mr_ivw"))
+
+
+	return(out)
+}
 
