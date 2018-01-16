@@ -45,6 +45,10 @@ temp$outcome[grepl("mass", temp$outcome, ignore.case=TRUE)]
 temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
 
 	outlierscan <- outlier_sig(outlierscan)
+	adj <- outlier_adjustment(outlierscan)
+	plot_outliers(outlierscan, adj %>% arrange(d) %>% filter(!duplicated(SNP)))
+
+
 	outlier_network(outlierscan)
 
 
@@ -61,9 +65,9 @@ temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
 
 	outlierscan2 <- outlier_scan(urate_chd, mr_method="mr_ivw")
 	outlierscan2 <- outlier_sig(outlierscan2)
-	temp2 <- outlier_adjustment(outlierscan2)
+	tem2 <- outlier_adjustment(outlierscan)
 
-	table(temp2$adj.qi / temp2$adj.Q < temp2$qi / temp2$Q)
+	tem2$d <- (tem2$adj.qi / tem2$adj.Q) / (tem2$qi / tem2$Q)
 
 
 	res <- mr(dat)
@@ -73,6 +77,24 @@ temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
 	mr_scatter_plot(res, dat)[[1]] +
 	geom_point(data=subset(dat, SNP %in% l$SNP), colour="red") +
 	geom_point()
+
+
+	plot_outliers(outlierscan, adj %>% arrange(d) %>% filter(!duplicated(SNP)))
+
+	# is the outlier adjustment doing the right thing?
+	dev.new()
+	RadialMR(outlierscan$dat$beta.exposure,outlierscan$dat$beta.outcome,outlierscan$dat$se.exposure,outlierscan$dat$se.outcome,outlierscan$dat$SNP,"BOTH","YES","NO",0.05,"NO")$plot
+
+
+	a <- extract_instruments(2)
+	b <- extract_outcome_data(a$SNP, 7)
+	dat <- harmonise_data(a, b)
+	outlierscan <- outlier_scan(dat, mr_method="mr_ivw")
+	outlierscan <- outlier_sig(outlierscan)
+	adj <- outlier_adjustment(outlierscan)
+	plot_outliers(outlierscan, adj %>% arrange(d) %>% filter(!duplicated(SNP)))
+
+
 
 }
 
@@ -182,15 +204,41 @@ outlier_adjustment <- function(outlierscan)
 		{
 			a$candidate <- sig$outcome[i]
 			a$i <- i
-			if(sig$id.outcome[i] %in% sige$id.exposure | sig$id.out)
+			if(sig$id.outcome[i] %in% sige$id.exposure & sig$id.outcome[i] %in% sigc$id.exposure)
 			{
-				message("both: ", a$SNP, " - ", sig$outcome[i])
-				a$what <- "both"
+				message("p->x; x->p: ", a$SNP, " - ", sig$outcome[1])
+				message("Bi-directional effects cannot be handled correctly at the moment. Skipping")
+				a$what <- "p->x; x->p"
+				a$candidate.beta.exposure <- NA
+				a$candidate.se.exposure <- NA
+				a$candidate.beta.outcome <- NA
+				a$candidate.se.outcome <- NA
+				a$adj.beta.exposure <- NA
+				a$adj.se.exposure <- NA
+				a$adj.beta.outcome <- NA
+				a$adj.se.outcome <- NA
+
+			} else if(sig$id.outcome[i] %in% sige$id.exposure) {
+				message("p->x; p->y: ", a$SNP, " - ", sig$outcome[i])
+				a$what <- "p->x; p->y"
 				a$candidate.beta.exposure <- sige$b[sige$id.exposure == sig$id.outcome[i]]
 				a$candidate.se.exposure <- sige$se[sige$id.exposure == sig$id.outcome[i]]
 				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
 				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
 				b <- bootstrap_path(a$beta.exposure, a$se.exposure, sig$beta.outcome[i], sig$se.outcome[i], sige$b[sige$id.exposure == sig$id.outcome[i]], sige$se[sige$id.exposure == sig$id.outcome[i]])
+				a$adj.beta.exposure <- b[1]
+				a$adj.se.exposure <- b[2]
+				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
+				a$adj.beta.outcome <- b[1]
+				a$adj.se.outcome <- b[2]
+			} else if(sig$id.outcome[i] %in% sigc$id.exposure) {
+				message("x->p; p->y: ", a$SNP, " - ", sig$outcome[i])
+				a$what <- "x->p; p->y"
+				a$candidate.beta.exposure <- sigc$b[sigc$id.exposure == sig$id.outcome[i]]
+				a$candidate.se.exposure <- sigc$se[sigc$id.exposure == sig$id.outcome[i]]
+				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
+				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
+				b <- bootstrap_path(a$beta.exposure, a$se.exposure, sig$beta.outcome[i], sig$se.outcome[i], sigc$b[sigc$id.exposure == sig$id.outcome[i]], sigc$se[sigc$id.exposure == sig$id.outcome[i]])
 				a$adj.beta.exposure <- b[1]
 				a$adj.se.exposure <- b[2]
 				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
@@ -223,7 +271,51 @@ outlier_adjustment <- function(outlierscan)
 
 	}
 	l <- bind_rows(l)
+	l$d <- (l$adj.qi / l$adj.Q) / (l$qi / l$Q)
+	return(l)
 }
+
+plot_outliers <- function(outlierscan, adj)
+{
+	dat <- subset(outlierscan$dat, mr_keep, select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome))
+	dat$ratio <- dat$beta.outcome / dat$beta.exposure
+	dat$weights <- sqrt(dat$beta.exposure^2 / dat$se.outcome^2)
+	dat$what <- "Unadjusted"
+	dat$candidate <- "NA"
+	temp <- subset(adj, select=c(SNP, adj.beta.exposure, adj.beta.outcome, adj.se.exposure, adj.se.outcome, candidate))
+	temp$candidate <- sapply(strsplit(temp$candidate, split=" \\|"), function(x) x[[1]])
+	names(temp) <- gsub("adj.", "", names(temp))
+	temp$what <- "Adjusted"
+	temp$ratio <- temp$beta.outcome / temp$beta.exposure
+	temp$weights <- sqrt(temp$beta.exposure^2 / temp$se.outcome^2)
+	# ind <- dat$beta.exposure < 0
+	# dat$beta.exposure[ind] <- dat$beta.exposure[ind] * -1
+	# dat$beta.outcome[ind] <- dat$beta.outcome[ind] * -1
+	# ind <- temp$beta.exposure < 0
+	# temp$beta.exposure[ind] <- temp$beta.exposure[ind] * -1
+	# temp$beta.outcome[ind] <- temp$beta.outcome[ind] * -1
+
+	# est <- with(subset(dat, !SNP %in% temp$SNP), mr_ivw(beta.exposure, beta.outcome, se.exposure, se.outcome)) %>% as.data.frame
+
+	est <- lm(ratio ~ -1 + weights, data=subset(dat, !SNP %in% temp$SNP))$coefficients[1]
+
+	temp2 <- merge(dat, temp, by="SNP")
+
+	labs <- rbind(
+		data.frame(label=temp2$SNP, x=temp2$weights.x, y=temp2$weights.x * temp2$ratio.x),
+		data.frame(label=temp$candidate, x=temp$weights, y=temp$weights * temp$ratio)
+	)
+
+	p <- ggplot(rbind(dat, temp), aes(y=ratio * weights, x=weights)) +
+	geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.colour = "grey") +
+	geom_point(aes(colour=what)) +
+	geom_segment(data=temp2, aes(x=weights.x, xend=weights.y, y=ratio.x * weights.x, yend=ratio.y * weights.y), arrow = arrow(length = unit(0.01, "npc"))) +
+	geom_abline(intercept=0, slope=est, colour="red") +
+	labs(colour="")
+	p
+	return(p)
+}
+
 
 cochrans_q <- function(b, se)
 {
