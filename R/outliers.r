@@ -218,13 +218,6 @@ outlier_adjustment <- function(outlierscan)
 	sig <- subset(outlierscan$search, sig)
 	sige <- subset(outlierscan$candidate_exposure_mr, sig)
 	sigo <- subset(outlierscan$candidate_outcome_mr, sig)
-	if(!is.null(outlierscan$exposure_candidate_mr) & is.data.frame(outlierscan$exposure_candidate_mr))
-	{
-		sigc <- subset(outlierscan$exposure_candidate_mr, sig)		
-	} else {
-		sigc <- sige[1,]
-	}
-
 
 	dat <- outlierscan$dat
 	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
@@ -238,21 +231,7 @@ outlier_adjustment <- function(outlierscan)
 		{
 			a$candidate <- sig$outcome[i]
 			a$i <- i
-			if(sig$id.outcome[i] %in% sige$id.exposure & sig$id.outcome[i] %in% sigc$id.exposure)
-			{
-				message("p->x; x->p: ", a$SNP, " - ", sig$outcome[1])
-				message("Bi-directional effects cannot be handled correctly at the moment. Skipping")
-				a$what <- "p->x; x->p"
-				a$candidate.beta.exposure <- NA
-				a$candidate.se.exposure <- NA
-				a$candidate.beta.outcome <- NA
-				a$candidate.se.outcome <- NA
-				a$adj.beta.exposure <- NA
-				a$adj.se.exposure <- NA
-				a$adj.beta.outcome <- NA
-				a$adj.se.outcome <- NA
-
-			} else if(sig$id.outcome[i] %in% sige$id.exposure) {
+			if(sig$id.outcome[i] %in% sige$id.exposure) {
 				message("p->x; p->y: ", a$SNP, " - ", sig$outcome[i])
 				a$what <- "p->x; p->y"
 				a$candidate.beta.exposure <- sige$b[sige$id.exposure == sig$id.outcome[i]]
@@ -265,22 +244,9 @@ outlier_adjustment <- function(outlierscan)
 				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
 				a$adj.beta.outcome <- b[1]
 				a$adj.se.outcome <- b[2]
-			} else if(sig$id.outcome[i] %in% sigc$id.exposure) {
-				message("x->p; p->y: ", a$SNP, " - ", sig$outcome[i])
-				a$what <- "x->p; p->y"
-				a$candidate.beta.exposure <- sigc$b[sigc$id.exposure == sig$id.outcome[i]]
-				a$candidate.se.exposure <- sigc$se[sigc$id.exposure == sig$id.outcome[i]]
-				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
-				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
-				b <- bootstrap_path(a$beta.exposure, a$se.exposure, sig$beta.outcome[i], sig$se.outcome[i], sigc$b[sigc$id.exposure == sig$id.outcome[i]], sigc$se[sigc$id.exposure == sig$id.outcome[i]])
-				a$adj.beta.exposure <- b[1]
-				a$adj.se.exposure <- b[2]
-				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
-				a$adj.beta.outcome <- b[1]
-				a$adj.se.outcome <- b[2]
 			} else {
-				message("outcome: ", a$SNP, " - ", sig$outcome[i])
-				a$what <- "outcome"
+				message("p->y: ", a$SNP, " - ", sig$outcome[i])
+				a$what <- "p->y"
 				a$candidate.beta.exposure <- NA
 				a$candidate.se.exposure <- NA
 				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
@@ -335,7 +301,11 @@ plot_outliers <- function(outlierscan, adj)
 
 	# est <- with(subset(dat, !SNP %in% temp$SNP), mr_ivw(beta.exposure, beta.outcome, se.exposure, se.outcome)) %>% as.data.frame
 
-	est <- lm(ratio ~ -1 + weights, data=subset(dat, !SNP %in% temp$SNP))$coefficients[1]
+	est1 <- lm(ratio ~ -1 + weights, data=subset(dat, !SNP %in% temp$SNP))$coefficients[1]
+	est2 <- lm(ratio ~ -1 + weights, data=dat)$coefficients[1]
+	est3 <- lm(ratio ~ -1 + weights, data=rbind(temp, dat) %>% filter(!duplicated(SNP)))$coefficients[1]
+
+	estimates <- data.frame(est=c("Outliers removed", "Raw", "Outliers adjusted"), slope=c(est1, est2, est3), intercept=0)
 
 	temp2 <- merge(dat, temp, by="SNP")
 
@@ -348,8 +318,10 @@ plot_outliers <- function(outlierscan, adj)
 	geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.colour = "grey") +
 	geom_point(aes(colour=what)) +
 	geom_segment(data=temp2, aes(x=weights.x, xend=weights.y, y=ratio.x * weights.x, yend=ratio.y * weights.y), arrow = arrow(length = unit(0.01, "npc"))) +
-	geom_abline(intercept=0, slope=est, colour="red") +
-	labs(colour="")
+	geom_abline(data=estimates, aes(slope=slope, intercept=intercept, linetype=est)) +
+	labs(colour="") +
+	xlim(c(0, max(dat$weights))) +
+	ylim(c(0, max(dat$weights * dat$ratio)))
 	p
 	return(p)
 }
@@ -884,7 +856,7 @@ outlier_network <- function(outlierscan)
 
 
 
-simulate <- function(nid)
+simulate <- function(nid, nu1, nu2)
 {
 	# Simulate 3 outliers
 	# scenario 1 - pleiotropy g -> u -> y
@@ -896,63 +868,96 @@ simulate <- function(nid)
 	library(simulateGP)
 
 	gx <- make_geno(nid, 10, 0.5)
-	gu1 <- cbind(gx[,1], make_geno(nid, 6, 0.5))
-	gu2 <- cbind(gx[,2], make_geno(nid, 6, 0.5))
-	gu3 <- cbind(make_geno(nid, 7, 0.5))
+	nu <- nu1 + nu2
+	gu1 <- list()
+	u1 <- matrix(nid * nu1, nid, nu1)
+	for(i in 1:nu1)
+	{
+		gu1[[i]] <- cbind(gx[,i], make_geno(nid, 6, 0.5))
+		u1[,i] <- gu1[[i]] %*% c(1, runif(6)) + rnorm(nid, sd=6)
+	}
+	gu2 <- list()
+	u2 <- matrix(nid * nu2, nid, nu2)
+	for(j in 1:nu2)
+	{		
+		gu2[[j]] <- cbind(gx[,i+j], make_geno(nid, 6, 0.5))
+		u2[,j] <- gu2[[j]] %*% c(1, runif(6)) + rnorm(nid, sd=6)
+	}
 
-	u1 <- gu1 %*% c(1, runif(6)) + rnorm(nid, sd=6)
-	u2 <- gu2 %*% c(1, runif(6)) + rnorm(nid, sd=6)
-	x <- gx %*% c(0.5, runif(9)) + u1 * -3 + u2 * -3 + rnorm(nid, sd=16)
+	ux <- rep(2, nu1)
+	x <- drop(gx %*% c(0.5, runif(9)) + u1 %*% rep(2, nu1) + rnorm(nid, sd=16))
 	# u3 <- gu %*% c(0.5, runif(6)) + x * -3 + rnorm(nid, sd=6)
-	u3 <- gu %*% c(0.5, runif(6)) + rnorm(nid, sd=6)
-	y <- x * 4 + u1 * -3 + u2 * -3 + u3 * -3 + rnorm(nid, sd=10)
+	y <- drop(x * 4 + u1 %*% rep(-3, nu1) + u2 %*% rep(3, nu2) + rnorm(nid, sd=10))
 
 	out$dat <- get_effs(x, y, gx, "X", "Y")
+	out$dat$mr_keep <- TRUE
 	# radial <- RadialMR::RadialMR(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP, "IVW", "YES", "NO", 0.05/nrow(out$dat), "NO")
 
 	# radialmr(out$dat, 1:2)
 
-	outliers <- as.character(1:2)
+	outliers <- as.character(c(1:nu))
 	# output$radialmr <- radial
 	nout <- length(outliers)
 	outliers <- subset(out$dat, SNP %in% outliers)$SNP
 	out$outliers <- outliers
-	out$id_list <- c("U1", "U2", "U3")
+	out$id_list <- c(paste0("U1_", 1:nu1), paste0("U2_", 1:nu2))
 
-	temp1 <- gwas(u1, gx[,1:2])
-	temp1$SNP <- 1:2
-	temp1$outcome <- "U1"
-	temp2 <- gwas(u2, gx[,1:2])
-	temp2$SNP <- 1:2
-	temp2$outcome <- "U2"
-	temp <- rbind(temp1, temp2)
+	# temp1 <- gwas(u1, gx[,1:2])
+
+	temp <- list()
+	for(i in 1:nu1)
+	{
+		temp[[i]] <- gwas(u1[,i], gx[,1:nu1])
+		temp[[i]]$SNP <- 1:nu1
+		temp[[i]]$outcome <- paste0("U1_", i)
+	}
+	for(i in 1:nu2)
+	{
+		temp[[i + nu1]] <- gwas(u2[,i], gx[,nu1 + (1:nu2)])
+		temp[[i + nu1]]$SNP <- 1:nu2 + nu1
+		temp[[i + nu1]]$outcome <- paste0("U2_", i)
+	}
+
+	temp <- bind_rows(temp)
+
 	out$search <- data.frame(SNP=temp$SNP, beta.outcome=temp$bhat, se.outcome=temp$se, pval.outcome=temp$pval, id.outcome=temp$outcome, outcome=temp$outcome, mr_keep=TRUE, effect_allele.outcome="A", other_allele.outcome="G", eaf.outcome=0.5)
 	out$search$sig <- out$search$pval.outcome < 5e-8
 
 
 	## get effects
-	u1x <- get_effs(u1, x, gu1, "U1", "X")
-	u1y <- get_effs(u1, y, gu1, "U1", "Y")
-	u1x$SNP <- u1y$SNP <- c(1, paste0("u1_",1:6))
-	u1x$effect_allele.exposure <- u1y$effect_allele.exposure <- "A"
-	u1x$other_allele.exposure <- u1y$other_allele.exposure <- "G"
-	u1x$effect_allele.outcome <- u1y$effect_allele.outcome <- "A"
-	u1x$other_allele.outcome <- u1y$other_allele.outcome <- "G"
-	u1x$eaf.exposure <- u1y$eaf.exposure <- 0.5
-	u1x$eaf.outcome <- u1y$eaf.outcome <- 0.5
+	u1x <- list()
+	u1y <- list()
+	for(i in 1:nu1)
+	{
+		u1x[[i]] <- get_effs(u1[,i], x, gu1[[i]], paste0("U1_", i), "X")
+		u1y[[i]] <- get_effs(u1[,i], y, gu1[[i]], paste0("U1_", i), "Y")
+		u1x[[i]]$SNP <- u1y[[i]]$SNP <- c(i, paste0("u1_",1:6))
+		u1x[[i]]$effect_allele.exposure <- u1y[[i]]$effect_allele.exposure <- "A"
+		u1x[[i]]$other_allele.exposure <- u1y[[i]]$other_allele.exposure <- "G"
+		u1x[[i]]$effect_allele.outcome <- u1y[[i]]$effect_allele.outcome <- "A"
+		u1x[[i]]$other_allele.outcome <- u1y[[i]]$other_allele.outcome <- "G"
+		u1x[[i]]$eaf.exposure <- u1y[[i]]$eaf.exposure <- 0.5
+		u1x[[i]]$eaf.outcome <- u1y[[i]]$eaf.outcome <- 0.5
+	}
 
-	u2x <- get_effs(u2, x, gu2, "U2", "X")
-	u2y <- get_effs(u2, y, gu2, "U2", "Y")
-	u2x$SNP <- u2y$SNP <- c(2, paste0("u2_",1:6))
-	u2x$effect_allele.exposure <- u2y$effect_allele.exposure <- "A"
-	u2x$other_allele.exposure <- u2y$other_allele.exposure <- "G"
-	u2x$effect_allele.outcome <- u2y$effect_allele.outcome <- "A"
-	u2x$other_allele.outcome <- u2y$other_allele.outcome <- "G"
-	u2x$eaf.exposure <- u2y$eaf.exposure <- 0.5
-	u2x$eaf.outcome <- u2y$eaf.outcome <- 0.5
+	u2x <- list()
+	u2y <- list()
+	for(i in 1:nu2)
+	{
+		u2x[[i]] <- get_effs(u2[,i], x, gu2[[i]], paste0("U2_", i), "X")
+		u2y[[i]] <- get_effs(u2[,i], y, gu2[[i]], paste0("U2_", i), "Y")
+		u2x[[i]]$SNP <- u2y[[i]]$SNP <- c(i+nu1, paste0("u2_",1:6))
+		u2x[[i]]$effect_allele.exposure <- u2y[[i]]$effect_allele.exposure <- "A"
+		u2x[[i]]$other_allele.exposure <- u2y[[i]]$other_allele.exposure <- "G"
+		u2x[[i]]$effect_allele.outcome <- u2y[[i]]$effect_allele.outcome <- "A"
+		u2x[[i]]$other_allele.outcome <- u2y[[i]]$other_allele.outcome <- "G"
+		u2x[[i]]$eaf.exposure <- u2y[[i]]$eaf.exposure <- 0.5
+		u2x[[i]]$eaf.outcome <- u2y[[i]]$eaf.outcome <- 0.5
+	}
 
 
-	out$candidate_instruments <- subset(rbind(u1x, u2x), select=c(
+
+	out$candidate_instruments <- subset(rbind(bind_rows(u1x), bind_rows(u2x)), select=c(
 		SNP, beta.exposure, se.exposure, id.exposure, exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, pval.exposure
 	))
 	out2 <- subset(out$search, sig)
@@ -964,7 +969,7 @@ simulate <- function(nid)
 			x
 		})
 
-	out$candidate_outcome <- subset(rbind(u1y, u2y), select=c(
+	out$candidate_outcome <- subset(rbind(bind_rows(u1y), bind_rows(u2y)), select=c(
 		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
 	))
 
@@ -972,13 +977,12 @@ simulate <- function(nid)
 	out$candidate_outcome_mr <- suppressMessages(mr(out$candidate_outcome_dat, method_list="mr_ivw"))
 
 
-	out$candidate_exposure <- subset(rbind(u1x, u2x), select=c(
+	out$candidate_exposure <- subset(rbind(bind_rows(u1x), bind_rows(u2x)), select=c(
 		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
 	))
 
 	out$candidate_exposure_dat <- suppressMessages(harmonise_data(out$candidate_instruments, out$candidate_exposure))
 	out$candidate_exposure_mr <- suppressMessages(mr(out$candidate_exposure_dat, method_list="mr_ivw"))
-
 
 	return(out)
 }
