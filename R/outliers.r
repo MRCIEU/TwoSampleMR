@@ -95,6 +95,87 @@ temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
 	plot_outliers(outlierscan, adj %>% arrange(d) %>% filter(!duplicated(SNP)))
 
 
+	param <- expand.grid(
+		nid = c(5000, 10000),
+		bxy = c(-0.5, 0, 0.5, 3),
+		nu1 = c(1, 5, 10, 14),
+		nu2 = c(1, 5, 10, 14),
+		outliers_known = c(TRUE, FALSE),
+		simr = c(10)
+	)
+	param$sim <- 1:nrow(param)
+
+	l <- list()
+	for(i in 1:nrow(param))
+	{
+		message(i)
+		set.seed(param$sim[i])
+		out <- simulate.tryx(param$nid[i], param$nu1[i], param$nu2[i], param$bxy[i], outliers_known=param$outliers_known[i])
+		out <- outlier_sig(out)
+		l[[i]] <- tryx.analyse(out, plot=FALSE)
+	}
+
+	save(l, param, file="sim1.rdata")
+
+
+	param <- expand.grid(
+		nid = c(5000, 10000),
+		bxy = c(-0.5, 0.5),
+		nu1 = c(1, 5, 10, 14),
+		nu2 = c(1, 5, 10, 14),
+		outliers_known = c(FALSE),
+		simr = c(1:10)
+	)
+	param$sim <- 1:nrow(param)
+
+	l <- list()
+	for(i in 1:nrow(param))
+	{
+		message(i)
+		set.seed(param$sim[i])
+		out <- simulate.tryx(param$nid[i], param$nu1[i], param$nu2[i], param$bxy[i], outliers_known=param$outliers_known[i])
+		out <- outlier_sig(out)
+		l[[i]] <- tryx.analyse(out, plot=FALSE)
+	}
+
+	save(l, param, file="sim2.rdata")
+
+	temp <- lapply(1:length(l), function(x){
+		a <- l[[x]]$estimates
+		a$sim <- x
+		return(a)
+	}) %>% bind_rows %>% inner_join(param)
+
+	temp$nu <- temp$nu1 + temp$nu2
+
+	dim(temp)
+	table(temp$est)
+	temp$diff <- temp$b - temp$bxy
+	ggplot(temp, aes(y=diff, x=est)) +
+	geom_boxplot() +
+	facet_grid(nid ~ bxy)
+
+	temp2 <- group_by(temp, est, bxy, nid, nu) %>%
+	summarise(pow=sum(pval < 1e-5)/n(), isq=mean(Isq))
+
+	ggplot(temp2, aes(y=pow, x=nu)) +
+	geom_line(aes(colour=est)) +
+	facet_grid(nid ~ bxy) +
+	scale_colour_brewer(type="qual")
+
+	temp3 <- group_by(temp, est, bxy, nid) %>%
+	summarise(pow=sum(pval < 1e-5)/n(), isq=mean(Isq))
+
+	ggplot(temp3, aes(y=pow, x=est)) +
+	geom_point() +
+	facet_grid(nid ~ bxy) +
+	scale_colour_brewer(type="qual")
+
+	ggplot(temp3, aes(y=isq, x=est)) +
+	geom_point() +
+	facet_grid(nid ~ bxy) +
+	scale_colour_brewer(type="qual")
+
 
 }
 
@@ -177,7 +258,6 @@ radialmr <- function(dat, outlier=NULL)
 		dat2 <- dat[-c(outlier), ]
 	}
 	mod <- lm(ratiow ~ -1 + w, dat2)$coefficients[1]
-	print(mod)
 	ggplot(dat, aes(x=w, y=ratiow)) +
 	geom_point() +
 	geom_abline(slope=mod, intercept=0)
@@ -194,7 +274,7 @@ radialmr <- function(dat, outlier=NULL)
 #' @param outlierscan Output from outlier_scan
 #' @export
 #' @return data frame of adjusted effect estimates and heterogeneity stats
-outlier_adjustment <- function(outlierscan)
+tryx.adjustment <- function(outlierscan)
 {
 	# for each outlier find the candidate MR analyses
 	# if only exposure then ignore
@@ -214,6 +294,11 @@ outlier_adjustment <- function(outlierscan)
 	# old.deviation
 	# new.deviation
 
+	if(!any(outlierscan$search$sig))
+	{
+		return(tibble())
+	}
+
 	l <- list()
 	sig <- subset(outlierscan$search, sig)
 	sige <- subset(outlierscan$candidate_exposure_mr, sig)
@@ -221,7 +306,6 @@ outlier_adjustment <- function(outlierscan)
 
 	dat <- outlierscan$dat
 	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
-	print(dat$qi)
 	dat$Q <- sum(dat$qi)
 
 	for(i in 1:nrow(sig))
@@ -275,14 +359,72 @@ outlier_adjustment <- function(outlierscan)
 	return(l)
 }
 
-plot_outliers <- function(outlierscan, adj)
+
+tryx.analyse <- function(outlierscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 {
+
+	# Q
+	# # Full Q
+	# # Adjusted Q
+	# # qi* < qi
+	# # mean qratio
+
+	# ivw_raw, ivw_clean, ivw_adjusted
+	# - power
+	# - bias
+	# - fdr
+
+	# number of outliers detected
+	# number of confounders detected
+	# number of pleiotropy pathways detected
+
+	analysis <- list()
+	adj_full <- tryx.adjustment(outlierscan)
+	if(nrow(adj_full) == 0)
+	{
+		return(NULL)
+	}
+	analysis$adj_full <- adj_full
+	if(filter_duplicate_outliers)
+	{
+		adj <- adj_full %>% arrange(d) %>% filter(!duplicated(SNP))
+	} else {
+		adj <- adj_full
+	}
+	analysis$adj <- adj
+
+	# Detection
+	if("simulation" %in% names(outlierscan))
+	{
+		detection <- list()
+		detection$nu1_correct <- sum(adj$SNP %in% 1:outlierscan$simulation$nu1 & adj$what != "p->y")
+		detection$nu1_incorrect <- sum(adj$SNP %in% 1:outlierscan$simulation$nu1 & adj$what == "p->y")
+		detection$nu2_correct <- sum(adj$SNP %in% (1:outlierscan$simulation$nu2 + nu1) & adj$what == "p->y")
+		detection$nu2_incorrect <- sum(adj$SNP %in% (1:outlierscan$simulation$nu2 + nu1) & adj$what != "p->y")
+		analysis$detection <- detection
+	}
+
+	cpg <- require(ggrepel)
+	if(!cpg)
+	{
+		stop("Please install the ggrepel package\ninstall.packages('ggrepel')")
+	}
+
 	dat <- subset(outlierscan$dat, mr_keep, select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome))
 	dat$ratio <- dat$beta.outcome / dat$beta.exposure
 	dat$weights <- sqrt(dat$beta.exposure^2 / dat$se.outcome^2)
+	dat$ratiow <- dat$ratio * dat$weights
 	dat$what <- "Unadjusted"
 	dat$candidate <- "NA"
+	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+
+	analysis$Q$full_Q <- adj$Q[1]
+	analysis$Q$num_reduced <- sum(adj$adj.qi < adj$qi)
+	analysis$Q$mean_d <- mean(adj$d)
+
+
 	temp <- subset(adj, select=c(SNP, adj.beta.exposure, adj.beta.outcome, adj.se.exposure, adj.se.outcome, candidate))
+	temp$qi <- cochrans_q(temp$adj.beta.outcome / temp$adj.beta.exposure, temp$adj.se.outcome / abs(temp$adj.beta.exposure))
 	ind <- grepl("\\|", temp$candidate)
 	if(any(ind))
 	{
@@ -290,40 +432,50 @@ plot_outliers <- function(outlierscan, adj)
 	}
 	names(temp) <- gsub("adj.", "", names(temp))
 	temp$what <- "Adjusted"
-	temp$ratio <- temp$beta.outcome / temp$beta.exposure
 	temp$weights <- sqrt(temp$beta.exposure^2 / temp$se.outcome^2)
-	# ind <- dat$beta.exposure < 0
-	# dat$beta.exposure[ind] <- dat$beta.exposure[ind] * -1
-	# dat$beta.outcome[ind] <- dat$beta.outcome[ind] * -1
-	# ind <- temp$beta.exposure < 0
-	# temp$beta.exposure[ind] <- temp$beta.exposure[ind] * -1
-	# temp$beta.outcome[ind] <- temp$beta.outcome[ind] * -1
+	temp$ratio <- temp$beta.outcome / temp$beta.exposure
+	temp$ratiow <- temp$ratio * temp$weights
 
-	# est <- with(subset(dat, !SNP %in% temp$SNP), mr_ivw(beta.exposure, beta.outcome, se.exposure, se.outcome)) %>% as.data.frame
+	dat_adj <- rbind(temp, dat) %>% filter(!duplicated(SNP))
+	dat_adj$qi <- cochrans_q(dat_adj$beta.outcome / dat_adj$beta.exposure, dat_adj$se.outcome / abs(dat_adj$beta.exposure))
+	analysis$Q$adj_Q <- sum(dat_adj$qi)
 
-	est1 <- lm(ratio ~ -1 + weights, data=subset(dat, !SNP %in% temp$SNP))$coefficients[1]
-	est2 <- lm(ratio ~ -1 + weights, data=dat)$coefficients[1]
-	est3 <- lm(ratio ~ -1 + weights, data=rbind(temp, dat) %>% filter(!duplicated(SNP)))$coefficients[1]
+	analysis
 
-	estimates <- data.frame(est=c("Outliers removed", "Raw", "Outliers adjusted"), slope=c(est1, est2, est3), intercept=0)
+	dat_rem <- subset(dat, !SNP %in% temp$SNP)
+
+	est1 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem))
+	est2 <- summary(lm(ratiow ~ -1 + weights, data=dat))
+	est3 <- summary(lm(ratiow ~ -1 + weights, data=dat_adj))
+
+	estimates <- data.frame(
+		est=c("Outliers removed", "Raw", "Outliers adjusted"),
+		b=c(coefficients(est1)[1,1], coefficients(est2)[1,1], coefficients(est3)[1,1]), 
+		se=c(coefficients(est1)[1,2], coefficients(est2)[1,2], coefficients(est3)[1,2]), 
+		pval=c(coefficients(est1)[1,4], coefficients(est2)[1,4], coefficients(est3)[1,4]),
+		nsnp=c(nrow(dat_rem), nrow(dat), nrow(dat_adj)),
+		Q = c(sum(dat_rem$qi), sum(dat$qi), sum(dat_adj$qi)),
+		int=0
+	)
+	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
+
+	analysis$estimates <- estimates
 
 	temp2 <- merge(dat, temp, by="SNP")
-
 	labs <- rbind(
 		data.frame(label=temp2$SNP, x=temp2$weights.x, y=temp2$weights.x * temp2$ratio.x),
 		data.frame(label=temp$candidate, x=temp$weights, y=temp$weights * temp$ratio)
 	)
-
-	p <- ggplot(rbind(dat, temp), aes(y=ratio * weights, x=weights)) +
-	geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.colour = "grey") +
+	p <- ggplot(rbind(dat, temp), aes(y=ratiow, x=weights)) +
+	geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est)) +
+	geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.color = "grey50") +
 	geom_point(aes(colour=what)) +
-	geom_segment(data=temp2, aes(x=weights.x, xend=weights.y, y=ratio.x * weights.x, yend=ratio.y * weights.y), arrow = arrow(length = unit(0.01, "npc"))) +
-	geom_abline(data=estimates, aes(slope=slope, intercept=intercept, linetype=est)) +
+	geom_segment(data=temp2, colour="grey50", aes(x=weights.x, xend=weights.y, y=ratiow.x, yend=ratiow.y), arrow = arrow(length = unit(0.01, "npc"))) +
 	labs(colour="") +
 	xlim(c(0, max(dat$weights))) +
-	ylim(c(0, max(dat$weights * dat$ratio)))
-	p
-	return(p)
+	ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow)))
+	analysis$plot <- p
+	return(analysis)
 }
 
 
@@ -374,7 +526,7 @@ bootstrap_path <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
 #' candidate_exposure   Extracted instrument SNPs from exposure
 #' candidate_exposure_dat  Harmonised candidate - exposure dataset
 #' candidate_exposure_mr  MR analysis of candidates against exposure
-outlier_scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_threshold=5e-8, id_list="default", include_outliers=FALSE, mr_method="strategy1")
+tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_threshold=5e-8, id_list="default", include_outliers=FALSE, mr_method="strategy1")
 {
 	# Get outliers
 
@@ -670,7 +822,7 @@ outlier_sig <- function(outlierscan, mr_threshold_method = "fdr", mr_threshold =
 #' @param outlierscan Output from outlier_scan function
 #' @export
 #' @return Prints plot, and returns dataframe of the connections
-outlier_network <- function(outlierscan)
+network.tryx <- function(outlierscan)
 {
 
 	a <- require(igraph)
@@ -856,38 +1008,54 @@ outlier_network <- function(outlierscan)
 
 
 
-simulate <- function(nid, nu1, nu2)
+simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 {
-	# Simulate 3 outliers
-	# scenario 1 - pleiotropy g -> u -> y
-	# scenario 2 - confounder g -> u; u -> x; u -> y
-	# (ignore for now) scenario 3 - pathway g -> u; x -> u; u -> y
+	# scenario 1 - confounder g -> u; u -> x; u -> y
+	# scenario 2 - pleiotropy g -> u -> y
 
 	out <- list()
 
-	library(simulateGP)
+	cpg <- require(simulateGP)
+	if(!cpg)
+	{
+		stop("Please install the simulateGP package\ndevtools::install_github('explodecomputer/simulateGP')")
+	}
 
-	gx <- make_geno(nid, 10, 0.5)
+	ngx <- 30
+	ngu1 <- 30
+	ngu2 <- 30
+
+	gx <- make_geno(nid, ngx, 0.5)
 	nu <- nu1 + nu2
+
+	# Effect sizes
+	bgu1 <- lapply(1:nu1, function(x) runif(ngu1))
+	bgu2 <- lapply(1:nu2, function(x) runif(ngu2))
+	bgx <- runif(ngx)
+	bu1x <- rnorm(nu1)
+	bu1y <- rnorm(nu1)
+	bu2y <- rnorm(nu2)
+	bxy <- bxy
+
 	gu1 <- list()
 	u1 <- matrix(nid * nu1, nid, nu1)
 	for(i in 1:nu1)
 	{
-		gu1[[i]] <- cbind(gx[,i], make_geno(nid, 6, 0.5))
-		u1[,i] <- gu1[[i]] %*% c(1, runif(6)) + rnorm(nid, sd=6)
+		gu1[[i]] <- cbind(gx[,i], make_geno(nid, ngu1-1, 0.5))
+		u1[,i] <- gu1[[i]] %*% bgu1[[i]] + rnorm(nid)
 	}
 	gu2 <- list()
 	u2 <- matrix(nid * nu2, nid, nu2)
 	for(j in 1:nu2)
-	{		
-		gu2[[j]] <- cbind(gx[,i+j], make_geno(nid, 6, 0.5))
-		u2[,j] <- gu2[[j]] %*% c(1, runif(6)) + rnorm(nid, sd=6)
+	{
+		gu2[[j]] <- cbind(gx[,i+j], make_geno(nid, ngu1-1, 0.5))
+		u2[,j] <- gu2[[j]] %*% bgu2[[j]] + rnorm(nid)
 	}
 
 	ux <- rep(2, nu1)
-	x <- drop(gx %*% c(0.5, runif(9)) + u1 %*% rep(2, nu1) + rnorm(nid, sd=16))
+	x <- drop(gx %*% bgx + u1 %*% bu1x + rnorm(nid))
 	# u3 <- gu %*% c(0.5, runif(6)) + x * -3 + rnorm(nid, sd=6)
-	y <- drop(x * 4 + u1 %*% rep(-3, nu1) + u2 %*% rep(3, nu2) + rnorm(nid, sd=10))
+	y <- drop(x * bxy + u1 %*% bu1y + u2 %*% bu2y + rnorm(nid))
 
 	out$dat <- get_effs(x, y, gx, "X", "Y")
 	out$dat$mr_keep <- TRUE
@@ -895,7 +1063,13 @@ simulate <- function(nid, nu1, nu2)
 
 	# radialmr(out$dat, 1:2)
 
-	outliers <- as.character(c(1:nu))
+	if(outliers_known)
+	{
+		outliers <- as.character(c(1:nu))
+	} else {
+		radial <- RadialMR::RadialMR(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP, "IVW", "YES", "NO", 0.05/nrow(dat), "NO")
+		outliers <- sort(radial$outliers$SNP)
+	}
 	# output$radialmr <- radial
 	nout <- length(outliers)
 	outliers <- subset(out$dat, SNP %in% outliers)$SNP
@@ -907,14 +1081,14 @@ simulate <- function(nid, nu1, nu2)
 	temp <- list()
 	for(i in 1:nu1)
 	{
-		temp[[i]] <- gwas(u1[,i], gx[,1:nu1])
-		temp[[i]]$SNP <- 1:nu1
+		temp[[i]] <- gwas(u1[,i], gx[,outliers])
+		temp[[i]]$SNP <- outliers
 		temp[[i]]$outcome <- paste0("U1_", i)
 	}
 	for(i in 1:nu2)
 	{
-		temp[[i + nu1]] <- gwas(u2[,i], gx[,nu1 + (1:nu2)])
-		temp[[i + nu1]]$SNP <- 1:nu2 + nu1
+		temp[[i + nu1]] <- gwas(u2[,i], gx[,outliers])
+		temp[[i + nu1]]$SNP <- outliers
 		temp[[i + nu1]]$outcome <- paste0("U2_", i)
 	}
 
@@ -931,7 +1105,7 @@ simulate <- function(nid, nu1, nu2)
 	{
 		u1x[[i]] <- get_effs(u1[,i], x, gu1[[i]], paste0("U1_", i), "X")
 		u1y[[i]] <- get_effs(u1[,i], y, gu1[[i]], paste0("U1_", i), "Y")
-		u1x[[i]]$SNP <- u1y[[i]]$SNP <- c(i, paste0("u1_",1:6))
+		u1x[[i]]$SNP <- u1y[[i]]$SNP <- c(i, paste0("u1_",1:(ngu1-1)))
 		u1x[[i]]$effect_allele.exposure <- u1y[[i]]$effect_allele.exposure <- "A"
 		u1x[[i]]$other_allele.exposure <- u1y[[i]]$other_allele.exposure <- "G"
 		u1x[[i]]$effect_allele.outcome <- u1y[[i]]$effect_allele.outcome <- "A"
@@ -946,7 +1120,7 @@ simulate <- function(nid, nu1, nu2)
 	{
 		u2x[[i]] <- get_effs(u2[,i], x, gu2[[i]], paste0("U2_", i), "X")
 		u2y[[i]] <- get_effs(u2[,i], y, gu2[[i]], paste0("U2_", i), "Y")
-		u2x[[i]]$SNP <- u2y[[i]]$SNP <- c(i+nu1, paste0("u2_",1:6))
+		u2x[[i]]$SNP <- u2y[[i]]$SNP <- c(i+nu1, paste0("u2_",1:(ngu2-1)))
 		u2x[[i]]$effect_allele.exposure <- u2y[[i]]$effect_allele.exposure <- "A"
 		u2x[[i]]$other_allele.exposure <- u2y[[i]]$other_allele.exposure <- "G"
 		u2x[[i]]$effect_allele.outcome <- u2y[[i]]$effect_allele.outcome <- "A"
@@ -983,6 +1157,12 @@ simulate <- function(nid, nu1, nu2)
 
 	out$candidate_exposure_dat <- suppressMessages(harmonise_data(out$candidate_instruments, out$candidate_exposure))
 	out$candidate_exposure_mr <- suppressMessages(mr(out$candidate_exposure_dat, method_list="mr_ivw"))
+
+	out$simulation <- list()
+	out$simulation$nu1 <- nu1
+	out$simulation$nu2 <- nu2
+	out$simulation$outliers_known <- outliers_known
+	out$simulation$bxy <- bxy
 
 	return(out)
 }
