@@ -485,20 +485,23 @@ tryx.analyse <- function(outlierscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 
 	analysis$estimates <- estimates
 
-	temp2 <- merge(dat, temp, by="SNP")
-	labs <- rbind(
-		data.frame(label=temp2$SNP, x=temp2$weights.x, y=temp2$weights.x * temp2$ratio.x),
-		data.frame(label=temp$candidate, x=temp$weights, y=temp$weights * temp$ratio)
-	)
-	p <- ggplot(rbind(dat, temp), aes(y=ratiow, x=weights)) +
-	geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est)) +
-	geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.color = "grey50") +
-	geom_point(aes(colour=what)) +
-	geom_segment(data=temp2, colour="grey50", aes(x=weights.x, xend=weights.y, y=ratiow.x, yend=ratiow.y), arrow = arrow(length = unit(0.01, "npc"))) +
-	labs(colour="") +
-	xlim(c(0, max(dat$weights))) +
-	ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow)))
-	analysis$plot <- p
+	if(plot)
+	{	
+		temp2 <- merge(dat, temp, by="SNP")
+		labs <- rbind(
+			data.frame(label=temp2$SNP, x=temp2$weights.x, y=temp2$weights.x * temp2$ratio.x),
+			data.frame(label=temp$candidate, x=temp$weights, y=temp$weights * temp$ratio)
+		)
+		p <- ggplot(rbind(dat, temp), aes(y=ratiow, x=weights)) +
+		geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est)) +
+		geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.color = "grey50") +
+		geom_point(aes(colour=what)) +
+		geom_segment(data=temp2, colour="grey50", aes(x=weights.x, xend=weights.y, y=ratiow.x, yend=ratiow.y), arrow = arrow(length = unit(0.01, "npc"))) +
+		labs(colour="") +
+		xlim(c(0, max(dat$weights))) +
+		ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow)))
+		analysis$plot <- p
+	}
 	return(analysis)
 }
 
