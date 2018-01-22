@@ -140,6 +140,30 @@ temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
 
 	save(l, param, file="sim2.rdata")
 
+
+	param <- expand.grid(
+		nid = c(5000, 10000),
+		bxy = c(-0.5, -0.2, 0.2, 0.5),
+		nu1 = c(1, 5, 10, 14),
+		nu2 = c(1, 5, 10, 14),
+		outliers_known = c(FALSE),
+		simr = c(1:100)
+	)
+	param$sim <- 1:nrow(param)
+
+
+	library(parallel)
+
+	l <- mclapply(1:nrow(param), function(i)
+	{
+		set.seed(i)
+		out <- simulate.tryx(param$nid[i], param$nu1[i], param$nu2[i], param$bxy[i], outliers_known=param$outliers_known[i])
+		out <- outlier_sig(out)
+		return(tryx.analyse(out, plot=FALSE))
+	}, mc.cores=16)
+
+	save(l, param, file="sim3.rdata")
+
 	temp <- lapply(1:length(l), function(x){
 		a <- l[[x]]$estimates
 		a$sim <- x
@@ -1067,7 +1091,7 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 	{
 		outliers <- as.character(c(1:nu))
 	} else {
-		radial <- RadialMR::RadialMR(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP, "IVW", "YES", "NO", 0.05/nrow(dat), "NO")
+		radial <- RadialMR::RadialMR(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP, "IVW", "YES", "NO", 0.05/nrow(dat), "NO")
 		outliers <- sort(radial$outliers$SNP)
 	}
 	# output$radialmr <- radial
