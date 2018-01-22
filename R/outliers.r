@@ -146,7 +146,7 @@ temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
 		bxy = c(-0.5, -0.2, 0.2, 0.5),
 		nu1 = c(1, 5, 10, 14),
 		nu2 = c(1, 5, 10, 14),
-		outliers_known = c(FALSE),
+		outliers_known = c(TRUE),
 		simr = c(1:100)
 	)
 	param$sim <- 1:nrow(param)
@@ -423,8 +423,8 @@ tryx.analyse <- function(outlierscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 		detection <- list()
 		detection$nu1_correct <- sum(adj$SNP %in% 1:outlierscan$simulation$nu1 & adj$what != "p->y")
 		detection$nu1_incorrect <- sum(adj$SNP %in% 1:outlierscan$simulation$nu1 & adj$what == "p->y")
-		detection$nu2_correct <- sum(adj$SNP %in% (1:outlierscan$simulation$nu2 + nu1) & adj$what == "p->y")
-		detection$nu2_incorrect <- sum(adj$SNP %in% (1:outlierscan$simulation$nu2 + nu1) & adj$what != "p->y")
+		detection$nu2_correct <- sum(adj$SNP %in% (1:outlierscan$simulation$nu2 + outlierscan$simulation$nu1) & adj$what == "p->y")
+		detection$nu2_incorrect <- sum(adj$SNP %in% (1:outlierscan$simulation$nu2 + outlierscan$simulation$nu1) & adj$what != "p->y")
 		analysis$detection <- detection
 	}
 
