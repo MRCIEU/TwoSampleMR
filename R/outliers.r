@@ -1091,7 +1091,7 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 	{
 		outliers <- as.character(c(1:nu))
 	} else {
-		radial <- RadialMR::RadialMR(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP, "IVW", "YES", "NO", 0.05/nrow(dat), "NO")
+		radial <- RadialMR::RadialMR(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP, "IVW", "YES", "NO", 0.05/nrow(out$dat), "NO")
 		outliers <- sort(radial$outliers$SNP)
 	}
 	# output$radialmr <- radial
