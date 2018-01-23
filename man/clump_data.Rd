@@ -12,7 +12,7 @@ clump_data(dat, clump_kb = 10000, clump_r2 = 0.001, clump_p1 = 1,
 
 \item{clump_kb=10000}{Clumping window}
 
-\item{clump_r2=0.01}{Clumping r2 cutoff}
+\item{clump_r2=0.001}{Clumping r2 cutoff. Note that this default value has recently changed from 0.01.}
 
 \item{clump_p1=1}{Clumping sig level for index SNPs}
 
