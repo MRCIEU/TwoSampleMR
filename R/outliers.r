@@ -57,13 +57,13 @@ temp$outcome[grepl("ischaemic", temp$outcome, ignore.case=TRUE)]
 	chd <- extract_outcome_data(urate$SNP, 7)
 	urate_egfr <- harmonise_data(urate, egfr)
 	urate_chd <- harmonise_data(urate, chd)
-	outlierscan <- outlier_scan(urate_egfr, mr_method="mr_ivw")
+	outlierscan <- tryx.scan(urate_egfr, mr_method="strategy1", use_proxies=FALSE)
 	outlierscan <- outlier_sig(outlierscan)
-	mr_volcano_plot(rbind(outlierscan$candidate_exposure_mr, outlierscan$candidate_outcome_mr))
+	volcano_plot(rbind(outlierscan$candidate_exposure_mr, outlierscan$candidate_outcome_mr))
 	outlier_network(outlierscan)
 	temp <- outlier_adjustment(outlierscan)
 
-	outlierscan2 <- outlier_scan(urate_chd, mr_method="mr_ivw")
+	outlierscan2 <- tryx.scan(urate_egfr, mr_method="mr_ivw")
 	outlierscan2 <- outlier_sig(outlierscan2)
 	tem2 <- outlier_adjustment(outlierscan)
 
