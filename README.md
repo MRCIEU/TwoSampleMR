@@ -40,7 +40,7 @@ This project is licensed under GNU GPL v3.
 
 ## Installing the TwoSampleMR R package
 
-The package is hosted on github, and this allows installation and update to be very easy. First make sure you have the `biomaRt` and `devtools` packages installed:
+The package is hosted on github, and this allows installation and update to be very easy. First make sure you have the `devtools` package installed:
 
     install.packages("devtools")
 
