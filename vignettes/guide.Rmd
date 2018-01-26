@@ -89,7 +89,11 @@ Each step is documented in detail below.
 
 In order to perform any commands that access data in the MR Base database, you must authenticate the request using OAuth2.0 authentication, using a Google account. For example, requesting a list of studies in the MR Base database:
 
-```{r }
+```{r echo=FALSE}
+ao <- available_outcomes(access_token=NULL)
+```
+
+```r
 ao <- available_outcomes()
 ```
 
@@ -353,10 +357,16 @@ The MR Base GWAS database contains the entire summary statistics for hundreds of
 
 For example, to obtain details about the available GWASs do the following:
 
-```{r }
+```r
 ao <- available_outcomes()
 head(ao)
 ```
+
+```{r echo=FALSE}
+ao <- available_outcomes(access_token = NULL)
+head(ao)
+```
+
 
 For information about authentication see the [Authentication](#Authentication) section. 
 
@@ -405,8 +415,13 @@ Once instruments for the exposure trait have been specified, those SNPs need to 
 
 MR Base contains complete GWAS summary statistics from a large number of studies. To obtain details about the available GWASs do the following:
 
-```{r }
+```r
 ao <- available_outcomes()
+head(ao)
+```
+
+```{r echo=FALSE}
+ao <- available_outcomes(access_token = NULL)
 head(ao)
 ```
 
@@ -437,10 +452,18 @@ ao[grepl("heart disease", ao$trait), ]
 
 The most recent CARDIOGRAM GWAS is ID number 7. We can extract the BMI SNPs from this GWAS as follows:
 
-```{r }
+```r
 chd_out_dat <- extract_outcome_data(
 	snps = bmi_exp_dat$SNP,
 	outcomes = 7
+)
+```
+
+```{r echo=FALSE}
+chd_out_dat <- extract_outcome_data(
+	snps = bmi_exp_dat$SNP,
+	outcomes = 7,
+	access_token = NULL
 )
 ```
 
@@ -852,7 +875,7 @@ This function will create a separate report file for every exposure-outcome comb
 
 MR results can be reformatted into other structures for further downstream processing by the user. For example:
 
-```{r }
+```{r eval=FALSE}
 Res<-mr(dat)
 Het<-mr_heterogeneity(dat)
 Pleiotropy<-mr_pleiotropy_test(dat)
