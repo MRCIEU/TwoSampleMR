@@ -20,3 +20,4 @@ Use Wald ratio if only one SNP
 Use IVW if more than one SNP and heterogeneity is low
 Use weighted mode if more than some minimum number of SNPs and heterogeneity is high
 }
+

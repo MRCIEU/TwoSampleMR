@@ -27,3 +27,4 @@ List with the following elements:
 \description{
 MR simple mode estimator
 }
+

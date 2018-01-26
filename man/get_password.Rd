@@ -15,3 +15,4 @@ Password string, or empty string if nothing supplied
 \description{
 Get password from either global options or argument
 }
+

@@ -25,3 +25,4 @@ List with the following elements:
 \description{
 Perform 2 sample IV using random effects meta analysis and delta method for standard errors
 }
+
