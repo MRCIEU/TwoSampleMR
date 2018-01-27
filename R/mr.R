@@ -785,14 +785,18 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #' \item{nsnp}{Number of SNPs}
 #' }
 #'
-#' @import mr.raps
 #' @export
 #'
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
-    out <- mr.raps(b_exp, b_out, se_exp, se_out,
-                   parameters$over.dispersion,
-                   parameters$loss.function)
+    cpg <- require(mr.raps)
+    if (!cpg)
+    {
+        stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
+    }
+    out <- mr.raps::mr.raps(b_exp, b_out, se_exp, se_out,
+                            parameters$over.dispersion,
+                            parameters$loss.function)
     list(b = out$beta.hat,
          se = out$beta.se,
          pval = pnorm(- abs(out$beta.hat / out$beta.se)) * 2,
