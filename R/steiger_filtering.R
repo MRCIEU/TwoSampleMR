@@ -45,7 +45,7 @@ steiger_filtering_internal <- function(dat)
 			}
 		} else if(all(grepl("SD", dat$units.exposure)) & all(!is.na(dat$eaf.exposure))) {
 			dat$rsq.exposure <- NA
-			dat$rsq.exposure <- dat$beta.exposure^2 * dat$eaf.exposure * (1-dat$eaf.exposure)
+			dat$rsq.exposure <- 2 * dat$beta.exposure^2 * dat$eaf.exposure * (1-dat$eaf.exposure)
 		} else {
 			ind1 <- !is.na(dat$pval.exposure) & !is.na(dat$samplesize.exposure)
 			dat$rsq.exposure <- NA
@@ -81,7 +81,7 @@ steiger_filtering_internal <- function(dat)
 			}
 		} else if(all(grepl("SD", dat$units.outcome)) & all(!is.na(dat$eaf.outcome))) {
 			dat$rsq.outcome <- NA
-			dat$rsq.outcome <- dat$beta.outcome^2 * dat$eaf.outcome * (1-dat$eaf.outcome)
+			dat$rsq.outcome <- 2 * dat$beta.outcome^2 * dat$eaf.outcome * (1-dat$eaf.outcome)
 		} else {
 			ind1 <- !is.na(dat$pval.outcome) & !is.na(dat$samplesize.outcome)
 			dat$rsq.outcome <- NA
