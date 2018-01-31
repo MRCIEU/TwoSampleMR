@@ -868,6 +868,21 @@ By default this produces a html file in the current working directory, but see t
 
 This function will create a separate report file for every exposure-outcome combination that is present in the `dat` object.
 
+* * *
+
+## MR.RAPS: Many weak instruments analysis
+
+MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method that considers the measurement error in SNP-exposure effects, is unbiased when there are many (e.g. hundreds of) weak instruments, and is robust to systematic and idiosyncratic pleiotropy. See the [arXiv preprint](https://arxiv.org/abs/1801.09652) for more detail about the statistical methodology.
+
+MR.RAPS is implemented in the R package _mr.raps_ that is available on CRAN. It can be directly called from TwoSampleMR by
+```{r eval = FALSE}
+res <- mr(dat, method_list = c("mr_raps"))
+```
+
+MR.RAPS comes with two main options: _over.dispersion_ (whether the method should consider systematic pleiotropy) and _loss.function_ (either "l2", "huber", or "tukey"). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is _over.dispersion = TRUE_ and _loss.function = "tukey"_. To change these options, modify the _parameters_ argument of _mr_ by (for example)
+```{r eval = FALSE}
+res <- mr(dat, method_list = c("mr_raps"), parameters = list(over.dispersion = FALSE, loss.function = "l2"))
+```
 
 * * *
 
@@ -884,8 +899,6 @@ res_all <- combine_all_mresults(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=T)
 ```
 
 This returns a data frame combining results from mr(dat), mr_heterogeneity(dat), mr_pleiotropy_test(dat) and mr_singlesnp(dat). The function merges the data frame with outcome study level characteristics from available_outcomes(), unless ao_slc is set to FALSE. If Exp is set to TRUE, then the results are exponentiated (e.g. if the user wants their log odds ratios expressed as odds ratios). 
-
-***
 
 # References
 

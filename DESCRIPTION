@@ -31,7 +31,8 @@ Suggests:
     MendelianRandomization,
     MRPRESSO,
     dplyr,
-    igraph
+    igraph,
+    mr.raps
 Imports:
     meta,
     jsonlite,
@@ -39,8 +40,6 @@ Imports:
     data.table,
     googleAuthR (>= 0.6.2),
     httpuv,
-    mr.raps
-Remotes: qingyuanzhao/mr.raps
 License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr
