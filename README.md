@@ -50,3 +50,5 @@ Then to install:
     install_github("MRCIEU/TwoSampleMR")
 
 To update the package just run the `install_github("MRCIEU/TwoSampleMR")` command again.
+
+pull request test
