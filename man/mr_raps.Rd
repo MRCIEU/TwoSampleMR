@@ -25,6 +25,7 @@ List with the following elements:
 \item{b}{MR estimate}
 \item{se}{Standard error}
 \item{pval}{p-value}
+\item{nsnp}{Number of SNPs}
 }
 }
 \description{
