@@ -170,6 +170,14 @@ mr_method_list <- function()
 			Description="",
 			use_by_default=FALSE,
 			heterogeneity_test=FALSE
+		),
+                list(
+			obj="mr_raps",
+			name="Robust adjusted profile score (RAPS)",
+			PubmedID="",
+			Description="",
+			use_by_default=FALSE,
+			heterogeneity_test=FALSE
 		)
 	)
 	a <- lapply(a, as.data.frame)
@@ -192,7 +200,9 @@ default_parameters <- function()
 		penk = 20,
 		phi = 1,
 		alpha = 0.05,
-		Qthresh = 0.05
+                Qthresh = 0.05,
+                over.dispersion = TRUE,
+                loss.function = "tukey"
 	)
 }
 
@@ -335,8 +345,8 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 	}
 	opt <- try(optim(
 		c(b_exp, sum(b_exp*b_out/se_out^2)/sum(b_exp^2/se_out^2)),
-		loglikelihood, 
-		hessian=TRUE, 
+		loglikelihood,
+		hessian=TRUE,
 		control = list(maxit=25000)), silent=TRUE)
 	if(class(opt)=="try-error")
 	{
@@ -418,7 +428,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 	to_flip <- sign0(b_exp) == -1
 	b_out = b_out*sign0(b_exp)
-	b_exp = abs(b_exp) 
+	b_exp = abs(b_exp)
 	dat <- data.frame(b_out=b_out, b_exp=b_exp, se_exp=se_exp, se_out=se_out, flipped=to_flip)
 	mod <- lm(b_out ~ b_exp, weights=1/se_out^2)
 	smod <- summary(mod)
@@ -500,7 +510,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 	nboot <- parameters$nboot
 	# Do bootstraps
 	res <- array(0, c(nboot+1, 2))
-	# pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style=3) 
+	# pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style=3)
 	for (i in 1:nboot)
 	{
 		# setTxtProgressBar(pb, i)
@@ -646,7 +656,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 		betaIV.boot = b_out.boot/b_exp.boot
 		med[i] = weighted_median(betaIV.boot, weights)
 	}
-	return(sd(med)) 
+	return(sd(med))
 }
 
 
@@ -697,8 +707,8 @@ mr_median <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
-	if(nrow(dat) < 3) 
-	{
+	if(nrow(dat) < 3)
+        {
 		warning("Need at least 3 SNPs")
 		return(NULL)
 	}
@@ -745,7 +755,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
-	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error 
+	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error
 	pval <- 2 * pnorm(abs(b/se), low=FALSE)
 	Q <- ivw.res$sigma^2*(length(b_exp)-2)
 	Q_df <- length(b_exp) - 1
@@ -757,3 +767,39 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 
 
 
+#' Robust adjusted profile score
+#'
+#' @inheritParams mr_ivw
+#' @param over.dispersion Should the model consider overdispersion (systematic pleiotropy)? Default is TRUE.
+#' @param loss.function Either the squared error loss ("l2") or robust loss functions/scores ("huber" or "tukey"). Default is "tukey"".
+#'
+#' @details This function calls the \code{mr.raps} package. Please refer to the documentation of that package for more detail.
+#'
+#' @references Qingyuan Zhao, Jingshu Wang, Jack Bowden, Dylan S. Small. Statistical inference in two-sample summary-data Mendelian randomization using robust adjusted profile score. Forthcoming.
+#'
+#' @return List with the following elements:
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{nsnp}{Number of SNPs}
+#' }
+#'
+#' @export
+#'
+mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
+
+    cpg <- require(mr.raps)
+    if (!cpg)
+    {
+        stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
+    }
+    out <- mr.raps::mr.raps(b_exp, b_out, se_exp, se_out,
+                            parameters$over.dispersion,
+                            parameters$loss.function)
+    list(b = out$beta.hat,
+         se = out$beta.se,
+         pval = pnorm(- abs(out$beta.hat / out$beta.se)) * 2,
+         nsnp = length(b_exp))
+
+}

@@ -15,3 +15,4 @@ Prints plot, and returns dataframe of the connections
 \description{
 Creates a simple network depicting the connections between outlier instruments, the original exposure and outcome traits, and the detected candidate associations
 }
+

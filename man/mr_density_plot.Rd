@@ -22,3 +22,4 @@ List of plots
 \description{
 Density plot
 }
+

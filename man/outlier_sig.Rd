@@ -17,3 +17,4 @@ Same as outlier_scan but the candidate_exposure_mr and candidate_outcome_mr obje
 \description{
 Identify putatively significant associations in the outlier scan
 }
+
