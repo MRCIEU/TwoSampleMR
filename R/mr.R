@@ -14,7 +14,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 	mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing MR analysis of '", x1$id.exposure[1], "' on '", x18WII58$id.outcome[1], "'")
-		x <- subset(x1, mr_keep);
+		x <- subset(x1, mr_keep)
 		if(nrow(x) == 0)
 		{
 			message("No SNPs available for MR analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
@@ -25,8 +25,8 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 		res <- lapply(method_list, function(meth)
 		{
 			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
-		});
-		methl <- mr_method_list();
+		})
+		methl <- mr_method_list()
 		mr_tab <- data.frame(
 			outcome = x$outcome[1],
 			exposure = x$exposure[1],
@@ -708,7 +708,7 @@ mr_median <- function(dat, parameters=default_parameters())
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
 	if(nrow(dat) < 3)
-	{
+        {
 		warning("Need at least 3 SNPs")
 		return(NULL)
 	}
