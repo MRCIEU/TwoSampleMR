@@ -89,7 +89,11 @@ Each step is documented in detail below.
 
 In order to perform any commands that access data in the MR Base database, you must authenticate the request using OAuth2.0 authentication, using a Google account. For example, requesting a list of studies in the MR Base database:
 
-```{r }
+```{r echo=FALSE}
+ao <- available_outcomes(access_token=NULL)
+```
+
+```r
 ao <- available_outcomes()
 ```
 
@@ -353,10 +357,16 @@ The MR Base GWAS database contains the entire summary statistics for hundreds of
 
 For example, to obtain details about the available GWASs do the following:
 
-```{r }
+```r
 ao <- available_outcomes()
 head(ao)
 ```
+
+```{r echo=FALSE}
+ao <- available_outcomes(access_token = NULL)
+head(ao)
+```
+
 
 For information about authentication see the [Authentication](#Authentication) section. 
 
@@ -405,8 +415,13 @@ Once instruments for the exposure trait have been specified, those SNPs need to 
 
 MR Base contains complete GWAS summary statistics from a large number of studies. To obtain details about the available GWASs do the following:
 
-```{r }
+```r
 ao <- available_outcomes()
+head(ao)
+```
+
+```{r echo=FALSE}
+ao <- available_outcomes(access_token = NULL)
 head(ao)
 ```
 
@@ -437,10 +452,18 @@ ao[grepl("heart disease", ao$trait), ]
 
 The most recent CARDIOGRAM GWAS is ID number 7. We can extract the BMI SNPs from this GWAS as follows:
 
-```{r }
+```r
 chd_out_dat <- extract_outcome_data(
 	snps = bmi_exp_dat$SNP,
 	outcomes = 7
+)
+```
+
+```{r echo=FALSE}
+chd_out_dat <- extract_outcome_data(
+	snps = bmi_exp_dat$SNP,
+	outcomes = 7,
+	access_token = NULL
 )
 ```
 
@@ -845,6 +868,21 @@ By default this produces a html file in the current working directory, but see t
 
 This function will create a separate report file for every exposure-outcome combination that is present in the `dat` object.
 
+* * *
+
+## MR.RAPS: Many weak instruments analysis
+
+MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method that considers the measurement error in SNP-exposure effects, is unbiased when there are many (e.g. hundreds of) weak instruments, and is robust to systematic and idiosyncratic pleiotropy. See the [arXiv preprint](https://arxiv.org/abs/1801.09652) for more detail about the statistical methodology.
+
+MR.RAPS is implemented in the R package _mr.raps_ that is available on CRAN. It can be directly called from TwoSampleMR by
+```{r eval = FALSE}
+res <- mr(dat, method_list = c("mr_raps"))
+```
+
+MR.RAPS comes with two main options: _over.dispersion_ (whether the method should consider systematic pleiotropy) and _loss.function_ (either "l2", "huber", or "tukey"). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is _over.dispersion = TRUE_ and _loss.function = "tukey"_. To change these options, modify the _parameters_ argument of _mr_ by (for example)
+```{r eval = FALSE}
+res <- mr(dat, method_list = c("mr_raps"), parameters = list(over.dispersion = FALSE, loss.function = "l2"))
+```
 
 * * *
 
@@ -852,7 +890,7 @@ This function will create a separate report file for every exposure-outcome comb
 
 MR results can be reformatted into other structures for further downstream processing by the user. For example:
 
-```{r }
+```{r eval=FALSE}
 Res<-mr(dat)
 Het<-mr_heterogeneity(dat)
 Pleiotropy<-mr_pleiotropy_test(dat)
@@ -861,8 +899,6 @@ res_all <- combine_all_mresults(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=T)
 ```
 
 This returns a data frame combining results from mr(dat), mr_heterogeneity(dat), mr_pleiotropy_test(dat) and mr_singlesnp(dat). The function merges the data frame with outcome study level characteristics from available_outcomes(), unless ao_slc is set to FALSE. If Exp is set to TRUE, then the results are exponentiated (e.g. if the user wants their log odds ratios expressed as odds ratios). 
-
-***
 
 # References
 

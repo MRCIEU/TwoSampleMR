@@ -15,3 +15,4 @@ data frame
 \description{
 This function takes b and se from mr() and generates odds ratios and 95 percent confidence intervals
 }
+

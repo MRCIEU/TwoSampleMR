@@ -17,3 +17,4 @@ list
 \description{
 Uses Cook's distance D > 4/nsnp to iteratively remove outliers
 }
+

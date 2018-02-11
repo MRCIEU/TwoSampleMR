@@ -182,7 +182,7 @@ convert_outcome_to_exposure <- function(outcome_dat)
 #'
 #' @export
 #' @return data frame in exposure_dat format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.01, clump_kb=10000, harmonise_strictness=2)
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2)
 {
 	require(reshape2)
 	message("Warning: This analysis is still experimental")
@@ -281,6 +281,152 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 
 #' Perform basic multivariable MR
 #'
+#' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
+#'
+#' @param mvdat Output from \code{mv_harmonise_data}
+#' @param pval_threshold=5e-8 P-value threshold to include instruments
+#'
+#' @export
+#' @return List of results
+mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8)
+{
+	# This is a matrix of 
+	beta.outcome <- mvdat$outcome_beta
+	beta.exposure <- mvdat$exposure_beta
+	pval.exposure <- mvdat$exposure_pval
+
+	nexp <- ncol(beta.exposure)
+	effs <- array(1:nexp)
+	se <- array(1:nexp)
+	pval <- array(1:nexp)
+	nsnp <- array(1:nexp)
+	marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
+	p <- list()
+	nom <- colnames(beta.exposure)
+	for (i in 1:nexp) {
+
+		# For this exposure, only keep SNPs that meet some p-value threshold
+		index <- pval.exposure[,i] < pval_threshold
+
+		# Get outcome effects adjusted for all effects on all other exposures
+
+		if(intercept)
+		{
+			if(instrument_specific)
+			{
+				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ beta.exposure[index, -c(i)])$res
+				mod <- summary(lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
+			} else {
+				marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
+				mod <- summary(lm(marginal_outcome[,i] ~ beta.exposure[,i]))
+			}
+		} else {
+			if(instrument_specific)
+			{
+				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i)])$res
+				mod <- summary(lm(marginal_outcome[index,i] ~ 0 + beta.exposure[index, i]))
+			} else {
+				marginal_outcome[,i] <- lm(beta.outcome ~ 0 + beta.exposure[, -c(i)])$res
+				mod <- summary(lm(marginal_outcome[,i] ~ 0 + beta.exposure[,i]))
+			}			
+		}
+		
+		effs[i] <- mod$coef[as.numeric(intercept) + 1, 1]
+		se[i] <- mod$coef[as.numeric(intercept) + 1, 2]
+		pval[i] <- pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		nsnp[i] <- sum(index)
+
+		# Make scatter plot
+		d <- data.frame(outcome=marginal_outcome[,i], exposure=beta.exposure[,i])
+		flip <- sign(d$exposure) == -1
+		d$outcome[flip] <- d$outcome[flip] * -1
+		d$exposure <- abs(d$exposure)
+		p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
+		ggplot2::geom_point() +
+		# geom_abline(intercept=0, slope=effs[i]) +
+		ggplot2::stat_smooth(method="lm") +
+		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+	}
+
+	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), marginal_outcome=marginal_outcome, plots=p))
+}
+
+
+
+#' Perform IVW multivariable MR
+#'
+#' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
+#'
+#' @param mvdat Output from \code{mv_harmonise_data}
+#' @param pval_threshold=5e-8 P-value threshold to include instruments
+#'
+#' @export
+#' @return List of results
+mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8)
+{
+	# This is a matrix of 
+	beta.outcome <- mvdat$outcome_beta
+	beta.exposure <- mvdat$exposure_beta
+	pval.exposure <- mvdat$exposure_pval
+	w <- 1/mvdat$outcome_se^2
+
+	nexp <- ncol(beta.exposure)
+	effs <- array(1:nexp)
+	se <- array(1:nexp)
+	pval <- array(1:nexp)
+	nsnp <- array(1:nexp)
+	# marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
+	p <- list()
+	nom <- colnames(beta.exposure)
+	for (i in 1:nexp)
+	{
+		# For this exposure, only keep SNPs that meet some p-value threshold
+		index <- pval.exposure[,i] < pval_threshold
+
+		# # Get outcome effects adjusted for all effects on all other exposures
+		# marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
+
+		# Get the effect of the exposure on the residuals of the outcome
+
+		if(!intercept)
+		{
+			if(instrument_specific)
+			{
+				mod <- summary(lm(beta.outcome[index] ~ 0 + beta.exposure[index, ], weights=w[index]))
+			} else {
+				mod <- summary(lm(beta.outcome ~ 0 + beta.exposure, weights=w))
+			}
+		} else {
+			if(instrument_specific)
+			{
+				mod <- summary(lm(beta.outcome[index] ~ beta.exposure[index, ], weights=w[index]))
+			} else {
+				mod <- summary(lm(beta.outcome ~ beta.exposure, weights=w))
+			}
+		}
+
+		effs[i] <- mod$coef[as.numeric(intercept) + i, 1]
+		se[i] <- mod$coef[as.numeric(intercept) + i, 2]
+		pval[i] <- pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		nsnp[i] <- sum(index)
+
+		# Make scatter plot
+		d <- data.frame(outcome=beta.outcome, exposure=beta.exposure[,i])
+		flip <- sign(d$exposure) == -1
+		d$outcome[flip] <- d$outcome[flip] * -1
+		d$exposure <- abs(d$exposure)
+		p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
+		ggplot2::geom_point() +
+		# geom_abline(intercept=0, slope=effs[i]) +
+		ggplot2::stat_smooth(method="lm") +
+		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+	}
+
+	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), plots=p))
+}
+
+#' Perform basic multivariable MR
+#' 
 #' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
 #' @param mvdat Output from \code{mv_harmonise_data}
@@ -393,4 +539,24 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 }
 
 
+# mod 1
+# y ~ 0 + iv1 + iv2
+
+# mod 2
+# y ~ iv1 + iv2
+
+# mod 3
+# y(r) ~ iv1 + iv2
+
+
+# full or residual
+# instrument specific or not
+
+
+# intercept or not
+
+# full, all instruments
+# full, instrument specific
+# residual, all instruments
+# residual, instrument specific
 

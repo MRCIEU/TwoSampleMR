@@ -17,3 +17,4 @@ List of vectors and matrices required for mv analysis. exposure_beta is a matrix
 \description{
 Harmonise exposure and outcome for multivariable MR
 }
+
