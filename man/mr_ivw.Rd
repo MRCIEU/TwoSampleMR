@@ -25,4 +25,3 @@ List with the following elements:
 \description{
 Inverse variance weighted regression
 }
-

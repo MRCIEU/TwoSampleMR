@@ -31,4 +31,3 @@ List of with the following elements:
 \description{
 Run bootstrap to generate standard errors for MR
 }
-

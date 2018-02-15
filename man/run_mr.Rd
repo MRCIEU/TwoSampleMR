@@ -18,4 +18,3 @@ Data frame
 \description{
 Perform Rucker, Median and Mode
 }
-

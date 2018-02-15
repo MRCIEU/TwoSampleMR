@@ -17,4 +17,3 @@ MR estimate
 \description{
 New method from Jack
 }
-

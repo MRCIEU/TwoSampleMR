@@ -17,4 +17,3 @@ data frame
 \description{
 <full description>
 }
-

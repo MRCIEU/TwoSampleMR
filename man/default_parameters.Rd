@@ -9,4 +9,3 @@ default_parameters()
 \description{
 List of parameters for use with MR functions
 }
-

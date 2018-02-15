@@ -22,4 +22,3 @@ contingency(af, prop, odds_ratio, eps = 1e-15)
 Columns are the case and control frequencies
 Rows are the frequencies for allele 1 and allele 2
 }
-
