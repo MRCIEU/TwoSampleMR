@@ -724,6 +724,7 @@ combine_data <- function(x)
 #' @return data frame
 convert_outcome_to_exposure <- function(outcome_dat)
 {
+	id <- subset(outcome_dat, !duplicated(outcome), select=c(outcome, id.outcome))
 	exposure_dat <- format_data(
 		outcome_dat,
 		beta_col = "beta.outcome",
@@ -735,6 +736,9 @@ convert_outcome_to_exposure <- function(outcome_dat)
 		eaf_col="eaf.outcome",
 		units_col="units.outcome"
 	)
+	exposure_dat <- merge(exposure_dat, id, by.x="exposure", by.y="outcome")
+	exposure_dat <- subset(exposure_dat, select=-c(id.exposure))
+	names(exposure_dat)[names(exposure_dat) == "id.outcome"] <- "id.exposure"
 	return(exposure_dat)
 }
 
