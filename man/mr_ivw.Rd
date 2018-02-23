@@ -2,7 +2,7 @@
 % Please edit documentation in R/mr.R
 \name{mr_ivw}
 \alias{mr_ivw}
-\title{Inverse variance weighted regression}
+\title{Inverse variance weighted regression (fixed effects model)}
 \usage{
 mr_ivw(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
 }
@@ -23,5 +23,5 @@ List with the following elements:
         Q, Q_df, Q_pval: Heterogeneity stats
 }
 \description{
-Inverse variance weighted regression
+Inverse variance weighted regression (fixed effects model)
 }

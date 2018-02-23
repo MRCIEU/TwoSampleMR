@@ -743,7 +743,7 @@ mr_median <- function(dat, parameters=default_parameters())
 }
 
 
-#' Inverse variance weighted regression
+#' Inverse variance weighted regression (fixed effects model)
 #'
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome
