@@ -140,6 +140,14 @@ mr_method_list <- function()
 			heterogeneity_test=TRUE
 		),
 		list(
+			obj="mr_ivw_mre",
+			name="Inverse variance weighted (multiplicative random effects)",
+			PubmedID="",
+			Description="",
+			use_by_default=FALSE,
+			heterogeneity_test=FALSE
+		),
+		list(
 			obj="mr_simple_mode",
 			name="Simple mode",
 			PubmedID="",
@@ -765,6 +773,36 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
 
+
+#' Inverse variance weighted regression (multiplicative random effects model)
+#'
+#' @param b_exp Vector of genetic effects on exposure
+#' @param b_out Vector of genetic effects on outcome
+#' @param se_exp Standard errors of genetic effects on exposure
+#' @param se_out Standard errors of genetic effects on outcome
+#'
+#' @export
+#' @return List with the following elements:
+#'         b: MR estimate
+#'         se: Standard error
+#'         pval: p-value
+#'         Q, Q_df, Q_pval: Heterogeneity stats
+mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
+{
+	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
+	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+
+	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
+	b <- ivw.res$coef["b_exp","Estimate"]
+	se <- ivw.res$coef["b_exp","Std. Error"]
+	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	Q <- ivw.res$sigma^2*(length(b_exp)-2)
+	Q_df <- length(b_exp) - 1
+	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
+	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
+	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
+}
 
 
 #' Robust adjusted profile score
