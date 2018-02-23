@@ -5,10 +5,16 @@
 \title{Perform IVW multivariable MR}
 \usage{
 mv_multiple(mvdat, intercept = FALSE, instrument_specific = FALSE,
-  pval_threshold = 5e-08)
+  pval_threshold = 5e-08, plots = FALSE)
 }
 \arguments{
 \item{mvdat}{Output from \code{mv_harmonise_data}}
+
+\item{intercept}{Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)}
+
+\item{instrument_specific}{Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)}
+
+\item{plots}{Create plots? FALSE by default}
 
 \item{pval_threshold=5e-8}{P-value threshold to include instruments}
 }

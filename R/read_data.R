@@ -726,16 +726,16 @@ convert_outcome_to_exposure <- function(outcome_dat)
 {
 	id <- subset(outcome_dat, !duplicated(outcome), select=c(outcome, id.outcome))
 	exposure_dat <- format_data(
-		outcome_dat,
-		beta_col = "beta.outcome",
-		se_col="se.outcome",
-		pval_col="pval.outcome",
-		phenotype_col="outcome",
-		effect_allele_col="effect_allele.outcome",
-		other_allele_col="other_allele.outcome",
-		eaf_col="eaf.outcome",
-		units_col="units.outcome"
-	)
+			outcome_dat,
+			beta_col = "beta.outcome",
+			se_col="se.outcome",
+			pval_col="pval.outcome",
+			phenotype_col="outcome",
+			effect_allele_col="effect_allele.outcome",
+			other_allele_col="other_allele.outcome",
+			eaf_col="eaf.outcome",
+			units_col="units.outcome"
+		)
 	exposure_dat <- merge(exposure_dat, id, by.x="exposure", by.y="outcome")
 	exposure_dat <- subset(exposure_dat, select=-c(id.exposure))
 	names(exposure_dat)[names(exposure_dat) == "id.outcome"] <- "id.exposure"

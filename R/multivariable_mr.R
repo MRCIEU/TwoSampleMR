@@ -179,10 +179,11 @@ convert_outcome_to_exposure <- function(outcome_dat)
 #' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
 #' @param clump_r2=0.01 Once a full list of
 #' @param clump_kb=10000 <what param does>
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
 #'
 #' @export
 #' @return data frame in exposure_dat format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2)
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = get_mrbase_access_token())
 {
 	require(reshape2)
 	message("Warning: This analysis is still experimental")
@@ -190,7 +191,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 	stopifnot(length(id_exposure) > 1)
 
 	# Get best instruments for each exposure
-	exposure_dat <- extract_instruments(id_exposure, r2 = clump_r2, kb=clump_kb)
+	exposure_dat <- extract_instruments(id_exposure, r2 = clump_r2, kb=clump_kb, access_token = access_token)
 	temp <- exposure_dat
 	temp$id.exposure <- 1
 	temp <- clump_data(temp, clump_r2=clump_r2, clump_kb=clump_kb)
@@ -198,7 +199,8 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 
 	# Get effects of each instrument from each exposure
-	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure)
+	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure, access_token = access_token)
+	d1$units.outcome[is.na(d1$units.outcome)] <- "NA"
 	d1 <- subset(d1, mr_keep.outcome)
 	d2 <- subset(d1, id.outcome != id_exposure[1])
 	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
@@ -284,11 +286,14 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
 #' @param mvdat Output from \code{mv_harmonise_data}
+#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
 #' @param pval_threshold=5e-8 P-value threshold to include instruments
+#' @param plots Create plots? FALSE by default
 #'
 #' @export
 #' @return List of results
-mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8)
+mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
 	beta.outcome <- mvdat$outcome_beta
@@ -341,14 +346,23 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		flip <- sign(d$exposure) == -1
 		d$outcome[flip] <- d$outcome[flip] * -1
 		d$exposure <- abs(d$exposure)
-		p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
-		ggplot2::geom_point() +
-		# geom_abline(intercept=0, slope=effs[i]) +
-		ggplot2::stat_smooth(method="lm") +
-		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+		if(plots)
+		{
+			p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
+			ggplot2::geom_point() +
+			ggplot2::geom_abline(intercept=0, slope=effs[i]) +
+			# ggplot2::stat_smooth(method="lm") +
+			ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+		}
 	}
 
-	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), marginal_outcome=marginal_outcome, plots=p))
+	out <- list(
+		result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE),
+		marginal_outcome=marginal_outcome
+	)
+
+	if(plots) out$plots <- p
+	return(out)
 }
 
 
@@ -358,11 +372,14 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 #'
 #' @param mvdat Output from \code{mv_harmonise_data}
+#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
 #' @param pval_threshold=5e-8 P-value threshold to include instruments
+#' @param plots Create plots? FALSE by default
 #'
 #' @export
 #' @return List of results
-mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8)
+mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
 	beta.outcome <- mvdat$outcome_beta
@@ -415,14 +432,23 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		flip <- sign(d$exposure) == -1
 		d$outcome[flip] <- d$outcome[flip] * -1
 		d$exposure <- abs(d$exposure)
-		p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
-		ggplot2::geom_point() +
-		# geom_abline(intercept=0, slope=effs[i]) +
-		ggplot2::stat_smooth(method="lm") +
-		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+		if(plots)
+		{
+			p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
+			ggplot2::geom_point() +
+			ggplot2::geom_abline(intercept=0, slope=effs[i]) +
+			# ggplot2::stat_smooth(method="lm") +
+			ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+		}
 	}
 
-	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), plots=p))
+	out <- list(
+		result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
+	)
+	if(plots)
+		out$plots=p
+
+	return(out)
 }
 
 #' Perform basic multivariable MR
@@ -472,8 +498,8 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 		d$exposure <- abs(d$exposure)
 		p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
 		ggplot2::geom_point() +
-		# geom_abline(intercept=0, slope=effs[i]) +
-		ggplot2::stat_smooth(method="lm") +
+		ggplot2::geom_abline(intercept=0, slope=effs[i]) +
+		# ggplot2::stat_smooth(method="lm") +
 		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
 	}
 
@@ -530,8 +556,8 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 		d$exposure <- abs(d$exposure)
 		p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
 		ggplot2::geom_point() +
-		# geom_abline(intercept=0, slope=effs[i]) +
-		ggplot2::stat_smooth(method="lm") +
+		ggplot2::geom_abline(intercept=0, slope=effs[i]) +
+		# ggplot2::stat_smooth(method="lm") +
 		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
 	}
 
