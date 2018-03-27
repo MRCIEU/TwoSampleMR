@@ -218,7 +218,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 
 
 
-extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000)
+extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=1000)
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
