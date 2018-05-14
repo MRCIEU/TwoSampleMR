@@ -143,6 +143,8 @@ get_snp_positions_biomart <- function(dat)
 ld_matrix <- function(snps)
 {
 
+	warning("Currently the LD matrix will only be correct if the SNP alleles are on the forward strand.")
+
 	if(length(snps) > 500)
 	{
 		stop("SNP list must be smaller than 500")

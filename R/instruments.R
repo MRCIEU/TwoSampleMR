@@ -41,7 +41,6 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		}
 
 		a <- subset(mrbase_instruments, id.exposure %in% outcomes)
-		a$exposure <- paste0(a$exposure, " || id:", a$id)
 		warning("From version 0.4.2 the exposure name format has changed.")
 
 		if(nrow(a) == 0)
@@ -49,6 +48,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 			message("None of the requested outcomes had GWAS hits at the specified threshold.")
 			return(NULL)
 		}
+		a$exposure <- paste0(a$exposure, " || id:", a$id)
 		return(a)
 	}
 
