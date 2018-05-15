@@ -23,5 +23,7 @@ List with the following elements:
         Q, Q_df, Q_pval: Heterogeneity stats
 }
 \description{
-Inverse variance weighted regression
+The default multiplicative random effects IVW estimate. 
+The standard error is corrected for under dispersion
+Use the \code{mr_ivw_mre} function for estimates that don't correct for under dispersion
 }

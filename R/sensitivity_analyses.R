@@ -152,6 +152,7 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 #' @return Data frame
 mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list = subset(mr_method_list(), heterogeneity_test)$obj)
 {
+	warning("Prior to version 0.4.9 there was a bug in the IVW Q statistic estimate, leading to a slight underestimation in heterogeneity. This has now been resolved.")
 	het_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")

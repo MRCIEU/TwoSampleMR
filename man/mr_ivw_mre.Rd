@@ -23,5 +23,5 @@ List with the following elements:
         Q, Q_df, Q_pval: Heterogeneity stats
 }
 \description{
-Inverse variance weighted regression (multiplicative random effects model)
+Same as mr_ivw but no correction for under dispersion
 }
