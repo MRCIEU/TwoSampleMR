@@ -6,16 +6,19 @@
 #'
 #' @export
 #' @return data frame
+
 split_outcome <- function(mr_res)
 {
 	Pos<-grep("\\|\\|",mr_res$outcome) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
 	mr_res$trait<-mr_res$outcome
 	Outcome<-mr_res$outcome[Pos]
-	Vars<-unlist(strsplit(Outcome,split= "\\|\\|"))
+	Vars<-strsplit(Outcome,split= "\\|\\|")
+	K<-length(unlist(Vars[1]))
+	Vars<-unlist(Vars)
 	Vars<-trim(Vars)
-	Trait<-Vars[seq(1,length(Vars),by=3)]
-	Consortium<-Vars[seq(2,length(Vars),by=3)]
-	Year<-Vars[seq(3,length(Vars),by=3)]
+	Trait<-Vars[seq(1,length(Vars),by=K)]
+	Consortium<-Vars[seq(2,length(Vars),by=K)]
+	Year<-Vars[seq(3,length(Vars),by=K)]
 	mr_res$trait[Pos]<-Trait
 	mr_res$consortium<-NA
 	mr_res$consortium[Pos]<-Consortium
@@ -148,5 +151,90 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 	# names(ResSNP)<-tolower(names(ResSNP))
 	return(Res)
 }
+
+#' Power prune 
+#'
+#' Where there are duplicate outcomes select the outcome with highest a priori statistical power and drop the other outcomes, taking into account sample size and variance in the exposure explained by the instrument. 
+#'
+#' @param dat Results from harmonise_data() 
+#' 
+#' @export
+#' @return data frame
+
+
+# library(TwoSampleMR)
+# library(MRInstruments)
+
+exp_dat <- extract_instruments(outcomes=c(2,300))
+
+chd_out_dat <- extract_outcome_data(
+    snps = exp_dat$SNP,
+    outcomes = c(6,7,8,9)
+)
+
+dat <- harmonise_data(
+    exposure_dat = exp_dat, 
+    outcome_dat = chd_out_dat
+)
+
+dat2<-power.prune(dat,drop.duplicates=T)
+
+power.prune <- function(dat,drop.duplicates=T)
+{
+
+	# dat[,c("eaf.exposure","beta.exposure","se.exposure","samplesize.outcome","ncase.outcome","ncontrol.outcome")]
+
+	p<-dat$eaf.exposure #effect allele frequency
+	b<-abs(dat$beta.exposure) # effect of SNP on risk factor
+	se<-dat$se.exposure
+	# n<-dat$samplesize.exposure
+	n.cas<-dat$ncase.outcome
+	n.con<-dat$ncontrol.outcome
+	b1=log(1.05) # assumed log odds ratio
+	sig<-0.05 #alpha
+
+	var<-1 # variance of risk factor assumed to be 1 
+	# if(!vareq1){ #if variance not 1 then estimate standardized beta using this syntax
+	# 	z = b/se
+	# 	b = z/sqrt(2*p*(1-p)*(n+z^2))
+		
+	# }
+
+	r2<-2*b^2*p*(1-p)/var
+
+	#Once the r2 is calculated you then sum the r2 statistics across all the SNPs in the instrument. 
+	#This assumes each SNP is independent. 
+	#calculate the F statistic for the instrument:
+	id<-paste(dat$exposure,dat$outcome)
+	Power<-NULL
+	iv.se<-NULL
+	ID<-NULL
+	for(i in 1:length(unique(id))){
+		print(unique(id)[i])
+		pos<-which(id==unique(id)[i])
+		print(pos)
+		k<-length(p[pos]) #number of SNPs in the instrument / associated with the risk factor
+		# n<-min(n) #sample size of the exposure/risk factor GWAS
+		r2sum<-sum(r2[pos]) # sum of the r-squares for each SNP in the instrument
+		# F<-r2sum*(n-1-k)/((1-r2sum*k )
+		n<-unique(n.con[pos]+n.cas[pos])
+		ratio<-unique(n.con[pos]/n.cas[pos])
+		iv.se[[i]]<-1/sqrt(unique(n.cas[pos])*unique(n.con[pos])*r2sum) #standard error of the IV should be proportional to this
+		Power[[i]]<-pnorm(sqrt(n*r2sum*(ratio/(1+ratio))*(1/(1+ratio)))*b1-qnorm(1-sig/2))
+		ID[[i]]<-unique(id)[i]
+	}
+	power.tab<-data.frame(as.matrix(cbind(ID,Power)),stringsAsFactors=F)
+	dat$id.expout<-paste(dat$exposure,dat$outcome)
+	dat<-merge(dat,power.tab,by.x="id.expout",by.y="ID")
+	dat<-dat[order(dat$Power,decreasing=T),]
+	# unique(dat[,c("originalname.outcome","Power")])
+	if(drop.duplicates==T){
+		id.keep<-dat$id.expout[!duplicated(paste(dat$exposure,dat$originalname.outcome))]
+		dat<-dat[dat$id.expout %in% id.keep,]
+
+	}
+	return(dat)
+}
+
 
 
