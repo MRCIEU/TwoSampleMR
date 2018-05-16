@@ -154,7 +154,7 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 
 #' Power prune 
 #'
-#' Where there are duplicate disease/binary outcomes identify the outcome with highest a priori statistical power, taking into account the number of cases and controls and the variance explained in the exposure by the instrument. Will also drop duplicate outcomes with lower power if requested. 
+#' Where there are duplicate disease/binary outcomes identify the outcome with highest a priori statistical power, taking into account the number of cases and controls and the variance in the exposure explained by the available SNPs. Will also drop duplicate outcomes with lower power if requested. The function assumes that the outcome is a binary disease trait obtained from a case-control study and with log odds ratios corresponding to the SNP-outcome effect estimates. The function also assumes the SNP-exposure effects are in standard deviation units. 
 #'
 #' @param dat Results from harmonise_data() 
 #' 
