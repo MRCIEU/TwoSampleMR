@@ -9,11 +9,11 @@ power.prune(dat, drop.duplicates = T)
 \arguments{
 \item{dat}{Results from harmonise_data()}
 
-\item{drop.duplicates}{Should duplicates with lower power be dropped? Default set to TRUE}
+\item{drop.duplicates}{Should the duplicate exposure-outcome summary sets with lower power be dropped? Default set to TRUE}
 }
 \value{
 data frame
 }
 \description{
-Where there are duplicate disease/binary outcomes identify the outcome with highest a priori statistical power, taking into account the number of cases and controls and the variance in the exposure explained by the available SNPs. The duplicate outcomes with lower power can also be dropped if requested. The function assumes that the outcome is a binary disease trait and the SNP-outcome effects are log odds ratios. The function also assumes that the SNP-exposure effects are in standard deviation units.
+Where there are duplicate summary sets for a particular exposure-outcome combination, this function identifies the exposure-outcome summary set with highest a priori statistical power, taking into account the number of cases and controls and the variance in the exposure explained by the available SNPs. The duplicate summary sets with lower power are dropped by default. The function assumes that the SNP-outcome effects are log odds ratios. The function also assumes that the SNP-exposure effects are in standard deviation units.
 }
