@@ -753,6 +753,10 @@ mr_median <- function(dat, parameters=default_parameters())
 
 #' Inverse variance weighted regression
 #' 
+#' The default multiplicative random effects IVW estimate. 
+#' The standard error is corrected for under dispersion
+#' Use the \code{mr_ivw_mre} function for estimates that don't correct for under dispersion
+#' 
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
@@ -773,8 +777,8 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error
 	pval <- 2 * pnorm(abs(b/se), low=FALSE)
-	Q <- ivw.res$sigma^2*(length(b_exp)-2)
 	Q_df <- length(b_exp) - 1
+	Q <- ivw.res$sigma^2 * Q_df
 	Q_pval <- pchisq(Q, Q_df, low=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
@@ -784,6 +788,8 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 
 #' Inverse variance weighted regression (multiplicative random effects model)
 #'
+#' Same as mr_ivw but no correction for under dispersion 
+#' 
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
@@ -804,8 +810,8 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]
 	pval <- 2 * pnorm(abs(b/se), low=FALSE)
-	Q <- ivw.res$sigma^2*(length(b_exp)-2)
 	Q_df <- length(b_exp) - 1
+	Q <- ivw.res$sigma^2 * Q_df
 	Q_pval <- pchisq(Q, Q_df, low=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
@@ -835,8 +841,8 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/ivw.res$sigma
 	pval <- 2 * pnorm(abs(b/se), low=FALSE)
-	Q <- ivw.res$sigma^2*(length(b_exp)-2)
 	Q_df <- length(b_exp) - 1
+	Q <- ivw.res$sigma^2 * Q_df
 	Q_pval <- pchisq(Q, Q_df, low=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
