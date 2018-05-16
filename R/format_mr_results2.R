@@ -154,7 +154,7 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 
 #' Power prune 
 #'
-#' Where there are duplicate outcomes select the outcome with highest a priori statistical power and drop the other outcomes, taking into account sample size and variance in the exposure explained by the instrument. 
+#' Where there are duplicate disease/binary outcomes identify the outcome with highest a priori statistical power, taking into account the number of cases and controls and the variance explained in the exposure by the instrument. Will also drop duplicate outcomes with lower power if requested. 
 #'
 #' @param dat Results from harmonise_data() 
 #' 
@@ -165,19 +165,19 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 # library(TwoSampleMR)
 # library(MRInstruments)
 
-exp_dat <- extract_instruments(outcomes=c(2,300))
+# exp_dat <- extract_instruments(outcomes=c(2,300))
 
-chd_out_dat <- extract_outcome_data(
-    snps = exp_dat$SNP,
-    outcomes = c(6,7,8,9)
-)
+# chd_out_dat <- extract_outcome_data(
+#     snps = exp_dat$SNP,
+#     outcomes = c(6,7,8,9)
+# )
 
-dat <- harmonise_data(
-    exposure_dat = exp_dat, 
-    outcome_dat = chd_out_dat
-)
+# dat <- harmonise_data(
+#     exposure_dat = exp_dat, 
+#     outcome_dat = chd_out_dat
+# )
 
-dat2<-power.prune(dat,drop.duplicates=T)
+# dat2<-power.prune(dat,drop.duplicates=T)
 
 power.prune <- function(dat,drop.duplicates=T)
 {
@@ -212,7 +212,7 @@ power.prune <- function(dat,drop.duplicates=T)
 	for(i in 1:length(unique(id))){
 		print(unique(id)[i])
 		pos<-which(id==unique(id)[i])
-		print(pos)
+		# print(pos)
 		k<-length(p[pos]) #number of SNPs in the instrument / associated with the risk factor
 		# n<-min(n) #sample size of the exposure/risk factor GWAS
 		r2sum<-sum(r2[pos]) # sum of the r-squares for each SNP in the instrument
