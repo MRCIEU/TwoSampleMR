@@ -81,3 +81,23 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 	}
 	return(res)
 }
+
+
+mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
+{
+	require(RadialMR)
+	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) &
+		!is.na(se_out)) < 2)
+		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
+	d <- format_radial(b_exp, b_out, se_exp, se_out)
+	out <- ivw_radial(d, alpha=0.05, summary=FALSE)
+	b <- out$coef[1]
+	se <- out$coef[2]
+	pval <- 2 * pnorm(abs(b/se), low = FALSE)
+	Q_df <- out$df
+	Q <- out$qstatistic
+	Q_pval <- pchisq(Q, Q_df, low=F)
+	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp),
+        Q = Q, Q_df = Q_df, Q_pval = Q_pval))
+}
+
