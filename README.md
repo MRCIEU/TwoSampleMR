@@ -24,9 +24,9 @@ A set of instruments from several sources including GWAS catalogs, metabolite QT
 
 If using MR-Base or the TwoSampleMR R package:
 
-[Hemani G, Zheng J, Wade KH, Laurin C, Elsworth B, Burgess S, Bowden J, Langdon R, Tan V, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration.</br>
-**MR-Base: a platform for systematic causal inference across the phenome using billions of genetic associations.** <br/>
-bioRxiv. doi: https://doi.org/10.1101/078972](http://biorxiv.org/content/early/2016/12/16/078972)
+[Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration.</br>
+**The MR-Base platform supports systematic causal inference across the human phenome.** <br/>
+eLife 2018;7:e34408. doi: 10.7554/eLife.34408](https://elifesciences.org/articles/34408)
 
 If also using the MR-Steiger test:
 
