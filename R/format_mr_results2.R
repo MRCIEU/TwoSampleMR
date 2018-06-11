@@ -170,10 +170,11 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 
 #' Power prune 
 #'
-#' Where there are duplicate summary sets for a particular exposure-outcome combination, this function identifies the exposure-outcome summary set with highest a priori statistical power, taking into account the number of cases and controls and the variance in the exposure explained by the available SNPs. The duplicate summary sets with lower power are dropped by default. The function assumes that the SNP-outcome effects are log odds ratios. The function also assumes that the SNP-exposure effects are in standard deviation units. 
+#' When there are duplicate summary sets for a particular exposure-outcome combination, this function keeps the exposure-outcome summary set with the highest expected statistical power. This can be done by dropping the duplicate summary sets with the smaller outcome sample sizes. Alternatively, the pruning procedure can take into account both instrument strength and outcome sample size. The latter is useful, for example, when there is considerable variation in SNP coverage between duplicate outcome GWAS (e.g. because some studies have used targeted or fine mapping arrays). If there are a large number of SNPs available to instrument an exposure, the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. However, this latter procedure should only be implemented if the SNP-outcome effects are log odds ratios and the SNP-exposure effects are in standard deviation units. 
+
 #'
 #' @param dat Results from harmonise_data() 
-#' @param drop.duplicates Should the duplicate exposure-outcome summary sets with lower power be dropped? Default set to TRUE 
+#' @param method.size  Should the duplicate summary sets be pruned on the basis of sample size? Default set to TRUE. If available, the method uses the number of cases to represent sample size. If the number of cases is missing then the total sample size is used. If method.size is set to FALSE then duplicates are dropped on the basis of expected statistical power, taking into account instrument strength and sample size, and assumes that the SNP-outcome effects are log odds ratios and that the SNP-exposure effects are in standard deviation units. 
 #' 
 #' @export
 #' @return data frame
@@ -195,62 +196,112 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 
 # dat2<-power.prune(dat,drop.duplicates=T)
 
-power.prune <- function(dat,drop.duplicates=T)
+power.prune <- function(dat,method.size=T)
 {
 
 	# dat[,c("eaf.exposure","beta.exposure","se.exposure","samplesize.outcome","ncase.outcome","ncontrol.outcome")]
+	drop.duplicates=T
 
-	p<-dat$eaf.exposure #effect allele frequency
-	b<-abs(dat$beta.exposure) # effect of SNP on risk factor
-	se<-dat$se.exposure
-	# n<-dat$samplesize.exposure
-	n.cas<-dat$ncase.outcome
-	n.con<-dat$ncontrol.outcome
-	b1=log(1.05) # assumed log odds ratio
-	sig<-0.05 #alpha
-
-	var<-1 # variance of risk factor assumed to be 1 
-	# if(!vareq1){ #if variance not 1 then estimate standardized beta using this syntax
-	# 	z = b/se
-	# 	b = z/sqrt(2*p*(1-p)*(n+z^2))
-		
-	# }
-
-	r2<-2*b^2*p*(1-p)/var
-
-	#Once the r2 is calculated you then sum the r2 statistics across all the SNPs in the instrument. 
-	#This assumes each SNP is independent. 
-	#calculate the F statistic for the instrument:
-	id<-paste(dat$exposure,dat$outcome)
-	Power<-NULL
-	iv.se<-NULL
-	ID<-NULL
-	for(i in 1:length(unique(id))){
-		print(unique(id)[i])
-		pos<-which(id==unique(id)[i])
-		# print(pos)
-		k<-length(p[pos]) #number of SNPs in the instrument / associated with the risk factor
-		# n<-min(n) #sample size of the exposure/risk factor GWAS
-		r2sum<-sum(r2[pos]) # sum of the r-squares for each SNP in the instrument
-		# F<-r2sum*(n-1-k)/((1-r2sum*k )
-		n<-unique(n.con[pos]+n.cas[pos])
-		ratio<-unique(n.con[pos]/n.cas[pos])
-		iv.se[[i]]<-1/sqrt(unique(n.cas[pos])*unique(n.con[pos])*r2sum) #standard error of the IV should be proportional to this
-		Power[[i]]<-pnorm(sqrt(n*r2sum*(ratio/(1+ratio))*(1/(1+ratio)))*b1-qnorm(1-sig/2))
-		ID[[i]]<-unique(id)[i]
+	if(method.size==T){
+		dat$ncase.outcome[is.na(dat$ncase.outcome)]<-dat$samplesize.outcome[is.na(dat$ncase.outcome)]
+		dat<-dat[order(dat$ncase.outcome,decreasing=T),]
+		id.expout<-paste(dat$exposure,dat$outcome)
+		id.keep<-id.expout[!duplicated(paste(dat$exposure,dat$originalname.outcome))]
+		# dat$power<-as.numeric(as.factor(-dat$ncase.outcome))
+		if(drop.duplicates==T){
+			dat<-dat[id.expout %in% id.keep,]
+		}
 	}
-	power.tab<-data.frame(as.matrix(cbind(ID,Power)),stringsAsFactors=F)
-	dat$id.expout<-paste(dat$exposure,dat$outcome)
-	dat<-merge(dat,power.tab,by.x="id.expout",by.y="ID")
-	dat<-dat[order(dat$Power,decreasing=T),]
-	# unique(dat[,c("originalname.outcome","Power")])
-	if(drop.duplicates==T){
-		id.keep<-dat$id.expout[!duplicated(paste(dat$exposure,dat$originalname.outcome))]
-		dat<-dat[dat$id.expout %in% id.keep,]
 
+	if(method.size==F){
+		p<-dat$eaf.exposure #effect allele frequency
+		b<-abs(dat$beta.exposure) # effect of SNP on risk factor
+		se<-dat$se.exposure
+		# n<-dat$samplesize.exposure
+		n.cas<-dat$ncase.outcome
+		n.con<-dat$ncontrol.outcome
+		b1=log(1.05) # assumed log odds ratio
+		sig<-0.05 #alpha
+
+		var<-1 # variance of risk factor assumed to be 1 
+		# if(!vareq1){ #if variance not 1 then estimate standardized beta using this syntax
+		# 	z = b/se
+		# 	b = z/sqrt(2*p*(1-p)*(n+z^2))
+			
+		# }
+
+		r2<-2*b^2*p*(1-p)/var
+
+		#Once the r2 is calculated you then sum the r2 statistics across all the SNPs in the instrument. 
+		#This assumes each SNP is independent. 
+		#calculate the F statistic for the instrument:
+		id<-paste(dat$exposure,dat$outcome)
+		power<-NULL
+		iv.se<-NULL
+		ID<-NULL
+		for(i in 1:length(unique(id))){
+			print(unique(id)[i])
+			pos<-which(id==unique(id)[i])
+			# print(pos)
+			k<-length(p[pos]) #number of SNPs in the instrument / associated with the risk factor
+			# n<-min(n) #sample size of the exposure/risk factor GWAS
+			r2sum<-sum(r2[pos]) # sum of the r-squares for each SNP in the instrument
+			# F<-r2sum*(n-1-k)/((1-r2sum*k )
+			n<-unique(n.con[pos]+n.cas[pos])
+			ratio<-unique(n.con[pos]/n.cas[pos])
+			iv.se[[i]]<-1/sqrt(unique(n.cas[pos])*unique(n.con[pos])*r2sum) #standard error of the IV should be proportional to this
+			power[[i]]<-pnorm(sqrt(n*r2sum*(ratio/(1+ratio))*(1/(1+ratio)))*b1-qnorm(1-sig/2))
+			ID[[i]]<-unique(id)[i]
+		}
+		power.tab<-data.frame(as.matrix(cbind(ID,power)),stringsAsFactors=F)
+		dat$id.expout<-paste(dat$exposure,dat$outcome)
+		dat<-merge(dat,power.tab,by.x="id.expout",by.y="ID")
+		dat<-dat[order(dat$power,decreasing=T),]
+		# unique(dat[,c("originalname.outcome","Power")])
+		if(drop.duplicates==T){
+			id.keep<-dat$id.expout[!duplicated(paste(dat$exposure,dat$originalname.outcome))]
+			dat<-dat[dat$id.expout %in% id.keep,]
+
+		}
 	}
 	return(dat)
 }
+
+#' Size prune 
+#'
+#' Whens there are duplicate summary sets for a particular exposure-outcome combination, this function drops the duplicates with the smaller total sample size (for binary outcomes, the number of cases is used instead of total sample size).  
+#'
+#' @param dat Results from harmonise_data() 
+#' 
+#' @export
+#' @return data frame
+
+# library(TwoSampleMR)
+# library(MRInstruments)
+
+# exp_dat <- extract_instruments(outcomes=c(2,300))
+
+# chd_out_dat <- extract_outcome_data(
+#     snps = exp_dat$SNP,
+#     outcomes = c(6,7,8,9)
+# )
+
+# dat <- harmonise_data(
+#     exposure_dat = exp_dat, 
+#     outcome_dat = chd_out_dat
+# )
+
+# dat2<-power.prune(dat,drop.duplicates=T)
+
+size.prune <- function(dat)
+{
+	dat$ncase[is.na(dat$ncase)]<-dat$samplesize[is.na(dat$ncase)]
+	dat<-dat[order(dat$ncase,decreasing=T),]
+	id.expout<-paste(dat$exposure,dat$outcome)
+	id.keep<-id.expout[!duplicated(paste(dat$exposure,dat$originalname.outcome))]
+	dat<-dat[id.expout %in% id.keep,]
+}
+
 
 
 
