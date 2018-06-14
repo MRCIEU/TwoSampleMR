@@ -80,18 +80,49 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 
 #' Combine all mr results
 #'
-#' This function combines results of mr(), mr_heterogeneity(), mr_pleiotropy() and mr_singlesnp() into a single data frame. It also merges the results with outcome study level characteristics in available_outcomes(). If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals)
-#'
+#' This function combines results of mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single data frame. It also merges the results with outcome study level characteristics in available_outcomes(). If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). The exposure and outcome columns from the output from mr() contain both the trait names and trait ids. The combine_all_mrresults() function splits these into separate columns by default. 
+
 #' @param Res Results from mr()
 #' @param Het Results from mr_heterogeneity()
 #' @param Pleiotropy Results from mr_pleiotropy_test()
-#' @param Res_single Results from mr_singlesnp()
+#' @param Sin Results from mr_singlesnp()
 #' @param ao_slc Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE. 
 #' @param Exp Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE. 
+#' @param split.exposure Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is TRUE. 
+#' @param split.outcome Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is TRUE. 
 #' 
 #' @export
 #' @return data frame
-combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
+
+
+# library(TwoSampleMR)
+# library(MRInstruments)
+
+# exp_dat <- extract_instruments(outcomes=c(2,300))
+
+# chd_out_dat <- extract_outcome_data(
+#     snps = exp_dat$SNP,
+#     outcomes = c(6,7,8,9)
+# )
+
+# dat <- harmonise_data(
+#     exposure_dat = exp_dat, 
+#     outcome_dat = chd_out_dat
+# )
+
+# dat<-power.prune(dat,method.size=F)
+
+
+# Res<-mr(dat)
+# Het<-mr_heterogeneity(dat)
+# Plt<-mr_pleiotropy_test(dat)
+# Sin<-mr_singlesnp(dat)
+
+# All.res<-combine_all_mrresults(Res=Res,Het=Het,Plt=Plt,Sin=Sin)
+# All.res<-split_exposure(All.res)
+# All.res<-split_outcome(All.res)
+
+combine_all_mrresults <- function(Res,Het,Plt,Sin,ao_slc=T,Exp=F,split.exposure=T,split.outcome=T)
 {
 	requireNamespace("plyr", quietly=TRUE)
 
@@ -110,24 +141,24 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 		Het[,Pos[i]]<-as.character(Het[,Pos[i]])
 	}
 
-	# lapply(names(Res_single), FUN=function(x) class(Res_single[,x]))
-	Pos<-which(unlist(lapply(names(Res_single), FUN=function(x) class(Res_single[,x])))=="factor")
+	# lapply(names(Sin), FUN=function(x) class(Sin[,x]))
+	Pos<-which(unlist(lapply(names(Sin), FUN=function(x) class(Sin[,x])))=="factor")
 	for(i in 1:length(Pos)){
-		Res_single[,Pos[i]]<-as.character(Res_single[,Pos[i]])
+		Sin[,Pos[i]]<-as.character(Sin[,Pos[i]])
 	}
-	Res_single<-Res_single[grep("[:0-9:]",Res_single$SNP),]
-	Res_single$method<-"Wald ratio"
-	names(Res_single)[names(Res_single)=="p"]<-"pval"
+	Sin<-Sin[grep("[:0-9:]",Sin$SNP),]
+	Sin$method<-"Wald ratio"
+	names(Sin)[names(Sin)=="p"]<-"pval"
 
 	# Res<-Res[Res$method %in% c("MR Egger","Weighted median","Inverse variance weighted"),]
 
 	#method is also the name of an argument in the method function. this prevents all.x argument from working. rename method column
 	names(Res)[names(Res)=="method"]<-"Method"
 	names(Het)[names(Het)=="method"]<-"Method"
-	names(Res_single)[names(Res_single)=="method"]<-"Method"
+	names(Sin)[names(Sin)=="method"]<-"Method"
 
 	Res<-merge(Res,Het,by=c("id.outcome","Method"),all.x=T)
-	Res<-plyr::rbind.fill(Res,Res_single)
+	Res<-plyr::rbind.fill(Res,Sin)
 
 	if(ao_slc)
 	{
@@ -155,14 +186,22 @@ combine_all_mrresults <- function(Res,Het,Pleiotropy,Res_single,ao_slc=T,Exp=F)
 	}
 
 	# add intercept test from MR Egger
-	Pleiotropy<-Pleiotropy[,c("id.outcome","egger_intercept","se","pval")]
-	Pleiotropy$Method<-"MR Egger"
-	names(Pleiotropy)[names(Pleiotropy)=="egger_intercept"]<-"intercept"
-	names(Pleiotropy)[names(Pleiotropy)=="se"]<-"intercept_se"
-	names(Pleiotropy)[names(Pleiotropy)=="pval"]<-"intercept_pval"
+	Plt<-Plt[,c("id.outcome","egger_intercept","se","pval")]
+	Plt$Method<-"MR Egger"
+	names(Plt)[names(Plt)=="egger_intercept"]<-"intercept"
+	names(Plt)[names(Plt)=="se"]<-"intercept_se"
+	names(Plt)[names(Plt)=="pval"]<-"intercept_pval"
 
 
-	Res<-merge(Res,Pleiotropy,by=c("id.outcome","Method"),all.x=T)
+	Res<-merge(Res,Plt,by=c("id.outcome","Method"),all.x=T)
+
+	if(split.exposure){
+		Res<-split_exposure(Res)
+	}
+	
+	if(split.outcome){
+		Res<-split_outcome(Res)
+	}
 
 	# names(ResSNP)<-tolower(names(ResSNP))
 	return(Res)
@@ -275,23 +314,6 @@ power.prune <- function(dat,method.size=T)
 #' 
 #' @export
 #' @return data frame
-
-# library(TwoSampleMR)
-# library(MRInstruments)
-
-# exp_dat <- extract_instruments(outcomes=c(2,300))
-
-# chd_out_dat <- extract_outcome_data(
-#     snps = exp_dat$SNP,
-#     outcomes = c(6,7,8,9)
-# )
-
-# dat <- harmonise_data(
-#     exposure_dat = exp_dat, 
-#     outcome_dat = chd_out_dat
-# )
-
-# dat2<-power.prune(dat,drop.duplicates=T)
 
 size.prune <- function(dat)
 {
