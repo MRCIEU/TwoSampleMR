@@ -27,3 +27,4 @@ List with the following elements:
 \description{
 Perform MR using summary statistics. Bootstraps used to calculate standard error.
 }
+

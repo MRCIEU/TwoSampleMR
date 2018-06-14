@@ -25,3 +25,4 @@ List with the following elements:
 \description{
 Maximum likelihood MR method
 }
+

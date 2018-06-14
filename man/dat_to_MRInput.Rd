@@ -19,3 +19,4 @@ The MendelianRandomization package offers MR methods that can
 be used with the same data used in the TwoSampleMR package. This
 function converts from the TwoSampleMR format to the MRInput class.
 }
+

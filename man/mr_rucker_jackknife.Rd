@@ -17,3 +17,4 @@ List
 \description{
 Run rucker with jackknife estimates
 }
+

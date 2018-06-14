@@ -15,3 +15,4 @@ Allele frequency
 \description{
 Estimate allele frequency from SNP
 }
+

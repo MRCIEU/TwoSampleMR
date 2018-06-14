@@ -14,3 +14,4 @@ character vector of method names
 Get list of available MR methods
 8
 }
+

@@ -32,3 +32,4 @@ data frame
 This function searches for GWAS significant SNPs (for a given p-value) for a specified set of outcomes.
 It then performs LD based clumping to return only independent significant associations.
 }
+

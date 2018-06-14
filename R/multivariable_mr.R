@@ -131,7 +131,7 @@ multivariable_mr <- function(id_exposure, id_outcome, harmonise_strictness=2)
 		mod <- summary(lm(lm(dat$beta.outcome ~ exposure_mat[,-c(i)])$res ~ exposure_mat[,i]))
 		effs[i] <- mod$coef[2,1]
 		se[i] <- mod$coef[2,2]
-		pval[i] <- pnorm(abs(effs[i]) / se[i], lower.tail=FALSE)
+		pval[i] <- 2 * pnorm(abs(effs[i]) / se[i], lower.tail=FALSE)
 	}
 
 	nom <- unique(dh$exposure)
@@ -180,10 +180,11 @@ convert_outcome_to_exposure <- function(outcome_dat)
 #' @param clump_r2=0.01 Once a full list of
 #' @param clump_kb=10000 <what param does>
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#' @param find_proxies Look for proxies? This slows everything down but is more accurate. Default TRUE
 #'
 #' @export
 #' @return data frame in exposure_dat format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = get_mrbase_access_token())
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = get_mrbase_access_token(), find_proxies=TRUE)
 {
 	require(reshape2)
 	message("Warning: This analysis is still experimental")
@@ -199,7 +200,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 
 	# Get effects of each instrument from each exposure
-	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure, access_token = access_token)
+	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure, access_token = access_token, proxies=find_proxies)
 	d1$units.outcome[is.na(d1$units.outcome)] <- "NA"
 	d1 <- subset(d1, mr_keep.outcome)
 	d2 <- subset(d1, id.outcome != id_exposure[1])
@@ -338,7 +339,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		
 		effs[i] <- mod$coef[as.numeric(intercept) + 1, 1]
 		se[i] <- mod$coef[as.numeric(intercept) + 1, 2]
-		pval[i] <- pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -355,6 +356,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
 		}
 	}
+	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
 
 	out <- list(
 		result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE),
@@ -424,7 +426,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 
 		effs[i] <- mod$coef[as.numeric(intercept) + i, 1]
 		se[i] <- mod$coef[as.numeric(intercept) + i, 2]
-		pval[i] <- pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -441,6 +443,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
 		}
 	}
+	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
 
 	out <- list(
 		result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
@@ -488,7 +491,7 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 
 		effs[i] <- mod$coef[2, 1]
 		se[i] <- mod$coef[2, 2]
-		pval[i] <- pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -502,6 +505,7 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 		# ggplot2::stat_smooth(method="lm") +
 		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
 	}
+	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
 
 	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), marginal_outcome=marginal_outcome, plots=p))
 }
@@ -546,7 +550,7 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 
 		effs[i] <- mod$coef[i, 1]
 		se[i] <- mod$coef[i, 2]
-		pval[i] <- pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -560,6 +564,7 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 		# ggplot2::stat_smooth(method="lm") +
 		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
 	}
+	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
 
 	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), plots=p))
 }

@@ -15,3 +15,4 @@ Matrix of LD r values
 \description{
 Get LD matrix for list of SNPs
 }
+

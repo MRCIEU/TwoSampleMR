@@ -20,3 +20,4 @@ bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("k
 bmi <- format_data(bmi)
 }
 }
+

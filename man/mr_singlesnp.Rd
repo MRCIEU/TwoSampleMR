@@ -19,3 +19,4 @@ List of data frames
 \description{
 Perform 2 sample MR on each SNP individually
 }
+

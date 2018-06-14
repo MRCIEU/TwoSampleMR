@@ -24,3 +24,4 @@ List of results
 \description{
 Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 }
+

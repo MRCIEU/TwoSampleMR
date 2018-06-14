@@ -17,3 +17,4 @@ data frame
 \description{
 When there are duplicate summary sets for a particular exposure-outcome combination, this function keeps the exposure-outcome summary set with the highest expected statistical power. This can be done by dropping the duplicate summary sets with the smaller outcome sample sizes. Alternatively, the pruning procedure can take into account both instrument strength and outcome sample size. The latter is useful, for example, when there is considerable variation in SNP coverage between duplicate outcome GWAS (e.g. because some studies have used targeted or fine mapping arrays). If there are a large number of SNPs available to instrument an exposure, the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. However, this latter procedure should only be implemented if the SNP-outcome effects are log odds ratios and the SNP-exposure effects are in standard deviation units.
 }
+

@@ -19,3 +19,4 @@ If there is no rsq.exposure or rsq.outcome column it will try to estimate it. Th
 \details{
 Once rsq is calculated for the exposure and outcome, it will then perform the steiger test for each SNP to see if the rsq of the exposure is larger than the rsq of the outcome.
 }
+

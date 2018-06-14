@@ -24,3 +24,4 @@ List of results
 \description{
 Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 }
+

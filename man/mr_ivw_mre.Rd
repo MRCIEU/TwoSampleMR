@@ -25,3 +25,4 @@ List with the following elements:
 \description{
 Same as mr_ivw but no correction for under dispersion
 }
+
