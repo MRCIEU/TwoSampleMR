@@ -150,7 +150,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, low = FALSE)
 	phi_ivw <- Q_ivw / (nsnp - 1)
 
-	se_ivw_fe <- coefficients(mod_ivw)[1,2] / phi_ivw
+	se_ivw_fe <- coefficients(mod_ivw)[1,2] / max(mod_ivw$sigma, 1)
 	pval_ivw_fe <- pt(abs(b_ivw_fe/se_ivw_fe), nsnp-1, lower.tail=FALSE) * 2
 
 
@@ -178,9 +178,9 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, low=FALSE)
 	phi_egger <- Q_egger / (nsnp - 2)
 
-	se1_egger_fe <- coefficients(mod_egger)[2,2] / phi_egger
+	se1_egger_fe <- coefficients(mod_egger)[2,2] / max(mod_egger$sigma, 1)
 	pval1_egger_fe <- pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
-	se0_egger_fe <- coefficients(mod_egger)[1,2] / phi_egger
+	se0_egger_fe <- coefficients(mod_egger)[1,2] / max(mod_egger$sigma, 1)
 	pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
 
 	# Egger RE
