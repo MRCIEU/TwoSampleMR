@@ -27,4 +27,3 @@ List with the following elements:
 \description{
 MR weighted mode estimator (NOME)
 }
-

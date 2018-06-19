@@ -18,4 +18,3 @@ List with the following elements:
 \description{
 Fisher's combined test
 }
-

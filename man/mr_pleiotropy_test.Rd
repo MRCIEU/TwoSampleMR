@@ -15,4 +15,3 @@ data frame
 \description{
 Performs MR Egger and returns intercept values
 }
-

@@ -40,4 +40,3 @@ List
 \description{
 A statistical test for whether the assumption that exposure causes outcome is valid
 }
-

@@ -12,4 +12,3 @@ access token string
 \description{
 Get access token for OAuth2 access to MR Base
 }
-
