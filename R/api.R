@@ -203,7 +203,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			if(length(missedsnps)>0)
 			{
 				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
-				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, ...)
+				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, splitsize = 50)
 				if(!is.null(temp))
 				{
 					firstpass <- plyr::rbind.fill(firstpass, temp)
