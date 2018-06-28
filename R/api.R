@@ -81,7 +81,7 @@ get_mrbase_access_token <- function()
 	} else {
 		unlink(tf)
 	}
-	a <- googleAuthR::gar_auth()
+	a <- googleAuthR::gar_auth("mrbase.oauth")
 	if(! a$validate())
 	{
 		a$refresh()
@@ -96,7 +96,7 @@ get_mrbase_access_token <- function()
 #' @return NULL
 revoke_mrbase_access_token <- function()
 {
-	a <- googleAuthR::gar_auth()
+	a <- googleAuthR::gar_auth("mrbase.oauth")
 	a$revoke()
 }
 
@@ -203,7 +203,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			if(length(missedsnps)>0)
 			{
 				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
-				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, ...)
+				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, splitsize = 50)
 				if(!is.null(temp))
 				{
 					firstpass <- plyr::rbind.fill(firstpass, temp)
