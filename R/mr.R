@@ -876,9 +876,9 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
     {
         stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
     }
-    out <- mr.raps::mr.raps.shrinkage(b_exp, b_out, se_exp, se_out,
+    out <- suppressMessages(mr.raps::mr.raps.shrinkage(b_exp, b_out, se_exp, se_out,
                             parameters$over.dispersion,
-                            parameters$loss.function)
+                            parameters$loss.function))
     list(b = out$beta.hat,
          se = out$beta.se,
          pval = pnorm(- abs(out$beta.hat / out$beta.se)) * 2,
