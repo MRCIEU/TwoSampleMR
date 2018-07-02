@@ -216,9 +216,9 @@ default_parameters <- function()
 		penk = 20,
 		phi = 1,
 		alpha = 0.05,
-                Qthresh = 0.05,
-                over.dispersion = TRUE,
-                loss.function = "tukey"
+		Qthresh = 0.05,
+		over.dispersion = TRUE,
+		loss.function = "huber"
 	)
 }
 
@@ -876,7 +876,7 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
     {
         stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
     }
-    out <- mr.raps::mr.raps(b_exp, b_out, se_exp, se_out,
+    out <- mr.raps::mr.raps.shrinkage(b_exp, b_out, se_exp, se_out,
                             parameters$over.dispersion,
                             parameters$loss.function)
     list(b = out$beta.hat,
