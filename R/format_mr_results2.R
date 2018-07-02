@@ -287,7 +287,7 @@ power.prune <- function(dat,method.size=T)
 			r2sum<-sum(r2[pos]) # sum of the r-squares for each SNP in the instrument
 			# F<-r2sum*(n-1-k)/((1-r2sum*k )
 			n<-unique(n.con[pos]+n.cas[pos])
-			ratio<-unique(n.con[pos]/n.cas[pos])
+			ratio<-unique(n.cas[pos]/n.con[pos])
 			iv.se[[i]]<-1/sqrt(unique(n.cas[pos])*unique(n.con[pos])*r2sum) #standard error of the IV should be proportional to this
 			power[[i]]<-pnorm(sqrt(n*r2sum*(ratio/(1+ratio))*(1/(1+ratio)))*b1-qnorm(1-sig/2))
 			ID[[i]]<-unique(id)[i]
