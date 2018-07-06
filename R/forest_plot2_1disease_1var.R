@@ -87,7 +87,8 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 		sample_size = dat$sample_size,
 		index = dat$index,
 		stringsAsFactors = FALSE,
-		tv = as.numeric(dat$tv)
+		tv = as.numeric(dat$tv),
+		study=dat$study
 	)
 
 	# if(fix_capitals)
@@ -446,7 +447,7 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 }
 
 
-forest_plot_ncase <- function(dat, section=NULL, bottom=TRUE)
+forest_plot_nsnps <- function(dat, section=NULL, bottom=TRUE)
 {
 	if(bottom)
 	{
@@ -485,7 +486,7 @@ forest_plot_ncase <- function(dat, section=NULL, bottom=TRUE)
 	point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
 
 	outcome_labels <- ggplot2::geom_text(
-		ggplot2::aes(label=ncase), 
+		ggplot2::aes(label=study), 
 		x=lo, 
 		y=mean(c(1, length(unique(dat$exposure)))), 
 		hjust=0, vjust=0.5, size=3.5
@@ -796,7 +797,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 				bottom = i==length(sec)
 			)
 			count <- count + 1
-			l[[count]] <- forest_plot_ncase(
+			l[[count]] <- forest_plot_nsnps(
 				dat, 
 				sec[i], 
 				bottom = i==length(sec)
@@ -840,7 +841,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 					nrow=length(h), 
 					heights=h,
 					# add an extra width value
-					widths=c(4, 0.80,0.50, rep(5, length(columns)))
+					widths=c(0.9, 0.1,0.30, rep(5, length(columns)))
 				)
 			)
 		)
