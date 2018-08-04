@@ -24,7 +24,10 @@ get_p_from_r2n <- function(r2, n)
 #' @return r value
 get_r_from_pn <- function(p, n)
 {
-	message("Estimating correlation for quantitative trait. Use get_r_from_lor for binary traits.")
+	message("Estimating correlation for quantitative trait.")
+	message("This method is an approximation, and may be numerically unstable.")
+	message("Ideally you should estimate r directly from independent replication samples.")
+	message("Use get_r_from_lor for binary traits.")
 	optim.get_p_from_rn <- function(x, sample_size, pvalue)
 	{
 		abs(-log10(get_p_from_r2n(x, sample_size)) - -log10(pvalue))
@@ -131,6 +134,8 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' @param p_out Vector of p-values of SNP-outcome
 #' @param n_exp Sample sizes for p_exp
 #' @param n_out Sample sizes for p_out
+#' @param r_exp Vector of absolute correlations for SNP-exposure
+#' @param r_out Vector of absolute correlations for SNP-outcome
 #' @param r_xxo Measurememt precision of exposure
 #' @param r_yyo Measurement precision of outcome
 #' @param ... Further arguments to be passed to wireframe
@@ -150,17 +155,30 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' - vz1: Volume of the paramtere space that gives the correct answer
 #' - sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
 #' - sensitivity_plot: Plot of parameter space of causal directions and measurement error
-mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
+mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
-	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
-	p_exp <- p_exp[!index]
-	p_out <- p_out[!index]
-	n_exp <- n_exp[!index]
-	n_out <- n_out[!index]
 
-	r_exp <- sqrt(sum(get_r_from_pn(p_exp, n_exp)^2))
-	r_out <- sqrt(sum(get_r_from_pn(p_out, n_out)^2))
+	r_exp <- abs(r_exp)
+	r_out <- abs(r_out)
+
+	ir_exp <- is.na(r_exp)
+	ir_out <- is.na(r_out)
+
+	ip_exp <- is.na(p_exp) | is.na(n_exp)
+	ip_out <- is.na(p_out) | is.na(n_out)
+
+	if(any(ir_exp))
+	{
+		r_exp[ir_exp] <- get_r_from_pn(p_exp[ir_exp & !ip_exp], n_exp[ir_exp & !ip_exp])
+	}
+	if(any(ir_out))
+	{
+		r_out[ir_out] <- get_r_from_pn(p_out[ir_out & !ip_out], n_out[ir_out & !ip_out])
+	}
+
+	r_exp <- sqrt(sum(r_exp[!is.na(r_exp) | is.na(r_out)]^2))
+	r_out <- sqrt(sum(r_out[!is.na(r_exp) | is.na(r_out)]^2))
 
 	stopifnot(r_xxo <= 1 & r_xxo >= 0)
 	stopifnot(r_yyo <= 1 & r_yyo >= 0)
@@ -202,14 +220,30 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 #' - 
 directionality_test <- function(dat)
 {
-	if(! all(c("pval.exposure", "pval.outcome", "samplesize.exposure", "samplesize.outcome") %in% names(dat)))
+	if(! all(c("r.exposure", "r.outcome") %in% names(dat)))
 	{
-		message("Data requires p-values and sample sizes for outcomes and exposures")
-		return(NULL)
+		message("r.exposure and/or r.outcome not present.")
+		if(! all(c("pval.exposure", "pval.outcome", "samplesize.exposure", "samplesize.outcome") %in% names(dat)))
+		{
+			message("Can't calculate approximate SNP-exposure and SNP-outcome correlations without pval.exposure, pval.outcome, samplesize.exposure, samplesize.outcome")
+			message("Either supply these values, or supply the r.exposure and r.outcome values")
+			message("Note, automated correlations assume quantitative traits. For binary traits please pre-calculate in r.exposure and r.outcome e.g. using get_r_from_lor()")
+			return(NULL)
+		} else {
+			message("Calculating approximate SNP-exposure and/or SNP-outcome correlations, assuming all are quantitative traits. Please pre-calculate r.exposure and/or r.outcome using get_r_from_lor() for any binary traits")
+		}
 	}
 	dtest <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x)
 	{
-		b <- mr_steiger(x$pval.exposure, x$pval.outcome, x$samplesize.exposure, x$samplesize.outcome)
+		if(!"r.exposure" %in% names(x)) 
+		{
+			x$r.exposure <- NA
+		}
+		if(!"r.outcome" %in% names(x)) 
+		{
+			x$r.outcome <- NA
+		}
+		b <- mr_steiger(x$pval.exposure, x$pval.outcome, x$samplesize.exposure, x$samplesize.outcome, x$r.exposure, x$r.outcome)
 		a <- data.frame(
 			exposure = x$exposure[1],
 			outcome = x$outcome[1],
@@ -419,10 +453,11 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 #' @param ncontrol Vector of Number of controls
 #' @param prevalence Vector of Disease prevalence in the population
 #' @param model Is the effect size estiamted in "logit" (default) or "probit" model
+#' @param correction Scale the estimated r by correction value. Default = FALSE
 #'
 #' @export
 #' @return
-get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit")
+get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", correction=FALSE)
 {
 	stopifnot(length(lor) == length(af))
 	stopifnot(length(ncase) == 1 | length(ncase) == length(lor))
@@ -455,7 +490,12 @@ get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit")
 		}
 		popaf <- get_population_allele_frequency(af[i], ncase[i] / (ncase[i] + ncontrol[i]), exp(lor[i]), prevalence[i])
 		vg <- lor[i]^2 * popaf * (1-popaf)
-		r[i] <- sqrt(vg / (vg + ve) / 0.58)
+		r[i] <- vg / (vg + ve)
+		if(correction)
+		{
+			r[i] <- r[i] / 0.58
+		}
+		r[i] <- sqrt(r[i])
 	}
 	return(r)
 }

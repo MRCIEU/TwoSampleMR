@@ -190,11 +190,19 @@ mr_method_list <- function()
 			use_by_default=FALSE,
 			heterogeneity_test=FALSE
 		),
-                list(
+		list(
 			obj="mr_raps",
 			name="Robust adjusted profile score (RAPS)",
 			PubmedID="",
 			Description="",
+			use_by_default=FALSE,
+			heterogeneity_test=FALSE
+		),
+		list(
+			obj="mr_sign",
+			name="Sign concordance test",
+			PubmedID="",
+			Description="Tests for concordance of signs between exposure and outcome",
 			use_by_default=FALSE,
 			heterogeneity_test=FALSE
 		)
@@ -219,9 +227,9 @@ default_parameters <- function()
 		penk = 20,
 		phi = 1,
 		alpha = 0.05,
-                Qthresh = 0.05,
-                over.dispersion = TRUE,
-                loss.function = "tukey"
+		Qthresh = 0.05,
+		over.dispersion = TRUE,
+		loss.function = "huber"
 	)
 }
 
@@ -879,12 +887,50 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
     {
         stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
     }
-    out <- mr.raps::mr.raps(b_exp, b_out, se_exp, se_out,
+    out <- suppressMessages(mr.raps::mr.raps.shrinkage(b_exp, b_out, se_exp, se_out,
                             parameters$over.dispersion,
-                            parameters$loss.function)
+                            parameters$loss.function))
     list(b = out$beta.hat,
          se = out$beta.se,
          pval = pnorm(- abs(out$beta.hat / out$beta.se)) * 2,
          nsnp = length(b_exp))
 
+}
+
+#' MR sign test
+#' 
+#' Tests how often the SNP-exposure and SNP-outcome signs are concordant
+#' This is to avoid the problem of averaging over all SNPs, which can suffer bias due to outliers with strong effects; and to avoid excluding SNPs which is implicit in median and mode based estimators
+#' The effect estimate here is not to be interpreted as the effect size - it is the proportion of SNP-exposure and SNP-outcome effects that have concordant signs. 
+#' e.g. +1 means all have the same sign, -1 means all have opposite signs, and 0 means that there is an equal number of concordant and discordant signs.
+#' Restricted to only work if there are 6 or more valud SNPs
+#' 
+#' @param b_exp Vector of genetic effects on exposure
+#' @param b_out Vector of genetic effects on outcome
+#' @param se_exp Not required
+#' @param se_out Not required
+#' @param parameters Not required
+#'
+#' @export
+#' @return List with the following elements:
+#'         b: Concordance (see description)
+#'         se: NA
+#'         pval: p-value
+#'         nsnp: Number of SNPs (excludes NAs and effect estimates that are 0)
+mr_sign <- function(b_exp, b_out, se_exp=NULL, se_out=NULL, parameters=NULL)
+{
+	b_exp[b_exp == 0] <- NA
+	b_out[b_out == 0] <- NA
+	if(sum(!is.na(b_exp) & !is.na(b_out)) < 6)
+	{
+		return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+	}
+	x <- sum(sign(b_exp) == sign(b_out), na.rm=TRUE)
+	n <- sum(!is.na(b_exp) & !is.na(b_out))
+
+	out <- binom.test(x=x, n=n, p=0.5)
+	b <- (out$estimate - 0.5) * 2
+	names(b) <- NULL
+	pval <- out$p.value
+	return(list(b=b, se=NA, pval=pval, nsnp=n))
 }

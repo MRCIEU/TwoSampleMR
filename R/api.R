@@ -81,7 +81,7 @@ get_mrbase_access_token <- function()
 	} else {
 		unlink(tf)
 	}
-	a <- googleAuthR::gar_auth()
+	a <- googleAuthR::gar_auth("mrbase.oauth")
 	if(! a$validate())
 	{
 		a$refresh()
@@ -96,7 +96,7 @@ get_mrbase_access_token <- function()
 #' @return NULL
 revoke_mrbase_access_token <- function()
 {
-	a <- googleAuthR::gar_auth()
+	a <- googleAuthR::gar_auth("mrbase.oauth")
 	a$revoke()
 }
 
@@ -184,11 +184,12 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), ...)
+extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000, proxy_splitsize=500)
 {
 	outcomes <- unique(outcomes)
 	snps <- unique(snps)
-	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token, ...)
+	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token, splitsize = splitsize)
+
 
 	if(proxies)
 	{
@@ -203,7 +204,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			if(length(missedsnps)>0)
 			{
 				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
-				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, ...)
+				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, splitsize = proxy_splitsize)
 				if(!is.null(temp))
 				{
 					firstpass <- plyr::rbind.fill(firstpass, temp)
