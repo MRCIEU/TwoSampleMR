@@ -139,9 +139,14 @@ mr_method_list <- function()
 			use_by_default=TRUE,
 			heterogeneity_test=TRUE
 		),
-		list(obj = "mr_ivw_radial",
-            name = "IVW radial", PubmedID = "",
-            Description = "", use_by_default = FALSE, heterogeneity_test = TRUE),
+		list(
+			obj = "mr_ivw_radial",
+			name = "IVW radial", 
+			PubmedID = "",
+			Description = "", 
+			use_by_default = FALSE, 
+			heterogeneity_test = TRUE
+		),
 		list(
 			obj="mr_ivw_mre",
 			name="Inverse variance weighted (multiplicative random effects)",
