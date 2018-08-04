@@ -6,7 +6,8 @@
 \usage{
 extract_outcome_data(snps, outcomes, proxies = TRUE, rsq = 0.8,
   align_alleles = 1, palindromes = 1, maf_threshold = 0.3,
-  access_token = get_mrbase_access_token(), ...)
+  access_token = get_mrbase_access_token(), splitsize = 10000,
+  proxy_splitsize = 500)
 }
 \arguments{
 \item{snps}{Array of SNP rs IDs}

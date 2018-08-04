@@ -82,7 +82,18 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 	return(res)
 }
 
-
+#' Radial IVW analysis
+#' 
+#' @param b_exp Vector of genetic effects on exposure
+#' @param b_out Vector of genetic effects on outcome
+#' @param se_exp Standard errors of genetic effects on exposure
+#' @param se_out Standard errors of genetic effects on outcome
+#'
+#' @export
+#' @return List with the following elements:
+#'         b: causal effect estimate
+#'         se: standard error
+#'         pval: p-value
 mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	require(RadialMR)

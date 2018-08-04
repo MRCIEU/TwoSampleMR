@@ -4,7 +4,8 @@
 \alias{mr_steiger}
 \title{MR Steiger test of directionality}
 \usage{
-mr_steiger(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo = 1, ...)
+mr_steiger(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo = 1,
+  ...)
 }
 \arguments{
 \item{p_exp}{Vector of p-values of SNP-exposure}
@@ -14,6 +15,10 @@ mr_steiger(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo = 1, ...)
 \item{n_exp}{Sample sizes for p_exp}
 
 \item{n_out}{Sample sizes for p_out}
+
+\item{r_exp}{Vector of absolute correlations for SNP-exposure}
+
+\item{r_out}{Vector of absolute correlations for SNP-outcome}
 
 \item{r_xxo}{Measurememt precision of exposure}
 

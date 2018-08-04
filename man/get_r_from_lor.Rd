@@ -4,7 +4,8 @@
 \alias{get_r_from_lor}
 \title{Estimate proportion of variance of liability explained by SNP in general population}
 \usage{
-get_r_from_lor(lor, af, ncase, ncontrol, prevalence, model = "logit")
+get_r_from_lor(lor, af, ncase, ncontrol, prevalence, model = "logit",
+  correction = FALSE)
 }
 \arguments{
 \item{lor}{Vector of Log odds ratio}
@@ -18,6 +19,8 @@ get_r_from_lor(lor, af, ncase, ncontrol, prevalence, model = "logit")
 \item{prevalence}{Vector of Disease prevalence in the population}
 
 \item{model}{Is the effect size estiamted in "logit" (default) or "probit" model}
+
+\item{correction}{Scale the estimated r by correction value. Default = FALSE}
 }
 \description{
 This uses equation 10 in Genetic Epidemiology 36 : 214–224 (2012)
