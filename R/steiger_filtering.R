@@ -54,7 +54,7 @@ steiger_filtering_internal <- function(dat)
 				dat$rsq.exposure[ind1] <- get_r_from_pn(
 					dat$pval.exposure[ind1],
 					dat$samplesize.exposure[ind1]
-				)
+				)^2
 			}
 		}
 	}
@@ -90,7 +90,7 @@ steiger_filtering_internal <- function(dat)
 				dat$rsq.outcome[ind1] <- get_r_from_pn(
 					dat$pval.outcome[ind1],
 					dat$samplesize.outcome[ind1]
-				)
+				)^2
 			}
 		}
 	}
