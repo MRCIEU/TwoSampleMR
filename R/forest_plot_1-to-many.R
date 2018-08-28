@@ -19,6 +19,10 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("plyr", quietly=TRUE)
 
+	if("exposure" %in% names(mr_res)){ #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
+		names(mr_res)[names(mr_res)=="exposure"]<-"TraitM"
+		TraitM<-"TraitM"
+	}
 
 	if(!is.null(by)){
 		if(TraitM==by){
@@ -41,6 +45,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 
 	mr_res$subcategory<-trim(mr_res$subcategory)
 	mr_res$exposure<-""
+
 	# Get extra info on outcomes
 	if(ao_slc) 
 	{ 
@@ -843,7 +848,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 		ggplot2::theme(text=ggplot2::element_text(size=10))
 	)
 
-	message("howzit")
+	message("howzit, may all your scripts be up-to-date and well annotated")
 	sec <- unique(as.character(dat$category))
 	columns <- unique(dat$exposure)
 	l <- list()
