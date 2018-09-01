@@ -13,28 +13,29 @@
 #'
 #' @export
 #' @return data frame.
-format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",Alt_name=NULL)
+format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome")
 {
 
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("plyr", quietly=TRUE)
 
-	if("exposure" %in% names(mr_res)){ #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
-		names(mr_res)[names(mr_res)=="exposure"]<-"TraitM"
-		TraitM<-"TraitM"
-	}
-
-	if(!is.null(by)){
-		if(TraitM==by){
-			if(is.null(Alt_name)) warning("Alt_name required because you are attempting to stratify results by ",TraitM)
-			TraitM<-Alt_name
-		}
-	}
-
 	if(!is.null(by)){
 		names(mr_res)[names(mr_res)==by]<-"subcategory"
 	}else{
 		mr_res$subcategory<-""
+	}
+
+	# if(!is.null(by)){
+	# 		if(TraitM==by){
+	# 			if(is.null(Alt_name)) warning("Alt_name required because you are attempting to stratify results by ",TraitM)
+	# 			TraitM<-Alt_name
+	# 		}
+	# }
+
+
+	if("exposure" %in% names(mr_res)){ #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
+		names(mr_res)[names(mr_res)=="exposure"]<-"TraitM"
+		TraitM<-"TraitM"
 	}
 
 	names(mr_res)[names(mr_res)==b ]<-"b"
@@ -164,8 +165,16 @@ Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
 		if(is.null(Group)) warning("You must indicate a grouping variable")
 		if(is.null(Priority)) warning("You must indicate which value of the grouping variable ",Group," to use as the priority value")
 		mr_res$b.sort<-NA
-		mr_res$b.sort[mr_res[,Group]==Priority]<-mr_res[,b][mr_res[,Group]==Priority]
-		mr_res$b.sort[is.na(mr_res$b.sort)]<-mr_res$b.sort[!is.na(mr_res$b.sort)]
+		mr_res1<-mr_res[mr_res$exposure %in% mr_res$exposure[duplicated(mr_res$exposure)],]
+		mr_res2<-mr_res[!mr_res$exposure %in% mr_res$exposure[duplicated(mr_res$exposure)],]
+
+		mr_res1$b.sort[mr_res1[,Group]==Priority]<-mr_res1[,b][mr_res1[,Group]==Priority]
+		for(i in unique(mr_res1$exposure)){
+			mr_res1$b.sort[mr_res1$exposure == i & is.na(mr_res1$b.sort)]<-mr_res1$b.sort[mr_res1$exposure == i & !is.na(mr_res1$b.sort)]
+		}
+		# mr_res1$b.sort[is.na(mr_res1$b.sort)]<-mr_res1$b.sort[!is.na(mr_res1$b.sort)]
+		mr_res2$b.sort<-mr_res2$b
+		mr_res<-rbind(mr_res1,mr_res2) 
 		mr_res<-mr_res[order(mr_res[,Group]),]
 		mr_res<-mr_res[order(mr_res$b.sort,decreasing=T),]
 	}
@@ -794,7 +803,6 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE)
 #' @param se Name of the column specifying the standard error for b. Default = "se"
 #' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
 #' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
-#' @param Alt_name Name of the column specifying an alternative label for the Y axis. Typically the Y axis in a 1-to-many forest plot corresponds to a column of trait names. If, however, the user wishes to stratify the results by trait name, then an alternative column of data must be used to label the Y axis. For example, the user wishes to plot results for multiple exposures from observational and MR studies. In addition, the user wishes to group the observational and MR studies together for comparison. In this case something like a study column with vwould be used to specify Alt_name. Alt_name is only required if by=TraitM. Default = NULL. 
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
 #' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. Default is "identity". If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios and their confidence intervals). 
@@ -804,14 +812,14 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE)
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, trans="identity",ao_slc=T,Lo=NULL,Up=NULL,width1=1,by=NULL,TraitM="outcome",Alt_name=NULL){
+forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, trans="identity",ao_slc=T,Lo=NULL,Up=NULL,width1=1,by=NULL,TraitM="outcome",xlab="Effect (95% confidence interval)"){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
 	
 	if(is.null(Lo) | is.null(Up)) warning("Values missing for the lower or upper bounds of the x axis. Did you forget to set the Lo and Up arguments?")
 
-	xlab=""
+	
 	xlim=NULL
 	ncols=1
 	# var2="";var3="";var4=""
@@ -832,8 +840,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 		# multi_snp_method=multi_snp_method,
 		ao_slc=ao_slc,
 		by=by,
-		TraitM=TraitM,
-		Alt_name=Alt_name
+		TraitM=TraitM
 	)
 	
 
@@ -912,9 +919,9 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 	}
 	h <- h + 1
 	h[length(sec)] <- h[length(sec)] + 1
-	message(length(l))
-	message(count)
-	message(h)
+	# message(length(l))
+	# message(count)
+	# message(h)
 	return(
 		cowplot::plot_grid(
 			gridExtra::arrangeGrob(
