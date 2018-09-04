@@ -7,13 +7,13 @@
 #' @param se Name of the column specifying the standard error for b. Default = "se"
 #' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
 #' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
-#' @param Alt_name Name of the column specifying an alternative label for the Y axis. Typically the Y axis in a 1-to-many forest plot corresponds to a column of trait names. If, however, the user wishes to stratify the results by trait name, then an alternative column of data must be used to label the Y axis. For example, the user wishes to plot results for multiple exposures from observational and MR studies. In addition, the user wishes to group the observational and MR studies together for comparison. In this case something like a study column with vwould be used to specify Alt_name. Alt_name is only required if by=TraitM. Default = NULL. 
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
+#' @param Addcols Name of any additional columns to add to the plot.  
 #'
 #' @export
 #' @return data frame.
-format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome")
+format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",Addcols=NULL)
 {
 
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -24,14 +24,6 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 	}else{
 		mr_res$subcategory<-""
 	}
-
-	# if(!is.null(by)){
-	# 		if(TraitM==by){
-	# 			if(is.null(Alt_name)) warning("Alt_name required because you are attempting to stratify results by ",TraitM)
-	# 			TraitM<-Alt_name
-	# 		}
-	# }
-
 
 	if("exposure" %in% names(mr_res)){ #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
 		names(mr_res)[names(mr_res)=="exposure"]<-"TraitM"
@@ -97,7 +89,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 	}
 
 
-	dat <- data.frame(
+	dat1 <- data.frame(
 		exposure = as.character(dat$exposure),
 		outcome = as.character(dat$trait),
 		outcome2= as.character(dat$outcome2),
@@ -106,13 +98,17 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 		effect = dat$b,
 		up_ci = dat$up_ci,
 		lo_ci = dat$lo_ci,
-		nsnp = dat$nsnp,
-		# pval = dat$pval,
-		# sample_size = dat$sample_size,
 		index = dat$index,
 		stringsAsFactors = FALSE
 	)
-	
+
+	if(!is.null(Addcols)){
+		dat2<-dat[,Addcols]
+		dat<-cbind(dat1,dat2)
+	}else{
+		dat<-dat1
+	}
+
 	exps <- unique(dat$exposure)
 	
 	dat <- dat[order(dat$index), ]
@@ -134,7 +130,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 #' @export
 #' @return data frame.
 # 
-# Trait.var="exposure",Sort.var1="subcategory",Sort.var2="b",Sort1.decreasing = F,Sort2.decreasing=F,
+
 Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
 
 	if(!b %in% names(mr_res)) warning("Column with effect estimates not found. Did you forget to specify the column of data containing your effect estimates?")
@@ -187,35 +183,9 @@ Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
 		mr_res<-mr_res[order(mr_res[,b],decreasing=F),]
 	}
 
-	# mr_res<-mr_res[order(mr_res[,Sort.var2],decreasing=Sort2.decreasing),]
-	# id<-paste(mr_res[,Sort.var1],mr_res[,Trait.var])
-	# mr_res<-mr_res[order(id,decreasing=T),]
-
-	
-	# Letters1<-unlist(lapply(1:length(Letters),FUN=function(x) rep(Letters[x],26)))
-	# Letters0<-paste(Letters1,Letters,sep="")
-	# Letters0<-Letters0[1:length(mr_res[,Sort.var2])]
-
-	# mr_res$outcome<-paste(Letters0, mr_res$exposure,sep="")
-
-	# mr_res<-mr_res[order(Letters0),]
 	return(mr_res)
 	
 }
-
-
-# #' Simple attempt at correcting string case
-# #'
-# #' @param x Character or array of character
-# #'
-# #' @return Character or array of character
-# simple_cap <- function(x) {
-# 	sapply(x, function(x){
-# 		x <- tolower(x)
-# 		s <- strsplit(x, " ")[[1]]
-# 		paste(toupper(substring(s, 1,1)), substring(s, 2), sep="", collapse=" ")
-# 	})
-# }
 
 #' Trim function 
 #'
@@ -229,27 +199,6 @@ Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
 #   gsub("(^[[:space:]]+|[[:space:]]+$)", "", x)
 # }
 
-
-# #' Create fixed width label
-# #'
-# #' @param n1 number
-# #' @param nom name
-# #'
-# #' @return text
-# create_label <- function(n1, nom)
-# {
-# 	len_n1 <- max(nchar(n1), na.rm=TRUE)
-# 	n1_c <- formatC(n1, width=len_n1)
-
-# 	l <- nchar(nom)
-# 	len_nom <- max(l)
-# 	p <- paste0("%-", len_nom, "s")
-# 	nomp <- sprintf(p, nom)
-
-# 	out <- paste0(n1_c, "    ", nomp)
-# 	out <- factor(out, levels = unique(out))
-# 	return(out)
-# }
 
 #' A basic forest plot
 #'
@@ -322,13 +271,6 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		main_title <- ifelse(is.null(section), "", section)
 		title_colour <- "black"
 
-	# ncases_labels <- ggplot2::geom_text(
-	# 	ggplot2::aes(label=ncase), 
-	# 	x=lo, 
-	# 	y=mean(c(1, length(unique(dat$exposure)))), 
-	# 	hjust=0, vjust=0.5, size=3.5
-	# )
-
 	} else {
 		outcome_labels <- NULL
 		lo <- lo_orig
@@ -337,11 +279,6 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	}
 
 	main_title <- section
-
-	# if(! "lab" %in% names(dat))
-	# {
-	# 	dat$lab <- create_label(dat$sample_size, dat$outcome2)
-	# }
 
 	dat$lab<-dat$outcome
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
@@ -391,7 +328,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 }
 
 
-forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE)
+forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,Title="")
 {
 	if(bottom)
 	{
@@ -436,23 +373,9 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE)
 		hjust=0, vjust=0.5, size=3.5
 	)
 
-
-
-
-
-	# ncases_labels <- ggplot2::geom_text(
-	# 	ggplot2::aes(label=ncase), 
-	# 	x=lo, 
-	# 	y=mean(c(1, length(unique(dat$exposure)))), 
-	# 	hjust=0, vjust=0.5, size=3.5
-	# )
-
-	main_title <- section
-
-	# if(! "lab" %in% names(dat))
-	# {
-	# 	dat$lab <- create_label(dat$sample_size, dat$outcome2)
-	# }
+	print(paste0("title=",Title))
+	if(section=="")	main_title <- Title
+	
 
 	dat$lab<-dat$outcome
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
@@ -494,305 +417,89 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE)
 }
 
 
-# forest_plot_var2 <- function(dat, section=NULL, var2=var2,bottom=TRUE)
-# {
-# 	if(bottom)
-# 	{
-# 		text_colour <- ggplot2::element_text(colour="white")
-# 		tick_colour <- ggplot2::element_line(colour="white")
-# 		xlabname <- ""
-# 	} else {
-# 		text_colour <- ggplot2::element_blank()
-# 		tick_colour <- ggplot2::element_blank()
-# 		xlabname <- NULL
-# 	}
+forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL)
+{
+	print(addcol)
+	print(addcol_title)
+	if(bottom)
+	{
+		text_colour <- ggplot2::element_text(colour="white")
+		tick_colour <- ggplot2::element_line(colour="white")
+		xlabname <- ""
+	} else {
+		text_colour <- ggplot2::element_blank()
+		tick_colour <- ggplot2::element_blank()
+		xlabname <- NULL
+	}
 
-# 	# OR or log(OR)?
-# 	# If CI are symmetric then log(OR)
-# 	# Use this to guess where to put the null line
-# 	null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
+	# OR or log(OR)?
+	# If CI are symmetric then log(OR)
+	# Use this to guess where to put the null line
+	null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
 
-# 	# up <- max(dat$up_ci, na.rm=TRUE)
-# 	# lo <- min(dat$lo_ci, na.rm=TRUE)
-# 	# r <- up-lo
-# 	# lo_orig <- lo
-# 	# lo <- lo - r * 0.5
-# 	lo <- 0
-# 	up <- 1
+	lo <- 0
+	up <- 1
 
-# 	if(!is.null(section))
-# 	{
-# 		dat <- subset(dat, category==section)
-# 		main_title <- section
-# 		section_colour <- "black"
-# 	} else {
-# 		main_title <- section
-# 		section_colour <- "white"
-# 	}
+	if(!is.null(section))
+	{
+		dat <- subset(dat, category==section)
+		main_title <- section
+		section_colour <- "black"
+	} else {
+		main_title <- section
+		section_colour <- "white"
+	}
 
-# 	point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
+	point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
 
-# 	outcome_labels <- ggplot2::geom_text(
-# 		ggplot2::aes(label=eval(parse(text=var2))), 
-# 		x=lo, 
-# 		y=mean(c(1, length(unique(dat$exposure)))), 
-# 		hjust=0, vjust=0.5, size=3.5
-# 	)
+	outcome_labels <- ggplot2::geom_text(
+		ggplot2::aes(label=eval(parse(text=addcol))), 
+		x=lo, 
+		y=mean(c(1, length(unique(dat$exposure)))), 
+		hjust=0, vjust=0.5, size=3.5
+	)
 
-# 	# ncases_labels <- ggplot2::geom_text(
-# 	# 	ggplot2::aes(label=ncase), 
-# 	# 	x=lo, 
-# 	# 	y=mean(c(1, length(unique(dat$exposure)))), 
-# 	# 	hjust=0, vjust=0.5, size=3.5
-# 	# )
+	main_title <- section
 
-# 	main_title <- section
+	dat$lab<-dat$outcome
+	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
+	l$col[1:nrow(l) %% 2 == 0] <- "b"
 
-# 	# if(! "lab" %in% names(dat))
-# 	# {
-# 	# 	dat$lab <- create_label(dat$sample_size, dat$outcome2)
-# 	# }
+	dat <- merge(dat, l, by="lab", all.x=TRUE)
 
-# 	dat$lab<-dat$outcome
-# 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-# 	l$col[1:nrow(l) %% 2 == 0] <- "b"
-
-# 	dat <- merge(dat, l, by="lab", all.x=TRUE)
-
-# 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-# 	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
-# 	ggplot2::facet_grid(lab ~ .) +
-# 	ggplot2::scale_x_continuous(limits=c(lo, up)) +
-# 	ggplot2::scale_colour_brewer(type="qual") +
-# 	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
-# 	ggplot2::theme(
-# 		axis.line=ggplot2::element_blank(),
-# 		axis.text.y=ggplot2::element_blank(), 
-# 		axis.ticks.y=ggplot2::element_blank(), 
-# 		axis.text.x=text_colour, 
-# 		axis.ticks.x=tick_colour, 
-# 		# strip.text.y=ggplot2::element_text(angle=360, hjust=0), 
-# 		strip.background=ggplot2::element_rect(fill="white", colour="white"),
-# 		strip.text=ggplot2::element_text(family="Courier New", face="bold", size=11),
-# 		legend.position="none",
-# 		legend.direction="vertical",
-# 		panel.grid.minor.x=ggplot2::element_blank(),
-# 		panel.grid.minor.y=ggplot2::element_blank(),
-# 		panel.grid.major.y=ggplot2::element_blank(),
-# 		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=section_colour),
-# 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
-# 		plot.background=ggplot2::element_rect(fill="white"),
-# 		panel.spacing=ggplot2::unit(0,"lines"),
-# 		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
-# 		strip.text.y = ggplot2::element_blank(),
-# 		strip.text.x = ggplot2::element_blank()
-# 		# strip.background = ggplot2::element_blank()
-# 	) +
-# 	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title="") +
-# 	outcome_labels
-# 	return(p)
-# }
-
-
-# forest_plot_var3 <- function(dat, section=NULL, var3=var3,bottom=TRUE)
-# {
-# 	if(bottom)
-# 	{
-# 		text_colour <- ggplot2::element_text(colour="white")
-# 		tick_colour <- ggplot2::element_line(colour="white")
-# 		xlabname <- ""
-# 	} else {
-# 		text_colour <- ggplot2::element_blank()
-# 		tick_colour <- ggplot2::element_blank()
-# 		xlabname <- NULL
-# 	}
-
-# 	# OR or log(OR)?
-# 	# If CI are symmetric then log(OR)
-# 	# Use this to guess where to put the null line
-# 	null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
-
-# 	# up <- max(dat$up_ci, na.rm=TRUE)
-# 	# lo <- min(dat$lo_ci, na.rm=TRUE)
-# 	# r <- up-lo
-# 	# lo_orig <- lo
-# 	# lo <- lo - r * 0.5
-# 	lo <- 0
-# 	up <- 1
-
-# 	if(!is.null(section))
-# 	{
-# 		dat <- subset(dat, category==section)
-# 		main_title <- section
-# 		section_colour <- "black"
-# 	} else {
-# 		main_title <- section
-# 		section_colour <- "white"
-# 	}
-
-# 	point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
-
-# 	outcome_labels <- ggplot2::geom_text(
-# 		ggplot2::aes(label=eval(parse(text=var3))), 
-# 		x=lo, 
-# 		y=mean(c(1, length(unique(dat$exposure)))), 
-# 		hjust=0, vjust=0.5, size=3.5
-# 	)
-
-
-
-# 	# ncases_labels <- ggplot2::geom_text(
-# 	# 	ggplot2::aes(label=tv), 
-# 	# 	x=lo, 
-# 	# 	y=mean(c(1, length(unique(dat$exposure)))), 
-# 	# 	hjust=0, vjust=0.5, size=3.5
-# 	# )
-
-# 	main_title <- section
-
-# 	# if(! "lab" %in% names(dat))
-# 	# {
-# 	# 	dat$lab <- create_label(dat$sample_size, dat$outcome2)
-# 	# }
-
-# 	dat$lab<-dat$outcome
-# 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-# 	l$col[1:nrow(l) %% 2 == 0] <- "b"
-
-# 	dat <- merge(dat, l, by="lab", all.x=TRUE)
-
-# 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-# 	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
-# 	ggplot2::facet_grid(lab ~ .) +
-# 	ggplot2::scale_x_continuous(limits=c(lo, up)) +
-# 	ggplot2::scale_colour_brewer(type="qual") +
-# 	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
-# 	ggplot2::theme(
-# 		axis.line=ggplot2::element_blank(),
-# 		axis.text.y=ggplot2::element_blank(), 
-# 		axis.ticks.y=ggplot2::element_blank(), 
-# 		axis.text.x=text_colour, 
-# 		axis.ticks.x=tick_colour, 
-# 		# strip.text.y=ggplot2::element_text(angle=360, hjust=0), 
-# 		strip.background=ggplot2::element_rect(fill="white", colour="white"),
-# 		strip.text=ggplot2::element_text(family="Courier New", face="bold", size=11),
-# 		legend.position="none",
-# 		legend.direction="vertical",
-# 		panel.grid.minor.x=ggplot2::element_blank(),
-# 		panel.grid.minor.y=ggplot2::element_blank(),
-# 		panel.grid.major.y=ggplot2::element_blank(),
-# 		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=section_colour),
-# 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
-# 		plot.background=ggplot2::element_rect(fill="white"),
-# 		panel.spacing=ggplot2::unit(0,"lines"),
-# 		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
-# 		strip.text.y = ggplot2::element_blank(),
-# 		strip.text.x = ggplot2::element_blank()
-# 		# strip.background = ggplot2::element_blank()
-# 	) +
-# 	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title="") +
-# 	outcome_labels
-# 	return(p)
-# }
-
-# forest_plot_var4 <- function(dat, section=NULL,var4=var4, bottom=TRUE)
-# {
-# 	if(bottom)
-# 	{
-# 		text_colour <- ggplot2::element_text(colour="white")
-# 		tick_colour <- ggplot2::element_line(colour="white")
-# 		xlabname <- ""
-# 	} else {
-# 		text_colour <- ggplot2::element_blank()
-# 		tick_colour <- ggplot2::element_blank()
-# 		xlabname <- NULL
-# 	}
-
-# 	# OR or log(OR)?
-# 	# If CI are symmetric then log(OR)
-# 	# Use this to guess where to put the null line
-# 	null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
-
-# 	# up <- max(dat$up_ci, na.rm=TRUE)
-# 	# lo <- min(dat$lo_ci, na.rm=TRUE)
-# 	# r <- up-lo
-# 	# lo_orig <- lo
-# 	# lo <- lo - r * 0.5
-# 	lo <- 0
-# 	up <- 1
-
-# 	if(!is.null(section))
-# 	{
-# 		dat <- subset(dat, category==section)
-# 		main_title <- section
-# 		section_colour <- "black"
-# 	} else {
-# 		main_title <- section
-# 		section_colour <- "white"
-# 	}
-
-# 	point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
-
-# 	outcome_labels <- ggplot2::geom_text(
-# 		ggplot2::aes(label=eval(parse(text=var4))), 
-# 		x=lo, 
-# 		y=mean(c(1, length(unique(dat$exposure)))), 
-# 		hjust=0, vjust=0.5, size=3.5
-# 	)
-
-# 	# ncases_labels <- ggplot2::geom_text(
-# 	# 	ggplot2::aes(label=tv), 
-# 	# 	x=lo, 
-# 	# 	y=mean(c(1, length(unique(dat$exposure)))), 
-# 	# 	hjust=0, vjust=0.5, size=3.5
-# 	# )
-
-# 	main_title <- section
-
-# 	# if(! "lab" %in% names(dat))
-# 	# {
-# 	# 	dat$lab <- create_label(dat$sample_size, dat$outcome2)
-# 	# }
-
-# 	dat$lab<-dat$outcome
-# 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-# 	l$col[1:nrow(l) %% 2 == 0] <- "b"
-
-# 	dat <- merge(dat, l, by="lab", all.x=TRUE)
-
-# 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-# 	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
-# 	ggplot2::facet_grid(lab ~ .) +
-# 	ggplot2::scale_x_continuous(limits=c(lo, up)) +
-# 	ggplot2::scale_colour_brewer(type="qual") +
-# 	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
-# 	ggplot2::theme(
-# 		axis.line=ggplot2::element_blank(),
-# 		axis.text.y=ggplot2::element_blank(), 
-# 		axis.ticks.y=ggplot2::element_blank(), 
-# 		axis.text.x=text_colour, 
-# 		axis.ticks.x=tick_colour, 
-# 		# strip.text.y=ggplot2::element_text(angle=360, hjust=0), 
-# 		strip.background=ggplot2::element_rect(fill="white", colour="white"),
-# 		strip.text=ggplot2::element_text(family="Courier New", face="bold", size=11),
-# 		legend.position="none",
-# 		legend.direction="vertical",
-# 		panel.grid.minor.x=ggplot2::element_blank(),
-# 		panel.grid.minor.y=ggplot2::element_blank(),
-# 		panel.grid.major.y=ggplot2::element_blank(),
-# 		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=section_colour),
-# 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
-# 		plot.background=ggplot2::element_rect(fill="white"),
-# 		panel.spacing=ggplot2::unit(0,"lines"),
-# 		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
-# 		strip.text.y = ggplot2::element_blank(),
-# 		strip.text.x = ggplot2::element_blank()
-# 		# strip.background = ggplot2::element_blank()
-# 	) +
-# 	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title="") +
-# 	outcome_labels
-# 	return(p)
-# }
+	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
+	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	ggplot2::facet_grid(lab ~ .) +
+	ggplot2::scale_x_continuous(limits=c(lo, up)) +
+	ggplot2::scale_colour_brewer(type="qual") +
+	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
+	ggplot2::theme(
+		axis.line=ggplot2::element_blank(),
+		axis.text.y=ggplot2::element_blank(), 
+		axis.ticks.y=ggplot2::element_blank(), 
+		axis.text.x=text_colour, 
+		axis.ticks.x=tick_colour, 
+		# strip.text.y=ggplot2::element_text(angle=360, hjust=0), 
+		strip.background=ggplot2::element_rect(fill="white", colour="white"),
+		strip.text=ggplot2::element_text(family="Courier New", face="bold", size=11),
+		legend.position="none",
+		legend.direction="vertical",
+		panel.grid.minor.x=ggplot2::element_blank(),
+		panel.grid.minor.y=ggplot2::element_blank(),
+		panel.grid.major.y=ggplot2::element_blank(),
+		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=section_colour),
+		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
+		plot.background=ggplot2::element_rect(fill="white"),
+		panel.spacing=ggplot2::unit(0,"lines"),
+		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
+		strip.text.y = ggplot2::element_blank(),
+		strip.text.x = ggplot2::element_blank()
+		# strip.background = ggplot2::element_blank()
+	) +
+	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=addcol_title) +
+	outcome_labels
+	return(p)
+}
 
 #' 1-to-many forest plot 
 #'
@@ -808,11 +515,13 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE)
 #' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. Default is "identity". If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios and their confidence intervals). 
 #' @param Lo Lower limit of X axis to plot. Must be specified by the user. 
 #' @param Up Upper limit of X axis to plot. Must be specified by the user. 
-#' @param Width1 Width of Y axis labels. Default=1
+#' @param Width1 Width of Y axis labels in TraitM column. Default=1
+#' @param Addcols Name of additional columns to plot. Character vector
+#' @param Addcol_widths Widths of Y axis labels for additional columns. Numeric vector 
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, trans="identity",ao_slc=T,Lo=NULL,Up=NULL,width1=1,by=NULL,TraitM="outcome",xlab="Effect (95% confidence interval)"){
+forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, trans="identity",ao_slc=T,Lo=NULL,Up=NULL,Col1_width=1,by=NULL,TraitM="outcome",Col1_name="",xlab="Effect (95% confidence interval)",Addcols=NULL,Addcol_widths=NULL,Addcol_titles=NULL){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
@@ -821,31 +530,19 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 
 	
 	xlim=NULL
-	ncols=1
-	# var2="";var3="";var4=""
-	# width2=1,width3=1,width4=1
-
-	# L<-nrow(mr_res)+length(unique(mr_res[,by]))
-	# if(L >50 ){
-	# 	warning("You have submitted more rows of data for plotting than is recommended. Try plotting fewer rows or set Force=TRUE to plot anyway.")
-	# }
-
-
+	ncols=1+length(Addcols)
+	
 	dat <- format_1_to_many(
 		mr_res, 
 		b=b,
 		se=se,
 		exponentiate=exponentiate, 
-		# single_snp_method=single_snp_method,
-		# multi_snp_method=multi_snp_method,
 		ao_slc=ao_slc,
 		by=by,
-		TraitM=TraitM
+		TraitM=TraitM,
+		Addcols=Addcols 
 	)
 	
-
-	# dat$lab <- create_label(dat$sample_size, dat$outcome2)
-	# dat$lab<-dat$outcome2
 
 	legend <- cowplot::get_legend(
 		ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=outcome)) + 
@@ -856,6 +553,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 	)
 
 	message("howzit, may all your scripts be up-to-date and well annotated")
+	if(length(Addcols) != length(Addcol_widths)) warning("length of Addcols not equal to length of Addcol_widths")
 	sec <- unique(as.character(dat$category))
 	columns <- unique(dat$exposure)
 	l <- list()
@@ -864,42 +562,38 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 	for(i in 1:length(sec))
 	{
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
+
+		print(Col1_name)
+		print(sec)		
 		l[[count]] <- forest_plot_names2(
 			dat, 
 			sec[i],
-			bottom = i==length(sec)
+			bottom = i==length(sec),
+			Title=Col1_name
 		)
 		count <- count + 1
 
-		# if(var2!=""){
-		# 	l[[count]] <- forest_plot_var2(
-		# 		dat, 
-		# 		sec[i], 
-		# 		var2,
-		# 		bottom = i==length(sec)
-		# 	)
-		# 	count <- count + 1
-		# }
-		# duplicate the above from l[[count]] with the new function (instead of forest_plot_ncase)
-		# create forest_plot_newvalue
-		# if(var3 != "") {
-		# 	l[[count]] <- forest_plot_var3(
-		# 		dat, 
-		# 		sec[i], 
-		# 		var3,
-		# 		bottom = i==length(sec)
-		# 	)
-		# 	count <- count + 1
-		# }
-		# if(var4 != "") {
-		# 	l[[count]] <- forest_plot_var4(
-		# 		dat, 
-		# 		sec[i], 
-		# 		var4,
-		# 		bottom = i==length(sec)
-		# 	)
-		# 	count <- count + 1
-		# }
+		if(!is.null(Addcols)){
+
+			for(j in 1:length(Addcols)){
+				# print(sec)
+				# print("hello")
+				# print(paste0("i=",i))
+				# print(paste0("j=",j))
+				# print(Addcols[j])
+				l[[count]]<-forest_plot_addcol(
+					dat,
+					sec[i],
+					addcol=Addcols[j],
+					addcol_title=Addcol_titles[j],
+					bottom = i==length(sec)
+				)
+
+				count <- count + 1
+			}
+		}
+
+
 		for(j in 1:length(columns))
 		{
 			l[[count]] <- forest_plot_basic2(
@@ -919,19 +613,17 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 	}
 	h <- h + 1
 	h[length(sec)] <- h[length(sec)] + 1
-	# message(length(l))
-	# message(count)
-	# message(h)
+	message(length(l))
+	message(count)
+	message(h)
 	return(
 		cowplot::plot_grid(
 			gridExtra::arrangeGrob(
 				grobs=l, 
-				# change this to 3
 				ncol=length(columns) + ncols, 
 				nrow=length(h), 
 				heights=h,
-				# add an extra width value
-				widths=c(width1, rep(5, length(columns)))
+				widths=c(Col1_width,Addcol_widths, rep(5, length(columns)))
 				
 			)
 		)
