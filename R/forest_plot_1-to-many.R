@@ -1,15 +1,15 @@
 #' Format MR results for a 1-to-many forest plot
 #'
-#' This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.   
+#' This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.  what? 
 #' 
 #' @param mr_res Data frame of results supplied by the user
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
 #' @param se Name of the column specifying the standard error for b. Default = "se"
 #' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
+#' @param Addcols Name of any additional columns to add to the plot. 
 #' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
-#' @param Addcols Name of any additional columns to add to the plot.  
 #'
 #' @export
 #' @return data frame.
@@ -93,7 +93,6 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 		exposure = as.character(dat$exposure),
 		outcome = as.character(dat$trait),
 		outcome2= as.character(dat$outcome2),
-		# ncase=as.numeric(dat$ncase),
 		category = as.character(dat$subcategory),
 		effect = dat$b,
 		up_ci = dat$up_ci,
@@ -154,9 +153,6 @@ Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
 		mr_res<-mr_res[order(mr_res[,Group]),]
 	}
 		
-		# mr_res2$Index<-Letters[1:nrow(mr_res2)]
-		# Index<-Index[order(mr_res2$b,decreasing=T)]
-	
 	if(Sort.action==3){
 		if(is.null(Group)) warning("You must indicate a grouping variable")
 		if(is.null(Priority)) warning("You must indicate which value of the grouping variable ",Group," to use as the priority value")
@@ -186,19 +182,6 @@ Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
 	return(mr_res)
 	
 }
-
-#' Trim function 
-#'
-#' Trim function to remove leading and trailing blank spaces
-#'
-# #' @param x Character or array of character
-# #'
-# #' @export
-# #' @return Character or array of character
-# trim <- function( x ) {
-#   gsub("(^[[:space:]]+|[[:space:]]+$)", "", x)
-# }
-
 
 #' A basic forest plot
 #'
@@ -373,7 +356,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,Ti
 		hjust=0, vjust=0.5, size=3.5
 	)
 
-	print(paste0("title=",Title))
+	# print(paste0("title=",Title))
 	if(section=="")	main_title <- Title
 	
 
@@ -420,7 +403,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,Ti
 forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL)
 {
 	print(addcol)
-	print(addcol_title)
+	# print(addcol_title)
 	if(bottom)
 	{
 		text_colour <- ggplot2::element_text(colour="white")
@@ -509,15 +492,15 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
 #' @param se Name of the column specifying the standard error for b. Default = "se"
 #' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
+#' @param Col1_width Width of Y axis label for first column, typically the column specifying the trait names. Default=1
+#' @param Addcols Name of additional columns to plot. Character vector
+#' @param Addcol_widths Widths of Y axis labels for additional columns. Numeric vector 
 #' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
 #' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. Default is "identity". If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios and their confidence intervals). 
 #' @param Lo Lower limit of X axis to plot. Must be specified by the user. 
 #' @param Up Upper limit of X axis to plot. Must be specified by the user. 
-#' @param Width1 Width of Y axis labels in TraitM column. Default=1
-#' @param Addcols Name of additional columns to plot. Character vector
-#' @param Addcol_widths Widths of Y axis labels for additional columns. Numeric vector 
 #'
 #' @export
 #' @return grid plot object
@@ -552,7 +535,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 		ggplot2::theme(text=ggplot2::element_text(size=10))
 	)
 
-	message("howzit, may all your scripts be up-to-date and well annotated")
+	# message("howzit, may all your scripts be up-to-date and well annotated")
 	if(length(Addcols) != length(Addcol_widths)) warning("length of Addcols not equal to length of Addcol_widths")
 	sec <- unique(as.character(dat$category))
 	columns <- unique(dat$exposure)
@@ -563,8 +546,8 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 	{
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 
-		print(Col1_name)
-		print(sec)		
+		# print(Col1_name)
+		# print(sec)		
 		l[[count]] <- forest_plot_names2(
 			dat, 
 			sec[i],
@@ -576,12 +559,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 		if(!is.null(Addcols)){
 
 			for(j in 1:length(Addcols)){
-				# print(sec)
-				# print("hello")
-				# print(paste0("i=",i))
-				# print(paste0("j=",j))
-				# print(Addcols[j])
-				l[[count]]<-forest_plot_addcol(
+					l[[count]]<-forest_plot_addcol(
 					dat,
 					sec[i],
 					addcol=Addcols[j],
@@ -613,9 +591,9 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 	}
 	h <- h + 1
 	h[length(sec)] <- h[length(sec)] + 1
-	message(length(l))
-	message(count)
-	message(h)
+	# message(length(l))
+	# message(count)
+	# message(h)
 	return(
 		cowplot::plot_grid(
 			gridExtra::arrangeGrob(
