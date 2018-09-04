@@ -4,10 +4,10 @@
 \alias{forest_plot_1_to_many}
 \title{1-to-many forest plot}
 \usage{
-forest_plot_1_to_many(mr_res, b = "b", se = "se",
-  exponentiate = FALSE, trans = "identity", ao_slc = T, Lo = NULL,
-  Up = NULL, Col1_width = 1, by = NULL, TraitM = "outcome",
-  Col1_name = "", xlab = "Effect (95\% confidence interval)",
+forest_plot_1_to_many(mr_res, b = "b", se = "se", TraitM = "outcome",
+  Col1_width = 1, Col1_title = "", exponentiate = FALSE,
+  trans = "identity", ao_slc = T, Lo = NULL, Up = NULL,
+  by = NULL, xlab = "Effect (95\% confidence interval)",
   Addcols = NULL, Addcol_widths = NULL, Addcol_titles = NULL)
 }
 \arguments{
@@ -17,9 +17,15 @@ forest_plot_1_to_many(mr_res, b = "b", se = "se",
 
 \item{se}{Name of the column specifying the standard error for b. Default = "se"}
 
+\item{TraitM}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"}
+
+\item{Col1_width}{Width of Y axis label for the column specified by the TraitM argument. Default=1}
+
+\item{Col1_title}{Title for the column specified by the TraitM argument. Default=""}
+
 \item{exponentiate}{Convert log odds ratios to odds ratios? Default=FALSE}
 
-\item{trans}{Specify x-axis scale. e.g. "identity", "log2", etc. Default is "identity". If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios and their confidence intervals).}
+\item{trans}{Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".}
 
 \item{ao_slc}{Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE}
 
@@ -27,19 +33,17 @@ forest_plot_1_to_many(mr_res, b = "b", se = "se",
 
 \item{Up}{Upper limit of X axis to plot. Must be specified by the user.}
 
-\item{Col1_width}{Width of Y axis label for first column, typically the column specifying the trait names. Default=1}
+\item{by}{Name of the grouping variable to stratify results on. Default=NULL}
 
-\item{by}{Name of the column indicating a grouping variable to stratify results on. Default=NULL}
+\item{Addcols}{Name of additional columns to plot. Character vector. Default = NULL}
 
-\item{TraitM}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"}
+\item{Addcol_widths}{Widths of Y axis labels for additional columns specified by the Addcols argument. Numeric vector. Default = NULL}
 
-\item{Addcols}{Name of additional columns to plot. Character vector}
-
-\item{Addcol_widths}{Widths of Y axis labels for additional columns. Numeric vector}
+\item{Addcol_titles}{Titles of additional columns specified by the Addcols argument. Character vector. Default = NULL}
 }
 \value{
 grid plot object
 }
 \description{
-Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user.  Users may find Sort.1.to.many() helpful for sorting their results prior to using the 1-to-many forest plot.
+Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find Sort.1.to.many() helpful for sorting their results prior to using the 1-to-many forest plot.
 }

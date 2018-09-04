@@ -1,12 +1,12 @@
 #' Format MR results for a 1-to-many forest plot
 #'
-#' This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.  what? 
+#' This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
 #' 
 #' @param mr_res Data frame of results supplied by the user
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
 #' @param se Name of the column specifying the standard error for b. Default = "se"
 #' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param Addcols Name of any additional columns to add to the plot. 
+#' @param Addcols Name of any additional columns to add to the plot. Character vector
 #' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
@@ -123,7 +123,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 #' 
 #' @param mr_res Data frame of results supplied by the user
 #' @param Group Name of grouping variable in mr_res. 
-#' @param Priority Choose which value of the grouping variable defined by Group should be given priority and go to the top of the plot. 
+#' @param Priority Choose which value of the grouping variable defined by the Group argument should be given priority and go to the top of the plot. 
 #' @param Sort.action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from observational and Mendelian randomization studies or from different MR methods). 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
 #'
 #' @export
@@ -486,25 +486,27 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 #' 1-to-many forest plot 
 #'
-#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user.  Users may find Sort.1.to.many() helpful for sorting their results prior to using the 1-to-many forest plot. 
+#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find Sort.1.to.many() helpful for sorting their results prior to using the 1-to-many forest plot. 
 #' 
 #' @param mr_res Data frame of results supplied by the user
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
 #' @param se Name of the column specifying the standard error for b. Default = "se"
 #' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param Col1_width Width of Y axis label for first column, typically the column specifying the trait names. Default=1
-#' @param Addcols Name of additional columns to plot. Character vector
-#' @param Addcol_widths Widths of Y axis labels for additional columns. Numeric vector 
-#' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
+#' @param Col1_title Title for the column specified by the TraitM argument. Default=""
+#' @param Col1_width Width of Y axis label for the column specified by the TraitM argument. Default=1
+#' @param Addcols Name of additional columns to plot. Character vector. Default = NULL 
+#' @param Addcol_titles Titles of additional columns specified by the Addcols argument. Character vector. Default = NULL 
+#' @param Addcol_widths Widths of Y axis labels for additional columns specified by the Addcols argument. Numeric vector. Default = NULL 
+#' @param by Name of the grouping variable to stratify results on. Default=NULL
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
-#' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. Default is "identity". If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios and their confidence intervals). 
+#' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".
 #' @param Lo Lower limit of X axis to plot. Must be specified by the user. 
 #' @param Up Upper limit of X axis to plot. Must be specified by the user. 
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, trans="identity",ao_slc=T,Lo=NULL,Up=NULL,Col1_width=1,by=NULL,TraitM="outcome",Col1_name="",xlab="Effect (95% confidence interval)",Addcols=NULL,Addcol_widths=NULL,Addcol_titles=NULL){
+forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",Col1_width=1,Col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,Lo=NULL,Up=NULL,by=NULL,xlab="Effect (95% confidence interval)",Addcols=NULL,Addcol_widths=NULL,Addcol_titles=NULL){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
@@ -546,13 +548,13 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, tran
 	{
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 
-		# print(Col1_name)
+		# print(Col1_title)
 		# print(sec)		
 		l[[count]] <- forest_plot_names2(
 			dat, 
 			sec[i],
 			bottom = i==length(sec),
-			Title=Col1_name
+			Title=Col1_title
 		)
 		count <- count + 1
 

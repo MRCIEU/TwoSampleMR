@@ -22,11 +22,11 @@ format_1_to_many(mr_res, b = "b", se = "se", exponentiate = FALSE,
 
 \item{TraitM}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"}
 
-\item{Addcols}{Name of any additional columns to add to the plot.}
+\item{Addcols}{Name of any additional columns to add to the plot. Character vector}
 }
 \value{
 data frame.
 }
 \description{
-This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.  what?
+This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
 }

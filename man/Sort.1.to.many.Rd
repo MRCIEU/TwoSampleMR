@@ -14,7 +14,7 @@ Sort.1.to.many(mr_res, b = "b", Sort.action = 4, Group = NULL,
 
 \item{Group}{Name of grouping variable in mr_res.}
 
-\item{Priority}{Choose which value of the grouping variable defined by Group should be given priority and go to the top of the plot.}
+\item{Priority}{Choose which value of the grouping variable defined by the Group argument should be given priority and go to the top of the plot.}
 }
 \value{
 data frame.
