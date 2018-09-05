@@ -130,7 +130,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 #' @return data frame.
 # 
 
-sort.1.to.many<-function(mr_res,b="b",sort_action=4,group=NULL,priority=NULL){
+sort_1_to_many<-function(mr_res,b="b",sort_action=4,group=NULL,priority=NULL){
 
 	if(!b %in% names(mr_res)) warning("Column with effect estimates not found. Did you forget to specify the column of data containing your effect estimates?")
 	if(sort_action==1){
@@ -486,7 +486,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 #' 1-to-many forest plot 
 #'
-#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort.1.to.many() helpful for sorting their results prior to using the 1-to-many forest plot. 
+#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. 
 #' 
 #' @param mr_res Data frame of results supplied by the user
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"

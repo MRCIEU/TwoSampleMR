@@ -5,7 +5,7 @@
 \title{Format MR results for a 1-to-many forest plot}
 \usage{
 format_1_to_many(mr_res, b = "b", se = "se", exponentiate = FALSE,
-  ao_slc = F, by = NULL, TraitM = "outcome", Addcols = NULL)
+  ao_slc = F, by = NULL, TraitM = "outcome", addcols = NULL)
 }
 \arguments{
 \item{mr_res}{Data frame of results supplied by the user}
@@ -22,7 +22,7 @@ format_1_to_many(mr_res, b = "b", se = "se", exponentiate = FALSE,
 
 \item{TraitM}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"}
 
-\item{Addcols}{Name of any additional columns to add to the plot. Character vector}
+\item{addcols}{Name of any additional columns to add to the plot. Character vector}
 }
 \value{
 data frame.

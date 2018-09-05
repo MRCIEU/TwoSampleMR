@@ -6,7 +6,7 @@
 \usage{
 forest_plot_basic2(dat, section = NULL, colour_group = NULL,
   colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
-  trans = "identity", xlim = NULL, Lo = Lo, Up = Up)
+  trans = "identity", xlim = NULL, lo = lo, up = up)
 }
 \arguments{
 \item{dat}{Output from format_1_to_many()}
@@ -23,9 +23,9 @@ forest_plot_basic2(dat, section = NULL, colour_group = NULL,
 
 \item{xlim}{x-axis limits}
 
-\item{Lo}{Lower limit of x axis}
+\item{lo}{Lower limit of x axis}
 
-\item{Up}{Upper limit of x axis}
+\item{up}{Upper limit of x axis}
 }
 \value{
 ggplot object
