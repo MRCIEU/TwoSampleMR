@@ -6,14 +6,14 @@
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
 #' @param se Name of the column specifying the standard error for b. Default = "se"
 #' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param Addcols Name of any additional columns to add to the plot. Character vector
+#' @param addcols Name of any additional columns to add to the plot. Character vector
 #' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
 #'
 #' @export
 #' @return data frame.
-format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",Addcols=NULL)
+format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",addcols=NULL)
 {
 
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -101,8 +101,8 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 		stringsAsFactors = FALSE
 	)
 
-	if(!is.null(Addcols)){
-		dat2<-dat[,Addcols]
+	if(!is.null(addcols)){
+		dat2<-dat[,addcols]
 		dat<-cbind(dat1,dat2)
 	}else{
 		dat<-dat1
@@ -122,24 +122,24 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 #' This function sorts user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame.    
 #' 
 #' @param mr_res Data frame of results supplied by the user
-#' @param Group Name of grouping variable in mr_res. 
-#' @param Priority Choose which value of the grouping variable defined by the Group argument should be given priority and go to the top of the plot. 
-#' @param Sort.action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from observational and Mendelian randomization studies or from different MR methods). 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
+#' @param group Name of grouping variable in mr_res. 
+#' @param priority Choose which value of the grouping variable defined by the group argument should be given priority and go to the top of the plot. 
+#' @param sort_action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from observational and Mendelian randomization studies or from different MR methods). 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
 #'
 #' @export
 #' @return data frame.
 # 
 
-Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
+sort.1.to.many<-function(mr_res,b="b",sort_action=4,group=NULL,priority=NULL){
 
 	if(!b %in% names(mr_res)) warning("Column with effect estimates not found. Did you forget to specify the column of data containing your effect estimates?")
-	if(Sort.action==1){
-		if(is.null(Group)) warning("You must indicate a grouping variable")
+	if(sort_action==1){
+		if(is.null(group)) warning("You must indicate a grouping variable")
 		
 		# Numbers<-1:100
 		Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
-		Groups<-unique(mr_res[,Group])
-		mr_res$Index<-unlist(lapply(1:length(unique(mr_res[,Group])),FUN=function(x) rep(Letters[Letters==Letters[x]],length(which(mr_res[,Group]==Groups[x])))))
+		groups<-unique(mr_res[,group])
+		mr_res$Index<-unlist(lapply(1:length(unique(mr_res[,group])),FUN=function(x) rep(Letters[Letters==Letters[x]],length(which(mr_res[,group]==groups[x])))))
 		mr_res<-mr_res[order(mr_res[,b],decreasing=T),]
 		mr_res$Index2<-Letters[1:nrow(mr_res)]
 		mr_res$Index3<-paste(mr_res$Index,mr_res$Index2,sep="")
@@ -147,35 +147,35 @@ Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
 		mr_res<-mr_res[,!names(mr_res) %in% c("Index","Index2","Index3")]
 	}
 
-	if(Sort.action ==2){
-		if(is.null(Group)) warning("You must indicate a grouping variable")
+	if(sort_action ==2){
+		if(is.null(group)) warning("You must indicate a grouping variable")
 		mr_res<-mr_res[order(mr_res[,b],decreasing=T),]
-		mr_res<-mr_res[order(mr_res[,Group]),]
+		mr_res<-mr_res[order(mr_res[,group]),]
 	}
 		
-	if(Sort.action==3){
-		if(is.null(Group)) warning("You must indicate a grouping variable")
-		if(is.null(Priority)) warning("You must indicate which value of the grouping variable ",Group," to use as the priority value")
+	if(sort_action==3){
+		if(is.null(group)) warning("You must indicate a grouping variable")
+		if(is.null(priority)) warning("You must indicate which value of the grouping variable ",group," to use as the priority value")
 		mr_res$b.sort<-NA
 		mr_res1<-mr_res[mr_res$exposure %in% mr_res$exposure[duplicated(mr_res$exposure)],]
 		mr_res2<-mr_res[!mr_res$exposure %in% mr_res$exposure[duplicated(mr_res$exposure)],]
 
-		mr_res1$b.sort[mr_res1[,Group]==Priority]<-mr_res1[,b][mr_res1[,Group]==Priority]
+		mr_res1$b.sort[mr_res1[,group]==priority]<-mr_res1[,b][mr_res1[,group]==priority]
 		for(i in unique(mr_res1$exposure)){
 			mr_res1$b.sort[mr_res1$exposure == i & is.na(mr_res1$b.sort)]<-mr_res1$b.sort[mr_res1$exposure == i & !is.na(mr_res1$b.sort)]
 		}
 		# mr_res1$b.sort[is.na(mr_res1$b.sort)]<-mr_res1$b.sort[!is.na(mr_res1$b.sort)]
 		mr_res2$b.sort<-mr_res2$b
 		mr_res<-rbind(mr_res1,mr_res2) 
-		mr_res<-mr_res[order(mr_res[,Group]),]
+		mr_res<-mr_res[order(mr_res[,group]),]
 		mr_res<-mr_res[order(mr_res$b.sort,decreasing=T),]
 	}
 
-	if(Sort.action ==4){
+	if(sort_action ==4){
 		mr_res<-mr_res[order(mr_res[,b],decreasing=T),]
 	}
 
-	if(Sort.action ==5){
+	if(sort_action ==5){
 		mr_res<-mr_res[order(mr_res[,b],decreasing=F),]
 	}
 
@@ -195,11 +195,11 @@ Sort.1.to.many<-function(mr_res,b="b",Sort.action=4,Group=NULL,Priority=NULL){
 #' @param bottom Show x-axis? Default=FALSE
 #' @param trans x-axis scale
 #' @param xlim x-axis limits
-#' @param Lo Lower limit of x axis 
-#' @param Up Upper limit of x axis 
+#' @param lo Lower limit of x axis 
+#' @param up Upper limit of x axis 
 #'
 #' @return ggplot object
-forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, Lo=Lo,Up=Up)
+forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up)
 {
 	if(bottom)
 	{
@@ -270,8 +270,8 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 	dat <- dat[nrow(dat):1, ]
 
-	lo<-Lo
-	up<-Up
+	lo<-lo
+	up<-up
 	p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), colour="white", size=0.3) +
@@ -311,7 +311,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 }
 
 
-forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,Title="")
+forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="")
 {
 	if(bottom)
 	{
@@ -356,8 +356,8 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,Ti
 		hjust=0, vjust=0.5, size=3.5
 	)
 
-	# print(paste0("title=",Title))
-	if(section=="")	main_title <- Title
+	# print(paste0("title=",title))
+	if(section=="")	main_title <- title
 	
 
 	dat$lab<-dat$outcome
@@ -486,36 +486,36 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 #' 1-to-many forest plot 
 #'
-#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find Sort.1.to.many() helpful for sorting their results prior to using the 1-to-many forest plot. 
+#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort.1.to.many() helpful for sorting their results prior to using the 1-to-many forest plot. 
 #' 
 #' @param mr_res Data frame of results supplied by the user
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
 #' @param se Name of the column specifying the standard error for b. Default = "se"
 #' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param Col1_title Title for the column specified by the TraitM argument. Default=""
-#' @param Col1_width Width of Y axis label for the column specified by the TraitM argument. Default=1
-#' @param Addcols Name of additional columns to plot. Character vector. Default = NULL 
-#' @param Addcol_titles Titles of additional columns specified by the Addcols argument. Character vector. Default = NULL 
-#' @param Addcol_widths Widths of Y axis labels for additional columns specified by the Addcols argument. Numeric vector. Default = NULL 
+#' @param col1_title Title for the column specified by the TraitM argument. Default=""
+#' @param col1_width Width of Y axis label for the column specified by the TraitM argument. Default=1
+#' @param addcols Name of additional columns to plot. Character vector. Default = NULL 
+#' @param addcol_titles Titles of additional columns specified by the addcols argument. Character vector. Default = NULL 
+#' @param addcol_widths Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. Default = NULL 
 #' @param by Name of the grouping variable to stratify results on. Default=NULL
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
 #' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".
-#' @param Lo Lower limit of X axis to plot. Must be specified by the user. 
-#' @param Up Upper limit of X axis to plot. Must be specified by the user. 
+#' @param lo Lower limit of X axis to plot. Must be specified by the user. 
+#' @param up upper limit of X axis to plot. Must be specified by the user. 
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",Col1_width=1,Col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,Lo=NULL,Up=NULL,by=NULL,xlab="Effect (95% confidence interval)",Addcols=NULL,Addcol_widths=NULL,Addcol_titles=NULL){
+forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles=NULL){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
 	
-	if(is.null(Lo) | is.null(Up)) warning("Values missing for the lower or upper bounds of the x axis. Did you forget to set the Lo and Up arguments?")
+	if(is.null(lo) | is.null(up)) warning("Values missing for the lower or upper bounds of the x axis. Did you forget to set the lo and up arguments?")
 
 	
 	xlim=NULL
-	ncols=1+length(Addcols)
+	ncols=1+length(addcols)
 	
 	dat <- format_1_to_many(
 		mr_res, 
@@ -525,7 +525,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",Col1_wi
 		ao_slc=ao_slc,
 		by=by,
 		TraitM=TraitM,
-		Addcols=Addcols 
+		addcols=addcols 
 	)
 	
 
@@ -538,7 +538,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",Col1_wi
 	)
 
 	# message("howzit, may all your scripts be up-to-date and well annotated")
-	if(length(Addcols) != length(Addcol_widths)) warning("length of Addcols not equal to length of Addcol_widths")
+	if(length(addcols) != length(addcol_widths)) warning("length of addcols not equal to length of addcol_widths")
 	sec <- unique(as.character(dat$category))
 	columns <- unique(dat$exposure)
 	l <- list()
@@ -548,24 +548,24 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",Col1_wi
 	{
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 
-		# print(Col1_title)
+		# print(col1_title)
 		# print(sec)		
 		l[[count]] <- forest_plot_names2(
 			dat, 
 			sec[i],
 			bottom = i==length(sec),
-			Title=Col1_title
+			title=col1_title
 		)
 		count <- count + 1
 
-		if(!is.null(Addcols)){
+		if(!is.null(addcols)){
 
-			for(j in 1:length(Addcols)){
+			for(j in 1:length(addcols)){
 					l[[count]]<-forest_plot_addcol(
 					dat,
 					sec[i],
-					addcol=Addcols[j],
-					addcol_title=Addcol_titles[j],
+					addcol=addcols[j],
+					addcol_title=addcol_titles[j],
 					bottom = i==length(sec)
 				)
 
@@ -583,8 +583,8 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",Col1_wi
 				colour_group=columns[j], 
 				colour_group_first = FALSE, 
 				xlab = paste0(xlab, " ", columns[j]), 
-				Lo=Lo,
-				Up=Up,
+				lo=lo,
+				up=up,
 				trans = trans,
 				xlim = xlim
 			)
@@ -603,7 +603,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",Col1_wi
 				ncol=length(columns) + ncols, 
 				nrow=length(h), 
 				heights=h,
-				widths=c(Col1_width,Addcol_widths, rep(5, length(columns)))
+				widths=c(col1_width,addcol_widths, rep(5, length(columns)))
 				
 			)
 		)
