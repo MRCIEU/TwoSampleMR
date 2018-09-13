@@ -30,6 +30,8 @@ steiger_filtering_internal <- function(dat)
 		dat$pval.exposure[dat$pval.exposure < 1e-300] <- 1e-300
 		if(dat$units.exposure[1] == "log odds")
 		{
+			message("Estimating rsq.exposure for binary trait")
+			message("Ensure that beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure are all specified with no missing values")
 			if(! "prevalence.exposure" %in% names(dat))
 			{
 				dat$prevalence.exposure <- 0.1
@@ -72,6 +74,8 @@ steiger_filtering_internal <- function(dat)
 		dat$pval.outcome[dat$pval.outcome < 1e-300] <- 1e-300
 		if(dat$units.outcome[1] == "log odds")
 		{
+			message("Estimating rsq.outcome for binary trait")
+			message("Ensure that beta.outcome, eaf.outcome, ncase.outcome, ncontrol.outcome are all specified with no missing values")
 			if(! "prevalence.outcome" %in% names(dat))
 			{
 				dat$prevalence.outcome <- 0.1
