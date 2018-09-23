@@ -1,10 +1,12 @@
 #' Steiger filtering function
 #' 
 #' This function takes an object from \code{harmonise_data} and does the following:
-#' If there is no rsq.exposure or rsq.outcome column it will try to estimate it. This is done differently for traits that have "log odds" units. To estimate rsq for quantitative traits there must be either p-values and sample sizes for each SNP, or effect sizes and standard errors AND the units are in SD units (the column must contain "SD"). To estimate rsq for binary traits the units must be called "log odds" and there must be beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure.
+#' If there is no rsq.exposure or rsq.outcome column it will try to estimate it. This is done differently for traits that have "log odds" units. To estimate rsq for quantitative traits there must be either p-values and sample sizes for each SNP, or effect sizes and standard errors AND the units are in SD units (the column must contain "SD"). To estimate rsq for binary traits the units must be called "log odds" and there must be beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure, prevalence.exposure. Same principles apply for calculating the rsq for the outcome trait, except column names are beta.outcome etc. If prevalence isn't supplied then it uses 0.1 by default.
 #' 
-#' Once rsq is calculated for the exposure and outcome, it will then perform the steiger test for each SNP to see if the rsq of the exposure is larger than the rsq of the outcome. 
+#' Once rsq is calculated for the exposure and outcome, it will then perform the Steiger test for each SNP to see if the rsq of the exposure is larger than the rsq of the outcome. 
 #' 
+#' Note that Steiger filtering, while useful, does have its own pitfalls. Try to use replication effect estimates for the exposure (which are not biased by winner's curse), and note that if there is strong antagonistic confounding or differential measurement error between the exposure and outcome then the causal directions could be inferred incorrectly.
+#'
 #' @param dat Output from \code{harmonise_data}
 #' 
 #' @export
@@ -28,10 +30,18 @@ steiger_filtering_internal <- function(dat)
 		dat$pval.exposure[dat$pval.exposure < 1e-300] <- 1e-300
 		if(dat$units.exposure[1] == "log odds")
 		{
+			message("Estimating rsq.exposure for binary trait")
+			message("Ensure that beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure are all specified with no missing values")
+			if(! "prevalence.exposure" %in% names(dat))
+			{
+				dat$prevalence.exposure <- 0.1
+				message("Assuming exposure prevalence of 0.1. Alternatively, add prevalence.exposure column and re-run.")
+			}
 			ind1 <- !is.na(dat$beta.exposure) &
 				!is.na(dat$eaf.exposure) &
 				!is.na(dat$ncase.exposure) &
-				!is.na(dat$ncontrol.exposure)
+				!is.na(dat$ncontrol.exposure) &
+				!is.na(dat$prevalence.exposure)
 			dat$rsq.exposure <- NA
 			if(sum(ind1) > 0)
 			{
@@ -40,7 +50,7 @@ steiger_filtering_internal <- function(dat)
 					dat$eaf.exposure[ind1],
 					dat$ncase.exposure[ind1],
 					dat$ncontrol.exposure[ind1],
-					0.1
+					dat$prevalence.exposure
 				)^2
 			}
 		} else if(all(grepl("SD", dat$units.exposure)) & all(!is.na(dat$eaf.exposure))) {
@@ -64,10 +74,18 @@ steiger_filtering_internal <- function(dat)
 		dat$pval.outcome[dat$pval.outcome < 1e-300] <- 1e-300
 		if(dat$units.outcome[1] == "log odds")
 		{
+			message("Estimating rsq.outcome for binary trait")
+			message("Ensure that beta.outcome, eaf.outcome, ncase.outcome, ncontrol.outcome are all specified with no missing values")
+			if(! "prevalence.outcome" %in% names(dat))
+			{
+				dat$prevalence.outcome <- 0.1
+				message("Assuming outcome prevalence of 0.1. Alternatively, add prevalence.outcome column and re-run.")
+			}
 			ind1 <- !is.na(dat$beta.outcome) &
 				!is.na(dat$eaf.outcome) &
 				!is.na(dat$ncase.outcome) &
-				!is.na(dat$ncontrol.outcome)
+				!is.na(dat$ncontrol.outcome) &
+				!is.na(dat$prevalence.outcome)
 			dat$rsq.outcome <- NA
 			if(sum(ind1) > 0)
 			{
@@ -76,7 +94,7 @@ steiger_filtering_internal <- function(dat)
 					dat$eaf.outcome[ind1],
 					dat$ncase.outcome[ind1],
 					dat$ncontrol.outcome[ind1],
-					0.1
+					dat$prevalence.outcome
 				)^2
 			}
 		} else if(all(grepl("SD", dat$units.outcome)) & all(!is.na(dat$eaf.outcome))) {
