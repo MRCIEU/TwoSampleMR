@@ -164,12 +164,11 @@ simple_cap <- function(x) {
 	})
 }
 
-#' Trim function 
-#'
 #' Trim function to remove leading and trailing blank spaces
 #'
 #' @param x Character or array of character
 #'
+#' @export
 #' @return Character or array of character
 trim <- function( x ) {
   gsub("(^[[:space:]]+|[[:space:]]+$)", "", x)

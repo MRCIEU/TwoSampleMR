@@ -4,17 +4,21 @@
 \alias{sort_1_to_many}
 \title{Sort results for 1-to-many forest plot}
 \usage{
-sort_1_to_many(mr_res, b = "b", sort_action = 4, group = NULL,
-  priority = NULL)
+sort_1_to_many(mr_res, b = "b", trait_m = "outcome", sort_action = 4,
+  group = NULL, group_order = NULL, priority = NULL)
 }
 \arguments{
 \item{mr_res}{Data frame of results supplied by the user}
 
-\item{sort_action}{Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from observational and Mendelian randomization studies or from different MR methods). 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom)}
+\item{b}{Name of the column specifying the effect of the exposure on the outcome. Default = "b"}
+
+\item{trait_m}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"}
+
+\item{sort_action}{Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from observational and Mendelian randomization studies or from different MR methods); use the priority argument to indicate which trait and group should go to the top of the plot. 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom)}
 
 \item{group}{Name of grouping variable in mr_res.}
 
-\item{priority}{Choose which value of the grouping variable defined by the group argument should be given priority and go to the top of the plot.}
+\item{priority}{If sort_action=3, choose which value of the grouping variable, defined by the group argument, should be given priority and go above the other group values. The trait with the largest effect size for the prioritised group will go to the top of the plot.}
 }
 \value{
 data frame.

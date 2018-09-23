@@ -82,14 +82,14 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 #'
 #' This function combines results of mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single data frame. It also merges the results with outcome study level characteristics in available_outcomes(). If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). The exposure and outcome columns from the output from mr() contain both the trait names and trait ids. The combine_all_mrresults() function splits these into separate columns by default. 
 
-#' @param Res Results from mr()
-#' @param Het Results from mr_heterogeneity()
-#' @param Pleiotropy Results from mr_pleiotropy_test()
-#' @param Sin Results from mr_singlesnp()
+#' @param res Results from mr()
+#' @param het Results from mr_heterogeneity()
+#' @param pleiotropy Results from mr_pleiotropy_test()
+#' @param sin Results from mr_singlesnp()
 #' @param ao_slc Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE. 
-#' @param Exp Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE. 
-#' @param split.exposure Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is TRUE. 
-#' @param split.outcome Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is TRUE. 
+#' @param exp Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE. 
+#' @param split_exposure Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is TRUE. 
+#' @param split_outcome Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is TRUE. 
 #' 
 #' @export
 #' @return data frame
@@ -122,89 +122,89 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 # All.res<-split_exposure(All.res)
 # All.res<-split_outcome(All.res)
 
-combine_all_mrresults <- function(Res,Het,Plt,Sin,ao_slc=T,Exp=F,split.exposure=T,split.outcome=T)
+combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,exp=F,split_exposure=T,split_outcome=T)
 {
 	requireNamespace("plyr", quietly=TRUE)
 
-	Het<-Het[,c("id.outcome","method","Q","Q_df","Q_pval")]
+	het<-het[,c("id.exposure","id.outcome","method","Q","Q_df","Q_pval")]
 
 	# Convert all factors to character
 	# lapply(names(Res), FUN=function(x) class(Res[,x]))
-	Pos<-which(unlist(lapply(names(Res), FUN=function(x) class(Res[,x])))=="factor")
+	Pos<-which(unlist(lapply(names(res), FUN=function(x) class(res[,x])))=="factor")
 	for(i in 1:length(Pos)){
-		Res[,Pos[i]]<-as.character(Res[,Pos[i]])
+		res[,Pos[i]]<-as.character(res[,Pos[i]])
 	}
 
 	# lapply(names(Het), FUN=function(x) class(Het[,x]))
-	Pos<-which(unlist(lapply(names(Het), FUN=function(x) class(Het[,x])))=="factor")
+	Pos<-which(unlist(lapply(names(het), FUN=function(x) class(het[,x])))=="factor")
 	for(i in 1:length(Pos)){
-		Het[,Pos[i]]<-as.character(Het[,Pos[i]])
+		het[,Pos[i]]<-as.character(het[,Pos[i]])
 	}
 
 	# lapply(names(Sin), FUN=function(x) class(Sin[,x]))
-	Pos<-which(unlist(lapply(names(Sin), FUN=function(x) class(Sin[,x])))=="factor")
+	Pos<-which(unlist(lapply(names(sin), FUN=function(x) class(sin[,x])))=="factor")
 	for(i in 1:length(Pos)){
-		Sin[,Pos[i]]<-as.character(Sin[,Pos[i]])
+		sin[,Pos[i]]<-as.character(sin[,Pos[i]])
 	}
-	Sin<-Sin[grep("[:0-9:]",Sin$SNP),]
-	Sin$method<-"Wald ratio"
-	names(Sin)[names(Sin)=="p"]<-"pval"
+	sin<-sin[grep("[:0-9:]",sin$SNP),]
+	sin$method<-"Wald ratio"
+	names(sin)[names(sin)=="p"]<-"pval"
 
 	# Res<-Res[Res$method %in% c("MR Egger","Weighted median","Inverse variance weighted"),]
 
 	#method is also the name of an argument in the method function. this prevents all.x argument from working. rename method column
-	names(Res)[names(Res)=="method"]<-"Method"
-	names(Het)[names(Het)=="method"]<-"Method"
-	names(Sin)[names(Sin)=="method"]<-"Method"
+	names(res)[names(res)=="method"]<-"Method"
+	names(het)[names(het)=="method"]<-"Method"
+	names(sin)[names(sin)=="method"]<-"Method"
 
-	Res<-merge(Res,Het,by=c("id.outcome","Method"),all.x=T)
-	Res<-plyr::rbind.fill(Res,Sin)
+	res<-merge(res,het,by=c("id.outcome","Method"),all.x=T)
+	res<-plyr::rbind.fill(res,sin)
 
 	if(ao_slc)
 	{
 		ao<-available_outcomes()
 		names(ao)[names(ao)=="nsnp" ]<-"nsnps.outcome.array"
-		Res<-merge(Res,ao[,!names(ao) %in% c("unit","priority","sd","path","note","filename","access","mr")],by.x="id.outcome",by.y="id")
+		res<-merge(res,ao[,!names(ao) %in% c("unit","priority","sd","path","note","filename","access","mr")],by.x="id.outcome",by.y="id")
 	}
 
-	Res$nsnp[is.na(Res$nsnp)]<-1
+	res$nsnp[is.na(res$nsnp)]<-1
 
-	for(i in unique(Res$id.outcome))
+	for(i in unique(res$id.outcome))
 	{
-		Methods<-unique(Res$method[Res$id.outcome==i])
+		Methods<-unique(res$method[res$id.outcome==i])
 		Methods<-Methods[Methods!="Wald ratio"]
 		for(j in unique(Methods))
 		{
-			Res$snp[Res$id.outcome == i & Res$method==j]<-paste(Res$snp[Res$id.outcome == i & Res$method=="Wald ratio"],collapse="; ")
+			res$snp[res$id.outcome == i & res$method==j]<-paste(res$snp[res$id.outcome == i & res$method=="Wald ratio"],collapse="; ")
 		}
 	}
 
-	if(Exp){
-		Res$or<-exp(Res$b)
-		Res$or_lci95<-exp(Res$b-Res$se*1.96)
-		Res$or_uci95<-exp(Res$b+Res$se*1.96)
+	if(exp){
+		res$or<-exp(res$b)
+		res$or_lci95<-exp(res$b-res$se*1.96)
+		res$or_uci95<-exp(res$b+res$se*1.96)
 	}
 
 	# add intercept test from MR Egger
-	Plt<-Plt[,c("id.outcome","egger_intercept","se","pval")]
-	Plt$Method<-"MR Egger"
-	names(Plt)[names(Plt)=="egger_intercept"]<-"intercept"
-	names(Plt)[names(Plt)=="se"]<-"intercept_se"
-	names(Plt)[names(Plt)=="pval"]<-"intercept_pval"
+	plt<-plt[,c("id.outcome","egger_intercept","se","pval")]
+	plt$Method<-"MR Egger"
+	names(plt)[names(plt)=="egger_intercept"]<-"intercept"
+	names(plt)[names(plt)=="se"]<-"intercept_se"
+	names(plt)[names(plt)=="pval"]<-"intercept_pval"
 
 
-	Res<-merge(Res,Plt,by=c("id.outcome","Method"),all.x=T)
+	res<-merge(res,plt,by=c("id.outcome","Method"),all.x=T)
 
-	if(split.exposure){
-		Res<-split_exposure(Res)
+	if(split_exposure){
+		res<-split_exposure(res)
 	}
 	
-	if(split.outcome){
-		Res<-split_outcome(Res)
+	if(split_outcome){
+		res<-split_outcome(res)
 	}
 
 	# names(ResSNP)<-tolower(names(ResSNP))
-	return(Res)
+	return(res)
 }
 
 #' Power prune 

@@ -29,9 +29,9 @@ forest_plot_1_to_many(mr_res, b = "b", se = "se", TraitM = "outcome",
 
 \item{ao_slc}{Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE}
 
-\item{lo}{Lower limit of X axis to plot. Must be specified by the user.}
+\item{lo}{Lower limit of X axis to plot.}
 
-\item{up}{upper limit of X axis to plot. Must be specified by the user.}
+\item{up}{upper limit of X axis to plot.}
 
 \item{by}{Name of the grouping variable to stratify results on. Default=NULL}
 

@@ -4,25 +4,25 @@
 \alias{combine_all_mrresults}
 \title{Combine all mr results}
 \usage{
-combine_all_mrresults(Res, Het, Plt, Sin, ao_slc = T, Exp = F,
-  split.exposure = T, split.outcome = T)
+combine_all_mrresults(res, het, plt, sin, ao_slc = T, exp = F,
+  split_exposure = T, split_outcome = T)
 }
 \arguments{
-\item{Res}{Results from mr()}
+\item{res}{Results from mr()}
 
-\item{Het}{Results from mr_heterogeneity()}
+\item{het}{Results from mr_heterogeneity()}
 
-\item{Sin}{Results from mr_singlesnp()}
+\item{sin}{Results from mr_singlesnp()}
 
 \item{ao_slc}{Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE.}
 
-\item{Exp}{Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE.}
+\item{exp}{Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE.}
 
-\item{split.exposure}{Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is TRUE.}
+\item{split_exposure}{Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is TRUE.}
 
-\item{split.outcome}{Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is TRUE.}
+\item{split_outcome}{Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is TRUE.}
 
-\item{Pleiotropy}{Results from mr_pleiotropy_test()}
+\item{pleiotropy}{Results from mr_pleiotropy_test()}
 }
 \value{
 data frame
