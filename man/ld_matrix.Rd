@@ -4,14 +4,18 @@
 \alias{ld_matrix}
 \title{Get LD matrix for list of SNPs}
 \usage{
-ld_matrix(snps)
+ld_matrix(snps, with_alleles = TRUE)
 }
 \arguments{
 \item{snps}{List of SNPs}
+
+\item{with_alleles}{Whether to append the allele names to the SNP names. Default: TRUE}
 }
 \value{
 Matrix of LD r values
 }
 \description{
-Get LD matrix for list of SNPs
+This function takes a list of SNPs and searches for them in 502 European samples from 1000 Genomes phase 3 data
+It then creates an LD matrix of r values (signed, and not squared)
+All LD values are with respect to the major alleles in the 1000G dataset. You can specify whether the allele names are displayed
 }

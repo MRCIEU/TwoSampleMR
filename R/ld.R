@@ -142,14 +142,17 @@ get_snp_positions_biomart <- function(dat)
 
 #' Get LD matrix for list of SNPs
 #'
+#' This function takes a list of SNPs and searches for them in 502 European samples from 1000 Genomes phase 3 data
+#' It then creates an LD matrix of r values (signed, and not squared)
+#' All LD values are with respect to the major alleles in the 1000G dataset. You can specify whether the allele names are displayed
+#'
 #' @param snps List of SNPs
+#' @param with_alleles Whether to append the allele names to the SNP names. Default: TRUE
 #'
 #' @export
 #' @return Matrix of LD r values
-ld_matrix <- function(snps)
+ld_matrix <- function(snps, with_alleles=TRUE)
 {
-
-	warning("Currently the LD matrix will only be correct if the SNP alleles are on the forward strand.")
 
 	if(length(snps) > 500)
 	{
@@ -163,14 +166,21 @@ ld_matrix <- function(snps)
 	snps2 <- res[1,]
 	res <- res[-1,, drop=FALSE]
 	res <- matrix(as.numeric(res), nrow(res), ncol(res))
-	rownames(res) <- snps2
-	colnames(res) <- snps2
-	missing <- snps[!snps %in% snps2]
+	snps3 <- do.call(rbind, strsplit(snps2, split="_"))
+	if(with_alleles)
+	{
+		rownames(res) <- snps2
+		colnames(res) <- snps2
+	} else {
+		rownames(res) <- snps3[,1]
+		colnames(res) <- snps3[,1]
+	}
+	missing <- snps[!snps %in% snps3[,1]]
 	if(length(missing) > 0)
 	{
 		warning("The following SNPs are not present in the LD reference panel\n", paste(missing, collapse="\n"))
 	}
-	ord <- match(snps2, snps)
+	ord <- match(snps3[,1], snps)
 	res <- res[order(ord), order(ord)]
 	return(res)
 }
