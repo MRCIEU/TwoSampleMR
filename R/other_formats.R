@@ -15,9 +15,21 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE)
 	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
 	{
 		x <- plyr::mutate(x)
+		message("Converting:")
+		message(" - exposure: ", x$exposure[1])
+		message(" - outcome: ", x$outcome[1])
 		if(get_correlations)
 		{
+			message(" - obtaining LD matrix")
 			ld <- ld_matrix(unique(x$SNP))
+			out <- harmonise_ld_dat(x, ld)
+			if(is.null(out))
+			{
+				return(NULL)
+			}
+			x <- out$x
+			ld <- out$ld
+
 			MendelianRandomization::mr_input(
 				bx = x$beta.exposure,
 				bxse = x$se.exposure,
@@ -50,6 +62,47 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE)
 	return(out)
 }
 
+
+
+harmonise_ld_dat <- function(x, ld)
+{
+	snpnames <- do.call(rbind, strsplit(rownames(ld), split="_"))
+	stopifnot(all(snpnames[,1] == x$SNP))
+	x$effect_allele.exposure <- as.character(x$effect_allele.exposure)
+	x$other_allele.exposure <- as.character(x$other_allele.exposure)
+	# Set1 x and ld alleles match
+	snpnames <- data.frame(snpnames, stringsAsFactors=FALSE)
+	snpnames <- merge(subset(x, select=c(SNP, effect_allele.exposure, other_allele.exposure)), snpnames, by.x="SNP", by.y="X1")
+	snpnames$keep <- (snpnames$X2 == snpnames$effect_allele.exposure & snpnames$X3 == snpnames$other_allele.exposure) |
+		(snpnames$X3 == snpnames$effect_allele.exposure & snpnames$X2 == snpnames$other_allele.exposure)
+
+	# What happens if everything is gone?
+	if(nrow(x) == 0)
+	{
+		message(" - none of the SNPs could be aligned to the LD reference panel")
+		return(NULL)
+	}
+
+	if(any(!snpnames$keep))
+	{
+		message(" - the following SNPs could not be aligned to the LD reference panel: \n", paste(subset(snpnames, keep)$SNP, collapse="\n - "))
+	}
+
+
+	snpnames$flip1 <- snpnames$X2 != snpnames$effect_allele.exposure
+	x <- subset(x, SNP %in% snpnames$SNP)
+	temp1 <- x$effect_allele.exposure[snpnames$flip1]
+	temp2 <- x$other_allele.exposure[snpnames$flip1]
+	x$beta.exposure[snpnames$flip1] <- x$beta.exposure[snpnames$flip1] * -1
+	x$beta.outcome[snpnames$flip1] <- x$beta.outcome[snpnames$flip1] * -1
+	x$effect_allele.exposure[snpnames$flip1] <- temp2
+	x$other_allele.exposure[snpnames$flip1] <- temp1
+
+	rownames(ld) <- snpnames$SNP
+	colnames(ld) <- snpnames$SNP
+
+	return(list(x=x, ld=ld))
+}
 
 
 

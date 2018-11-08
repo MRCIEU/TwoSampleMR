@@ -6,12 +6,11 @@
 \usage{
 read_outcome_data(filename, snps = NULL, sep = " ",
   phenotype_col = "Phenotype", snp_col = "SNP", beta_col = "beta",
-  se_col = "se", eaf_col = "eaf",
-  effect_allele_col = "effect_allele",
+  se_col = "se", eaf_col = "eaf", effect_allele_col = "effect_allele",
   other_allele_col = "other_allele", pval_col = "pval",
-  units_col = "units", ncase_col = "ncase",
-  ncontrol_col = "ncontrol", samplesize_col = "samplesize",
-  gene_col = "gene", id_col = "id", min_pval = 1e-200)
+  units_col = "units", ncase_col = "ncase", ncontrol_col = "ncontrol",
+  samplesize_col = "samplesize", gene_col = "gene", id_col = "id",
+  min_pval = 1e-200)
 }
 \arguments{
 \item{filename}{Filename. Must have header with at least SNP column present.}

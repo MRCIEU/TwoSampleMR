@@ -18,7 +18,7 @@ steiger_filtering <- function(dat)
 
 steiger_filtering_internal <- function(dat)
 {
-
+	message(dat$exposure[1], dat$outcome[1])
 	stopifnot(length(unique(dat$exposure)) == 1)
 	stopifnot(length(unique(dat$outcome)) == 1)
 	stopifnot(length(unique(dat$units.exposure)) == 1)

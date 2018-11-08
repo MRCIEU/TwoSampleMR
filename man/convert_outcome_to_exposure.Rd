@@ -2,6 +2,7 @@
 % Please edit documentation in R/multivariable_mr.R, R/read_data.R
 \name{convert_outcome_to_exposure}
 \alias{convert_outcome_to_exposure}
+\alias{convert_outcome_to_exposure}
 \title{Convert outcome format to exposure format}
 \usage{
 convert_outcome_to_exposure(outcome_dat)
@@ -19,5 +20,7 @@ Data frame
 data frame
 }
 \description{
+Convert outcome format to exposure format
+
 Helper function to convert results from extract_outcome_data to exposure_dat format
 }

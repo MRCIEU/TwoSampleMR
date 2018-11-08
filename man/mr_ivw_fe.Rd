@@ -4,8 +4,7 @@
 \alias{mr_ivw_fe}
 \title{Inverse variance weighted regression (fixed effects)}
 \usage{
-mr_ivw_fe(b_exp, b_out, se_exp, se_out,
-  parameters = default_parameters())
+mr_ivw_fe(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}
