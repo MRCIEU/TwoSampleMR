@@ -517,7 +517,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param addcol_titles Titles of additional columns specified by the addcols argument. Character vector. Default = NULL 
 #' @param addcol_widths Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. Default = NULL 
 #' @param by Name of the grouping variable to stratify results on. Default=NULL
-#' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the grouping variable specified in the by argument
+#' @param subheading_size text size for the subheadings specified in by argument.
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
 #' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".
