@@ -6,9 +6,10 @@
 \usage{
 forest_plot_1_to_many(mr_res, b = "b", se = "se", TraitM = "outcome",
   col1_width = 1, col1_title = "", exponentiate = FALSE,
-  trans = "identity", ao_slc = T, lo = NULL, up = NULL, by = NULL,
-  xlab = "Effect (95\% confidence interval)", addcols = NULL,
-  addcol_widths = NULL, addcol_titles = NULL)
+  trans = "identity", ao_slc = T, lo = NULL, up = NULL,
+  by = NULL, xlab = "Effect (95\% confidence interval)",
+  addcols = NULL, addcol_widths = NULL, addcol_titles = NULL,
+  subheading_size = 6)
 }
 \arguments{
 \item{mr_res}{Data frame of results supplied by the user}
@@ -40,6 +41,8 @@ forest_plot_1_to_many(mr_res, b = "b", se = "se", TraitM = "outcome",
 \item{addcol_widths}{Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. Default = NULL}
 
 \item{addcol_titles}{Titles of additional columns specified by the addcols argument. Character vector. Default = NULL}
+
+\item{subheading_size}{text size for the subheadings specified in by argument.}
 }
 \value{
 grid plot object
