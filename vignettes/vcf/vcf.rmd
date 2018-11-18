@@ -60,7 +60,7 @@ git clone git@github.com:MRCIEU/TwoSampleMR.git
 Then navigate to here:
 
 ```bash
-cd vignettes/vcf
+cd TwoSampleMR/vignettes/vcf
 ```
 
 
