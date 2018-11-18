@@ -144,6 +144,7 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 		
 		# Numbers<-1:100
 		Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
+		Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
 		groups<-unique(mr_res[,group])
 		mr_res$Index<-unlist(lapply(1:length(unique(mr_res[,group])),FUN=function(x) rep(Letters[Letters==Letters[x]],length(which(mr_res[,group]==groups[x])))))
 		mr_res<-mr_res[order(mr_res[,b],decreasing=T),]
@@ -179,6 +180,7 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 		
 		Index<-rep(NA,nrow(mr_res))
 		Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
+		Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
 		for(i in 1:length(group_order)){
 			Index[which(group == group_order[i] )]<-Letters[i]
 		}
@@ -213,9 +215,10 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 #' @param xlim x-axis limits
 #' @param lo Lower limit of x axis 
 #' @param up Upper limit of x axis 
+#' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument
 #'
 #' @return ggplot object
-forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up)
+forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size)
 {
 	if(bottom)
 	{
@@ -290,7 +293,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 
 	p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
-	ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), colour="white", size=0.3) +
+	ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, size=0.3) +
 	ggplot2::geom_vline(xintercept=null_line, colour="#333333", size=0.3) +
 	ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
 	ggplot2::geom_point(colour="black", size=2.2) +
@@ -313,7 +316,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		panel.grid.minor.x=ggplot2::element_blank(),
 		panel.grid.minor.y=ggplot2::element_blank(),
 		panel.grid.major.y=ggplot2::element_blank(),
-		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=title_colour),
+		plot.title = ggplot2::element_text(hjust = 0, size=subheading_size, colour=title_colour),
 		plot.margin=ggplot2::unit(c(2,3,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
@@ -327,7 +330,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 }
 
 
-forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="")
+forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size)
 {
 	if(bottom)
 	{
@@ -369,7 +372,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		ggplot2::aes(label=eval(parse(text=var1))), 
 		x=lo, 
 		y=mean(c(1, length(unique(dat$exposure)))), 
-		hjust=0, vjust=0.5, size=3.5
+		hjust=0, vjust=0.5, size=2
 	)
 
 	# print(paste0("title=",title))
@@ -402,7 +405,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		panel.grid.minor.x=ggplot2::element_blank(),
 		panel.grid.minor.y=ggplot2::element_blank(),
 		panel.grid.major.y=ggplot2::element_blank(),
-		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=section_colour),
+		plot.title = ggplot2::element_text(hjust = 0, size=subheading_size, colour=section_colour),
 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
@@ -416,7 +419,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 }
 
 
-forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL)
+forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size)
 {
 	print(addcol)
 	# print(addcol_title)
@@ -455,7 +458,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 		ggplot2::aes(label=eval(parse(text=addcol))), 
 		x=lo, 
 		y=mean(c(1, length(unique(dat$exposure)))), 
-		hjust=0, vjust=0.5, size=3.5
+		hjust=0, vjust=0.5, size=2.0
 	)
 
 	main_title <- section
@@ -486,7 +489,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 		panel.grid.minor.x=ggplot2::element_blank(),
 		panel.grid.minor.y=ggplot2::element_blank(),
 		panel.grid.major.y=ggplot2::element_blank(),
-		plot.title = ggplot2::element_text(hjust = 0, size=12, colour=section_colour),
+		plot.title = ggplot2::element_text(hjust = 0, size=subheading_size, colour=section_colour),
 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
@@ -514,6 +517,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param addcol_titles Titles of additional columns specified by the addcols argument. Character vector. Default = NULL 
 #' @param addcol_widths Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. Default = NULL 
 #' @param by Name of the grouping variable to stratify results on. Default=NULL
+#' @param subheading_size text size for the subheadings specified in by argument.
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
 #' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
 #' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".
@@ -522,7 +526,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles=NULL){
+forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles=NULL,subheading_size=6){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
@@ -570,7 +574,8 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 			dat, 
 			sec[i],
 			bottom = i==length(sec),
-			title=col1_title
+			title=col1_title,
+			subheading_size=subheading_size
 		)
 		count <- count + 1
 
@@ -582,7 +587,8 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 					sec[i],
 					addcol=addcols[j],
 					addcol_title=addcol_titles[j],
-					bottom = i==length(sec)
+					bottom = i==length(sec),
+					subheading_size=subheading_size
 				)
 
 				count <- count + 1
@@ -602,7 +608,8 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 				lo=lo,
 				up=up,
 				trans = trans,
-				xlim = xlim
+				xlim = xlim,
+				subheading_size=subheading_size
 			)
 			count <- count + 1
 		}
