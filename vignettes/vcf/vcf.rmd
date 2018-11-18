@@ -71,7 +71,7 @@ Start with two datasets, a reference (for example 1000 genomes) and a GWAS summa
 Download the example GWAS dataset:
 
 ```{r engine='bash'}
-wget -O bmi.txt.gz https://www.dropbox.com/s/ph7in04w6dki2tv/bmi.txt.gz?dl=0
+wget -q -O bmi.txt.gz https://www.dropbox.com/s/ph7in04w6dki2tv/bmi.txt.gz?dl=0
 gunzip -c bmi.txt.gz | head
 gunzip -c bmi.txt.gz | wc -l
 ```
@@ -79,7 +79,7 @@ gunzip -c bmi.txt.gz | wc -l
 Download the reference dataset:
 
 ```{r engine='bash'}
-wget -O ref.txt.gz https://www.dropbox.com/s/8vgg08zip2wkayk/ref.txt.gz?dl=0
+wget -q -O ref.txt.gz https://www.dropbox.com/s/8vgg08zip2wkayk/ref.txt.gz?dl=0
 gunzip -c ref.txt.gz | head
 gunzip -c ref.txt.gz | wc -l
 ```
@@ -176,9 +176,18 @@ bcftools index bmi.bcf
 ### Compare the sizes
 
 ```{r engine='bash'}
-du -sh bmi.txt.gz
-du -sh bmi.vcf.gz bmi.vcf.gz.csi
+# bcf and index
 du -sh bmi.bcf bmi.bcf.csi
+```
+
+```{r engine='bash'}
+# vcf.gz and index
+du -sh bmi.vcf.gz bmi.vcf.gz.csi
+```
+
+```{r engine='bash'}
+# original gzip file
+du -sh bmi.txt.gz
 ```
 
 The original gzip file is smallest, but it doesn't contain chromosome and position info. Surprisingly, bcf format is almost double the size of the gzip format, and vcf.gz is somewhere in between. 
@@ -189,10 +198,14 @@ The original gzip file is smallest, but it doesn't contain chromosome and positi
 ```{r engine='bash'}
 # bcf
 time bcftools query -i'PVAL<5e-8' -f'%ID\n' bmi.bcf > extract.txt && wc -l extract.txt
+```
 
+```{r engine='bash'}
 # vcf.gz
 time bcftools query -i'PVAL<5e-8' -f'%ID\n' bmi.vcf.gz > extract.txt && wc -l extract.txt
+```
 
+```{r engine='bash'}
 # for comparison - original gzip file
 time gunzip -c bmi.txt.gz | awk -F '\t' '$7 < 5e-8 {print $1}' > extract.txt && wc -l extract.txt
 ```
@@ -204,10 +217,14 @@ Extracting using awk is very slow, bcf format is extremely fast, though how this
 ```{r engine='bash'}
 # bcf
 time bcftools view -i'ID=@extract.txt' -Ob bmi.bcf > extract.bcf
+```
 
+```{r engine='bash'}
 # vcf.gz
 time bcftools view -i'ID=@extract.txt' -Oz bmi.vcf.gz > extract.vcf.gz
+```
 
+```{r engine='bash'}
 # For comparison we can just try grepping from the original file.
 # time zfgrep -wf extract.txt bmi.txt.gz | gzip -c > test.txt.gz
 ## Not running this because it takes several minutes
@@ -220,10 +237,14 @@ Using chrom and position is even faster than extracting by rs ID
 ```{r engine='bash'}
 # Extract top hits again but save chrom and position
 time bcftools query -i'PVAL<5e-8' -f'%CHROM\t%POS\n' bmi.bcf > extract.txt && wc -l extract.txt
+```
 
+```{r engine='bash'}
 # extract from bcf
 time bcftools filter -R extract.txt bmi.bcf > extract.bcf
+```
 
+```{r engine='bash'}
 # extract from vcf.gz
 time bcftools filter -R extract.txt bmi.vcf.gz > extract.bcf
 ```
