@@ -151,7 +151,12 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	phi_ivw <- Q_ivw / (nsnp - 1)
 
 	se_ivw_fe <- coefficients(mod_ivw)[1,2] / max(mod_ivw$sigma, 1)
-	pval_ivw_fe <- pt(abs(b_ivw_fe/se_ivw_fe), nsnp-1, lower.tail=FALSE) * 2
+	if(parameters$test_dist == "z")
+	{
+		pval_ivw_fe <- pnorm(abs(b_ivw_fe/se_ivw_fe), lower.tail=FALSE) * 2
+	} else {
+		pval_ivw_fe <- pt(abs(b_ivw_fe/se_ivw_fe), nsnp-1, lower.tail=FALSE) * 2
+	}
 
 
 	# IVW MRE
@@ -159,7 +164,12 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	# se_ivw_re <- sqrt(phi_ivw / sum(w))
 	se_ivw_re <- coefficients(mod_ivw)[1,2]
 	# pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
-	pval_ivw_re <- coefficients(mod_ivw)[1,4]
+	if(parameters$test_dist == "z")
+	{
+		pnorm(abs(coefficients(mod_ivw)[1,1]/coefficients(mod_ivw)[1,2]), lower.tail=FALSE) * 2
+	} else {
+		pval_ivw_re <- coefficients(mod_ivw)[1,4]
+	}
 
 
 	# Egger FE
@@ -181,7 +191,12 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	se1_egger_fe <- coefficients(mod_egger)[2,2] / max(mod_egger$sigma, 1)
 	pval1_egger_fe <- pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
 	se0_egger_fe <- coefficients(mod_egger)[1,2] / max(mod_egger$sigma, 1)
-	pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+	if(parameters$test_dist == "z")
+	{
+		pval0_egger_fe <- pnorm(abs(b0_egger_fe/se0_egger_fe), lower.tail=FALSE) * 2	
+	} else {
+		pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+	}
 
 	# Egger RE
 	b1_egger_re <- coefficients(mod_egger)[2,1]
@@ -189,8 +204,12 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	pval1_egger_re <- coefficients(mod_egger)[2,4]
 	b0_egger_re <- coefficients(mod_egger)[1,1]
 	se0_egger_re <- coefficients(mod_egger)[1,2]
-	pval0_egger_re <- coefficients(mod_egger)[1,4]
-
+	if(parameters$test_dist == "z")
+	{
+		pval0_egger_re <- pnorm(coefficients(mod_egger)[1,1]/coefficients(mod_egger)[1,2], lower.tail=FALSE)
+	} else {
+		pval0_egger_re <- coefficients(mod_egger)[1,4]
+	}
 
 	results <- data.frame(
 		Method = c("IVW fixed effects", "IVW random effects", "Egger fixed effects", "Egger random effects"),
@@ -265,6 +284,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
+	requireNamespace("plyr", quietly=TRUE)
 
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 

@@ -235,6 +235,7 @@ mr_method_list <- function()
 default_parameters <- function()
 {
 	list(
+		test_dist = "z",
 		nboot = 1000,
 		Cov = 0,
 		penk = 20,

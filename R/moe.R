@@ -1,3 +1,10 @@
+#' Calculate I-square
+#'
+#' @param y Vector of effect estimates
+#' @param s Vector of standard errors
+#'
+#' @export
+#' @return Numeric
 Isq <- function(y,s)
 {
 	k <- length(y)
@@ -81,6 +88,12 @@ system_metrics <- function(dat)
 	return(metrics)
 }
 
+#' Get metrics from summary dataset
+#'
+#' @param dat summary set
+#'
+#' @export
+#' @return data frame of metrics
 get_metrics <- function(dat)
 {
 	metrics <- system_metrics(dat)
