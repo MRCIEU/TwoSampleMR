@@ -120,15 +120,27 @@ check_palindromic <- function(A1, A2)
 }
 
 
-flip_alleles <- function(A1)
+# flip_alleles <- function(A1)
+# {
+# 	A2 <- A1
+# 	A2[A1 == "A"] <- "T"
+# 	A2[A1 == "T"] <- "A"
+# 	A2[A1 == "G"] <- "C"
+# 	A2[A1 == "C"] <- "G"
+# 	return(A2)
+# }
+
+
+flip_alleles <- function(x)
 {
-	A2 <- A1
-	A2[A1 == "A"] <- "T"
-	A2[A1 == "T"] <- "A"
-	A2[A1 == "G"] <- "C"
-	A2[A1 == "C"] <- "G"
-	return(A2)
+	x <- toupper(x)
+	x <- gsub("C", "g", x)
+	x <- gsub("G", "c", x)
+	x <- gsub("A", "t", x)
+	x <- gsub("T", "a", x)
+	return(toupper(x))
 }
+
 
 
 harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)

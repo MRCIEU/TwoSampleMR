@@ -119,8 +119,8 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #' @param beta_col="beta" Required for MR. Name of column with effect sizes
 #' @param se_col="se" Required for MR. Name of column with standard errors
 #' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
-#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
-#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
+#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G"
+#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G"
 #' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
 #' @param units_col="units" Optional column name for units.
 #' @param ncase_col="ncase" Optional column name for number of cases.
@@ -259,11 +259,12 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		}
 
 		dat$effect_allele.outcome <- toupper(dat$effect_allele.outcome)
-		index <- ! dat$effect_allele.outcome %in% c("A", "C", "T", "G")
+		# index <- ! dat$effect_allele.outcome %in% c("A", "C", "T", "G")
+		index <- grepl("^[ACTG]", dat$effect_allele.outcome)
 		index[is.na(index)] <- TRUE
 		if(any(index))
 		{
-			warning("effect_allele column has some values that are not A/C/T/G. These SNPs will be excluded")
+			warning("effect_allele column has some values that are not A/C/T/G or an indel comprising only these characters. These SNPs will be excluded")
 			dat$effect_allele.outcome[index] <- NA
 			dat$mr_keep.outcome[index] <- FALSE
 		}
@@ -286,11 +287,12 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		}
 
 		dat$other_allele.outcome <- toupper(dat$other_allele.outcome)
-		index <- ! dat$other_allele.outcome %in% c("A", "C", "T", "G")
+		# index <- ! dat$other_allele.outcome %in% c("A", "C", "T", "G")
+		index <- grepl("^[ACTG]", dat$other_allele.outcome)
 		index[is.na(index)] <- TRUE
 		if(any(index))
 		{
-			warning("other_allele column has some values that are not A/C/T/G. These SNPs will be excluded")
+			warning("other_allele column has some values that are not A/C/T/G or an indel comprising only these characters. These SNPs will be excluded")
 			dat$other_allele.outcome[index] <- NA
 			dat$mr_keep.outcome[index] <- FALSE
 		}
