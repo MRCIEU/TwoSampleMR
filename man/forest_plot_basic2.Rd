@@ -6,7 +6,8 @@
 \usage{
 forest_plot_basic2(dat, section = NULL, colour_group = NULL,
   colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
-  trans = "identity", xlim = NULL, lo = lo, up = up)
+  trans = "identity", xlim = NULL, lo = lo, up = up,
+  subheading_size = subheading_size)
 }
 \arguments{
 \item{dat}{Output from format_1_to_many()}
@@ -26,6 +27,8 @@ forest_plot_basic2(dat, section = NULL, colour_group = NULL,
 \item{lo}{Lower limit of x axis}
 
 \item{up}{Upper limit of x axis}
+
+\item{subheading_size}{text size for the subheadings. The subheadings correspond to the values of the section argument}
 }
 \value{
 ggplot object
