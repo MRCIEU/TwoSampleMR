@@ -6,7 +6,7 @@
 \usage{
 mv_extract_exposures(id_exposure, clump_r2 = 0.001, clump_kb = 10000,
   harmonise_strictness = 2, access_token = get_mrbase_access_token(),
-  find_proxies = TRUE)
+  find_proxies = TRUE, force_server = FALSE)
 }
 \arguments{
 \item{id_exposure}{Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)}
@@ -18,6 +18,8 @@ mv_extract_exposures(id_exposure, clump_r2 = 0.001, clump_kb = 10000,
 \item{clump_r2=0.01}{Once a full list of}
 
 \item{clump_kb=10000}{<what param does>}
+
+\item{force_server=FALSE}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server}
 }
 \value{
 data frame in exposure_dat format
