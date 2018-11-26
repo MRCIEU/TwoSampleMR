@@ -145,7 +145,7 @@ make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1
 	stopifnot(length(N1) == length(CHROM))
 	stopifnot(length(N0) == length(CHROM))
 
-	fixed <- dplyr::data_frame(CHROM, POS, ID, ALT, REF, QUAL, FILTER)
+	fixed <- dplyr::data_frame(CHROM, POS, ID, REF, ALT, QUAL, FILTER)
 
 	info <- list(B=B, SE=SE, AF=AF, PVAL=PVAL, N1=N1, N0=N0)
 	for(i in names(info))
@@ -161,8 +161,8 @@ make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1
 	fixed$CHROM <- as.character(fixed$CHROM)
 	fixed$POS <- as.character(fixed$POS)
 	fixed$ID <- as.character(fixed$ID)
-	fixed$ALT <- as.character(fixed$ALT)
 	fixed$REF <- as.character(fixed$REF)
+	fixed$ALT <- as.character(fixed$ALT)
 	fixed$QUAL <- as.character(fixed$QUAL)
 	fixed$FILTER <- as.character(fixed$FILTER)
 	fixed[is.na(fixed)] <- "."
