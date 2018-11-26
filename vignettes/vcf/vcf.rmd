@@ -22,7 +22,7 @@ Using VCF as a format for storing GWAS summary data. Possible benifits -
 VCF has detailed specification here [http://samtools.github.io/hts-specs/VCFv4.3.pdf](http://samtools.github.io/hts-specs/VCFv4.3.pdf). We need an agreed way to apply the specification to GWAS summary data. Current implementation:
 
 1. Use only the first 8 fixed fields.
-2. QUAL and FILTER will be set to missing (.) unless an obvious way to use them can be identified
+2. QUAL will be set to missing (.) unless an obvious way to use it can be identified.
 3. ALT allele is always the effect allele. Ideally this is matched to a reference dataset. REF allele is always the non-effect allele
 4. For binary traits we want to store the number of cases and number of controls
 5. For continuous traits we use 0 for number of cases, and number of controls is the total sample size
@@ -33,6 +33,7 @@ VCF has detailed specification here [http://samtools.github.io/hts-specs/VCFv4.3
 	* AF, Type = Float, Description = Alternate allele frequency
 	* N1, Type = Float, Description = Number of cases. 0 if continuous trait
 	* N0, Type = Float, Description = Number of controls. Total sample size if continuous trait
+7. FILTER is always PASS unless the variant does not meet some QC parameter.
 
 The VCF header encapsulating this info will look like this:
 
@@ -47,7 +48,13 @@ The VCF header encapsulating this info will look like this:
 
 Missing values throughout are specified as ".", as standard for VCF.
 
+Custom annotations can be added i.e. ##gwas=casecontrol which are lowercase by convention
 
+## Reference FASTA
+
+The reference fasta should be downloaded from the GATK bundle:
+[b38/hg38](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)
+[b37/hg19](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/b37)
 
 ## Generating the data
 
@@ -133,7 +140,7 @@ vcf <- TwoSampleMR::make_vcf(
 		POS = gwas_h$POS, 
 		AF = gwas_h$MAF, 
 		QUAL = rep(NA, nrow(gwas_h)),
-		FILTER = rep(NA, nrow(gwas_h)), 
+		FILTER = rep('PASS', nrow(gwas_h)), 
 		build = "b37"
 	)
 ```
@@ -152,8 +159,15 @@ TwoSampleMR::write_vcf(vcf, "bmi.vcf.gz")
 TwoSampleMR::write_vcf(vcf, "bmi.bcf")
 ```
 
-
 ## Testing the VCF files
+
+All VCF files should undergo validation before use using [gatk](https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_hellbender_tools_walkers_variantutils_ValidateVariants.php).
+
+```gatk ValidateVariants \
+-R <ref.fa> \
+-V <gwas.vcf> \
+--dbsnp <dbsnp.vcf>
+```
 
 We can use [bgzip](https://vcf.iobio.io/help.html), [tabix](https://vcf.iobio.io/help.html) and [bcftools](https://samtools.github.io/bcftools/) to work with VCF.
 
