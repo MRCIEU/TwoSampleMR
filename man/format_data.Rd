@@ -29,9 +29,9 @@ format_data(dat, type = "exposure", snps = NULL, header = TRUE,
 
 \item{eaf_col="eaf"}{Required for MR. Name of column with effect allele frequency}
 
-\item{effect_allele_col="effect_allele"}{Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"}
+\item{effect_allele_col="effect_allele"}{Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G"}
 
-\item{other_allele_col="other_allele"}{Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"}
+\item{other_allele_col="other_allele"}{Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G"}
 
 \item{pval_col="pval"}{Required for enrichment tests. Name of column with p-value.}
 

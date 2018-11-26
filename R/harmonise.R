@@ -24,6 +24,8 @@
 #' - other_allele.exposure
 #' - eaf.exposure
 #'
+#' The function tries to harmonise INDELs. If they are coded as sequence strings things work more smoothly. If they are coded as D/I in one dataset it will try to convert them to sequences if the other dataset has adequate information. If coded as D/I in one dataset and as a variant with equal length INDEL alleles in the other, the variant is dropped. If one or both the datasets only has one allele (i.e. the effect allele) then harmonisation is naturally going to be more ambiguous and more variants will be dropped.
+#'
 #' @param exposure_dat Output from \code{read_exposure_data}
 #' @param outcome_dat Output from \code{extract_outcome_data}
 #' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended); 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis. If a single value is passed then this action is applied to all outcomes. But multiple values can be supplied as a vector, each element relating to a different outcome.
@@ -120,20 +122,160 @@ check_palindromic <- function(A1, A2)
 }
 
 
-flip_alleles <- function(A1)
+# flip_alleles <- function(A1)
+# {
+# 	A2 <- A1
+# 	A2[A1 == "A"] <- "T"
+# 	A2[A1 == "T"] <- "A"
+# 	A2[A1 == "G"] <- "C"
+# 	A2[A1 == "C"] <- "G"
+# 	return(A2)
+# }
+
+
+flip_alleles <- function(x)
 {
-	A2 <- A1
-	A2[A1 == "A"] <- "T"
-	A2[A1 == "T"] <- "A"
-	A2[A1 == "G"] <- "C"
-	A2[A1 == "C"] <- "G"
-	return(A2)
+	x <- toupper(x)
+	x <- gsub("C", "g", x)
+	x <- gsub("G", "c", x)
+	x <- gsub("A", "t", x)
+	x <- gsub("T", "a", x)
+	return(toupper(x))
+}
+
+
+recode_indels_22 <- function(A1, A2, B1, B2)
+{
+
+	ncA1 <- nchar(A1)
+	ncA2 <- nchar(A2)
+	ncB1 <- nchar(B1)
+	ncB2 <- nchar(B2)
+
+
+	i1 <- ncA1 > ncA2 & B1 == "I" & B2 == "D"
+	B1[i1] <- A1[i1]
+	B2[i1] <- A2[i1]
+
+	i1 <- ncA1 < ncA2 & B1 == "I" & B2 == "D"
+	B1[i1] <- A2[i1]
+	B2[i1] <- A1[i1]
+
+	i1 <- ncA1 > ncA2 & B1 == "D" & B2 == "I"
+	B1[i1] <- A2[i1]
+	B2[i1] <- A1[i1]
+
+	i1 <- ncA1 < ncA2 & B1 == "D" & B2 == "I"
+	B1[i1] <- A1[i1]
+	B2[i1] <- A2[i1]
+	
+
+	i1 <- ncB1 > ncB2 & A1 == "I" & A2 == "D"
+	A1[i1] <- B1[i1]
+	A2[i1] <- B2[i1]
+
+	i1 <- ncB1 < ncB2 & A1 == "I" & A2 == "D"
+	A2[i1] <- B1[i1]
+	A1[i1] <- B2[i1]
+
+	i1 <- ncB1 > ncB2 & A1 == "D" & A2 == "I"
+	A2[i1] <- B1[i1]
+	A1[i1] <- B2[i1]
+
+	i1 <- ncB1 < ncB2 & A1 == "D" & A2 == "I"
+	A1[i1] <- B1[i1]
+	A2[i1] <- B2[i1]
+
+	keep <- rep(TRUE, length(A1))
+	keep[(ncA1 > 1 & ncA1 == ncA2 & (B1 == "D" | B1 == "I"))] <- FALSE
+	keep[(ncB1 > 1 & ncB1 == ncB2 & (A1 == "D" | A1 == "I"))] <- FALSE
+	keep[A1 == A2] <- FALSE
+	keep[B1 == B2] <- FALSE
+
+	return(data_frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep))
+}
+
+
+recode_indels_21 <- function(A1, A2, B1)
+{
+	ncA1 <- nchar(A1)
+	ncA2 <- nchar(A2)
+	ncB1 <- nchar(B1)
+
+	B2 <- rep(NA, length(B1))
+
+	i1 <- ncA1 > ncA2 & B1 == "I"
+	B1[i1] <- A1[i1]
+	B2[i1] <- A2[i1]
+
+	i1 <- ncA1 < ncA2 & B1 == "I"
+	B1[i1] <- A2[i1]
+	B2[i1] <- A1[i1]
+
+	i1 <- ncA1 > ncA2 & B1 == "D"
+	B1[i1] <- A2[i1]
+	B2[i1] <- A1[i1]
+
+	i1 <- ncA1 < ncA2 & B1 == "D"
+	B1[i1] <- A1[i1]
+	B2[i1] <- A2[i1]
+
+	keep <- rep(TRUE, length(A1))
+	keep[A1 == "I" & A2 == "D"] <- FALSE
+	keep[A1 == "D" & A2 == "I"] <- FALSE
+	keep[(ncA1 > 1 & ncA1 == ncA2 & (B1 == "D" | B1 == "I"))] <- FALSE
+	keep[A1 == A2] <- FALSE
+
+	return(data_frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep))
+}
+
+
+recode_indels_12 <- function(A1, B1, B2)
+{
+	ncA1 <- nchar(A1)
+	ncB1 <- nchar(B1)
+	ncB2 <- nchar(B2)
+
+	A2 <- rep(NA, length(A1))
+
+	i1 <- ncB1 > ncB2 & A1 == "I"
+	A1[i1] <- B1[i1]
+	A2[i1] <- B2[i1]
+
+	i1 <- ncB1 < ncB2 & A1 == "I"
+	A2[i1] <- B1[i1]
+	A1[i1] <- B2[i1]
+
+	i1 <- ncB1 > ncB2 & A1 == "D"
+	A2[i1] <- B1[i1]
+	A1[i1] <- B2[i1]
+
+	i1 <- ncB1 < ncB2 & A1 == "D"
+	A1[i1] <- B1[i1]
+	A2[i1] <- B2[i1]
+
+	keep <- rep(TRUE, length(A1))
+	keep[B1 == "I" & B2 == "D"] <- FALSE
+	keep[B1 == "D" & B2 == "I"] <- FALSE
+	keep[(ncB1 > 1 & ncB1 == ncB2 & (A1 == "D" | A1 == "I"))] <- FALSE
+	keep[B1 == B2] <- FALSE
+
+	return(data_frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep))
 }
 
 
 harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
 {
 	if(length(SNP) == 0) return(data.frame())
+
+	indel_index <- nchar(A1) > 1 | nchar(A2) > 1 | A1 == "D" | A1 == "I"
+	temp <- recode_indels_22(A1[indel_index], A2[indel_index], B1[indel_index], B2[indel_index])
+
+	A1[indel_index] <- temp$A1
+	A2[indel_index] <- temp$A2
+	B1[indel_index] <- temp$B1
+	B2[indel_index] <- temp$B2
+
 
 	# Find SNPs with alleles that match in A and B
 	status1 <- (A1 == B1) & (A2 == B2)
@@ -168,6 +310,7 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	# Any SNPs left with unmatching alleles need to be removed
 	status1 <- (A1 == B1) & (A2 == B2)
 	remove <- !status1
+	remove[indel_index][!temp$keep] <- TRUE
 
 	# Now deal with palindromic SNPs
 	# If the frequency is within tolerance then they are ambiguous and need to be flagged
@@ -226,6 +369,17 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	palindromic <- check_palindromic(A1, A2)
 	remove <- palindromic
 
+
+	indel_index <- nchar(A1) > 1 | nchar(A2) > 1 | A1 == "D" | A1 == "I"
+	temp <- recode_indels_21(A1[indel_index], A2[indel_index], B1[indel_index])
+
+	A1[indel_index] <- temp$A1
+	A2[indel_index] <- temp$A2
+	B1[indel_index] <- temp$B1
+	B2[indel_index] <- temp$B2
+	remove[indel_index][!temp$keep] <- TRUE
+
+
 	status1 <- A1 == B1
 	minf <- 0.5 - tolerance
 	maxf <- 0.5 + tolerance
@@ -279,6 +433,15 @@ harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, actio
 	ambiguous <- rep(FALSE, n)
 	palindromic <- check_palindromic(B1, B2)
 	remove <- palindromic
+
+	indel_index <- nchar(B1) > 1 | nchar(AB) > 1 | B1 == "D" | B1 == "I"
+	temp <- recode_indels_21(A1[indel_index], B1[indel_index], B2[indel_index])
+
+	A1[indel_index] <- temp$A1
+	A2[indel_index] <- temp$A2
+	B1[indel_index] <- temp$B1
+	B2[indel_index] <- temp$B2
+	remove[indel_index][!temp$keep] <- TRUE
 
 	status1 <- A1 == B1
 	minf <- 0.5 - tolerance
