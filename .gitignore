@@ -2,3 +2,9 @@ inst/doc
 .httr-oauth
 .DS_Store
 mrbase.oauth
+vignettes/vcf/*.vcf
+vignettes/vcf/*.bcf
+vignettes/vcf/*.txt.gz
+vignettes/vcf/*.rdata
+vignettes/vcf/*.RData
+vignettes/vcf/*.Rhistory
