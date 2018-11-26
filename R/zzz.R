@@ -3,7 +3,10 @@
 	packageStartupMessage(
 		"Welcome to TwoSampleMR.\n",
 		"[>] Check for updates: https://github.com/MRCIEU/TwoSampleMR\n",
-		"[>] Full documentation: https://mrcieu.github.io/TwoSampleMR"
+		"[>] Full documentation: https://mrcieu.github.io/TwoSampleMR\n",
+		"[>] This version updates data reading and harmonising to accept indels.\n", 
+        "    You may wish to install a previous version to avoid new behaviour e.g.:\n",
+        "    devtools::install_github('MRCIEU/TwoSampleMR@0.4.16')"
 	)
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
