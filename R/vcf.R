@@ -161,8 +161,8 @@ make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1
 	fixed$CHROM <- as.character(fixed$CHROM)
 	fixed$POS <- as.character(fixed$POS)
 	fixed$ID <- as.character(fixed$ID)
-	fixed$ALT <- as.character(fixed$ALT)
 	fixed$REF <- as.character(fixed$REF)
+	fixed$ALT <- as.character(fixed$ALT)
 	fixed$QUAL <- as.character(fixed$QUAL)
 	fixed$FILTER <- as.character(fixed$FILTER)
 	fixed[is.na(fixed)] <- "."
