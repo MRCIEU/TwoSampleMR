@@ -298,8 +298,6 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		}
 	}
 
-	print(dat$mr_keep.outcome)
-
 
 	# Check pval
 	i <- which(names(dat) == pval_col)[1]
