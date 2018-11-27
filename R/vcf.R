@@ -130,7 +130,6 @@ make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1
 	stopifnot(all(!is.na(POS)))
 	stopifnot(all(!is.na(REF)))
 	stopifnot(all(!is.na(ALT)))
-	stopifnot(is.numeric(CHROM))
 	stopifnot(is.numeric(POS))
 	stopifnot(length(POS) == length(CHROM))
 	stopifnot(length(ID) == length(CHROM))
