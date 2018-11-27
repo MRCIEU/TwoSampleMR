@@ -407,7 +407,6 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	} else {
 		dat$id.outcome <- create_ids(dat[[type]])
 	}
-	print(dat$mr_keep.outcome)
 
 	if(any(dat$mr_keep.outcome))
 	{
