@@ -4,7 +4,9 @@ suppressPackageStartupMessages(library(argparse))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(TwoSampleMR))
 suppressPackageStartupMessages(library(data.table))
-
+suppressPackageStartupMessages(library(vcfR))
+library(methods)
+library(utils)
 
 # create parser object
 parser <- ArgumentParser()
@@ -12,7 +14,7 @@ parser <- ArgumentParser()
 parser$add_argument('--ref-file', required=TRUE)
 parser$add_argument('--ref-build', required=TRUE, default="b37")
 parser$add_argument('--gwas-file', required=TRUE)
-parser$add_argument('--gwas-header', required=TRUE, defailt=FALSE)
+parser$add_argument('--gwas-header', required=TRUE, type="logical", default=FALSE)
 parser$add_argument('--gwas-snp', type="integer", required=TRUE)
 parser$add_argument('--gwas-ref', type="integer", required=FALSE)
 parser$add_argument('--gwas-alt', type="integer", required=TRUE)
@@ -37,47 +39,47 @@ read_dat <- function(filename, type, header, snp, ref, alt, af, beta, se, pval, 
 		dat <- data.table::fread(filename, header=header)
 	}
 	nc <- ncol(dat)
-	if(is.na(snp))
+	if(snp == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		snp <- ncol(dat)
 	}
-	if(is.na(ref))
+	if(ref == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		ref <- ncol(dat)
 	}
-	if(is.na(alt))
+	if(alt == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		alt <- ncol(dat)
 	}
-	if(is.na(af))
+	if(af == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		af <- ncol(dat)
 	}
-	if(is.na(beta))
+	if(beta == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		beta <- ncol(dat)
 	}
-	if(is.na(se))
+	if(se == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		se <- ncol(dat)
 	}
-	if(is.na(pval))
+	if(pval == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		pval <- ncol(dat)
 	}
-	if(is.na(n0))
+	if(n0 == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		n0 <- ncol(dat)
 	}
-	if(is.na(n1))
+	if(n1 == 0)
 	{
 		dat[[paste0("V", ncol(dat)+1)]] <- rep(NA, nrow(dat))
 		n1 <- ncol(dat)
@@ -102,31 +104,30 @@ read_dat <- function(filename, type, header, snp, ref, alt, af, beta, se, pval, 
 
 
 
-
 # Read in gwas data
 gwas <- read_dat(
-	args[["gwas-file"]],
+	args[["gwas_file"]],
 	type="outcome",
-	header=args[["gwas-header"]],
-	snp=args[["gwas-snp"]],
-	ref=args[["gwas-ref"]],
-	alt=args[["gwas-alt"]],
-	af=args[["gwas-af"]],
-	beta=args[["gwas-beta"]],
-	se=args[["gwas-se"]],
-	pval=args[["gwas-pval"]],
-	n0=args[["gwas-n0"]],
-	n1=args[["gwas-n1"]]
+	header=args[["gwas_header"]],
+	snp=args[["gwas_snp"]],
+	ref=args[["gwas_ref"]],
+	alt=args[["gwas_alt"]],
+	af=args[["gwas_af"]],
+	beta=args[["gwas_beta"]],
+	se=args[["gwas_se"]],
+	pval=args[["gwas_pval"]],
+	n0=args[["gwas_n0"]],
+	n1=args[["gwas_n1"]]
 )
 
 
 # Read in ref
 
-ref <- data.table::fread(paste0("gunzip -c ", args[["ref"]]))
-stopifnot(c("CHROM", "ID", "REF", "ALT", "AF", "POS") %in% names(ref))
+ref <- data.table::fread(paste0("gunzip -c ", args[["ref_file"]]))
+stopifnot(all(c("CHROM", "ID", "REF", "ALT", "AF", "POS") %in% names(ref)))
 
 # For simplicity just keeping SNP Ids that are in common
-ref <- subset(ref, ID %in% gwas$snp_col)
+ref <- subset(ref, ID %in% gwas$SNP)
 
 # Put in some dummy variables for the reference for harmonising
 ref$beta <- 1
@@ -138,17 +139,17 @@ a <- TwoSampleMR::format_data(
         snp_col="ID",
         effect_allele_col="ALT",
         other_allele_col="REF",
-        eaf_col="MAF"
+        eaf_col="AF"
 )
 
 # Check strand
-action <- TwoSampleMR::is_forward_strand(gwas$SNP, gwas$effect_allele.exposure, gwas$other_allele.exposure, ref$ID, ref$ALT, ref$REF, threshold=0.9)
+action <- TwoSampleMR::is_forward_strand(gwas$SNP, gwas$effect_allele.outcome, gwas$other_allele.outcome, ref$ID, ref$ALT, ref$REF, threshold=0.9)
 
 # Harmonise
 dat <- TwoSampleMR::harmonise_data(a, gwas, action)
 
 
-gwas_h <- ab %$%
+gwas_h <- dat %$%
 	dplyr::data_frame(
 		ID=SNP,
 		ALT=effect_allele.exposure,
@@ -160,7 +161,7 @@ gwas_h <- ab %$%
 		N=samplesize.outcome,
 		NCASE=ncase.outcome,
 		NCONTROL=ncontrol.outcome) %>%
-	dplyr::inner_join(subset(ref, select=c(ID,REF,ALT,CHROM,POS,AF)), by=c("ID", "REF", "ALT"))
+	dplyr::inner_join(subset(ref, select=c(ID,REF,ALT,CHROM,POS)), by=c("ID", "REF", "ALT"))
 
 
 # Create vcf format
@@ -178,7 +179,7 @@ vcf <- TwoSampleMR::make_vcf(
                 AF = gwas_h$AF,
                 QUAL = rep(NA, nrow(gwas_h)),
                 FILTER = rep("PASS", nrow(gwas_h)),
-                build = args[["ref-build"]]
+                build = args[["ref_build"]]
         )
 
 # Write vcf
