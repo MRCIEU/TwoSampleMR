@@ -166,7 +166,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	# pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
 	if(parameters$test_dist == "z")
 	{
-		pnorm(abs(coefficients(mod_ivw)[1,1]/coefficients(mod_ivw)[1,2]), lower.tail=FALSE) * 2
+		pval_ivw_re <- pnorm(abs(coefficients(mod_ivw)[1,1]/coefficients(mod_ivw)[1,2]), lower.tail=FALSE) * 2
 	} else {
 		pval_ivw_re <- coefficients(mod_ivw)[1,4]
 	}
