@@ -32,7 +32,7 @@
 #'
 #' @export
 #' @return Data frame with harmonised effects and alleles
-harmonise_data <- function(exposure_dat, outcome_dat, action=2)
+harmonise_data <- function(exposure_dat, outcome_dat, action=2, verbose=FALSE)
 {
 	stopifnot(all(action %in% 1:3))
 
@@ -56,7 +56,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
 
 # SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action		
-		x <- harmonise_function_refactored(x, 0.08, x$action[1])
+		x <- harmonise_function_refactored(x, 0.08, x$action[1], verbose=verbose)
 		# x <- harmonise_function(x, x$action[1])
 		return(x)
 	})
@@ -264,7 +264,7 @@ recode_indels_12 <- function(A1, B1, B2)
 }
 
 
-harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
+harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action, verbose=FALSE)
 {
 	if(length(SNP) == 0) return(data.frame())
 
@@ -280,6 +280,11 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	# Find SNPs with alleles that match in A and B
 	status1 <- (A1 == B1) & (A2 == B2)
 	to_swap <- (A1 == B2) & (A2 == B1)
+	if(verbose)
+	{
+		message("['counts']['switched_alleles'][", sum(to_swap), "]")
+	}
+
 
 	# If B's alleles are the wrong way round then swap
 	Btemp <- B1[to_swap]
@@ -297,6 +302,10 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	B1[i] <- flip_alleles(B1[i])
 	B2[i] <- flip_alleles(B2[i])
 	status1 <- (A1 == B1) & (A2 == B2)
+	if(verbose)
+	{
+		message("['counts']['flipped_alleles_basic'][", sum(i), "]")
+	}
 
 	# If still NOT palindromic and alleles DON'T match then try swapping
 	i <- !palindromic & !status1
@@ -330,6 +339,15 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 		to_swap <- status2 & !remove
 		betaB[to_swap] <- betaB[to_swap] * -1
 		fB[to_swap] <- 1 - fB[to_swap]
+		if(verbose)
+		{
+			message("['counts']['flipped_alleles_palindrome'][", sum(to_swap), "]")
+		}
+	} else {
+		if(verbose)
+		{
+			message("['counts']['flipped_alleles_palindrome'][", 0, "]")
+		}		
 	}
 
 	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=(ambiguousA|ambiguousB) & palindromic)
@@ -359,7 +377,7 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 # 	remove
 
 
-harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, action)
+harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, action, verbose=FALSE)
 {
 	if(length(SNP) == 0) return(data.frame())
 
@@ -395,6 +413,10 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	B2[status1] <- A2[status1]
 
 	to_swap <- A2 == B1
+	if(verbose)
+	{
+		message("['counts']['switched_alleles'][", sum(to_swap), "]")
+	}
 	freq_similar2 <- (tempfA < minf & tempfB > maxf) | (tempfA > maxf & tempfB < minf)
 
 	ambiguous[to_swap & !freq_similar2] <- TRUE
@@ -404,6 +426,10 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	fB[to_swap] <- 1 - fB[to_swap]
 
 	to_flip <- A1 != B1 & A2 != B1
+	if(verbose)
+	{
+		message("['counts']['flipped_alleles_no_oa'][", sum(to_flip), "]")
+	}
 
 	ambiguous[to_flip] <- TRUE
 
@@ -519,7 +545,7 @@ harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action)
 }
 
 
-harmonise_function_refactored <- function(dat, tolerance, action)
+harmonise_function_refactored <- function(dat, tolerance, action, verbose=FALSE)
 {
 	SNP <- dat$SNP
 	A1 <- dat$effect_allele.exposure
@@ -537,8 +563,8 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 	i12 <- !is.na(A1) & is.na(A2) & !is.na(B1) & !is.na(B2)
 	i11 <- !is.na(A1) & is.na(A2) & !is.na(B1) & is.na(B2)
 
-	d22 <- harmonise_22(SNP[i22], A1[i22], A2[i22], B1[i22], B2[i22], betaA[i22], betaB[i22], fA[i22], fB[i22], tolerance, action)
-	d21 <- harmonise_21(SNP[i21], A1[i21], A2[i21], B1[i21], betaA[i21], betaB[i21], fA[i21], fB[i21], tolerance, action)
+	d22 <- harmonise_22(SNP[i22], A1[i22], A2[i22], B1[i22], B2[i22], betaA[i22], betaB[i22], fA[i22], fB[i22], tolerance, action, verbose=verbose)
+	d21 <- harmonise_21(SNP[i21], A1[i21], A2[i21], B1[i21], betaA[i21], betaB[i21], fA[i21], fB[i21], tolerance, action, verbose=verbose)
 	d12 <- harmonise_12(SNP[i12], A1[i12], B1[i12], B2[i12], betaA[i12], betaB[i12], fA[i12], fB[i12], tolerance, action)
 	d11 <- harmonise_11(SNP[i11], A1[i11], B1[i11], betaA[i11], betaB[i11], fA[i11], fB[i11], tolerance, action)
 
@@ -558,10 +584,18 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 		if(any(d$remove))
 		{
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
+			if(verbose)
+			{
+				message("['counts']['incompatible_alleles'][", sum(d$remove), "]")
+			}
 		}
 		if(any(d$ambiguous & !d$palindromic))
 		{
 			message("Removing the following SNPs for having incompatible allele frequencies:\n", paste(d$SNP[d$ambiguous], collapse=", "))
+			if(verbose)
+			{
+				message("['counts']['ambiguous_alleles'][", sum(d$remove), "]")
+			}
 		}
 	}
 	if(action == 2)
@@ -571,10 +605,19 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 		if(any(d$remove))
 		{
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
+			if(verbose)
+			{
+				message("['counts']['incompatible_alleles'][", sum(d$remove), "]")
+			}
+
 		}
 		if(any(d$ambiguous))
 		{
 			message("Removing the following SNPs for being palindromic with intermediate allele frequencies:\n", paste(d$SNP[d$ambiguous], collapse=", "))
+			if(verbose)
+			{
+				message("['counts']['ambiguous_alleles'][", sum(d$ambiguous), "]")
+			}
 		}
 	}
 	if(action == 1)
@@ -584,6 +627,10 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 		if(any(d$remove))
 		{
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
+			if(verbose)
+			{
+				message("['counts']['incompatible_alleles'][", sum(d$remove), "]")
+			}
 		}
 	}
 

@@ -81,16 +81,17 @@ is_forward_strand <- function(gwas_snp, gwas_a1, gwas_a2, ref_snp, ref_a1, ref_a
 #'
 #' @export
 #' @return Vector of strings to be used in vcfR package
-vcf_header <- function(build='b37')
+vcf_header <- function(build='b37', vcf_reference_name)
 {
 	stopifnot(build %in% c("b37", "b38"))
-	info <- c('##fileformat=VCFv4.2',
+	info <- c(
+		'##fileformat=VCFv4.2',
+		paste0('##vcfreference=', vcf_reference_name),
 		'##INFO=<ID=B,Number=A,Type=Float,Description="Effect size estimate relative to the alternative allele(s)">',
 		'##INFO=<ID=SE,Number=A,Type=Float,Description="Standard error of effect size estimate">',
 		'##INFO=<ID=PVAL,Number=A,Type=Float,Description="P-value for effect estimate">',
 		'##INFO=<ID=AF,Number=A,Type=Float,Description="Alternate allele frequency">',
-		'##INFO=<ID=N1,Number=A,Type=Float,Description="Number of cases. 0 if continuous trait">',
-		'##INFO=<ID=N0,Number=A,Type=Float,Description="Number of controls. Total sample size if continuous trait">')
+		'##INFO=<ID=N,Number=A,Type=Float,Description="Number of cases. 0 if continuous trait">')
 
 	# From fai files here http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/
 	chr <- c(1:22, "X", "Y", "MT")
@@ -117,13 +118,12 @@ vcf_header <- function(build='b37')
 #' @param SE Vector of standard errors
 #' @param PVAL Vector
 #' @param AF Vector of allele frequencies for the alternative allele
-#' @param N1 Vector of number of cases for each SNP. Vector of 0s if continuous trait
-#' @param N0 Vector of number of controls for each SNP. Total sample size if continuous trait
+#' @param N Vector of total sample size for trait
 #' @param build="b37" Used in CHROM and POS. This argument used to generate the header. Must be 'b37' or 'b38'.
 #'
 #' @export
 #' @return vcfR object (with empty gt slot)
-make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1, N0, build="b37")
+make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N, build="b37", vcf_reference_name)
 {
 	requireNamespace("dplyr", quietly=TRUE)
 	stopifnot(all(!is.na(CHROM)))
@@ -141,12 +141,11 @@ make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1
 	stopifnot(length(SE) == length(CHROM))
 	stopifnot(length(PVAL) == length(CHROM))
 	stopifnot(length(AF) == length(CHROM))
-	stopifnot(length(N1) == length(CHROM))
-	stopifnot(length(N0) == length(CHROM))
+	stopifnot(length(N) == length(CHROM))
 
 	fixed <- dplyr::data_frame(CHROM, POS, ID, REF, ALT, QUAL, FILTER)
 
-	info <- list(B=B, SE=SE, AF=AF, PVAL=PVAL, N1=N1, N0=N0)
+	info <- list(B=B, SE=SE, AF=AF, PVAL=PVAL, N=N)
 	for(i in names(info))
 	{
 		x <- as.character(info[[i]])
@@ -167,7 +166,7 @@ make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1
 	fixed[is.na(fixed)] <- "."
 	
 	vcf <- new(Class="vcfR")
-	vcf@meta <- vcf_header(build)
+	vcf@meta <- vcf_header(build, vcf_reference_name)
 	vcf@fix <- as.matrix(fixed)
 	vcf@gt <- matrix("a", nrow=0, ncol=0)
 	return(vcf)
