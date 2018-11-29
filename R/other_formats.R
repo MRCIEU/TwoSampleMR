@@ -135,6 +135,30 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 	return(res)
 }
 
+#' Convert dat to RadialMR format
+#'
+#' Creates a list of RadialMR format datasets for each exposure - outcome pair
+#'
+#' @param dat Output from \code{harmonise_data}
+#'
+#' @export
+#' @return List of RadialMR format datasets
+dat_to_RadialMR <- function(dat)
+{
+	require(RadialMR)
+	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
+	{
+		x <- plyr::mutate(x)
+		message("Converting:")
+		message(" - exposure: ", x$exposure[1])
+		message(" - outcome: ", x$outcome[1])
+		d <- subset(x, mr_keep=TRUE)
+		d <- format_radial(d$beta.exposure, d$beta.outcome, d$se.exposure, d$se.outcome)
+		return(d)
+	})
+	return(out)
+}
+
 #' Radial IVW analysis
 #' 
 #' @param b_exp Vector of genetic effects on exposure

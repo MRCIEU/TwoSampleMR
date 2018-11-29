@@ -192,7 +192,7 @@ recode_indels_22 <- function(A1, A2, B1, B2)
 	keep[A1 == A2] <- FALSE
 	keep[B1 == B2] <- FALSE
 
-	return(data_frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep))
+	return(data.frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep, stringsAsFactors=FALSE))
 }
 
 
@@ -226,7 +226,7 @@ recode_indels_21 <- function(A1, A2, B1)
 	keep[(ncA1 > 1 & ncA1 == ncA2 & (B1 == "D" | B1 == "I"))] <- FALSE
 	keep[A1 == A2] <- FALSE
 
-	return(data_frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep))
+	return(data.frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep, stringsAsFactors=FALSE))
 }
 
 
@@ -260,7 +260,7 @@ recode_indels_12 <- function(A1, B1, B2)
 	keep[(ncB1 > 1 & ncB1 == ncB2 & (A1 == "D" | A1 == "I"))] <- FALSE
 	keep[B1 == B2] <- FALSE
 
-	return(data_frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep))
+	return(data.frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep, stringsAsFactors=FALSE))
 }
 
 
