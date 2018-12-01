@@ -37,7 +37,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2, jlog=NULL)
 	stopifnot(all(action %in% 1:3))
 
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
-	jlog[['counts']][['snp_ids_absent_from_reference']] <<- nrow(outcome) - nrow(res.tab)
+	jlog[['counts']][['snp_ids_absent_from_reference']] <<- nrow(outcome_dat) - nrow(res.tab)
 	ncombinations <- length(unique(res.tab$id.outcome))
 	if(length(action) == 1)
 	{
