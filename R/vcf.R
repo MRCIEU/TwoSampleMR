@@ -86,8 +86,6 @@ vcf_header <- function(build='b37', meta_data)
 {
 	stopifnot(build %in% c("b37", "b38"))
 	info <- c(
-		'##fileformat=VCFv4.2',
-		sapply(names(meta_data), function(x) paste0("##", x, "=", meta_data[[x]])),
 		'##INFO=<ID=B,Number=A,Type=Float,Description="Effect size estimate relative to the alternative allele(s)">',
 		'##INFO=<ID=SE,Number=A,Type=Float,Description="Standard error of effect size estimate">',
 		'##INFO=<ID=PVAL,Number=A,Type=Float,Description="P-value for effect estimate">',
@@ -100,7 +98,10 @@ vcf_header <- function(build='b37', meta_data)
 	b38 <- c(248956422, 242193529, 198295559, 190214555, 181538259, 170805979, 159345973, 145138636, 138394717, 133797422, 135086622, 133275309, 114364328, 107043718, 101991189, 90338345, 83257441, 80373285, 58617616, 64444167, 46709983, 50818468, 156040895, 57227415, 16569)
 
 	contig <- paste0("##contig=<ID=", chr,",length=", get(build),",assembly=",build,">")
-	return(c(info, contig))
+	meta_data <- unlist(meta_data)
+	extra_info <- sapply(names(meta_data), function(x) paste0("##", x, "=", meta_data[[x]]))
+	names(extra_info) <- NULL
+	return(c("##fileformat=VCFv4.2", contig, info, extra_info))
 }
 
 
