@@ -78,20 +78,21 @@ is_forward_strand <- function(gwas_snp, gwas_a1, gwas_a2, ref_snp, ref_a1, ref_a
 #' Only possible to use b37 or b38 at the moment. Obtained chromosome lengths obtained frmo fai files here http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/
 #'
 #' @param build='b37' Must be 'b37' or 'b38'
+#' @param meta_data Named list of attributes regarding the dataset
 #'
 #' @export
 #' @return Vector of strings to be used in vcfR package
-vcf_header <- function(build='b37', vcf_reference_name)
+vcf_header <- function(build='b37', meta_data)
 {
 	stopifnot(build %in% c("b37", "b38"))
 	info <- c(
 		'##fileformat=VCFv4.2',
-		paste0('##vcfreference=', vcf_reference_name),
+		sapply(names(meta_data), function(x) paste0("##", x, "=", meta_data[[x]])),
 		'##INFO=<ID=B,Number=A,Type=Float,Description="Effect size estimate relative to the alternative allele(s)">',
 		'##INFO=<ID=SE,Number=A,Type=Float,Description="Standard error of effect size estimate">',
 		'##INFO=<ID=PVAL,Number=A,Type=Float,Description="P-value for effect estimate">',
 		'##INFO=<ID=AF,Number=A,Type=Float,Description="Alternate allele frequency">',
-		'##INFO=<ID=N,Number=A,Type=Float,Description="Number of cases. 0 if continuous trait">')
+		'##INFO=<ID=N,Number=A,Type=Float,Description="Sample size used to estimate genetic effect">')
 
 	# From fai files here http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/
 	chr <- c(1:22, "X", "Y", "MT")
@@ -120,10 +121,11 @@ vcf_header <- function(build='b37', vcf_reference_name)
 #' @param AF Vector of allele frequencies for the alternative allele
 #' @param N Vector of total sample size for trait
 #' @param build="b37" Used in CHROM and POS. This argument used to generate the header. Must be 'b37' or 'b38'.
+#' @param meta_data Named list of attributes regarding the dataset
 #'
 #' @export
 #' @return vcfR object (with empty gt slot)
-make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N, build="b37", vcf_reference_name)
+make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N, build="b37", meta_data)
 {
 	requireNamespace("dplyr", quietly=TRUE)
 	stopifnot(all(!is.na(CHROM)))
@@ -166,7 +168,7 @@ make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N,
 	fixed[is.na(fixed)] <- "."
 	
 	vcf <- new(Class="vcfR")
-	vcf@meta <- vcf_header(build, vcf_reference_name)
+	vcf@meta <- vcf_header(build, meta_data)
 	vcf@fix <- as.matrix(fixed)
 	vcf@gt <- matrix("a", nrow=0, ncol=0)
 	return(vcf)
