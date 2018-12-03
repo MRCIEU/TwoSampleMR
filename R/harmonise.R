@@ -460,7 +460,7 @@ harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, actio
 	palindromic <- check_palindromic(B1, B2)
 	remove <- palindromic
 
-	indel_index <- nchar(B1) > 1 | nchar(AB) > 1 | B1 == "D" | B1 == "I"
+	indel_index <- nchar(B1) > 1 | nchar(B2) > 1 | B1 == "D" | B1 == "I"
 	temp <- recode_indels_21(A1[indel_index], B1[indel_index], B2[indel_index])
 
 	A1[indel_index] <- temp$A1
