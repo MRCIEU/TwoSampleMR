@@ -156,7 +156,7 @@ make_vcf <- function(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N,
 		info[[i]] <- paste0(i, "=", x)
 	}
 	fixed$INFO <- paste(
-		info$B, info$SE, info$PVAL, info$AF, info$N1, info$N0, sep=";"
+		info$B, info$SE, info$PVAL, info$AF, info$N, sep=";"
 	)
 	fixed <- dplyr::arrange(fixed, CHROM, POS)
 	fixed$CHROM <- as.character(fixed$CHROM)
