@@ -41,7 +41,8 @@ is_forward_strand <- function(gwas_snp, gwas_a1, gwas_a2, ref_snp, ref_a1, ref_a
 		return(2)
 	}
 
-	g <- dplyr::data_frame(SNP=gwas_snp, A1=toupper(gwas_a1), A2=toupper(gwas_a2))
+	g <- dplyr::data_frame(SNP=gwas_snp, A1=toupper(gwas_a1), A2=toupper(gwas_a2)) %>%
+    		subset(!is.na(SNP) & !is.na(A1) & !is.na(A2))
 	r <- dplyr::data_frame(SNP=ref_snp, A1=toupper(ref_a1), A2=toupper(ref_a2))
 
 	gr <- dplyr::inner_join(g,r,by="SNP")
