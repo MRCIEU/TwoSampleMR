@@ -42,7 +42,8 @@ Imports:
     RCurl,
     data.table,
     googleAuthR (>= 0.6.2),
-    httpuv
+    httpuv,
+    httr
 License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr

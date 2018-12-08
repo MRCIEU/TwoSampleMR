@@ -104,9 +104,77 @@ revoke_mrbase_access_token <- function()
 fromJSON_safe <- function(url)
 {
 	# r <- readLines(url, warn=FALSE)
-	r <- RCurl::getURL(url, timeout=300)
-	return(jsonlite::fromJSON(r))
+	# r <- RCurl::getURL(url, timeout=300)
+	r <- httr::GET(url, timeout(300))
+	if(status_code(r) >= 200 & status_code(r) < 300)
+	{
+		return(jsonlite::fromJSON(content(r, "text")))
+	} else {
+		stop("Sorry the server either timed out or is not available.\nIf simple queries aren't operating then it's likely that the MR-Base server is down.\nWe will be working to fix this but let us know if the problem persists.")
+	}
 }
+
+
+mrb_post <- function(url, body)
+{
+	ntry <- 0
+	ntries <- 3
+	while(ntry <= ntries)
+	{
+		r <- try(
+			httr::POST(
+				url, 
+				body, 
+				timeout(300)
+			),
+			silent=TRUE
+		)
+		if(class(r) == 'try-error' & grepl("Timeout", as.character(attributes(r)$condition)))
+		{
+			stop("The query to MR-Base exceeded 300 seconds and timed out. Please simplify the query")
+		}
+		if(class(r) != 'try-error')
+		{
+			break
+		}
+		ntry <- ntry + 1
+	}
+	if(class(r) == 'try-error')
+	{
+		if(grepl("Could not resolve host", as.character(attributes(r)$condition)))
+		{
+			stop("The MR-Base server appears to be down, the following error was received:\n", as.character(attributes(r)$condition))
+		} else {
+			stop("The following error was encountered in trying to query the MR-Base server:\n",
+				as.character(attributes(r)$condition)
+			)
+		}
+	}
+
+	st <- status_code(r)
+	ifelse(st >= 200 & st < 300, return(jsonlite::fromJSON(content(r, "text"))),
+	ifelse(st == 400, return(jsonlite::fromJSON(content(r, "text"))),
+
+
+	)
+	status_code(r))
+
+	if(status_code(r) >= 200 & status_code(r) < 300)
+	{
+		return(jsonlite::fromJSON(content(r, "text")))
+	} else {
+		stop("Sorry the server either timed out or is not available.\nIf simple queries aren't operating then it's likely that the MR-Base server is down.\nWe will be working to fix this but let us know if the problem persists.")
+	}
+}
+
+error_codes <- function(code)
+{
+	codes <- list(
+		data_frame(code=400, message = "Incorrect"),
+		data_frame(code=400, message = ""),
+	)
+}
+
 
 #' Check MR Base access level
 #'
