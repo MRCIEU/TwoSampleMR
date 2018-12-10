@@ -2,13 +2,13 @@
 % Please edit documentation in R/api.R
 \name{get_mrbase_status}
 \alias{get_mrbase_status}
-\title{Get number of studies in database}
+\title{MR-Base server status}
 \usage{
 get_mrbase_status()
 }
 \value{
-integer
+list of values regarding status
 }
 \description{
-Get number of studies in database
+MR-Base server status
 }

@@ -5,34 +5,6 @@
 #'
 #' @export
 #' @return NULL
-toggle_dev <- function(where="local")
-{
-	warning("This function has will soon be deprecated. Please use toggle_api.")
-
-	url <- switch(where,
-		local = "http://localhost/",
-		localtest = "http://localhost:8019/",
-		test = "http://apitest.mrbase.org/",
-		release = "http://api.mrbase.org/",
-		jojo = "http://jojo.epi.bris.ac.uk:8019/",
-		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
-	)
-	if(is.null(url))
-	{
-		url <- options()$mrbaseapi
-		warning("A valid API was not selected. No change")
-	}
-
-	options(mrbaseapi=url)
-	message("API: ", where, ": ", url)
-}
-
-#' Toggle API address between development and release
-#'
-#' @param where Which API to use. Choice between "local", "release", "test". Default = "local"
-#'
-#' @export
-#' @return NULL
 toggle_api <- function(where="release")
 {
 	url <- switch(where,
@@ -101,37 +73,46 @@ revoke_mrbase_access_token <- function()
 }
 
 
-fromJSON_safe <- function(url)
-{
-	# r <- readLines(url, warn=FALSE)
-	# r <- RCurl::getURL(url, timeout=300)
-	r <- httr::GET(url, timeout(300))
-	if(status_code(r) >= 200 & status_code(r) < 300)
-	{
-		return(jsonlite::fromJSON(content(r, "text")))
-	} else {
-		stop("Sorry the server either timed out or is not available.\nIf simple queries aren't operating then it's likely that the MR-Base server is down.\nWe will be working to fix this but let us know if the problem persists.")
-	}
-}
-
-
-mrb_post <- function(url, body)
+api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 {
 	ntry <- 0
 	ntries <- 3
 	while(ntry <= ntries)
 	{
-		r <- try(
-			httr::POST(
-				url, 
-				body, 
-				timeout(300)
-			),
-			silent=TRUE
-		)
-		if(class(r) == 'try-error' & grepl("Timeout", as.character(attributes(r)$condition)))
+		if(!is.null(query))
 		{
-			stop("The query to MR-Base exceeded 300 seconds and timed out. Please simplify the query")
+			r <- try(
+				httr::POST(
+					paste0(options()$mrbaseapi, path),
+					body = query, 
+					add_headers(
+						'Content-Type'='application/json; charset=UTF-8',
+						'X-Api-Token'=access_token
+					),
+					encode="json",
+					timeout(300)
+				),
+				silent=TRUE
+			)
+		} else {
+			r <- try(
+				httr::GET(
+					paste0(options()$mrbaseapi, path),
+					add_headers(
+						'Content-Type'='application/json; charset=UTF-8',
+						'X-Api-Token'=access_token
+					),
+					timeout(300)
+				),
+				silent=TRUE
+			)			
+		}
+		if(class(r) == 'try-error')
+		{
+			if(grepl("Timeout", as.character(attributes(r)$condition)))
+			{
+				stop("The query to MR-Base exceeded 300 seconds and timed out. Please simplify the query")
+			}
 		}
 		if(class(r) != 'try-error')
 		{
@@ -151,56 +132,32 @@ mrb_post <- function(url, body)
 		}
 	}
 
-	st <- status_code(r)
-	ifelse(st >= 200 & st < 300, return(jsonlite::fromJSON(content(r, "text"))),
-	ifelse(st == 400, return(jsonlite::fromJSON(content(r, "text"))),
-
-
-	)
-	status_code(r))
-
 	if(status_code(r) >= 200 & status_code(r) < 300)
 	{
-		return(jsonlite::fromJSON(content(r, "text")))
+		return(jsonlite::fromJSON(content(r, "text", encoding='UTF-8')))
 	} else {
 		stop("Sorry the server either timed out or is not available.\nIf simple queries aren't operating then it's likely that the MR-Base server is down.\nWe will be working to fix this but let us know if the problem persists.")
 	}
 }
 
-error_codes <- function(code)
-{
-	codes <- list(
-		data_frame(code=400, message = "Incorrect"),
-		data_frame(code=400, message = ""),
-	)
-}
+# error_codes <- function(code)
+# {
+# 	codes <- list(
+# 		data_frame(code=400, message = "Incorrect"),
+# 		data_frame(code=400, message = ""),
+# 	)
+# }
 
 
-#' Check MR Base access level
-#'
-#' In order to be granted access to a particular dataset that is not generally available please contact the developers.
-#'
+#' MR-Base server status
 #'
 #' @export
-#' @return access level string
-check_mrbase_access <- function()
-{
-	url <- paste0(options()$mrbaseapi, "check_token?access_token=", get_mrbase_access_token())
-	d <- fromJSON_safe(url)
-	return(d)
-}
-
-#' Get number of studies in database
-#'
-#'
-#' @export
-#' @return integer
+#' @return list of values regarding status
 get_mrbase_status <- function()
 {
-	url <- paste0(options()$mrbaseapi, "get_status")
-	d <- fromJSON_safe(url)[1,1]
-	return(d)	
+	api_query('status')
 }
+
 
 #' Get list of studies with available GWAS summary statistics through API
 #'
@@ -210,10 +167,28 @@ get_mrbase_status <- function()
 #' @return Dataframe of details for all available studies
 available_outcomes <- function(access_token = get_mrbase_access_token())
 {
-	url <- paste0(options()$mrbaseapi, "get_studies?access_token=", access_token)
-	return(fromJSON_safe(url))
+	message("DEPRECATED. Use gwasinfo() instead.")
+	return(api_query('gwasinfo', access_token=access_token))
 }
 
+
+#' Get list of studies with available GWAS summary statistics through API
+#'
+#' @param id List of MR-Base IDs to retrieve. If NULL (default) retrieves all available datasets
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#'
+#' @export
+#' @return Dataframe of details for all available studies
+gwasinfo <- function(id=NULL, access_token = get_mrbase_access_token())
+{
+	if(!is.null(id))
+	{
+		stopifnot(is.vector(id))
+		api_query('gwasinfo', query = list(id=id), access_token=access_token)
+	} else {
+		api_query('gwasinfo', access_token=access_token)
+	}
+}
 
 
 #' Upload a file using POST request through API
@@ -224,6 +199,7 @@ available_outcomes <- function(access_token = get_mrbase_access_token())
 #' @return basename of file
 upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 {
+	message("DEPRECATED. This may no longer work. Please check the manual")
 	uri <- paste0(options()$mrbaseapi, "upload")
 	filename <- paste0(tempfile(), ".txt")
 	f <- file(filename, open="wb")
@@ -287,38 +263,28 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 
 
 
-extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000)
+extract_outcome_data_internal <- function(snps, outcomes, proxies = 1, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000)
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
 	outcomes <- unique(outcomes)
 
-	if(proxies == FALSE)
-	{
-		proxies <- 0
-	} else if(proxies == TRUE)
-	{
-		proxies <- 1
-	} else {
-		stop("'proxies' argument should be TRUE or FALSE")
-	}
+	stopifnot(proxies %in% 0:1)
 
 	if((length(snps) < splitsize & length(outcomes) < splitsize) | (length(outcomes) < splitsize & length(snps) < splitsize))
 	{
-		snpfile <- upload_file_to_api(snps)
-		outcomefile <- upload_file_to_api(outcomes)
-
-		url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-			"access_token=", access_token,
-			"&outcomefile=", outcomefile,
-			"&snpfile=", snpfile,
-			"&proxies=", proxies,
-			"&rsq=", rsq,
-			"&align_alleles=", align_alleles,
-			"&palindromes=", palindromes,
-			"&maf_threshold=", maf_threshold
+		d <- api_query('assoc',
+			query = list(
+				id = outcomes,
+				rsid = snps,
+				proxies = proxies,
+				r2 = rsq,
+				align_alleles = align_alleles,
+				palindromes = palindromes,
+				maf_threshold = maf_threshold
+			),
+			access_token=access_token
 		)
-		d <- fromJSON_safe(url)
 		if(!is.data.frame(d)) d <- data.frame()
 
 	} else if(length(snps) > length(outcomes)) {
@@ -335,20 +301,18 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 			{
 				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
-				snpfile <- upload_file_to_api(x$snps)
-				outcomefile <- upload_file_to_api(outcomes[i])
-
-				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-					"access_token=", access_token,
-					"&outcomefile=", outcomefile,
-					"&snpfile=", snpfile,
-					"&proxies=", proxies,
-					"&rsq=", rsq,
-					"&align_alleles=", align_alleles,
-					"&palindromes=", palindromes,
-					"&maf_threshold=", maf_threshold
+				out <- api_query('assoc',
+					query = list(
+						id = outcomes,
+						rsid = snps,
+						proxies = proxies,
+						r2 = rsq,
+						align_alleles = align_alleles,
+						palindromes = palindromes,
+						maf_threshold = maf_threshold
+					),
+					access_token=access_token
 				)
-				out <- fromJSON_safe(url)
 				if(!is.data.frame(out)) out <- data.frame()
 				return(out)
 			})
@@ -369,20 +333,18 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 			{
 				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
-				snpfile <- upload_file_to_api(snps[i])
-				outcomefile <- upload_file_to_api(x$outcomes)
-
-				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-					"access_token=", access_token,
-					"&outcomefile=", outcomefile,
-					"&snpfile=", snpfile,
-					"&proxies=", proxies,
-					"&rsq=", rsq,
-					"&align_alleles=", align_alleles,
-					"&palindromes=", palindromes,
-					"&maf_threshold=", maf_threshold
+				out <- api_query('assoc',
+					query = list(
+						id = outcomes,
+						rsid = snps,
+						proxies = proxies,
+						r2 = rsq,
+						align_alleles = align_alleles,
+						palindromes = palindromes,
+						maf_threshold = maf_threshold
+					),
+					access_token=access_token
 				)
-				out <- fromJSON_safe(url)
 				if(!is.data.frame(out)) out <- data.frame()
 				return(out)
 			})
@@ -405,169 +367,6 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 	}
 }
 
-# Extract summary statistics from MySQL db through API given a list of SNPs and outcomes
-#'
-#' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
-#'
-#' @param snps Array of SNP rs IDs
-#' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
-#' @param proxies Look for LD tags? Default is TRUE.
-#' @param rsq Minimum LD rsq value (if proxies = 1). Default = 0.8.
-#' @param align_alleles = 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no
-#' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
-#' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
-#'
-#' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data2 <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
-{
-	snps <- unique(snps)
-	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
-	outcomes <- unique(outcomes)
-
-	splitsize <- 50
-
-	if((length(snps) < 5 & length(outcomes) < splitsize) | (length(outcomes) < 5 & length(snps) < splitsize))
-	{
-		snpfile <- upload_file_to_api(snps)
-		outcomefile <- upload_file_to_api(outcomes)
-
-		url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-			"access_token=", access_token,
-			"&outcomefile=", outcomefile,
-			"&snpfile=", snpfile,
-			"&proxies=", 0,
-			"&rsq=", rsq,
-			"&align_alleles=", align_alleles,
-			"&palindromes=", palindromes,
-			"&maf_threshold=", maf_threshold
-		)
-		d <- fromJSON_safe(url)
-
-	} else if(length(snps) > length(outcomes)) {
-
-		# Split snps 
-		n <- length(snps)		
-		splits <- data.frame(snps=snps, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
-		d <- list()
-		for(i in 1:length(outcomes))
-		{
-			message(i, " of ", length(outcomes), " outcomes")
-			
-			d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x)
-			{
-				x <- plyr::mutate(x)
-				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
-				snpfile <- upload_file_to_api(x$snps)
-				outcomefile <- upload_file_to_api(outcomes[i])
-
-				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-					"access_token=", access_token,
-					"&outcomefile=", outcomefile,
-					"&snpfile=", snpfile,
-					"&proxies=", 0,
-					"&rsq=", rsq,
-					"&align_alleles=", align_alleles,
-					"&palindromes=", palindromes,
-					"&maf_threshold=", maf_threshold
-				)
-				out <- fromJSON_safe(url)
-				if(!is.data.frame(out)) out <- data.frame()
-				return(out)
-			})
-		}
-
-		d <- plyr::rbind.fill(d)
-
-	} else {
-		# Split outcomes
-		n <- length(outcomes)
-		splits <- data.frame(outcomes=outcomes, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
-		d <- list()
-		for(i in 1:length(snps))
-		{
-			message(i, " of ", length(snps), " snps")
-			
-			d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x)
-			{
-				x <- plyr::mutate(x)
-				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
-				snpfile <- upload_file_to_api(snps[i])
-				outcomefile <- upload_file_to_api(x$outcomes)
-
-				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-					"access_token=", access_token,
-					"&outcomefile=", outcomefile,
-					"&snpfile=", snpfile,
-					"&proxies=", 0,
-					"&rsq=", rsq,
-					"&align_alleles=", align_alleles,
-					"&palindromes=", palindromes,
-					"&maf_threshold=", maf_threshold
-				)
-				out <- fromJSON_safe(url)
-				if(!is.data.frame(out)) out <- data.frame()
-				return(out)
-			})
-		}
-
-		d <- plyr::rbind.fill(d)
-
-	}
-
-	if(proxies == TRUE)
-	{
-		# For each outcome, find how many SNPs were identified
-		# Get list of SNPs that weren't identified
-		# Run analysis for that outcome again, using just the missing SNPs
-
-		nsnp <- length(snps)
-		d2 <- list()
-		for(i in 1:length(outcomes))
-		{
-			temp <- subset(d, id == outcomes[i])
-			if(nrow(temp) < nsnp)
-			{
-				message("Only found ", nrow(temp), " out of ", nsnp, " SNPs for outcome ", outcomes[i], ", searching for proxies")
-				snpsleft <- snps[!snps %in% temp$name]
-
-				snpfile <- upload_file_to_api(snpsleft)
-				outcomefile <- upload_file_to_api(outcomes[i])
-
-				url <- paste0(options()$mrbaseapi, "get_effects_from_file?",
-					"access_token=", access_token,
-					"&outcomefile=", outcomefile,
-					"&snpfile=", snpfile,
-					"&proxies=", 1,
-					"&rsq=", rsq,
-					"&align_alleles=", align_alleles,
-					"&palindromes=", palindromes,
-					"&maf_threshold=", maf_threshold
-				)
-				d2[[i]] <- fromJSON_safe(url)
-			}
-		}
-		d2 <- plyr::rbind.fill(d2)
-		d$proxy_snp <- d$name
-		d$target_snp <- d$name
-		d$target_a1 <- d$effect_allele
-		d$target_a2 <- d$other_allele
-		d$proxy_a1 <- d$effect_allele
-		d$proxy_a2 <- d$other_allele
-		d <- plyr::rbind.fill(d, d2)
-	}
-
-
-
-	if(is.null(nrow(d)) | nrow(d) == 0)
-	{
-		message("None of the requested SNPs were available in the specified GWASs.")
-		return(NULL)
-	}
-	d <- format_d(d)
-	d$data_source.outcome <- "mrbase"
-	return(d)
-}
 
 #' Avoid issues in MR by finding impossible vals and setting to NA
 #'
@@ -657,7 +456,6 @@ format_d <- function(d)
 
 	d$originalname.outcome <- d$outcome
 	d$outcome.deprecated <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
-	warning("From version 0.4.2 the outcome format has changed. You can find the deprecated version of the output name in outcome.deprecated")
 	d$outcome <- paste0(d$outcome, " || id:", d$id.outcome)
 
 	rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
@@ -686,33 +484,3 @@ format_d <- function(d)
 	return(d)	
 }
 
-
-
-
-# Extract outcome data given a set of SNPs
-#'
-#' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
-#' WARNING: This is unlikely to work correctly if there are a large number of SNPs
-#'
-#' @param exposure_dat Output from \code{read_exposure_data}
-#' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
-#' @export
-#' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data_using_get <- function(snps, outcomes)
-{
-	access_token <- get_mrbase_access_token()
-	snps <- unique(snps)
-	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
-	outcomes <- unique(outcomes)
-	snps <- paste(snps, collapse=",")
-	outcomes <- paste(outcomes, collapse=",")
-
-	url <- paste0(options()$mrbaseapi, "get_effects?access_token=", access_token, "&outcomes=", outcomes, "&snps=", snps)
-	d <- fromJSON_safe(url)
-	if(length(d) == 0)
-	{
-	  message("None of the requested SNPs were available in the specified GWASs.")
-	  return(NULL)
-	}
-	return(format_d(d))
-}

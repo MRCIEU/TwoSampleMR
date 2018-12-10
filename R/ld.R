@@ -95,13 +95,15 @@ plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump
 #' @return Data frame of only independent SNPs
 ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1)
 {
-	snpfile <- upload_file_to_api(data.frame(SNP=dat$SNP, P=dat$pval.exposure), header=TRUE)
-	url <- paste0(options()$mrbaseapi, "clump?snpfile=", snpfile,
-		"&p1=", clump_p1,
-		"&p2=", clump_p2,
-		"&r2=", clump_r2,
-		"&kb=", clump_kb)
-	res <- fromJSON_safe(url)
+	res <- api_query('clump',
+			query = list(
+				rsid = dat$SNP,
+				pval = dat$pval.exposure,
+				pthresh = clump_p1,
+				r2 = clump_r2,
+				kb = clump_kb
+			)
+		)
 	y <- subset(dat, !SNP %in% res$SNP)
 	if(nrow(y) > 0)
 	{
@@ -159,9 +161,8 @@ ld_matrix <- function(snps, with_alleles=TRUE)
 		stop("SNP list must be smaller than 500")
 	}
 
-	snpfile <- upload_file_to_api(data.frame(SNP=snps), header=FALSE)
-	url <- paste0(options()$mrbaseapi, "ld?snpfile=", snpfile)
-	res <- fromJSON_safe(url)
+	res <- api_query('ldmatrix', query = list(rsid=snps))
+
 	if(all(is.na(res))) stop("None of the requested SNPs were found")
 	snps2 <- res[1,]
 	res <- res[-1,, drop=FALSE]

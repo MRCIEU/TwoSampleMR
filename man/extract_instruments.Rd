@@ -4,7 +4,7 @@
 \alias{extract_instruments}
 \title{Find instruments for use in MR from the MR Base database}
 \usage{
-extract_instruments(outcomes, p1 = 5e-08, clump = TRUE, p2 = 5e-08,
+extract_instruments(outcomes, p1 = 5e-08, clump = 1, p2 = 5e-08,
   r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(),
   force_server = FALSE)
 }
@@ -13,7 +13,7 @@ extract_instruments(outcomes, p1 = 5e-08, clump = TRUE, p2 = 5e-08,
 
 \item{p1}{= 5e-8 Significance threshold}
 
-\item{clump}{= TRUE Whether to clump results}
+\item{clump}{= 1 Whether to clump results}
 
 \item{p2}{= 5e-8 Secondary clumping threshold}
 

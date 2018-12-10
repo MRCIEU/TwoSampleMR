@@ -5,7 +5,7 @@
 #'
 #' @param outcomes Array of outcome IDs (see \code{available_outcomes})
 #' @param p1 = 5e-8 Significance threshold
-#' @param clump = TRUE Whether to clump results
+#' @param clump = 1 Whether to clump results
 #' @param p2 = 5e-8 Secondary clumping threshold
 #' @param r2 = 0.001 Clumping r2 cut off
 #' @param kb = 10000 Clumping distance cutoff
@@ -14,7 +14,7 @@
 #'
 #' @export
 #' @return data frame
-extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(), force_server=FALSE)
+extract_instruments <- function(outcomes, p1 = 5e-8, clump = 1, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(), force_server=FALSE)
 {
 	outcomes <- unique(outcomes)
 
@@ -59,16 +59,8 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 	d <- list()
 	for(i in 1:length(outcomes))
 	{
-		message(" [>] ", i, " of ", length(outcomes))
-		url <- paste0(options()$mrbaseapi, "extract_instruments?access_token=", access_token,
-			"&outcomes=", outcomes[i], 
-			"&pval=", p1,
-			"&clump=", ifelse(clump, "yes", "no"),
-			"&p2=", p2,
-			"&r2=", r2,
-			"&kb=", kb
-		)
-		out <- fromJSON_safe(url)
+		message(" [>] ", i, " of ", length(outcomes))		
+		out <- api_query('tophits', query = list(id = outcomes[i], pval = p1, clump = as.numeric(clump), r2 = r2, kb = kb), access_token=access_token)
 		if(!is.data.frame(out)) out <- data.frame()
 		d[[i]] <- out
 	}
