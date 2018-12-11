@@ -153,11 +153,17 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 #'
 #' @export
 #' @return list of values regarding status
-get_mrbase_status <- function()
+api_status <- function()
 {
-	api_query('status')
+	o <- api_query('status')
+	class(o) <- "ApiStatus"
+	return(o)
 }
 
+print.ApiStatus <- function(x)
+{
+	lapply(names(x), function(y) cat(format(paste0(y, ":"), width=30, justify="right"), x[[y]], "\n"))
+}
 
 #' Get list of studies with available GWAS summary statistics through API
 #'

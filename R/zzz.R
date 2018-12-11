@@ -2,11 +2,8 @@
 
 	packageStartupMessage(
 		"Welcome to TwoSampleMR.\n",
-		"[>] Check for updates: https://github.com/MRCIEU/TwoSampleMR\n",
 		"[>] Full documentation: https://mrcieu.github.io/TwoSampleMR\n",
-		"[>] This version updates data reading and harmonising to accept indels.\n", 
-        "    You may wish to install a previous version to avoid new behaviour e.g.:\n",
-        "    devtools::install_github('MRCIEU/TwoSampleMR@0.4.16')"
+		"[>] Check the MR-Base database status using db_status()"
 	)
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
@@ -54,7 +51,7 @@
 	options(op.googleAuthR)
 
 	# options(mrbaseapi="http://scmv-webapps.epi.bris.ac.uk:5000/")
-	options(mrbaseapi="http://api.mrbase.org/")
+	options(mrbaseapi="http://apitest.mrbase.org/")
 
 	invisible()
 
