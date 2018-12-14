@@ -77,6 +77,11 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 {
 	ntry <- 0
 	ntries <- 3
+	headers <- httr::add_headers(
+		'Content-Type'='application/json; charset=UTF-8',
+		'X-Api-Token'=access_token,
+		'X-Api-Source'=ifelse(is.null(options()$mrbase.environment), 'R/TwoSampleMR', 'mr-base-shiny')
+	)
 	while(ntry <= ntries)
 	{
 		if(!is.null(query))
@@ -85,12 +90,9 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 				httr::POST(
 					paste0(options()$mrbaseapi, path),
 					body = query, 
-					add_headers(
-						'Content-Type'='application/json; charset=UTF-8',
-						'X-Api-Token'=access_token
-					),
+					headers,
 					encode="json",
-					timeout(300)
+					httr::timeout(300)
 				),
 				silent=TRUE
 			)
@@ -98,11 +100,8 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 			r <- try(
 				httr::GET(
 					paste0(options()$mrbaseapi, path),
-					add_headers(
-						'Content-Type'='application/json; charset=UTF-8',
-						'X-Api-Token'=access_token
-					),
-					timeout(300)
+					headers,
+					httr::timeout(300)
 				),
 				silent=TRUE
 			)			
@@ -132,9 +131,9 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 		}
 	}
 
-	if(status_code(r) >= 200 & status_code(r) < 300)
+	if(httr::status_code(r) >= 200 & httr::status_code(r) < 300)
 	{
-		return(jsonlite::fromJSON(content(r, "text", encoding='UTF-8')))
+		return(jsonlite::fromJSON(httr::content(r, "text", encoding='UTF-8')))
 	} else {
 		stop("Sorry the server either timed out or is not available.\nIf simple queries aren't operating then it's likely that the MR-Base server is down.\nWe will be working to fix this but let us know if the problem persists.")
 	}
