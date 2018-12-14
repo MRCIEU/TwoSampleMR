@@ -1,5 +1,96 @@
 # Two Sample MR
 
+
+TO DO
+
+Create object for MR results
+
+
+traitinfo
+- phenotype
+- units
+- sd
+- mean
+- author
+- consortium
+- pmid
+- 
+
+assoc
+- beta.exposure
+- beta.outcome
+- se.exposure
+- se.outcome
+- n.exposure
+- n.outcome
+- pval.exposure
+- pval.outcome
+- rsq.exposure
+- rsq.outcome
+- eaf.exposure
+- eaf.outcome
+- proxy.exposure
+- proxy.outcome
+
+
+
+1. Create the wald ratios
+
+
+MEAN
+
+IVW radial FE
+Egger radial FE
+IVW radial RE
+Egger radial RE
+
+Sign concordance test
+ Unweighted IVW
+
+
+
+Outlier removal
+
+IVW radial outlier
+Eggar radial outlier
+
+
+Median
+
+Weighted median
+Unweighted median
+
+
+Mode
+
+Weighted mode
+Unweighted mode
+
+
+Heterogeneity
+
+Cochran's Q
+Rucker's Q
+etc
+
+
+
+Selection
+
+Rucker jackknife median
+Rucker jackknife mean
+
+
+Mixture of experts
+
+
+
+
+
+
+
+
+
 Extended documentation is available here:
 
 [https://mrcieu.github.io/TwoSampleMR/](https://mrcieu.github.io/TwoSampleMR/)
