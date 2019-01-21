@@ -30,7 +30,8 @@ system_metrics <- function(dat)
 	metrics$nexp <- mean(dat$samplesize.exposure, na.rm=TRUE)
 
 	# F stats
-	Fstat <- qf(dat$pval.exposure, 1, dat$samplesize.exposure, lower.tail=FALSE)
+	# Fstat <- qf(dat$pval.exposure, 1, dat$samplesize.exposure, lower.tail=FALSE)
+	Fstat <- dat$beta.exposure^2 / dat$se.exposure^2
 	Fstat[is.infinite(Fstat)] <- 300
 	metrics$meanF <- mean(Fstat, na.rm=TRUE)
 	metrics$varF <- var(Fstat, na.rm=TRUE)
@@ -45,7 +46,9 @@ system_metrics <- function(dat)
 	}
 
 	if(nrow(dat) > 2)
-	{	
+	{
+		sct <- mr_sign(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+		metrics$sct <- -log10(sct$pval) * sign(sct$b)
 		# IF more than 2 SNP
 		ruck <- mr_rucker(dat)[[1]]
 

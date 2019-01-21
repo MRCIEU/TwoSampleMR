@@ -128,40 +128,32 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	Method <- rep(c('Simple mode', 'Weighted mode', 'Penalised mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))
 
 	#Return a data frame containing the results
-	Results <- data.frame(Method, length(b_exp), beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)
-	colnames(Results) <- c('Method', 'nsnp', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
+	id.exposure <- ifelse("id.exposure" %in% names(dat), dat$id.exposure[1], "")
+	id.outcome <- ifelse("id.outcome" %in% names(dat), dat$id.outcome[1], "")
+	Results <- data.frame(
+		id.exposure = id.exposure, 
+		id.outcome = id.outcome, 
+		method = Method, 
+		nsnp = length(b_exp), 
+		b = beta_Mode, 
+		se = se_Mode, 
+		ci_low = CIlow_Mode, 
+		ci_upp = CIupp_Mode, 
+		pval = P_Mode, 
+		stringsAsFactors=FALSE
+	)
 
 	if(mode_method == "all")
 	{
 		return(Results)
 	} else {
-		stopifnot(all(mode_method %in% Results$Method))
-		i <- which(Results$Method == mode_method)
-		return(list(b = Results$Estimate[i], se = Results$SE[i], pval=Results$P[i], nsnp=length(b_exp)))
+		stopifnot(all(mode_method %in% Results$method))
+		i <- which(Results$method == mode_method)
+		return(list(b = Results$b[i], se = Results$se[i], pval=Results$pval[i], nsnp=length(b_exp)))
 	}
 
 	return(Results)
 }
-
-
-mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
-{
-	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
-	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
-	betaIV <- b_out/b_exp # ratio estimates
-	betaIVW <- sum(b_out*b_exp*se_out^-2)/sum(b_exp^2*se_out^-2) # IVW estimate
-	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
-	weights <- 1/VBj
-	bwm <- mr_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
-	penalty <- pchisq(weights*(betaIV-bwm$b)^2, df=1, lower.tail=FALSE)
-	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
-	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
-	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, pen.weights, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
-	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
-}
-
-
 
 
 
