@@ -233,8 +233,7 @@ mr_wrapper_single <- function(dat)
 		if(nrow(dat_st) == 0)
 		{
 			m[[3]] <- m[[4]] <- list(
-				estimates=data_frame(Method="Steiger null", Estimate=0, SE=NA, CI_low=NA, CI_upp=NA, P=1),
-				nsnp=0
+				estimates=data_frame(method="Steiger null", nsnp = 0, b=0, se=NA, ci_low=NA, ci_upp=NA, pval=1)
 			)
 		} else {
 			m[[3]] <- mr_all(dat_st)
