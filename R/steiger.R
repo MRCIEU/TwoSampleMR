@@ -30,7 +30,7 @@ get_r_from_pn <- function(p, n)
 	message("Use get_r_from_lor for binary traits.")
 	optim.get_p_from_rn <- function(x, sample_size, pvalue)
 	{
-		abs(-log10(get_p_from_r2n(x, sample_size)) - -log10(pvalue))
+		abs(-log10(suppressWarnings(get_p_from_r2n(x, sample_size))) - -log10(pvalue))
 	}
 
 	if(length(p) > 1 & length(n) == 1)
