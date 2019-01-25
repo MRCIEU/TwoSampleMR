@@ -1,4 +1,5 @@
 
+
 #' Toggle API address between development and release
 #'
 #' @param where Which API to use. Choice between "local", "release", "test". Default = "local"
