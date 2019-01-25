@@ -318,3 +318,71 @@ mr_wrapper <- function(dat)
 		o
 	})
 }
+
+
+
+#' Read in masterlist of genetic associations
+#'
+#'
+#' @param filename 
+#'
+#' @export
+#' @return list of two data frames
+read_ml <- function(filename)
+{
+	a <- data.table::fread(paste0("gunzip -c ", filename))
+	names(a) <- c("rsid", "chr", "pos", "oa", "ea", "b", "se", "pval", "n", "eaf", "proxy.chr", "proxy.pos", "proxy.rsid", "id", "instrument")
+	names(a) <- c("SNP", "chr", "pos", "other_allele", "effect_allele", "beta", "se", "pval", "samplesize", "eaf", "proxy.chr", "proxy.pos", "proxy.rsid", "id", "instrument")
+	i <- gwasinfo(a$id[1], access_token=NULL)
+	a$units <- i$unit[1]
+	a$trait <- i$trait[1]
+	if(all(is.na(a$samplesize)))
+	{
+		a[, samplesize := as.numeric(samplesize)]
+		a[, samplesize := i$sample_size[1]]
+	}
+	if(!is.na(i$ncase) & !is.na(i$ncontrol))
+	{
+		a$ncase <- i$ncase
+		a$ncontrol <- i$ncontrol
+	} else {
+		a$ncase <- NA
+		a$ncontrol <- NA
+	}
+	b <- subset(a, instrument)
+	return(list(ml=a, inst=b))
+}
+
+#' Combine two ml objects to create a harmonised dataset
+#'
+#'
+#' @param ml1 Output from read_ml
+#' @param ml2 Output from read_ml
+#'
+#' @export
+#' @return data frame
+combine_ml <- function(ml1, ml2)
+{
+	a <- merge(ml1, ml2, by="SNP", suffixes=c(".exposure", ".outcome"))
+	a$mr_keep <- TRUE
+	names(a)[names(a) == "trait.exposure"] <- "exposure"
+	names(a)[names(a) == "trait.outcome"] <- "outcome"
+	return(a)
+}
+
+#' Do bi-directional MR
+#'
+#'
+#' @param ml1 Output from read_ml
+#' @param ml2 Output from read_ml
+#'
+#' @export
+#' @return List of MR results
+mr_wrapper_bd <- function(ml1, ml2)
+{
+	a <- combine_ml(ml1$inst, ml2$ml) %>% mr_wrapper
+	names(a) <- paste0(ml1$inst$id[1], "->", ml2$inst$id[1])
+	b <- combine_ml(ml2$inst, ml1$ml) %>% mr_wrapper
+	names(b) <- paste0(ml2$inst$id[1], "->", ml1$inst$id[1])
+	return(c(a,b))
+}

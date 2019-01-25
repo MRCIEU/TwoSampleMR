@@ -25,16 +25,6 @@ toggle_api <- function(where="release")
 	message("API: ", where, ": ", url)
 }
 
-where="locals"
-a <- switch(where,
-		local = "http://localhost/",
-		localtest = "http://localhost:8019/",
-		test = "http://apitest.mrbase.org/",
-		release = "http://api.mrbase.org/",
-		jojo = "http://jojo.epi.bris.ac.uk:8019/",
-		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
-	)
-
 
 #' Get access token for OAuth2 access to MR Base
 #'
