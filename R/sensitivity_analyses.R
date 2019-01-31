@@ -170,7 +170,7 @@ mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list =
 		het_tab <- data.frame(
 			outcome = x$outcome[1],
 			exposure = x$exposure[1],
-			method = methl$name[methl$obj %in% method_list],
+			method = methl$name[match(method_list, methl$obj)],
 			Q = sapply(res, function(x) x$Q),
 			Q_df = sapply(res, function(x) x$Q_df),
 			Q_pval = sapply(res, function(x) x$Q_pval)

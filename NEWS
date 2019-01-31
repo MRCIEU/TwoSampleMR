@@ -1,3 +1,13 @@
+TwoSampleMR v0.4.18 (Release date: 2019-01-31)
+==============
+
+Changes:
+
+* Fixed a bug in mr_heterogeneity that would have impacted a minority of cases. If the method list was being specified then the order of the results didn't always match the method (MR Egger and IVW were mixed up). This did not affect default usage.
+* Added index of suspicion functionality, and penalised mode estimator
+* Added transformation function to scale effect estimate units to SD scale
+* Starting to write change log again!
+
 TwoSampleMR v0.3.4 (Release date: 2017-11-30)
 ==============
 
