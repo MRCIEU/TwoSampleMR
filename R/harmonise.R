@@ -58,11 +58,13 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 		x <- subset(res.tab, id.exposure == combs$id.exposure[i] & id.outcome == combs$id.outcome[i])
 		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
 		x <- harmonise(x, 0.08, x$action[1])
-		attr(x, "log")[['variants_absent_from_reference']] <- sum(outcome_dat$id.outcome == x$id.outcome[1] & exposure_dat$id.exposure == x$id.exposure[1]) - nrow(x)
+		attr(x, "log")[['candidate_variants']] <- sum(exposure_dat$id.exposure == x$id.exposure[1])
+		attr(x, "log")[['variants_absent_from_reference']] <- sum(exposure_dat$id.exposure == x$id.exposure[1]) - nrow(x)
 
 		x$mr_keep[apply(x[, mr_cols], 1, function(y) any(is.na(y)))] <- FALSE
 		attr(x, "log")[["total_variants"]] <- nrow(x)
 		attr(x, "log")[["total_variants_for_mr"]] <- sum(x$mr_keep)
+		attr(x, "log")[["proxy_variants"]] <- ifelse(is.null(x$proxy.outcome), 0, sum(x$proxy.outcome, na.rm=TRUE))
 		fix.tab[[i]] <- x
 	}
 	# fix.tab <- plyr::dlply(res.tab, c("id.exposure", "id.outcome"), function(x)
