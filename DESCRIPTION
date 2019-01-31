@@ -1,6 +1,6 @@
 Package: TwoSampleMR
 Title: Two Sample MR functions and interface to MR Base database
-Version: 0.4.17
+Version: 0.4.18
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
@@ -33,7 +33,9 @@ Suggests:
     dplyr,
     igraph,
     mr.raps,
-    psych
+    RadialMR,
+    psych,
+    testthat
 Imports:
     meta,
     jsonlite,
@@ -45,4 +47,3 @@ License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.1.0
-

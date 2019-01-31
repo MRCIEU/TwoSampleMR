@@ -4,7 +4,7 @@
 \alias{vcf_header}
 \title{Generate VCF header based on genome build}
 \usage{
-vcf_header(build = "b37")
+vcf_header(build = "b37", vcf_reference_name)
 }
 \arguments{
 \item{build='b37'}{Must be 'b37' or 'b38'}

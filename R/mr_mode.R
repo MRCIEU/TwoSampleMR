@@ -71,10 +71,17 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 			beta.boot[i,1:length(phi)] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
 			#Weighted mode, not assuming NOME
 			beta.boot[i,(length(phi)+1):(2*length(phi))] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=seBetaIV.in[,1], phi=phi)
+			#Penalised mode, not assuming NOME
+			weights <- 1/seBetaIV.in[,1]^2
+			penalty <- pchisq(weights * (BetaIV.boot-beta.boot[i,(length(phi)+1):(2*length(phi))])^2, df=1, lower.tail=FALSE)
+			pen.weights <- weights*pmin(1, penalty*parameters$penk)
+
+			beta.boot[i,(2*length(phi)+1):(3*length(phi))] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=sqrt(1/pen.weights), phi=phi)
+
 			#Simple mode, assuming NOME
-			beta.boot[i,(2*length(phi)+1):(3*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
+			beta.boot[i,(3*length(phi)+1):(4*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
 			#Weighted mode, assuming NOME
-			beta.boot[i,(3*length(phi)+1):(4*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=seBetaIV.in[,2], phi=phi)
+			beta.boot[i,(4*length(phi)+1):(5*length(phi))] <- beta(BetaIV.in=BetaIV.boot_NOME, seBetaIV.in=seBetaIV.in[,2], phi=phi)
 		}
 		return(beta.boot)
 	}
@@ -96,13 +103,17 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 
 	#Point causal effect estimate using the weighted mode (not asusming NOME)
 	beta_WeightedMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,1], phi=phi)
+	weights <- 1/seBetaIV[,1]^2
+	penalty <- pchisq(weights * (BetaIV-beta_WeightedMode)^2, df=1, lower.tail=FALSE)
+	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized 
+
+	beta_PenalisedMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=sqrt(1/pen.weights), phi=phi)
 
 	#Point causal effect estimate using the weighted mode (asusming NOME)
 	beta_WeightedMode_NOME <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,2], phi=phi)
 
 	#Combine all point effect estimates in a single vector
-	beta_Mode <- rep(c(beta_SimpleMode, beta_WeightedMode,
-	beta_SimpleMode, beta_WeightedMode_NOME))
+	beta_Mode <- rep(c(beta_SimpleMode, beta_WeightedMode, beta_PenalisedMode, beta_SimpleMode, beta_WeightedMode_NOME))
 
 	#Compute SEs, confidence intervals and P-value
 	beta_Mode.boot <- boot(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV, beta_Mode.in=beta_Mode, nboot=nboot)
@@ -114,19 +125,31 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	P_Mode <- pt(abs(beta_Mode/se_Mode), df=length(b_exp)-1, lower.tail=F)*2
 
 	#Vector to indicate the method referring to each row
-	Method <- rep(c('Simple mode', 'Weighted mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))
+	Method <- rep(c('Simple mode', 'Weighted mode', 'Penalised mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))
 
 	#Return a data frame containing the results
-	Results <- data.frame(Method, length(b_exp), beta_Mode, se_Mode, CIlow_Mode, CIupp_Mode, P_Mode)
-	colnames(Results) <- c('Method', 'nsnp', 'Estimate', 'SE', 'CI_low', 'CI_upp', 'P')
+	id.exposure <- ifelse("id.exposure" %in% names(dat), dat$id.exposure[1], "")
+	id.outcome <- ifelse("id.outcome" %in% names(dat), dat$id.outcome[1], "")
+	Results <- data.frame(
+		id.exposure = id.exposure, 
+		id.outcome = id.outcome, 
+		method = Method, 
+		nsnp = length(b_exp), 
+		b = beta_Mode, 
+		se = se_Mode, 
+		ci_low = CIlow_Mode, 
+		ci_upp = CIupp_Mode, 
+		pval = P_Mode, 
+		stringsAsFactors=FALSE
+	)
 
 	if(mode_method == "all")
 	{
 		return(Results)
 	} else {
-		stopifnot(all(mode_method %in% Results$Method))
-		i <- which(Results$Method == mode_method)
-		return(list(b = Results$Estimate[i], se = Results$SE[i], pval=Results$P[i], nsnp=length(b_exp)))
+		stopifnot(all(mode_method %in% Results$method))
+		i <- which(Results$method == mode_method)
+		return(list(b = Results$b[i], se = Results$se[i], pval=Results$pval[i], nsnp=length(b_exp)))
 	}
 
 	return(Results)

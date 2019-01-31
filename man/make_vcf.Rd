@@ -4,8 +4,8 @@
 \alias{make_vcf}
 \title{Generate VCF format from GWAS summary dataset}
 \usage{
-make_vcf(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1, N0,
-  build = "b37")
+make_vcf(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N,
+  build = "b37", vcf_reference_name)
 }
 \arguments{
 \item{CHROM}{Vector of chromosome names}
@@ -30,9 +30,7 @@ make_vcf(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N1, N0,
 
 \item{AF}{Vector of allele frequencies for the alternative allele}
 
-\item{N1}{Vector of number of cases for each SNP. Vector of 0s if continuous trait}
-
-\item{N0}{Vector of number of controls for each SNP. Total sample size if continuous trait}
+\item{N}{Vector of total sample size for trait}
 
 \item{build="b37"}{Used in CHROM and POS. This argument used to generate the header. Must be 'b37' or 'b38'.}
 }
