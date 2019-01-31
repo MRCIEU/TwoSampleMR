@@ -3,7 +3,8 @@
 	packageStartupMessage(
 		"Welcome to TwoSampleMR.\n",
 		"[>] Full documentation: https://mrcieu.github.io/TwoSampleMR\n",
-		"[>] Check the MR-Base database status using db_status()"
+		"[>] Check the MR-Base database status using db_status()",
+		"[>] Check news(package='TwoSampleMR') for bug fixes and updates.\n" 
 	)
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))

@@ -131,9 +131,9 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
+format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, z_col="z", info_col="info")
 {
-	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col)
+	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col, z_col, info_col)
 
 	i <- names(dat) %in% all_cols
 	if(sum(i) == 0)
@@ -387,6 +387,15 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		names(dat)[which(names(dat) == gene_col)[1]] <- "gene.outcome"
 	}
 	
+	if(info_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == info_col)[1]] <- "info.outcome"
+	}
+
+	if(z_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == z_col)[1]] <- "z.outcome"
+	}
 
 	if(units_col %in% names(dat))
 	{
