@@ -298,6 +298,17 @@ mr_wrapper_single <- function(dat)
 	})
 	names(o) <- nom
 	o$info <- o$info %>% dplyr::mutate(nsnp_removed = first(nsnp)-nsnp)
+
+	snps_removed <- data_frame(
+		SNP = dat$SNP,
+		outlier = FALSE, steiger = FALSE, either = FALSE, both = FALSE
+	)
+	snps_removed$outlier[snps_removed$SNP %in% try(subset(m[[1]]$outliers, Qpval < 0.05)$SNP)] <- TRUE
+	snps_removed$steiger[snps_removed$SNP %in% try(subset(dat_st, !steiger_dir)$SNP)] <- TRUE
+	snps_removed$either[snps_removed$SNP %in% try(subset(dat_st, !steiger_dir | SNP %in% subset(m[[3]]$outliers, Qpval < 0.05)$SNP)$SNP)] <- TRUE
+	snps_removed$both[snps_removed$SNP %in% try(subset(dat_st, !steiger_dir & SNP %in% subset(m[[3]]$outliers, Qpval < 0.05)$SNP)$SNP)] <- TRUE
+	o$snps_removed <- snps_removed
+
 	return(o)
 }
 
