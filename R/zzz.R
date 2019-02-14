@@ -1,11 +1,13 @@
 .onLoad <- function(libname, pkgname) {
 
-	packageStartupMessage(
-		"Welcome to TwoSampleMR.\n",
-		"[>] Check for updates: https://github.com/MRCIEU/TwoSampleMR\n",
-		"[>] Full documentation: https://mrcieu.github.io/TwoSampleMR\n",
-		"[>] Please check news(package='TwoSampleMR') for bug fixes and updates.\n" 
-	)
+        packageStartupMessage(
+                "Welcome to TwoSampleMR.\n",
+                "[>] Full documentation: https://mrcieu.github.io/TwoSampleMR\n",
+                "[>] Check news(package='TwoSampleMR') for bug fixes and updates\n",
+                "[>] By generating access tokens to retrieve data from the MR-Base\n",
+                "    database you consent to having your email address logged on\n",
+                "    our servers. For info on how this is used see logging_info()\n"
+        )
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
 

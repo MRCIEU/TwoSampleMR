@@ -1,3 +1,17 @@
+#' Details of how access token logs are used
+#'
+#' @export
+#' @return NULL
+logging_info <- function()
+{
+	message(
+		"Please note that we log your email address to\n",
+		"a) ensure that you obtain appropriate access to the GWAS database,\n", 
+		"b) to compile usage statistics that help us keep this project funded, and\n", 
+		"c) to monitor inappropriate or unfair usage.\n",
+		"We do NOT log the queries that are being performed, and we do NOT share your email address with anybody else.")
+}
+
 
 #' Toggle API address between development and release
 #'

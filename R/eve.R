@@ -219,17 +219,25 @@ mr_wrapper_single <- function(dat)
 {
 	dat <- steiger_filtering(dat)
 	m <- list()
+	snps_retained <- data_frame(
+		SNP = dat$SNP,
+		outlier = FALSE, steiger = FALSE, both = FALSE
+	)
 	m[[1]] <- mr_all(dat)
 	if(!is.null(m[[1]]))
 	{
 		if("outliers" %in% names(m[[1]]))
 		{
-			m[[2]] <- mr_all(subset(dat, ! SNP %in% subset(m[[1]]$outliers, Qpval < 0.05)$SNP))
+			temp <- subset(dat, ! SNP %in% subset(m[[1]]$outliers, Qpval < 0.05)$SNP)
+			m[[2]] <- mr_all(temp)
+			snps_retained$outlier[snps_retained$SNP %in% temp$SNP] <- TRUE
 		} else {
 			m[[2]] <- m[[1]]
+			snps_retained$outlier <- TRUE
 		}
 
 		dat_st <- subset(dat, steiger_dir)
+		snps_retained$steiger[snps_retained$SNP %in% dat_st$SNP] <- TRUE
 		if(nrow(dat_st) == 0)
 		{
 			m[[3]] <- m[[4]] <- list(
@@ -239,9 +247,12 @@ mr_wrapper_single <- function(dat)
 			m[[3]] <- mr_all(dat_st)
 			if("outliers" %in% names(m[[3]]))
 			{
-				m[[4]] <- mr_all(subset(dat_st, ! SNP %in% subset(m[[3]]$outliers, Qpval < 0.05)$SNP))
+				temp <- subset(dat_st, ! SNP %in% subset(m[[3]]$outliers, Qpval < 0.05)$SNP)
+				m[[4]] <- mr_all(temp)
+				snps_retained$both[snps_retained$SNP %in% temp$SNP] <- TRUE
 			} else {
 				m[[4]] <- m[[3]]
+				snps_retained$both <- TRUE
 			}
 		}
 	}
@@ -298,6 +309,8 @@ mr_wrapper_single <- function(dat)
 	})
 	names(o) <- nom
 	o$info <- o$info %>% dplyr::mutate(nsnp_removed = first(nsnp)-nsnp)
+	o$snps_retained <- snps_retained
+
 	return(o)
 }
 
