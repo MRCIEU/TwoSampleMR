@@ -1,6 +1,6 @@
 Package: TwoSampleMR
 Title: Two Sample MR functions and interface to MR Base database
-Version: 0.4.20
+Version: 0.4.21
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
@@ -35,7 +35,8 @@ Suggests:
     mr.raps,
     RadialMR,
     psych,
-    testthat
+    testthat,
+    randomForest
 Imports:
     meta,
     jsonlite,

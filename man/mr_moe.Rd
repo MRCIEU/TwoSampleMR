@@ -4,16 +4,36 @@
 \alias{mr_moe}
 \title{Mixture of experts}
 \usage{
-mr_moe(dat, rf)
+mr_moe(res, rf)
 }
 \arguments{
-\item{dat}{Output from harmonise_data. Ensure that for continuous traits the p-value and sample size are not missing, and for binary traits the number of cases, number of controls and allele frequencies are provided. Must also ensure that the units are provided, with binary traits in units of 'log odds'.}
+\item{rf}{The trained random forest for the methods. This is available to download at https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0}
 
-\item{rf}{The trained random forest for the methods. This is available to download at https://www.dropbox.com/s/k0grrhh0ak8er7q/rf.rdata?dl=0}
+\item{dat}{Output from \code{mr_wrapper}.}
 }
 \value{
 List
 }
 \description{
-Mixture of experts
+Based on the method described here https://www.biorxiv.org/content/early/2017/08/23/173682
+Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.
+}
+\examples{
+
+# Example of body mass index on coronary heart disease
+# Extract and harmonise data
+a <- extract_instruments(2)
+b <- extract_outcome_data(a$SNP, 7)
+ab <- harmonise_data(a,b)
+
+# Apply all MR methods
+r <- mr_wrapper(ab)
+
+# Update the results with mixture of experts
+r <- mr_moe(r)
+
+# Now you can view the estimates, and see that they have 
+# been sorted in order from most likely to least likely to 
+# be accurate, based on MOE prediction
+r[[1]]$estimates
 }
