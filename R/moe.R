@@ -246,6 +246,6 @@ mr_moe_single <- function(res, rf)
 	res$estimates$selection[res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "HF"
 	res$estimates$selection[!res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "Tophits"
 	res$estimates$method2 <- paste(res$estimates$method, "-", res$estimates$selection)
-	res$estimates <- inner_join(res$estimates, pred, by=c("method2"="method")) %>% arrange(desc(MOE))
+	res$estimates <- left_join(res$estimates, pred, by=c("method2"="method")) %>% arrange(desc(MOE))
 	return(res)
 }
