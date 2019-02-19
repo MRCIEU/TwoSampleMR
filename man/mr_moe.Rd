@@ -18,19 +18,29 @@ List
 Based on the method described here https://www.biorxiv.org/content/early/2017/08/23/173682
 Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.
 }
+\details{
+The mr_moe function modified the `estimates` item in the list of results from the mr_wrapper function. It does three things: 1) Adds the MOE column, which is a predictor for each method for how well it performs in terms of high power and low type 1 error (scaled 0-1, where 1 is best performance). 2) It renames the methods to be the estimating method + the instrument selection method. There are 4 instrument selection methods: Tophits (i.e. no filtering), directional filtering (DF, an unthresholded version of Steiger filtering), heterogeneity filtering (HF, removing instruments that make substantial (p < 0.05) contributions to Cochran's Q statistic), and DF + HF which is where DF is applied and the HF applied on top of that. 3) It orders the table to be in order of best performing method.
+}
 \examples{
+
+# Load libraries
+library(dplyr)
+library(randomForest)
+library(car)
 
 # Example of body mass index on coronary heart disease
 # Extract and harmonise data
 a <- extract_instruments(2)
 b <- extract_outcome_data(a$SNP, 7)
-ab <- harmonise_data(a,b)
+dat <- harmonise_data(a,b)
 
 # Apply all MR methods
-r <- mr_wrapper(ab)
+r <- mr_wrapper(dat)
 
+# Load the rf object containing the trained models
+load("rf.rdata")
 # Update the results with mixture of experts
-r <- mr_moe(r)
+r <- mr_moe(r, rf)
 
 # Now you can view the estimates, and see that they have 
 # been sorted in order from most likely to least likely to 
