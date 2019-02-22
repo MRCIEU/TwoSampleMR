@@ -22,23 +22,7 @@ logging_info <- function()
 toggle_dev <- function(where="local")
 {
 	warning("This function has will soon be deprecated. Please use toggle_api.")
-
-	url <- switch(where,
-		local = "http://localhost/",
-		localtest = "http://localhost:8019/",
-		test = "http://apitest.mrbase.org/",
-		release = "http://api.mrbase.org/",
-		jojo = "http://jojo.epi.bris.ac.uk:8019/",
-		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
-	)
-	if(is.null(url))
-	{
-		url <- options()$mrbaseapi
-		warning("A valid API was not selected. No change")
-	}
-
-	options(mrbaseapi=url)
-	message("API: ", where, ": ", url)
+	toggle_api(where)
 }
 
 #' Toggle API address between development and release
@@ -53,7 +37,8 @@ toggle_api <- function(where="release")
 		local = "http://localhost/",
 		localtest = "http://localhost:8019/",
 		test = "http://apitest.mrbase.org/",
-		release = "http://api.mrbase.org/",
+		release = "http://api.mrbase.org/v1/",
+		old_release = "http://api.mrbase.org/",
 		jojo = "http://jojo.epi.bris.ac.uk:8019/",
 		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
 	)
@@ -66,17 +51,6 @@ toggle_api <- function(where="release")
 	options(mrbaseapi=url)
 	message("API: ", where, ": ", url)
 }
-
-where="locals"
-a <- switch(where,
-		local = "http://localhost/",
-		localtest = "http://localhost:8019/",
-		test = "http://apitest.mrbase.org/",
-		release = "http://api.mrbase.org/",
-		jojo = "http://jojo.epi.bris.ac.uk:8019/",
-		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
-	)
-
 
 #' Get access token for OAuth2 access to MR Base
 #'

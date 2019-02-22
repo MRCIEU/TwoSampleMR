@@ -1,3 +1,11 @@
+TwoSampleMR v0.4.22 (Release date: 2019-02-22)
+==============
+
+Changes:
+
+* Changing default API address in preparation for moving to version 0.5.0 which will use the new API
+
+
 TwoSampleMR v0.4.21 (Release date: 2019-02-19)
 ==============
 
