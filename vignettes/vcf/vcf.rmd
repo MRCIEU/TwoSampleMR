@@ -1,0 +1,288 @@
+---
+title: Using VCF to handle GWAS
+author: Gibran Hemani
+date: 18/11/2018
+---
+
+## Background
+
+Using VCF as a format for storing GWAS summary data. Possible benifits - 
+
+* Well known standard format
+* Potentially smaller after compression
+* Very fast tools already exist
+* Standardised tools can run implicit checks
+* Indexing will help with regional lookups
+* Standardised way to represent variant info including indels and multi-allelic variants
+* Easy to update build
+
+
+## Specification
+
+VCF has detailed specification here [http://samtools.github.io/hts-specs/VCFv4.3.pdf](http://samtools.github.io/hts-specs/VCFv4.3.pdf). We need an agreed way to apply the specification to GWAS summary data. Current implementation:
+
+1. Use only the first 8 fixed fields.
+2. QUAL will be set to missing (.) unless an obvious way to use it can be identified.
+3. ALT allele is always the effect allele. Ideally this is matched to a reference dataset. REF allele is always the non-effect allele
+4. For binary traits we want to store the number of cases and number of controls
+5. For continuous traits we use 0 for number of cases, and number of controls is the total sample size
+6. The INFO column will have fields describing the genetic association, as follows:
+	* B, Type = Float, Description = Effect size estimate relative to the alternative allele(s)
+	* SE, Type = Float, Description = Standard error of effect size estimate
+	* P, Type = Float, Description = P-value for effect estimate
+	* AF, Type = Float, Description = Alternate allele frequency
+	* N1, Type = Integer, Description = Number of cases. 0 if continuous trait
+	* N0, Type = Integer, Description = Number of controls. Total sample size if continuous trait
+7. FILTER is always PASS unless the variant does not meet some QC parameter.
+
+The VCF header encapsulating this info will look like this:
+
+```
+##INFO=<ID=B,Number=A,Type=Float,Description="Effect size estimate relative to the alternative allele(s)">
+##INFO=<ID=SE,Number=A,Type=Float,Description="Standard error of effect size estimate">
+##INFO=<ID=P,Number=A,Type=Float,Description="P-value for effect estimate">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Alternate allele frequency">
+##INFO=<ID=N1,Number=A,Type=Integer,Description="Number of cases. 0 if continuous trait">
+##INFO=<ID=N0,Number=A,Type=Integer,Description="Number of controls. Total sample size if continuous trait">
+```
+
+Missing values throughout are specified as ".", as standard for VCF.
+
+Custom annotations can be added i.e. ##gwas=casecontrol which are lowercase by convention
+
+## Reference FASTA
+
+The reference fasta should be downloaded from the GATK bundle:
+[b38/hg38](https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0)
+[b37/hg19](ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/b37)
+
+## Generating the data
+
+To run the following, first clone the TwoSampleMR repository
+
+```bash
+git clone git@github.com:MRCIEU/TwoSampleMR.git
+```
+
+Then navigate to here:
+
+```bash
+cd TwoSampleMR/vignettes/vcf
+```
+
+
+### Download some example datasets
+
+Start with two datasets, a reference (for example 1000 genomes) and a GWAS summary dataset (e.g. Locke et al 2015 BMI analysis). First we will convert the GWAS dataset to be harmonised against the reference dataset
+
+Download the example GWAS dataset:
+
+```{r engine='bash'}
+wget -q -O bmi.txt.gz https://www.dropbox.com/s/ph7in04w6dki2tv/bmi.txt.gz?dl=0
+gunzip -c bmi.txt.gz | head
+gunzip -c bmi.txt.gz | wc -l
+```
+
+Download the reference dataset:
+
+```{r engine='bash'}
+wget -q -O ref.txt.gz https://www.dropbox.com/s/8vgg08zip2wkayk/ref.txt.gz?dl=0
+gunzip -c ref.txt.gz | head
+gunzip -c ref.txt.gz | wc -l
+```
+
+### Harmonise the GWAS against the reference
+
+For simplicity I will just use the `harmonise_data` function in the `R/TwoSampleMR` package. This has limitations in that it throws away indels. The scripts that Denis is writing to harmonise against SNP-Base are going to be more appropriate, but this is just here for illustration.
+
+```{r engine='bash'}
+Rscript harmonise.r --gwas bmi.txt.gz --ref ref.txt.gz --out harmonised.rdata
+```
+
+
+### Create VCF files from the harmonised object
+
+Now that we have a file that has all the required columns:
+* CHROM
+* POS
+* ID (rs ID)
+* REF allele
+* ALT allele
+* BETA
+* SE
+* PVAL
+* NCASE
+* NCONTROL
+
+And they are all harmonised to a reference dataset, we can produce a vcf file using a couple of functions in the `TwoSampleMR` package
+
+```{r}
+library(TwoSampleMR)
+library(dplyr)
+library(vcfR)
+library(methods)
+library(utils)
+
+# This loads in the harmonised object that we just created - `gwas_h`
+load("harmonised.rdata")
+str(gwas_h)
+
+vcf <- TwoSampleMR::make_vcf(
+		ID = gwas_h$ID,
+		ALT = gwas_h$ALT, 
+		REF = gwas_h$REF, 
+		B = gwas_h$BETA, 
+		SE = gwas_h$SE, 
+		PVAL = gwas_h$PVALUE, 
+		N0 = gwas_h$NCONTROL, 
+		N1 = gwas_h$NCASE, 
+		CHROM = gwas_h$CHROM, 
+		POS = gwas_h$POS, 
+		AF = gwas_h$MAF, 
+		QUAL = rep(NA, nrow(gwas_h)),
+		FILTER = rep('PASS', nrow(gwas_h)), 
+		build = "b37"
+	)
+```
+
+We can see some basic stats about the file we just made using the `R/vcfR` package:
+
+
+```{r}
+vcf
+```
+
+Finally, we can write the correctly formatted data to file:
+
+```{r}
+TwoSampleMR::write_vcf(vcf, "bmi.vcf.gz")
+TwoSampleMR::write_vcf(vcf, "bmi.bcf")
+```
+
+## Testing the VCF files
+
+All VCF files should undergo validation before use using [gatk](https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_hellbender_tools_walkers_variantutils_ValidateVariants.php).
+
+```gatk ValidateVariants \
+-R <ref.fa> \
+-V <gwas.vcf> \
+--dbsnp <dbsnp.vcf>
+```
+
+We can use [bgzip](https://vcf.iobio.io/help.html), [tabix](https://vcf.iobio.io/help.html) and [bcftools](https://samtools.github.io/bcftools/) to work with VCF.
+
+Examples of how to compress and index (though the R functions previously run have done this already by calling these tools).
+
+Compress a `.vcf` with bgzip, then index:
+
+```bash
+bgzip -c bmi.vcf > bmi.vcf.gz
+bcftools index bmi.vcf.gz
+```
+
+Convert to `.bcf` which is a binary version of the text file:
+
+```bash
+bcftools view bmi.vcf.gz -Ob -o bmi.bcf
+bcftools index bmi.bcf
+```
+
+### Compare the sizes
+
+```{r engine='bash'}
+# bcf and index
+du -sh bmi.bcf bmi.bcf.csi
+```
+
+```{r engine='bash'}
+# vcf.gz and index
+du -sh bmi.vcf.gz bmi.vcf.gz.csi
+```
+
+```{r engine='bash'}
+# original gzip file
+du -sh bmi.txt.gz
+```
+
+The original gzip file is smallest, but it doesn't contain chromosome and position info. Surprisingly, bcf format is almost double the size of the gzip format, and vcf.gz is somewhere in between. 
+
+
+### Speed to extract by p-value
+
+```{r engine='bash'}
+# bcf
+time bcftools query -i'PVAL<5e-8' -f'%ID\n' bmi.bcf > extract.txt && wc -l extract.txt
+```
+
+```{r engine='bash'}
+# vcf.gz
+time bcftools query -i'PVAL<5e-8' -f'%ID\n' bmi.vcf.gz > extract.txt && wc -l extract.txt
+```
+
+```{r engine='bash'}
+# for comparison - original gzip file
+time gunzip -c bmi.txt.gz | awk -F '\t' '$7 < 5e-8 {print $1}' > extract.txt && wc -l extract.txt
+```
+
+Extracting using awk is very slow, bcf format is extremely fast, though how this compares to elastic is not clear.
+
+### Speed to extract by rs ID
+
+```{r engine='bash'}
+# bcf
+time bcftools view -i'ID=@extract.txt' -Ob bmi.bcf > extract.bcf
+```
+
+```{r engine='bash'}
+# vcf.gz
+time bcftools view -i'ID=@extract.txt' -Oz bmi.vcf.gz > extract.vcf.gz
+```
+
+```{r engine='bash'}
+# For comparison we can just try grepping from the original file.
+# time zfgrep -wf extract.txt bmi.txt.gz | gzip -c > test.txt.gz
+## Not running this because it takes several minutes
+```
+
+### Speed to extract by chromosome and position
+
+Using chrom and position is even faster than extracting by rs ID
+
+```{r engine='bash'}
+# Extract top hits again but save chrom and position
+time bcftools query -i'PVAL<5e-8' -f'%CHROM\t%POS\n' bmi.bcf > extract.txt && wc -l extract.txt
+```
+
+```{r engine='bash'}
+# extract from bcf
+time bcftools filter -R extract.txt bmi.bcf > extract.bcf
+```
+
+```{r engine='bash'}
+# extract from vcf.gz
+time bcftools filter -R extract.txt bmi.vcf.gz > extract.bcf
+```
+
+
+## Create format used for elastic
+
+This is the tab delimited file being uploaded to elastic search db:
+
+```{r engine='bash'}
+time bcftools query -f'%ID\t%ALT\t%REF\t%AF\t%B\t%SE\t%PVAL\t%N1\t%N0\n' bmi.bcf | sed 's@\t\.@\t@g' | grep -v '$\.' > elastic.txt
+head elastic.txt
+```
+
+Ideally would create it like this - 
+- no alleles
+- no total sample size (N)
+- for case/control N1 and N0 are number of cases and number of controls
+- for continuous N1 is 0 and N0 is total sample size
+
+```{r engine='bash'}
+time bcftools query -f'%ID\t%AF\t%B\t%SE\t%PVAL\t%N1\t%N0\n' bmi.bcf | sed 's@\t\.@\t@g' | grep -v '$\.' > elastic.txt
+head elastic.txt
+```
+
+
+

@@ -1,3 +1,10 @@
+#' Calculate I-square
+#'
+#' @param y Vector of effect estimates
+#' @param s Vector of standard errors
+#'
+#' @export
+#' @return Numeric
 Isq <- function(y,s)
 {
 	k <- length(y)
@@ -23,7 +30,8 @@ system_metrics <- function(dat)
 	metrics$nexp <- mean(dat$samplesize.exposure, na.rm=TRUE)
 
 	# F stats
-	Fstat <- qf(dat$pval.exposure, 1, dat$samplesize.exposure, lower.tail=FALSE)
+	# Fstat <- qf(dat$pval.exposure, 1, dat$samplesize.exposure, lower.tail=FALSE)
+	Fstat <- dat$beta.exposure^2 / dat$se.exposure^2
 	Fstat[is.infinite(Fstat)] <- 300
 	metrics$meanF <- mean(Fstat, na.rm=TRUE)
 	metrics$varF <- var(Fstat, na.rm=TRUE)
@@ -38,7 +46,9 @@ system_metrics <- function(dat)
 	}
 
 	if(nrow(dat) > 2)
-	{	
+	{
+		sct <- mr_sign(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+		metrics$sct <- -log10(sct$pval) * sign(sct$b)
 		# IF more than 2 SNP
 		ruck <- mr_rucker(dat)[[1]]
 
@@ -81,53 +91,6 @@ system_metrics <- function(dat)
 	return(metrics)
 }
 
-get_metrics <- function(dat)
-{
-	metrics <- system_metrics(dat)
-	# Steiger
-	steiger_keep <- dat$steiger_dir
-	metrics$st_correct <- sum(steiger_keep) / nrow(dat)
-	metrics$st_unknown <- sum(dat$steiger_pval < 0.05) / nrow(dat)
-	metrics$st_incorrect <-  sum(!dat$steiger_dir & dat$steiger_pval < 0.05) / nrow(dat)
-
-	dat2 <- dat[steiger_keep, ]
-	if(nrow(dat2) > 0)
-	{
-		metrics2 <- system_metrics(dat2)
-		names(metrics2) <- paste0(names(metrics2), "_after_steiger")
-		metrics <- c(metrics, metrics2)
-	}
-	return(metrics)
-}
-
-get_rf_method <- function(m1, m2, ds, rf)
-{
-	nom <- names(rf)
-	l <- list()
-		res1 <- m1$out
-		res1$Method <- paste0(res1$Method, " - tophits")
-		res2 <- m2$out
-		res2$Method <- paste0(res2$Method, " - steiger")
-		res <- dplyr::bind_rows(res1, res2)
-		if(nrow(m2$dat) > 5)
-		{
-			message("RF")
-			met <- as.data.frame(get_metrics(ds))
-			pr <- rep(0, length(rf))
-			for(i in 1:length(pr))
-			{
-				pr[i] <- predict(rf[[i]], met)
-			}
-			pr <- data.frame(pr=pr, Method=nom)
-			res <- dplyr::left_join(res, pr, by="Method")
-			ress <- res[which.max(res$pr)[1], ]
-			# n[[j]] <- data.frame(id.exposure=res$id.exposure[1], id.outcome=res$id.outcome[1], exposure=res$exposure[1], outcome=res$outcome[1], selected_method=ress$Method)
-			ress$Method <- "RF"
-			res <- rbind(res, ress)
-		}
-
-	return(res)
-}
 
 get_rsq <- function(dat)
 {
@@ -201,57 +164,88 @@ get_rsq <- function(dat)
 }
 
 
-
 #' Mixture of experts
 #'
-#' @param dat Output from harmonise_data. Ensure that for continuous traits the p-value and sample size are not missing, and for binary traits the number of cases, number of controls and allele frequencies are provided. Must also ensure that the units are provided, with binary traits in units of 'log odds'.
-#' @param rf The trained random forest for the methods. This is available to download at https://www.dropbox.com/s/k0grrhh0ak8er7q/rf.rdata?dl=0
+#' Based on the method described here https://www.biorxiv.org/content/early/2017/08/23/173682
+#' Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.
 #'
+#' @param dat Output from \code{mr_wrapper}. 
+#' @param rf The trained random forest for the methods. This is available to download at https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0
+#'
+#' @details
+#' The mr_moe function modified the `estimates` item in the list of results from the mr_wrapper function. It does three things: 1) Adds the MOE column, which is a predictor for each method for how well it performs in terms of high power and low type 1 error (scaled 0-1, where 1 is best performance). 2) It renames the methods to be the estimating method + the instrument selection method. There are 4 instrument selection methods: Tophits (i.e. no filtering), directional filtering (DF, an unthresholded version of Steiger filtering), heterogeneity filtering (HF, removing instruments that make substantial (p < 0.05) contributions to Cochran's Q statistic), and DF + HF which is where DF is applied and the HF applied on top of that. 3) It orders the table to be in order of best performing method.
+
+#' Note that the mixture of experts has only been trained on datasets with at least 5 SNPs. If your dataset has fewer than 5 SNPs this function might return errors
+
 #' @export
 #' @return List
-mr_moe <- function(dat, rf)
+#' @examples
+#' 
+#' # Load libraries
+#' library(dplyr)
+#' library(randomForest)
+#' library(car)
+#' 
+#' # Example of body mass index on coronary heart disease
+#' # Extract and harmonise data
+#' a <- extract_instruments(2)
+#' b <- extract_outcome_data(a$SNP, 7)
+#' dat <- harmonise_data(a,b)
+#' 
+#' # Apply all MR methods
+#' r <- mr_wrapper(dat)
+#' 
+#' # Load the rf object containing the trained models
+#' load("rf.rdata")
+#' # Update the results with mixture of experts
+#' r <- mr_moe(r, rf)
+#' 
+#' # Now you can view the estimates, and see that they have 
+#' # been sorted in order from most likely to least likely to 
+#' # be accurate, based on MOE prediction
+#' r[[1]]$estimates
+mr_moe <- function(res, rf)
 {
+	require(dplyr)
 	require(randomForest)
-	dat <- suppressMessages(get_rsq(dat))
-	st <- psych::r.test(
-		n = dat$samplesize.exposure, 
-		n2 = dat$samplesize.outcome, 
-		r12 = sqrt(dat$rsq.exposure), 
-		r34 = sqrt(dat$rsq.outcome)
-	)
-
-	dat$steiger_dir <- dat$rsq.exposure > dat$rsq.outcome
-	dat$steiger_pval <- st$p
-
-	dat <- subset(dat, mr_keep)
-	d <- subset(dat, !duplicated(paste(id.exposure, " - ", id.outcome)), 
-		select=c(exposure, outcome, id.exposure, id.outcome)
-	)
-	res <- list()
-
-	for(j in 1:nrow(d))
+	lapply(res, function(x)
 	{
-		res[[j]] <- list()		
-		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
-		res[[j]]$exposure <- x$exposure[1]
-		res[[j]]$outcome <- x$outcome[1]
-		res[[j]]$id.exposure <- x$id.exposure[1]
-		res[[j]]$id.outcome <- x$id.outcome[1]
+		o <- try(mr_moe_single(x, rf))
+		if(class(o) == "try-error")
+		{
+			return(x)
+		} else {
+			return(o)
+		}
+	})
+}
 
-		message(d$exposure[j], " - ", d$outcome[j])
-		message("Basic methods")
-		m1 <- suppressMessages(run_mr(subset(x, id.exposure != id.outcome))[[1]])
-		message("Applying Steiger filtering")
-		m2 <- suppressMessages(run_mr(subset(x, id.exposure != id.outcome & steiger_dir))[[1]])
-		message("Mixture of experts")
-		m3 <- get_rf_method(m1, m2, x, rf)
-		res[[j]]$m1 <- m1
-		res[[j]]$m2 <- m2
-		res[[j]]$m3 <- m3
+
+mr_moe_single <- function(res, rf)
+{
+	require(dplyr)
+	require(randomForest)
+	metric <- res$info[1,] %>% dplyr::select(-c(id.exposure, id.outcome, steiger_filtered, outlier_filtered, nsnp_removed))
+
+	methodlist <- names(rf)
+	pred <- lapply(methodlist, function(m)
+	{
+		d <- tibble(
+			method = m,
+			MOE = predict(rf[[m]], metric, type="prob")[,2]
+		)
+		return(d)
+	}) %>% bind_rows %>% arrange(desc(MOE))
+	if("MOE" %in% names(res$estimates))
+	{
+		message("Overwriting previous MOE estimate")
+		res$estimates <- subset(res$estimates, select=-c(MOE, method2))
 	}
-
-	attributes(res) <- d
-
+	res$estimates$selection <- "DF + HF"
+	res$estimates$selection[!res$estimates$outlier_filtered & res$estimates$steiger_filtered] <- "DF"
+	res$estimates$selection[res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "HF"
+	res$estimates$selection[!res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "Tophits"
+	res$estimates$method2 <- paste(res$estimates$method, "-", res$estimates$selection)
+	res$estimates <- left_join(res$estimates, pred, by=c("method2"="method")) %>% arrange(desc(MOE))
 	return(res)
-
 }

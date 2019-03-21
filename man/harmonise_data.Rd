@@ -39,4 +39,6 @@ This means the inputs must be dataframes with the following columns:
 - effect_allele.exposure
 - other_allele.exposure
 - eaf.exposure
+
+The function tries to harmonise INDELs. If they are coded as sequence strings things work more smoothly. If they are coded as D/I in one dataset it will try to convert them to sequences if the other dataset has adequate information. If coded as D/I in one dataset and as a variant with equal length INDEL alleles in the other, the variant is dropped. If one or both the datasets only has one allele (i.e. the effect allele) then harmonisation is naturally going to be more ambiguous and more variants will be dropped.
 }

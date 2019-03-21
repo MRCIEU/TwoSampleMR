@@ -24,6 +24,8 @@
 #' - other_allele.exposure
 #' - eaf.exposure
 #'
+#' The function tries to harmonise INDELs. If they are coded as sequence strings things work more smoothly. If they are coded as D/I in one dataset it will try to convert them to sequences if the other dataset has adequate information. If coded as D/I in one dataset and as a variant with equal length INDEL alleles in the other, the variant is dropped. If one or both the datasets only has one allele (i.e. the effect allele) then harmonisation is naturally going to be more ambiguous and more variants will be dropped.
+#'
 #' @param exposure_dat Output from \code{read_exposure_data}
 #' @param outcome_dat Output from \code{extract_outcome_data}
 #' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended); 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis. If a single value is passed then this action is applied to all outcomes. But multiple values can be supplied as a vector, each element relating to a different outcome.
@@ -33,7 +35,6 @@
 harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 {
 	stopifnot(all(action %in% 1:3))
-
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
 	ncombinations <- length(unique(res.tab$id.outcome))
 	if(length(action) == 1)
@@ -48,28 +49,45 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 	d <- data.frame(id.outcome=unique(res.tab$id.outcome), action=action)
 	res.tab <- merge(res.tab, d, by="id.outcome")
 
-	fix.tab <- plyr::ddply(res.tab, c("id.exposure", "id.outcome"), function(x)
-	{
-		x <- plyr::mutate(x)
-		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
+	combs <- subset(res.tab, !duplicated(paste(id.exposure, id.outcome)), select=c(id.exposure, id.outcome))
 
-# SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action		
-		x <- harmonise_function_refactored(x, 0.08, x$action[1])
-		# x <- harmonise_function(x, x$action[1])
-		return(x)
-	})
+	fix.tab <- list()
 	mr_cols <- c("beta.exposure", "beta.outcome", "se.exposure", "se.outcome")
-	fix.tab$mr_keep[apply(fix.tab[, mr_cols], 1, function(x) any(is.na(x)))] <- FALSE
+	for(i in 1:nrow(combs))
+	{
+		x <- subset(res.tab, id.exposure == combs$id.exposure[i] & id.outcome == combs$id.outcome[i])
+		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
+		x <- harmonise(x, 0.08, x$action[1])
+		attr(x, "log")[['candidate_variants']] <- sum(exposure_dat$id.exposure == x$id.exposure[1])
+		attr(x, "log")[['variants_absent_from_reference']] <- sum(exposure_dat$id.exposure == x$id.exposure[1]) - nrow(x)
+
+		x$mr_keep[apply(x[, mr_cols], 1, function(y) any(is.na(y)))] <- FALSE
+		attr(x, "log")[["total_variants"]] <- nrow(x)
+		attr(x, "log")[["total_variants_for_mr"]] <- sum(x$mr_keep)
+		attr(x, "log")[["proxy_variants"]] <- ifelse(is.null(x$proxy.outcome), 0, sum(x$proxy.outcome, na.rm=TRUE))
+		fix.tab[[i]] <- x
+	}
+	# fix.tab <- plyr::dlply(res.tab, c("id.exposure", "id.outcome"), function(x)
+	# {
+	# 	x <- plyr::mutate(x)
+	# 	message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
+
+	# 	return(x)
+	# })
+
+	jlog <- plyr::rbind.fill(lapply(fix.tab, function(x) attr(x, "log")))
+	fix.tab <- plyr::rbind.fill(fix.tab)
+	attr(fix.tab, "log") <- jlog
+
 	# fix.tab <- harmonise_make_snp_effects_positive(fix.tab)
 	if(!"samplesize.outcome" %in% names(fix.tab))
 	{
 		fix.tab$samplesize.outcome <- NA
 	}
+
+
 	return(fix.tab)
 }
-
-
-
 
 
 harmonise_cleanup_variables <- function(res.tab)
@@ -109,8 +127,6 @@ harmonise_make_snp_effects_positive <- function(res.tab)
 }
 
 
-## Refactoring
-
 check_palindromic <- function(A1, A2)
 {
 	(A1 == "T" & A2 == "A") |
@@ -120,24 +136,158 @@ check_palindromic <- function(A1, A2)
 }
 
 
-flip_alleles <- function(A1)
+flip_alleles <- function(x)
 {
-	A2 <- A1
-	A2[A1 == "A"] <- "T"
-	A2[A1 == "T"] <- "A"
-	A2[A1 == "G"] <- "C"
-	A2[A1 == "C"] <- "G"
-	return(A2)
+	x <- toupper(x)
+	x <- gsub("C", "g", x)
+	x <- gsub("G", "c", x)
+	x <- gsub("A", "t", x)
+	x <- gsub("T", "a", x)
+	return(toupper(x))
 }
+
+
+recode_indels_22 <- function(A1, A2, B1, B2)
+{
+
+	ncA1 <- nchar(A1)
+	ncA2 <- nchar(A2)
+	ncB1 <- nchar(B1)
+	ncB2 <- nchar(B2)
+
+
+	i1 <- ncA1 > ncA2 & B1 == "I" & B2 == "D"
+	B1[i1] <- A1[i1]
+	B2[i1] <- A2[i1]
+
+	i1 <- ncA1 < ncA2 & B1 == "I" & B2 == "D"
+	B1[i1] <- A2[i1]
+	B2[i1] <- A1[i1]
+
+	i1 <- ncA1 > ncA2 & B1 == "D" & B2 == "I"
+	B1[i1] <- A2[i1]
+	B2[i1] <- A1[i1]
+
+	i1 <- ncA1 < ncA2 & B1 == "D" & B2 == "I"
+	B1[i1] <- A1[i1]
+	B2[i1] <- A2[i1]
+	
+
+	i1 <- ncB1 > ncB2 & A1 == "I" & A2 == "D"
+	A1[i1] <- B1[i1]
+	A2[i1] <- B2[i1]
+
+	i1 <- ncB1 < ncB2 & A1 == "I" & A2 == "D"
+	A2[i1] <- B1[i1]
+	A1[i1] <- B2[i1]
+
+	i1 <- ncB1 > ncB2 & A1 == "D" & A2 == "I"
+	A2[i1] <- B1[i1]
+	A1[i1] <- B2[i1]
+
+	i1 <- ncB1 < ncB2 & A1 == "D" & A2 == "I"
+	A1[i1] <- B1[i1]
+	A2[i1] <- B2[i1]
+
+	keep <- rep(TRUE, length(A1))
+	keep[(ncA1 > 1 & ncA1 == ncA2 & (B1 == "D" | B1 == "I"))] <- FALSE
+	keep[(ncB1 > 1 & ncB1 == ncB2 & (A1 == "D" | A1 == "I"))] <- FALSE
+	keep[A1 == A2] <- FALSE
+	keep[B1 == B2] <- FALSE
+
+	return(data.frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep, stringsAsFactors=FALSE))
+}
+
+
+recode_indels_21 <- function(A1, A2, B1)
+{
+	ncA1 <- nchar(A1)
+	ncA2 <- nchar(A2)
+	ncB1 <- nchar(B1)
+
+	B2 <- rep(NA, length(B1))
+
+	i1 <- ncA1 > ncA2 & B1 == "I"
+	B1[i1] <- A1[i1]
+	B2[i1] <- A2[i1]
+
+	i1 <- ncA1 < ncA2 & B1 == "I"
+	B1[i1] <- A2[i1]
+	B2[i1] <- A1[i1]
+
+	i1 <- ncA1 > ncA2 & B1 == "D"
+	B1[i1] <- A2[i1]
+	B2[i1] <- A1[i1]
+
+	i1 <- ncA1 < ncA2 & B1 == "D"
+	B1[i1] <- A1[i1]
+	B2[i1] <- A2[i1]
+
+	keep <- rep(TRUE, length(A1))
+	keep[A1 == "I" & A2 == "D"] <- FALSE
+	keep[A1 == "D" & A2 == "I"] <- FALSE
+	keep[(ncA1 > 1 & ncA1 == ncA2 & (B1 == "D" | B1 == "I"))] <- FALSE
+	keep[A1 == A2] <- FALSE
+
+	return(data.frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep, stringsAsFactors=FALSE))
+}
+
+
+recode_indels_12 <- function(A1, B1, B2)
+{
+	ncA1 <- nchar(A1)
+	ncB1 <- nchar(B1)
+	ncB2 <- nchar(B2)
+
+	A2 <- rep(NA, length(A1))
+
+	i1 <- ncB1 > ncB2 & A1 == "I"
+	A1[i1] <- B1[i1]
+	A2[i1] <- B2[i1]
+
+	i1 <- ncB1 < ncB2 & A1 == "I"
+	A2[i1] <- B1[i1]
+	A1[i1] <- B2[i1]
+
+	i1 <- ncB1 > ncB2 & A1 == "D"
+	A2[i1] <- B1[i1]
+	A1[i1] <- B2[i1]
+
+	i1 <- ncB1 < ncB2 & A1 == "D"
+	A1[i1] <- B1[i1]
+	A2[i1] <- B2[i1]
+
+	keep <- rep(TRUE, length(A1))
+	keep[B1 == "I" & B2 == "D"] <- FALSE
+	keep[B1 == "D" & B2 == "I"] <- FALSE
+	keep[(ncB1 > 1 & ncB1 == ncB2 & (A1 == "D" | A1 == "I"))] <- FALSE
+	keep[B1 == B2] <- FALSE
+
+	return(data.frame(A1=A1, A2=A2, B1=B1, B2=B2, keep=keep, stringsAsFactors=FALSE))
+}
+
 
 
 harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
 {
 	if(length(SNP) == 0) return(data.frame())
+	jlog <- list()
+	jlog[['alleles']] <- "2-2"
+
+	indel_index <- nchar(A1) > 1 | nchar(A2) > 1 | A1 == "D" | A1 == "I"
+	temp <- recode_indels_22(A1[indel_index], A2[indel_index], B1[indel_index], B2[indel_index])
+
+	A1[indel_index] <- temp$A1
+	A2[indel_index] <- temp$A2
+	B1[indel_index] <- temp$B1
+	B2[indel_index] <- temp$B2
+
 
 	# Find SNPs with alleles that match in A and B
 	status1 <- (A1 == B1) & (A2 == B2)
 	to_swap <- (A1 == B2) & (A2 == B1)
+	jlog[['switched_alleles']] <- sum(to_swap)
+
 
 	# If B's alleles are the wrong way round then swap
 	Btemp <- B1[to_swap]
@@ -155,6 +305,7 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	B1[i] <- flip_alleles(B1[i])
 	B2[i] <- flip_alleles(B2[i])
 	status1 <- (A1 == B1) & (A2 == B2)
+	jlog[['flipped_alleles_basic']] <- sum(i)
 
 	# If still NOT palindromic and alleles DON'T match then try swapping
 	i <- !palindromic & !status1
@@ -168,6 +319,7 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	# Any SNPs left with unmatching alleles need to be removed
 	status1 <- (A1 == B1) & (A2 == B2)
 	remove <- !status1
+	remove[indel_index][!temp$keep] <- TRUE
 
 	# Now deal with palindromic SNPs
 	# If the frequency is within tolerance then they are ambiguous and need to be flagged
@@ -187,44 +339,44 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 		to_swap <- status2 & !remove
 		betaB[to_swap] <- betaB[to_swap] * -1
 		fB[to_swap] <- 1 - fB[to_swap]
+		if(!is.null(jlog))
+		{
+			jlog[['flipped_alleles_palindrome']] <- sum(to_swap)
+		}
+	} else {
+		if(!is.null(jlog))
+		{
+			jlog[['flipped_alleles_palindrome']] <- 0
+		}		
 	}
 
 	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=(ambiguousA|ambiguousB) & palindromic)
+	attr(d, "log") <- jlog
 	return(d)
 }
-
-
-
-# if a is not palindromic
-# 	if a1 == b1
-# 		if fA and fB similar
-# 			b2 = a2
-# 		else
-# 			ambiguous
-
-# 	else if a2 == b1
-# 		if fA and 1-fB similar
-# 			b2 = a1
-# 			swap
-# 		else
-# 			ambiguous
-
-# 	else if a1 != b1 & a2 != b1
-# 		flip and return to top
-
-# else a is palindromic
-# 	remove
-
 
 harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, action)
 {
 	if(length(SNP) == 0) return(data.frame())
+	jlog <- list()
+	jlog[['alleles']] <- "2-1"
 
 	n <- length(A1)
 	B2 <- rep(NA, n)
 	ambiguous <- rep(FALSE, n)
 	palindromic <- check_palindromic(A1, A2)
 	remove <- palindromic
+
+
+	indel_index <- nchar(A1) > 1 | nchar(A2) > 1 | A1 == "D" | A1 == "I"
+	temp <- recode_indels_21(A1[indel_index], A2[indel_index], B1[indel_index])
+
+	A1[indel_index] <- temp$A1
+	A2[indel_index] <- temp$A2
+	B1[indel_index] <- temp$B1
+	B2[indel_index] <- temp$B2
+	remove[indel_index][!temp$keep] <- TRUE
+
 
 	status1 <- A1 == B1
 	minf <- 0.5 - tolerance
@@ -241,6 +393,7 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	B2[status1] <- A2[status1]
 
 	to_swap <- A2 == B1
+	jlog[['switched_alleles']] <- sum(to_swap)
 	freq_similar2 <- (tempfA < minf & tempfB > maxf) | (tempfA > maxf & tempfB < minf)
 
 	ambiguous[to_swap & !freq_similar2] <- TRUE
@@ -250,6 +403,7 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	fB[to_swap] <- 1 - fB[to_swap]
 
 	to_flip <- A1 != B1 & A2 != B1
+	jlog[['flipped_alleles_no_oa']] <- sum(to_flip)
 
 	ambiguous[to_flip] <- TRUE
 
@@ -266,6 +420,7 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 
 	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
 
+	attr(d, "log") <- jlog
 	return(d)
 
 }
@@ -273,12 +428,23 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, action)
 {
 	if(length(SNP) == 0) return(data.frame())
+	jlog <- list()
+	jlog[['alleles']] <- "1-2"
 
 	n <- length(A1)
 	A2 <- rep(NA, n)
 	ambiguous <- rep(FALSE, n)
 	palindromic <- check_palindromic(B1, B2)
 	remove <- palindromic
+
+	indel_index <- nchar(B1) > 1 | nchar(B2) > 1 | B1 == "D" | B1 == "I"
+	temp <- recode_indels_21(A1[indel_index], B1[indel_index], B2[indel_index])
+
+	A1[indel_index] <- temp$A1
+	A2[indel_index] <- temp$A2
+	B1[indel_index] <- temp$B1
+	B2[indel_index] <- temp$B2
+	remove[indel_index][!temp$keep] <- TRUE
 
 	status1 <- A1 == B1
 	minf <- 0.5 - tolerance
@@ -295,6 +461,8 @@ harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, actio
 	A2[status1] <- B2[status1]
 
 	to_swap <- A1 == B2
+	jlog[['switched_alleles']] <- sum(to_swap)
+
 	freq_similar2 <- (tempfA < minf & tempfB > maxf) | (tempfA > maxf & tempfB < minf)
 
 	ambiguous[to_swap & !freq_similar2] <- TRUE
@@ -304,6 +472,7 @@ harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, actio
 	fA[to_swap] <- 1 - fA[to_swap]
 
 	to_flip <- A1 != B1 & A1 != B2
+	jlog[['flipped_alleles_no_oa']] <- sum(to_flip)
 
 	ambiguous[to_flip] <- TRUE
 
@@ -319,6 +488,7 @@ harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, actio
 
 
 	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
+	attr(d, "log") <- jlog
 
 	return(d)
 
@@ -328,6 +498,8 @@ harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, actio
 harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action)
 {
 	if(length(SNP) == 0) return(data.frame())
+	jlog <- list()
+	jlog[['alleles']] <- "1-1"
 
 	n <- length(A1)
 	A2 <- rep(NA, n)
@@ -351,12 +523,12 @@ harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action)
 
 	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
 
+	attr(d, "log") <- jlog
 	return(d)
-
 }
 
 
-harmonise_function_refactored <- function(dat, tolerance, action)
+harmonise <- function(dat, tolerance, action)
 {
 	SNP <- dat$SNP
 	A1 <- dat$effect_allele.exposure
@@ -379,6 +551,15 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 	d12 <- harmonise_12(SNP[i12], A1[i12], B1[i12], B2[i12], betaA[i12], betaB[i12], fA[i12], fB[i12], tolerance, action)
 	d11 <- harmonise_11(SNP[i11], A1[i11], B1[i11], betaA[i11], betaB[i11], fA[i11], fB[i11], tolerance, action)
 
+	jlog <- plyr::rbind.fill(
+		as.data.frame(attr(d22, "log"), stringsAsFactors=FALSE),
+		as.data.frame(attr(d21, "log"), stringsAsFactors=FALSE),
+		as.data.frame(attr(d12, "log"), stringsAsFactors=FALSE),
+		as.data.frame(attr(d11, "log"), stringsAsFactors=FALSE)
+	)
+	jlog <- cbind(data.frame(id.exposure=dat$id.exposure[1], id.outcome=dat$id.outcome[1], stringsAsFactors=FALSE), jlog)
+
+
 	d <- rbind(d21, d22, d12, d11)
 	d <- merge(d, dat, by="SNP", all.x=TRUE)
 	d <- d[order(d$id.outcome), ]
@@ -396,10 +577,12 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 		{
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
 		}
+		jlog[['incompatible_alleles']] <- sum(d$remove)
 		if(any(d$ambiguous & !d$palindromic))
 		{
 			message("Removing the following SNPs for having incompatible allele frequencies:\n", paste(d$SNP[d$ambiguous], collapse=", "))
 		}
+		jlog[['ambiguous_alleles']] <- sum(d$ambiguous)
 	}
 	if(action == 2)
 	{
@@ -409,10 +592,12 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 		{
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
 		}
+		jlog[['incompatible_alleles']] <- sum(d$remove)
 		if(any(d$ambiguous))
 		{
 			message("Removing the following SNPs for being palindromic with intermediate allele frequencies:\n", paste(d$SNP[d$ambiguous], collapse=", "))
 		}
+		jlog[['ambiguous_alleles']] <- sum(d$ambiguous)
 	}
 	if(action == 1)
 	{
@@ -422,6 +607,7 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 		{
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
 		}
+		jlog[['incompatible_alleles']] <- sum(d$remove)
 	}
 
 	# if(nrow(d1) != nrow(d))
@@ -431,222 +617,7 @@ harmonise_function_refactored <- function(dat, tolerance, action)
 	# 	)
 	# }
 
-
+	attr(d, "log") <- jlog
 	return(d)
-}
-
-
-
-
-
-#' Harmonisation function
-#'
-#' @param res.tab Data frame of exposure and outcome summary stats
-#' @param action Level of strictness in dealing with SNPs. 1=Assume all reference alleles are on the positive strand, i.e. do nothing; 2=Try to infer positive strand alleles, using allele frequencies for palindromes; 3=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis
-#'
-#' @return Data frame
-harmonise_function <- function(res.tab, action)
-{
-	if(action == 1)	
-	{
-		return(res.tab)
-	}
-
-	# Don't have eaf for some studies, e.g these studies 
-	# c("diagram","icbp","pgc_scz","gcan_anorexia","ibd_ucolitis","rheumatoid_arthritis") 
-	eaf.outcome.notmiss.study <- TRUE
-	if(all(is.na(res.tab$eaf.outcome)))
-	{
-		eaf.outcome.notmiss.study <- FALSE
-	}
-	
-	# Make sure variables are correct class
-	res.tab <- harmonise_cleanup_variables(res.tab)
-
-	# Make effect alleles have positive effect
-	res.tab <- harmonise_make_snp_effects_positive(res.tab)
-
-	strand1 <- c("G","C","T","A")
-	strand2 <- c("C","G","A","T")
-
-	# When only the effect_allele.outcome is known, infer other_allele.outcome from effect_allele.exposure and other_allele.exposure
-	if(all(is.na(res.tab$other_allele.outcome)))
-	{
-		for(outcome in res.tab$outcome)
-		{
-			pos.keep <- which(res.tab$outcome == outcome & is.na(res.tab$other_allele.outcome))
-			res.tab.test <- res.tab[pos.keep,]
-			pos.all <- 1:nrow(res.tab)
-			res.tab.excl <- res.tab[pos.all[!pos.all %in% pos.keep],]
-	
-			if(!all(is.na(res.tab.test$effect_allele.outcome)))
-			{ 
-			#this line is necessary because for some studies both effect_allele.outcome and other_allele.outcome are missing; the script witihn this if statement does not get executed if all effect_allele.outcomes are missing
-				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]<-res.tab.test$other_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]
-				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]<-res.tab.test$effect_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]
-				#if other allele still missing then the strands are different; recode effect_allele.outcome to other strand
-				effect_allele.outcome_other_strand<-strand2[unlist(lapply(res.tab.test$effect_allele.outcome[is.na(res.tab.test$other_allele.outcome)],FUN=function(x) which(strand1==x)))]
-				res.tab.test$effect_allele.outcome[is.na(res.tab.test$other_allele.outcome)]<-effect_allele.outcome_other_strand
-				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]<-res.tab.test$other_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$effect_allele.exposure)]
-				res.tab.test$other_allele.outcome[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]<-res.tab.test$effect_allele.exposure[which(res.tab.test$effect_allele.outcome==res.tab.test$other_allele.exposure)]
-			}
-			res.tab<-rbind(res.tab.excl,res.tab.test) #put datasets back together
-		}
-	}
-	# res.tab.test[,c("outcome","effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.outcome","eaf.exposure")]
-
-	##################
-	#Fix disease SNPs#
-	##################
-	#code beta.outcome so that is per copy of the allele that increases the exposure
-	#But be careful that the alleles aren't different because of different strands or because palindromic 
-	
-
-	######################
-	#Fix palindromic SNPs#
-	######################
-
-	pos.amb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome==strand2[i]))))
-	pos.unamb<-unlist(lapply(1:4,FUN=function(i) which(with(res.tab, effect_allele.outcome==strand1[i] & other_allele.outcome!=strand2[i]))))
-
-	# print(pos.amb)
-
-	# Get the palidromic SNP names
-	palindromic_snp_names <- res.tab$SNP[pos.amb]
-
-	
-	if(eaf.outcome.notmiss.study){ #don't have eaf for some studies
-		#For ambiguous/palindromic SNPs, correct effect allele in disease GWAS to be same as effect allele in trait GWAS (allele that increases the trait, using EAF columns to infer the effect allele
-		#if the effect allele frequencies are different (eaf.outcome versus eaf.exposure) then effect alleles are different
-		amb.tab<-res.tab[pos.amb,]
-		length(unique(res.tab$SNP)) #number of SNPs
-		length(unique(amb.tab$SNP)) #number of ambiguous/palindromic SNPs
-		#exclude ambiguous SNPs where eaf is 0.42-0.58 because the effect allele cannot be reliably inferred
-		res.tab[,c("eaf.outcome","eaf.exposure")]
-		amb.tab.keep<-amb.tab[which(amb.tab$eaf.outcome<0.42 | amb.tab$eaf.outcome>0.58),] #keep ambiguous snps if eaf.outcome NOT 0.42-0.58
-		amb.tab.excl<-amb.tab[which(amb.tab$eaf.outcome>0.42 & amb.tab$eaf.outcome<0.58 | is.na(amb.tab$eaf.outcome)),] #exclude ambiguous SNPs if eaf.outcome is 0.42-0.58
-
-		length(unique(amb.tab.keep$snp)) #number of ambiguous SNPs kept because eaf.dos NOT 0.42-0.58 and eaf.outcome not missing
-		
-		length(unique(amb.tab.excl$snp)) #number of ambiguous SNPs excluded because eaf.outcome 0.42-0.58
-		amb.tab.keep$eaf.exposure[is.na(amb.tab.keep$eaf.exposure)]<-amb.tab.keep$eaf.outcome[is.na(amb.tab.keep$eaf.exposure)] #if eaf.exposure is missing replace with eaf.outcome
-		amb.tab.keep<-amb.tab.keep[amb.tab.keep$eaf.exposure<0.42 | amb.tab.keep$eaf.exposure>0.58,] #keep ambiguous SNPs if eaf.exposure NOT 0.42-0.58
-		#amb.tab.excl$eaf.exposure[is.na(amb.tab.excl$eaf.exposure)]<-amb.tab.excl$eaf.outcome[is.na(amb.tab.excl$eaf.exposure)] #if eaf.exposure is missing replace with eaf.outcome. This doesn't make sense to do 
-		amb.tab.excl2<-amb.tab.excl[amb.tab.excl$eaf.exposure>0.42 & amb.tab.excl$eaf.exposure<0.58,] #exclude ambiguous SNPs if eaf.exposure is 0.42-0.58
-		amb.tab.excl<-rbind(amb.tab.excl,amb.tab.excl2) #ambigous SNPs excluded because eaf.outcome or eaf.exposure is 0.42-0.58
-		length(unique(amb.tab.keep$snp)) #number of ambiguous SNPs kept because eaf.outcome or eaf.exposure NOT 0.42-0.58
-		length(unique(amb.tab.excl$snp)) #number of ambiguous SNPs excluded because eaf.outcome or eaf.exposure is 0.42-0.58
-		length(unique(amb.tab.excl2$snp)) #number of SNPs excluded because eaf.exposure is 0.42-0.58
-		
-		amb.tab1<-amb.tab.keep[(amb.tab.keep$eaf.outcome>0.5 & amb.tab.keep$eaf.exposure>0.5) | (amb.tab.keep$eaf.outcome<0.5 & amb.tab.keep$eaf.exposure<0.5),] #amb SNPs where effect alleles same
-		amb.tab2<-amb.tab.keep[(amb.tab.keep$eaf.outcome>0.5 & amb.tab.keep$eaf.exposure<0.5) | (amb.tab.keep$eaf.outcome<0.5 & amb.tab.keep$eaf.exposure>0.5),] #amb SNPs where effect alleles different
-		effect.allele<-amb.tab2$effect_allele.exposure
-		other.allele<-amb.tab2$other_allele.exposure
-		amb.tab2$effect_allele.outcome<-effect.allele
-		amb.tab2$other_allele.outcome<-other.allele
-		amb.tab2$eaf.outcome <-1-amb.tab2$eaf.outcome
-		amb.tab2$beta.outcome<-amb.tab2$beta.outcome*-1
-	#	amb.tab2[,c("eaf.outcome","eaf.exposure")]
-	#	amb.tab2[,c("effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","SNP","effect")]
-	}
-	
-	res.tab.unamb<-res.tab[pos.unamb,] #exclude palindromic SNPs from res.tab
-
-	######################
-	#non palindromic SNPs#
-	######################
-	#for non-palindromic SNPs, select SNPs coded using different strands between disease GWAS and trait GWAS
-		
-	strand.diff<-which(res.tab.unamb$effect_allele.outcome != res.tab.unamb$effect_allele.exposure & res.tab.unamb$effect_allele.outcome!=res.tab.unamb$other_allele.exposure) #get position of non-palindromic SNPs where alleles are coded using different strands
-	strand.same<-which(res.tab.unamb$effect_allele.outcome == res.tab.unamb$effect_allele.exposure & res.tab.unamb$other_allele.outcome==res.tab.unamb$other_allele.exposure 
-		| res.tab.unamb$effect_allele.outcome == res.tab.unamb$other_allele.exposure & res.tab.unamb$other_allele.outcome ==res.tab.unamb$effect_allele.exposure)   #get position of non-palindromic SNPs where alleles are coded using same strands
-
-	#	res.tab.unamb[strand.diff,c("SNP","effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","beta.outcome","chr")]
-	#	res.tab.unamb[strand.same,c("SNP","effect_allele.outcome","other_allele.outcome","effect_allele.exposure","other_allele.exposure","eaf.outcome","eaf.exposure","beta.outcome","chr")]
-
-	#get position of different effect alleles when effects also coded using different strands
-
-	#if coded using different strands can use this code to correct
-	strdiff.tab<-res.tab.unamb[strand.diff,]
-	
-	ref.strand<-strdiff.tab$effect_allele.outcome
-	oth.strand<-strdiff.tab$other_allele.outcome
-	ref.pos<-unlist(lapply(ref.strand,FUN=function(i) which(strand1==i)))
-	oth.pos<-unlist(lapply(oth.strand,FUN=function(i) which(strand1==i)))
-
-	#create mirror copies of reference and other allele, ie what they look like on other strand
-	reference.allele.other.strand<-unlist(lapply(1:length(ref.pos),FUN=function(i) strand2[ref.pos[i]]))
-	other.allele.other.strand<-unlist(lapply(1:length(oth.pos),FUN=function(i) strand2[oth.pos[i]]))
-	
-	effect.allele<-reference.allele.other.strand
-	other.allele<-other.allele.other.strand
-	strdiff.tab$effect_allele.outcome<-effect.allele
-	strdiff.tab$other_allele.outcome<-other.allele
-	#find SNPs where effect allele in disease GWAS different from effect allele in trait GWAS
-	pos.eadiff<-strdiff.tab$effect_allele.outcome!=strdiff.tab$effect_allele.exposure & strdiff.tab$effect_allele.outcome==strdiff.tab$other_allele.exposure #effect alleles different
-	pos.easame<-strdiff.tab$effect_allele.outcome==strdiff.tab$effect_allele.exposure & strdiff.tab$effect_allele.outcome!=strdiff.tab$other_allele.exposure #effect alleles same 
-	ea.diff.tab1<-strdiff.tab[pos.eadiff ,]
-	effect.allele<-ea.diff.tab1$effect_allele.exposure
-	other.allele<-ea.diff.tab1$other_allele.exposure
-	ea.diff.tab1$effect_allele.outcome<-effect.allele #recode effect allele
-	ea.diff.tab1$other_allele.outcome<-other.allele #recode other allele
-	if(eaf.outcome.notmiss.study){ #don't have eaf for studies listed in database 
-		ea.diff.tab1$eaf.outcome <-1-ea.diff.tab1$eaf.outcome #recode eaf
-	}
-	ea.diff.tab1$beta.outcome<-ea.diff.tab1$beta.outcome*-1 #recode odds ratio
-	#ea.diff.tab1[,c("eaf.outcome","eaf.exposure")]
-	
-	ea.same.tab1<-strdiff.tab[pos.easame ,]
-			
-	#exclude non palindromic SNPs where alleles coded using different strands
-	res.tab.unamb.same.strand<-res.tab.unamb[strand.same,]
-	
-	#for non-palindromic SNPs, where strand is same between two databases, recode disease GWAS effect allele to the trait effect allele
-	pos.eadiff<-which(with(res.tab.unamb.same.strand, effect_allele.outcome != effect_allele.exposure & effect_allele.outcome==other_allele.exposure))
-	pos.easame<-which(with(res.tab.unamb.same.strand, effect_allele.outcome == effect_allele.exposure & effect_allele.outcome!=other_allele.exposure))
-
-	#		res.tab.unamb.same.strand[,c("effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.exposure")]
-	#		res.tab[,c("effect_allele.exposure","other_allele.exposure","effect_allele.outcome","other_allele.outcome","eaf.exposure")]
-
-	ea.diff.tab2<-res.tab.unamb.same.strand[pos.eadiff,]	
-	effect.allele<-ea.diff.tab2$effect_allele.exposure
-	other.allele<-ea.diff.tab2$other_allele.exposure
-	ea.diff.tab2$effect_allele.outcome<-effect.allele #recode effect allele
-	ea.diff.tab2$other_allele.outcome<-other.allele #recode other allele
-	if(eaf.outcome.notmiss.study){ #don't have eaf for studies listed in database 
-		ea.diff.tab2$eaf.outcome <-1-ea.diff.tab2$eaf.outcome #recode eaf
-	}
-	ea.diff.tab2$beta.outcome<-ea.diff.tab2$beta.outcome*-1 #recode beta.outcome
-
-	#exclude non palindromic SNPs where coded using same strand and where effect alleles are different	
-	res.tab_unamb_same.strand_same.ea<-res.tab.unamb.same.strand[pos.easame,]
-
-	#rbind fixed tables to res.tab
-	#amb.tab1 #palindromic SNPs where effect alleles were same
-	#amb.tab2 #fixed palindromic SNPs where effect alleles different
-	#ea.same.tab1 #non-palindromic SNPs where strands different but effect alleles same
-	#ea.diff.tab1 #fixed non-palindromic SNPs where strands different and effect alleles different
-	#ea.diff.tab2 #fixed non-palindromic SNPs where strands same and effect alleles different
-	
-	if(eaf.outcome.notmiss.study){ 
-		fix.tab<-rbind(res.tab_unamb_same.strand_same.ea,amb.tab1)
-		fix.tab<-rbind(fix.tab,amb.tab2)
-		fix.tab<-rbind(fix.tab,ea.same.tab1)
-		fix.tab<-rbind(fix.tab,ea.diff.tab1)
-		fix.tab<-rbind(fix.tab,ea.diff.tab2)
-	}else{
-		fix.tab<-rbind(res.tab_unamb_same.strand_same.ea,ea.same.tab1)
-		fix.tab<-rbind(fix.tab,ea.diff.tab1)
-		fix.tab<-rbind(fix.tab,ea.diff.tab2)
-	}
-	dim(fix.tab)
-
-	if(action == 3)
-	{
-		message("The following SNPs are palindromic and will be excluded:\n", paste(palindromic_snp_names, collapse="\n"))
-		return(subset(fix.tab, !SNP %in% palindromic_snp_names))
-	}
-
-	return(fix.tab)
 }
 

@@ -119,8 +119,8 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #' @param beta_col="beta" Required for MR. Name of column with effect sizes
 #' @param se_col="se" Required for MR. Name of column with standard errors
 #' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
-#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
-#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
+#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G"
+#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G"
 #' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
 #' @param units_col="units" Optional column name for units.
 #' @param ncase_col="ncase" Optional column name for number of cases.
@@ -131,9 +131,9 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
+format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, z_col="z", info_col="info", chr_col="chr", pos_col="pos")
 {
-	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col)
+	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col, z_col, info_col, chr_col, pos_col)
 
 	i <- names(dat) %in% all_cols
 	if(sum(i) == 0)
@@ -259,11 +259,12 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		}
 
 		dat$effect_allele.outcome <- toupper(dat$effect_allele.outcome)
-		index <- ! dat$effect_allele.outcome %in% c("A", "C", "T", "G")
+		# index <- ! dat$effect_allele.outcome %in% c("A", "C", "T", "G")
+		index <- ! (grepl("^[ACTG]+$", dat$effect_allele.outcome) | dat$effect_allele.outcome %in% c("D", "I"))
 		index[is.na(index)] <- TRUE
 		if(any(index))
 		{
-			warning("effect_allele column has some values that are not A/C/T/G. These SNPs will be excluded")
+			warning("effect_allele column has some values that are not A/C/T/G or an indel comprising only these characters or D/I. These SNPs will be excluded.")
 			dat$effect_allele.outcome[index] <- NA
 			dat$mr_keep.outcome[index] <- FALSE
 		}
@@ -286,11 +287,12 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		}
 
 		dat$other_allele.outcome <- toupper(dat$other_allele.outcome)
-		index <- ! dat$other_allele.outcome %in% c("A", "C", "T", "G")
+		# index <- ! dat$other_allele.outcome %in% c("A", "C", "T", "G")
+		index <- ! (grepl("^[ACTG]+$", dat$other_allele.outcome) | dat$other_allele.outcome %in% c("D", "I"))
 		index[is.na(index)] <- TRUE
 		if(any(index))
 		{
-			warning("other_allele column has some values that are not A/C/T/G. These SNPs will be excluded")
+			warning("other_allele column has some values that are not A/C/T/G or an indel comprising only these characters or D/I. These SNPs will be excluded")
 			dat$other_allele.outcome[index] <- NA
 			dat$mr_keep.outcome[index] <- FALSE
 		}
@@ -385,6 +387,25 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		names(dat)[which(names(dat) == gene_col)[1]] <- "gene.outcome"
 	}
 	
+	if(info_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == info_col)[1]] <- "info.outcome"
+	}
+
+	if(z_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == z_col)[1]] <- "z.outcome"
+	}
+
+	if(chr_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == chr_col)[1]] <- "chr.outcome"
+	}
+
+	if(pos_col %in% names(dat))
+	{
+		names(dat)[which(names(dat) == pos_col)[1]] <- "pos.outcome"
+	}
 
 	if(units_col %in% names(dat))
 	{
@@ -410,7 +431,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	{
 		mrcols <- c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome")
 		mrcols_present <- mrcols[mrcols %in% names(dat)]
-		dat$mr_keep.outcome <- apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
+		dat$mr_keep.outcome <- dat$mr_keep.outcome & apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
 		if(any(!dat$mr_keep.outcome))
 		{
 			warning("The following SNP(s) are missing required information for the MR tests and will be excluded\n", paste(subset(dat, !mr_keep.outcome)$SNP, collapse="\n"))
@@ -420,7 +441,6 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	{
 		warning("None of the provided SNPs can be used for MR analysis, they are missing required information.")
 	}
-
 
 	# Add in missing MR cols
 	for(col in c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome", "other_allele.outcome", "eaf.outcome"))

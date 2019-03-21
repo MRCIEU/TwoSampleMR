@@ -235,6 +235,7 @@ mr_method_list <- function()
 default_parameters <- function()
 {
 	list(
+		test_dist = "z",
 		nboot = 1000,
 		Cov = 0,
 		penk = 20,
@@ -763,14 +764,17 @@ mr_median <- function(dat, parameters=default_parameters())
 	pm <- mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
 
 	res <- data.frame(
-		Method = c("Simple median", "Weighted median", "Penalised median"),
+		id.exposure = dat$id.exposure[1],
+		id.outcome = dat$id.outcome[1],
+		method = c("Simple median", "Weighted median", "Penalised median"),
 		nsnp = length(b_exp),
-		Estimate = c(sm$b, wm$b, pm$b),
-		SE = c(sm$se, wm$se, pm$se)
+		b = c(sm$b, wm$b, pm$b),
+		se = c(sm$se, wm$se, pm$se),
+		stringsAsFactors=FALSE
 	)
-	res$CI_low <- res$Estimate - qnorm(1-parameters$alpha/2) * res$SE
-	res$CI_upp <- res$Estimate + qnorm(1-parameters$alpha/2) * res$SE
-	res$P <- c(sm$pval, wm$pval, pm$pval)
+	res$ci_low <- res$b - qnorm(1-parameters$alpha/2) * res$se
+	res$ci_upp <- res$b + qnorm(1-parameters$alpha/2) * res$se
+	res$pval <- c(sm$pval, wm$pval, pm$pval)
 	return(res)
 }
 

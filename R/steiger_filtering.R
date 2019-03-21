@@ -18,7 +18,6 @@ steiger_filtering <- function(dat)
 
 steiger_filtering_internal <- function(dat)
 {
-	message(dat$exposure[1], dat$outcome[1])
 	stopifnot(length(unique(dat$exposure)) == 1)
 	stopifnot(length(unique(dat$outcome)) == 1)
 	stopifnot(length(unique(dat$units.exposure)) == 1)
@@ -30,12 +29,12 @@ steiger_filtering_internal <- function(dat)
 		dat$pval.exposure[dat$pval.exposure < 1e-300] <- 1e-300
 		if(dat$units.exposure[1] == "log odds")
 		{
-			message("Estimating rsq.exposure for binary trait")
-			message("Ensure that beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure are all specified with no missing values")
+			# message("Estimating rsq.exposure for binary trait")
+			# message("Ensure that beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure are all specified with no missing values")
 			if(! "prevalence.exposure" %in% names(dat))
 			{
 				dat$prevalence.exposure <- 0.1
-				message("Assuming exposure prevalence of 0.1. Alternatively, add prevalence.exposure column and re-run.")
+				warning("Assuming exposure prevalence of 0.1. Alternatively, add prevalence.exposure column and re-run.")
 			}
 			ind1 <- !is.na(dat$beta.exposure) &
 				!is.na(dat$eaf.exposure) &
@@ -74,12 +73,10 @@ steiger_filtering_internal <- function(dat)
 		dat$pval.outcome[dat$pval.outcome < 1e-300] <- 1e-300
 		if(dat$units.outcome[1] == "log odds")
 		{
-			message("Estimating rsq.outcome for binary trait")
-			message("Ensure that beta.outcome, eaf.outcome, ncase.outcome, ncontrol.outcome are all specified with no missing values")
 			if(! "prevalence.outcome" %in% names(dat))
 			{
 				dat$prevalence.outcome <- 0.1
-				message("Assuming outcome prevalence of 0.1. Alternatively, add prevalence.outcome column and re-run.")
+				warning("Assuming outcome prevalence of 0.1. Alternatively, add prevalence.outcome column and re-run.")
 			}
 			ind1 <- !is.na(dat$beta.outcome) &
 				!is.na(dat$eaf.outcome) &

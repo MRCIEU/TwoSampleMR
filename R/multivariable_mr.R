@@ -181,10 +181,11 @@ convert_outcome_to_exposure <- function(outcome_dat)
 #' @param clump_kb=10000 <what param does>
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. Default TRUE
+#' @param force_server=FALSE Whether to search through pre-clumped dataset or to re-extract and clump directly from the server
 #'
 #' @export
 #' @return data frame in exposure_dat format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = get_mrbase_access_token(), find_proxies=TRUE)
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = get_mrbase_access_token(), find_proxies=TRUE, force_server=FALSE)
 {
 	require(reshape2)
 	message("Warning: This analysis is still experimental")
@@ -192,7 +193,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 	stopifnot(length(id_exposure) > 1)
 
 	# Get best instruments for each exposure
-	exposure_dat <- extract_instruments(id_exposure, r2 = clump_r2, kb=clump_kb, access_token = access_token)
+	exposure_dat <- extract_instruments(id_exposure, r2 = clump_r2, kb=clump_kb, access_token = access_token, force_server=force_server)
 	temp <- exposure_dat
 	temp$id.exposure <- 1
 	temp <- clump_data(temp, clump_r2=clump_r2, clump_kb=clump_kb)

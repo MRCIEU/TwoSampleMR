@@ -1,3 +1,65 @@
+TwoSampleMR v0.4.22 (Release date: 2019-02-22)
+==============
+
+Changes:
+
+* Changing default API address in preparation for moving to version 0.5.0 which will use the new API
+
+
+TwoSampleMR v0.4.21 (Release date: 2019-02-19)
+==============
+
+Changes:
+
+* Updated mixture of experts
+
+
+TwoSampleMR v0.4.20 (Release date: 2019-01-31)
+==============
+
+
+Changes:
+
+* The harmonise function now returns a summary of the harmonisation procedure e.g. number of SNPs removed etc. Access via attr(obj, "log")
+* Note that this has been tested and shown to give the same results as previously but there is a chance that it might lead to slightly different behaviour. Please install the previous version if you would prefer to avoid possibilities of changed behaviour - devtools::install_github("MRCIEU/TwoSampleMR@0.4.18")
+
+
+TwoSampleMR v0.4.19 (Release date: 2019-01-31)
+==============
+
+Changes:
+
+* Fixed a bug in mr_heterogeneity that would have impacted a minority of cases. If the method list was being specified then the order of the results didn't always match the method (MR Egger and IVW were mixed up). This did not affect default usage. Thanks to Anna Guyatt for pointing this out.
+* Added index of suspicion functionality, and penalised mode estimator
+* Added transformation function to scale effect estimate units to SD scale
+* Starting to write change log again!
+
+
+
+TwoSampleMR v0.4.18 (Release date: 2018-12-03)
+==============
+
+Changes:
+
+* Improved performance of harmonisation
+
+
+TwoSampleMR v0.4.17 (Release date: 2018-12-03)
+==============
+
+Changes:
+
+* Added facility to harmonise indels
+
+
+TwoSampleMR v0.4.17 (Release date: 2018-12-03)
+==============
+
+Changes:
+
+* Documentation and options added to multivariable MR
+
+
 TwoSampleMR v0.3.4 (Release date: 2017-11-30)
 ==============
 
