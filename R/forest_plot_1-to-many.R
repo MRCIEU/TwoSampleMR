@@ -33,7 +33,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 	names(mr_res)[names(mr_res)==b ]<-"b"
 	names(mr_res)[names(mr_res)==se ]<-"se"
 	Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
-	Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
+	Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters),paste0("D",Letters)))
 	mr_res$outcome2<-mr_res[,TraitM]
 	mr_res[,TraitM]<-paste(Letters[1:length(mr_res[,TraitM])],mr_res[,TraitM])
 
@@ -381,6 +381,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 
 	dat$lab<-dat$outcome
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
+
 	l$col[1:nrow(l) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
@@ -526,7 +527,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles=NULL,subheading_size=6){
+forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
