@@ -216,9 +216,11 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 #' @param lo Lower limit of x axis 
 #' @param up Upper limit of x axis 
 #' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument
+#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points black. 
+#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).
 #'
 #' @return ggplot object
-forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size)
+forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
 {
 	if(bottom)
 	{
@@ -264,14 +266,14 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	if(!is.null(colour_group))
 	{
 		dat <- subset(dat, exposure == colour_group)
-		point_plot <- ggplot2::geom_point(size=2)
+		point_plot <- ggplot2::geom_point(size=2,colour=colour_scheme,fill=colour_scheme,shape=shape_points)
 	} else {
-		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
+		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=colour_scheme), size=2,fill=colour_scheme)
 	}
 
 	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
 	{
-		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome2,colour="red"), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
+		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome2,colour=colour_scheme), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
 		main_title <- ifelse(is.null(section), "", section)
 		title_colour <- "black"
 
@@ -292,15 +294,19 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	dat <- dat[nrow(dat):1, ]
 
 	p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	ggplot2::geom_rect(ggplot2::aes(fill=col), colour=colour_scheme,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, size=0.3) +
 	ggplot2::geom_vline(xintercept=null_line, colour="#333333", size=0.3) +
-	ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
-	ggplot2::geom_point(colour="black", size=2.2) +
+	# ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
+	ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour=colour_scheme) +
+	# ggplot2::geom_point(colour="black", size=2.2) +
+	ggplot2::geom_point(colour=colour_scheme, size=2.2,shape=shape_points,fill=colour_scheme) +
+	# ggplot2::scale_fill_manual(values="cyan4")+
 	point_plot +
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(trans=trans, limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
+	# ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
 	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
 	ggplot2::theme(
 		axis.line=ggplot2::element_blank(),
@@ -320,7 +326,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		plot.margin=ggplot2::unit(c(2,3,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
+		panel.background=ggplot2::element_rect(colour="white", fill=colour_scheme, size=1),
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
@@ -330,7 +336,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 }
 
 
-forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size)
+forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size,colour_scheme="black",shape_points=15)
 {
 	if(bottom)
 	{
@@ -372,7 +378,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		ggplot2::aes(label=eval(parse(text=var1))), 
 		x=lo, 
 		y=mean(c(1, length(unique(dat$exposure)))), 
-		hjust=0, vjust=0.5, size=2
+		hjust=0, vjust=0.5, size=2,color=colour_scheme
 	)
 
 	# print(paste0("title=",title))
@@ -387,7 +393,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 
 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	ggplot2::geom_rect(ggplot2::aes(fill=col),colour=colour_scheme, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
@@ -410,7 +416,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
+		panel.background=ggplot2::element_rect(colour=colour_scheme, fill=colour_scheme, size=1),
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
@@ -420,7 +426,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 }
 
 
-forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size)
+forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
 {
 	print(addcol)
 	# print(addcol_title)
@@ -459,7 +465,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 		ggplot2::aes(label=eval(parse(text=addcol))), 
 		x=lo, 
 		y=mean(c(1, length(unique(dat$exposure)))), 
-		hjust=0, vjust=0.5, size=2.0
+		hjust=0, vjust=0.5, size=2.0,colour=colour_scheme
 	)
 
 	main_title <- section
@@ -471,7 +477,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 
 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	ggplot2::geom_rect(ggplot2::aes(fill=col),colour=colour_scheme ,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
@@ -494,7 +500,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
+		panel.background=ggplot2::element_rect(colour="red", fill=colour_scheme, size=1),
 		strip.text.y = ggplot2::element_blank(),
 		strip.text.x = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
@@ -506,7 +512,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 #' 1-to-many forest plot 
 #'
-#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. 
+#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
 #' 
 #' @param mr_res Data frame of results supplied by the user
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
@@ -524,10 +530,12 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".
 #' @param lo Lower limit of X axis to plot. 
 #' @param up upper limit of X axis to plot. 
+#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points black. 
+#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6){
+forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black"){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
@@ -554,6 +562,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 		ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=outcome)) + 
 		ggplot2::geom_point(ggplot2::aes(colour=exposure)) + 
 		ggplot2::scale_colour_brewer(type="qual") + 
+		# ggplot2::labs(colour="Exposure") + 
 		ggplot2::labs(colour="Exposure") + 
 		ggplot2::theme(text=ggplot2::element_text(size=10))
 	)
@@ -576,7 +585,9 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 			sec[i],
 			bottom = i==length(sec),
 			title=col1_title,
-			subheading_size=subheading_size
+			subheading_size=subheading_size,
+			colour_scheme=colour_scheme,
+				shape_points=shape_points
 		)
 		count <- count + 1
 
@@ -589,7 +600,9 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 					addcol=addcols[j],
 					addcol_title=addcol_titles[j],
 					bottom = i==length(sec),
-					subheading_size=subheading_size
+					subheading_size=subheading_size,
+					colour_scheme=colour_scheme,
+					shape_points=shape_points
 				)
 
 				count <- count + 1
@@ -610,12 +623,14 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 				up=up,
 				trans = trans,
 				xlim = xlim,
-				subheading_size=subheading_size
+				subheading_size=subheading_size,
+				colour_scheme=colour_scheme,
+				shape_points=shape_points
 			)
 			count <- count + 1
 		}
 	}
-	h <- h + 1
+	h <- h + 5
 	h[length(sec)] <- h[length(sec)] + 1
 	# message(length(l))
 	# message(count)

@@ -6,9 +6,10 @@
 \usage{
 forest_plot_1_to_many(mr_res, b = "b", se = "se", TraitM = "outcome",
   col1_width = 1, col1_title = "", exponentiate = FALSE,
-  trans = "identity", ao_slc = T, lo = NULL, up = NULL, by = NULL,
-  xlab = "Effect (95\% confidence interval)", addcols = NULL,
-  addcol_widths = NULL, addcol_titles = NULL, subheading_size = 6)
+  trans = "identity", ao_slc = T, lo = NULL, up = NULL,
+  by = NULL, xlab = "Effect (95\% confidence interval)",
+  addcols = NULL, addcol_widths = NULL, addcol_titles = "",
+  subheading_size = 6, shape_points = 15, colour_scheme = "black")
 }
 \arguments{
 \item{mr_res}{Data frame of results supplied by the user}
@@ -42,10 +43,14 @@ forest_plot_1_to_many(mr_res, b = "b", se = "se", TraitM = "outcome",
 \item{addcol_titles}{Titles of additional columns specified by the addcols argument. Character vector. Default = NULL}
 
 \item{subheading_size}{text size for the subheadings specified in by argument.}
+
+\item{shape_points}{the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).}
+
+\item{colour_scheme}{the general colour scheme for the plot. Default is to make all text and data points black.}
 }
 \value{
 grid plot object
 }
 \description{
-Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot.
+Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results.
 }

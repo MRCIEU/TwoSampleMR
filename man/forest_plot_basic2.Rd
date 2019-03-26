@@ -7,7 +7,8 @@
 forest_plot_basic2(dat, section = NULL, colour_group = NULL,
   colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
   trans = "identity", xlim = NULL, lo = lo, up = up,
-  subheading_size = subheading_size)
+  subheading_size = subheading_size, colour_scheme = "black",
+  shape_points = 15)
 }
 \arguments{
 \item{dat}{Output from format_1_to_many()}
@@ -29,6 +30,10 @@ forest_plot_basic2(dat, section = NULL, colour_group = NULL,
 \item{up}{Upper limit of x axis}
 
 \item{subheading_size}{text size for the subheadings. The subheadings correspond to the values of the section argument}
+
+\item{colour_scheme}{the general colour scheme for the plot. Default is to make all text and data points black.}
+
+\item{shape_points}{the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).}
 }
 \value{
 ggplot object
