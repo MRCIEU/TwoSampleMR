@@ -13,7 +13,7 @@
 #'
 #' @export
 #' @return data frame.
-format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",addcols=NULL)
+format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL)
 {
 
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -23,6 +23,10 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 		names(mr_res)[names(mr_res)==by]<-"subcategory"
 	}else{
 		mr_res$subcategory<-""
+	}
+
+	if(is.null(weight)) {
+		mr_res$weight=4
 	}
 
 	if(TraitM=="exposure"){ #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
@@ -96,9 +100,11 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 		outcome2= as.character(dat$outcome2),
 		category = as.character(dat$subcategory),
 		effect = dat$b,
+		se = dat$se,
 		up_ci = dat$up_ci,
 		lo_ci = dat$lo_ci,
 		index = dat$index,
+		weight=dat$weight,
 		stringsAsFactors = FALSE
 	)
 
@@ -266,9 +272,9 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	if(!is.null(colour_group))
 	{
 		dat <- subset(dat, exposure == colour_group)
-		point_plot <- ggplot2::geom_point(size=2,colour=colour_scheme,fill=colour_scheme,shape=shape_points)
+		point_plot <- ggplot2::geom_point(size=dat$weight,colour=colour_scheme,fill=colour_scheme,shape=shape_points)
 	} else {
-		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=colour_scheme), size=2,fill=colour_scheme)
+		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=colour_scheme), size=dat$weight,fill=colour_scheme)
 	}
 
 	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
@@ -336,7 +342,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 }
 
 
-forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size,colour_scheme="black",shape_points=15)
+forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5)
 {
 	if(bottom)
 	{
@@ -378,7 +384,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		ggplot2::aes(label=eval(parse(text=var1))), 
 		x=lo, 
 		y=mean(c(1, length(unique(dat$exposure)))), 
-		hjust=0, vjust=0.5, size=2,color=colour_scheme
+		hjust=0, vjust=0.5, size=col_text_size,color=colour_scheme
 	)
 
 	# print(paste0("title=",title))
@@ -465,7 +471,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 		ggplot2::aes(label=eval(parse(text=addcol))), 
 		x=lo, 
 		y=mean(c(1, length(unique(dat$exposure)))), 
-		hjust=0, vjust=0.5, size=2.0,colour=colour_scheme
+		hjust=0, vjust=0.5, size=col_text_size,colour=colour_scheme
 	)
 
 	main_title <- section
@@ -535,7 +541,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black"){
+forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
@@ -554,7 +560,8 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 		ao_slc=ao_slc,
 		by=by,
 		TraitM=TraitM,
-		addcols=addcols 
+		addcols=addcols,
+		weight=weight
 	)
 	
 
@@ -587,8 +594,10 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 			title=col1_title,
 			subheading_size=subheading_size,
 			colour_scheme=colour_scheme,
-				shape_points=shape_points
+			shape_points=shape_points,
+			col_text_size=col_text_size
 		)
+
 		count <- count + 1
 
 		if(!is.null(addcols)){

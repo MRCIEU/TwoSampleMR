@@ -5,7 +5,8 @@
 \title{Format MR results for a 1-to-many forest plot}
 \usage{
 format_1_to_many(mr_res, b = "b", se = "se", exponentiate = FALSE,
-  ao_slc = F, by = NULL, TraitM = "outcome", addcols = NULL)
+  ao_slc = F, by = NULL, TraitM = "outcome", addcols = NULL,
+  weight = NULL)
 }
 \arguments{
 \item{mr_res}{Data frame of results supplied by the user}

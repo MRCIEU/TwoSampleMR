@@ -87,9 +87,9 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 #' @param pleiotropy Results from mr_pleiotropy_test()
 #' @param sin Results from mr_singlesnp()
 #' @param ao_slc Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE. 
-#' @param exp Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE. 
-#' @param split_exposure Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is TRUE. 
-#' @param split_outcome Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is TRUE. 
+#' @param Exp Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE. 
+#' @param split.exposure Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is FALSE. 
+#' @param split.outcome Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is FALSE.  
 #' 
 #' @export
 #' @return data frame
@@ -122,7 +122,7 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 # All.res<-split_exposure(All.res)
 # All.res<-split_outcome(All.res)
 
-combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,exp=F,split_exposure=T,split_outcome=T)
+combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,Exp=F,split.exposure=F,split.outcome=F)
 {
 	requireNamespace("plyr", quietly=TRUE)
 
@@ -157,8 +157,8 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,exp=F,split_exposure=
 	names(het)[names(het)=="method"]<-"Method"
 	names(sin)[names(sin)=="method"]<-"Method"
 
-	res<-merge(res,het,by=c("id.outcome","Method"),all.x=T)
-	res<-plyr::rbind.fill(res,sin)
+	res<-merge(res,het,by=c("id.outcome","id.exposure","Method"),all.x=T)
+	res<-plyr::rbind.fill(res,sin[,c("exposure","outcome","id.exposure","id.outcome","SNP","b","se","pval","Method")])
 
 	if(ao_slc)
 	{
@@ -171,37 +171,40 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,exp=F,split_exposure=
 
 	for(i in unique(res$id.outcome))
 	{
-		Methods<-unique(res$method[res$id.outcome==i])
+		Methods<-unique(res$Method[res$id.outcome==i])
 		Methods<-Methods[Methods!="Wald ratio"]
 		for(j in unique(Methods))
 		{
-			res$snp[res$id.outcome == i & res$method==j]<-paste(res$snp[res$id.outcome == i & res$method=="Wald ratio"],collapse="; ")
+			res$SNP[res$id.outcome == i & res$Method==j]<-paste(res$SNP[res$id.outcome == i & res$Method=="Wald ratio"],collapse="; ")
 		}
 	}
 
-	if(exp){
+	if(Exp){
 		res$or<-exp(res$b)
 		res$or_lci95<-exp(res$b-res$se*1.96)
 		res$or_uci95<-exp(res$b+res$se*1.96)
 	}
 
 	# add intercept test from MR Egger
-	plt<-plt[,c("id.outcome","egger_intercept","se","pval")]
+	plt<-plt[,c("id.outcome","id.exposure","egger_intercept","se","pval")]
 	plt$Method<-"MR Egger"
 	names(plt)[names(plt)=="egger_intercept"]<-"intercept"
 	names(plt)[names(plt)=="se"]<-"intercept_se"
 	names(plt)[names(plt)=="pval"]<-"intercept_pval"
 
+	res<-merge(res,plt,by=c("id.outcome","id.exposure","Method"),all.x=T)
 
-	res<-merge(res,plt,by=c("id.outcome","Method"),all.x=T)
-
-	if(split_exposure){
+	if(split.exposure){
 		res<-split_exposure(res)
 	}
 	
-	if(split_outcome){
+	if(split.outcome){
 		res<-split_outcome(res)
 	}
+
+	Cols<-c("Method","outcome","exposure","nsnp","b","se","pval","intercept","intercept_se","intercept_pval","Q","Q_df","Q_pval","consortium","ncase","ncontrol","pmid","population")
+
+	res<-res[,c(names(res)[names(res) %in% Cols],names(res)[which(!names(res) %in% Cols)])]
 
 	# names(ResSNP)<-tolower(names(ResSNP))
 	return(res)

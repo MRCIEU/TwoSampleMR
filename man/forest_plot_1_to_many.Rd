@@ -9,7 +9,8 @@ forest_plot_1_to_many(mr_res, b = "b", se = "se", TraitM = "outcome",
   trans = "identity", ao_slc = T, lo = NULL, up = NULL,
   by = NULL, xlab = "Effect (95\% confidence interval)",
   addcols = NULL, addcol_widths = NULL, addcol_titles = "",
-  subheading_size = 6, shape_points = 15, colour_scheme = "black")
+  subheading_size = 6, shape_points = 15, colour_scheme = "black",
+  col_text_size = 5, weight = NULL)
 }
 \arguments{
 \item{mr_res}{Data frame of results supplied by the user}
