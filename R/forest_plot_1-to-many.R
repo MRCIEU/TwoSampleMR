@@ -26,7 +26,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 	}
 
 	if(is.null(weight)) {
-		mr_res$weight=4
+		mr_res$weight=3
 	}
 
 	if(TraitM=="exposure"){ #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
@@ -135,15 +135,17 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
 #' @param trait_m The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
 #' @param group Name of grouping variable in mr_res. 
-#' @param priority If sort_action=3, choose which value of the grouping variable, defined by the group argument, should be given priority and go above the other group values. The trait with the largest effect size for the prioritised group will go to the top of the plot. 
-#' @param sort_action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from observational and Mendelian randomization studies or from different MR methods); use the priority argument to indicate which trait and group should go to the top of the plot. 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
+#' @param priority If sort_action=3, choose which value of the trait_m variable should be given priority and go above the other trait_m values. The trait with the largest effect size for the prioritised group will go to the top of the plot. 
+#' @param sort_action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from different MR methods); 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
 #'
 #' @export
 #' @return data frame.
 # 
 
-sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,group_order=NULL,priority=NULL){
+sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,priority=NULL){
 
+	mr_res[,trait_m]<-as.character(mr_res[,trait_m])
+	mr_res[,group]<-as.character(mr_res[,group])
 	if(!b %in% names(mr_res)) warning("Column with effect estimates not found. Did you forget to specify the column of data containing your effect estimates?")
 	if(sort_action==1){
 		if(is.null(group)) warning("You must indicate a grouping variable")
@@ -169,30 +171,32 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 	if(sort_action==3){
 		if(is.null(group)) warning("You must indicate a grouping variable")
 		if(is.null(priority)) warning("You must indicate which value of the grouping variable ",group," to use as the priority value")
-		mr_res$b.sort<-NA
-		mr_res1<-mr_res[mr_res[,trait_m] %in% mr_res[,trait_m][duplicated(mr_res[,trait_m])],]
-		mr_res2<-mr_res[!mr_res[,trait_m] %in% mr_res[,trait_m][duplicated(mr_res[,trait_m])],]
 
-		mr_res1$b.sort[mr_res1[,group]==priority]<-mr_res1[,b][mr_res1[,group]==priority]
+		mr_res$b.sort<-NA
+		mr_res1<-mr_res[mr_res[,group] %in% mr_res[,group][duplicated(mr_res[,group])],]
+		mr_res2<-mr_res[!mr_res[,group] %in% mr_res[,group][duplicated(mr_res[,group])],]
+
+		mr_res1$b.sort[mr_res1[,trait_m]==priority]<-mr_res1[,b][mr_res1[,trait_m]==priority]
 		# mr_res1$b.sort[mr_res1[,group]==priority]<-1000
-		for(i in unique(mr_res1[,trait_m]))
+		for(i in unique(mr_res1[,group]))
 		{
-			mr_res1$b.sort[mr_res1[,trait_m] == i & is.na(mr_res1$b.sort)]<-mr_res1$b.sort[mr_res1[,trait_m]== i & !is.na(mr_res1$b.sort)]
+			mr_res1$b.sort[mr_res1[,group] == i & is.na(mr_res1$b.sort)]<-mr_res1$b.sort[mr_res1[,group]== i & !is.na(mr_res1$b.sort)]
 		}
 		# mr_res1$b.sort[is.na(mr_res1$b.sort)]<-mr_res1$b.sort[!is.na(mr_res1$b.sort)]
 		mr_res2$b.sort<-mr_res2$b
-		mr_res<-rbind(mr_res1,mr_res2) 
-		group<-as.character(mr_res[,group])
-		
-		Index<-rep(NA,nrow(mr_res))
-		Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
-		Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
-		for(i in 1:length(group_order)){
-			Index[which(group == group_order[i] )]<-Letters[i]
-		}
-		
-		mr_res<-mr_res[order(Index),]
+		mr_res<-rbind(mr_res1,mr_res2)
+
 		mr_res<-mr_res[order(mr_res$b.sort,decreasing=T),]
+		groups<-unique(mr_res[,group])
+		List<-NULL
+		for(i in 1:length(groups)){
+			Test<-mr_res[mr_res[,group]==groups[i],]
+			Test1<-Test[Test[,trait_m] != priority,]
+			Test2<-Test[Test[,trait_m] == priority,]
+			List[[i]]<-rbind(Test2,Test1)
+		}
+		mr_res<-do.call(rbind,List)
+		
 	}
 
 	if(sort_action ==4){
@@ -432,7 +436,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 }
 
 
-forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
+forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5)
 {
 	print(addcol)
 	# print(addcol_title)
@@ -469,7 +473,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 	outcome_labels <- ggplot2::geom_text(
 		ggplot2::aes(label=eval(parse(text=addcol))), 
-		x=lo, 
+		x=lo,
 		y=mean(c(1, length(unique(dat$exposure)))), 
 		hjust=0, vjust=0.5, size=col_text_size,colour=colour_scheme
 	)
@@ -611,7 +615,8 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 					bottom = i==length(sec),
 					subheading_size=subheading_size,
 					colour_scheme=colour_scheme,
-					shape_points=shape_points
+					shape_points=shape_points,
+					col_text_size=col_text_size
 				)
 
 				count <- count + 1
