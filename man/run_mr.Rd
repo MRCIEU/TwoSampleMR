@@ -10,6 +10,8 @@ run_mr(dat, parameters = default_parameters(),
 \arguments{
 \item{dat}{Output from harmonise_data}
 
+\item{parameters}{default_parameters()}
+
 \item{methods}{Named methods to use. Options are "rucker", "rucker jackknife", "rucker bootstrap", "rucker cooksdistance", "mode", "median"}
 }
 \value{

@@ -456,7 +456,7 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 #' @param correction Scale the estimated r by correction value. Default = FALSE
 #'
 #' @export
-#' @return
+#' @return Vector of r values
 get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", correction=FALSE)
 {
 	stopifnot(length(lor) == length(af))
