@@ -1,7 +1,7 @@
 #' Perform Rucker, Median and Mode
 #'
 #' @param dat Output from harmonise_data
-#' @param parameters=default_parameters()
+#' @param parameters default_parameters()
 #' @param methods Named methods to use. Options are "rucker", "rucker jackknife", "rucker bootstrap", "rucker cooksdistance", "mode", "median"
 #'
 #' @export
