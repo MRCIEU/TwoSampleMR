@@ -10,14 +10,16 @@
 split_outcome <- function(mr_res)
 {
 	Pos<-grep("\\|\\|",mr_res$outcome) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
-	Outcome<-as.character(mr_res$outcome[Pos])
-	Vars<-strsplit(Outcome,split= "\\|\\|")
-	Vars<-unlist(Vars)
-	Vars<-trim(Vars)
-	Trait<-Vars[seq(1,length(Vars),by=2)]
-	id<-Vars[seq(2,length(Vars),by=2)]
-	mr_res$outcome<-as.character(mr_res$outcome)
-	mr_res$outcome[Pos]<-Trait
+	if(sum(Pos)!=0){
+		Outcome<-as.character(mr_res$outcome[Pos])
+		Vars<-strsplit(Outcome,split= "\\|\\|")
+		Vars<-unlist(Vars)
+		Vars<-trim(Vars)
+		Trait<-Vars[seq(1,length(Vars),by=2)]
+		id<-Vars[seq(2,length(Vars),by=2)]
+		mr_res$outcome<-as.character(mr_res$outcome)
+		mr_res$outcome[Pos]<-Trait
+	}
 	return(mr_res)
 }
 
@@ -32,13 +34,18 @@ split_outcome <- function(mr_res)
 split_exposure <- function(mr_res)
 {
 	Pos<-grep("\\|\\|",mr_res$exposure) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
-	Exposure<-as.character(mr_res$exposure[Pos])
-	Vars<-strsplit(as.character(Exposure),split= "\\|\\|")
-	Vars<-unlist(Vars)
-	Vars<-trim(Vars)
-	Trait<-Vars[seq(1,length(Vars),by=2)]
-	mr_res$exposure<-as.character(mr_res$exposure)
-	mr_res$exposure[Pos]<-Trait
+	# Pos2<-grep("\\|\\|",mr_res$exposure,invert=T) 
+	# mr_res2 <-mr_res[Pos2,]
+	# mr_res1<-mr_res[Pos,]
+	if(sum(Pos)!=0){
+		Exposure<-as.character(mr_res$exposure[Pos])
+		Vars<-strsplit(as.character(Exposure),split= "\\|\\|")
+		Vars<-unlist(Vars)
+		Vars<-trim(Vars)
+		Trait<-Vars[seq(1,length(Vars),by=2)]
+		mr_res$exposure<-as.character(mr_res$exposure)
+		mr_res$exposure[Pos]<-Trait
+	}
 	return(mr_res)
 }
 
@@ -222,7 +229,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,Exp=F,split.exposure=
 #' @export
 #' @return data.frame with duplicate summary sets removed
 
-power.prune <- function(dat,method=1,dist.outcome="binary")
+power_prune <- function(dat,method=1,dist.outcome="binary")
 {
 
 	# dat[,c("eaf.exposure","beta.exposure","se.exposure","samplesize.outcome","ncase.outcome","ncontrol.outcome")]
@@ -235,7 +242,7 @@ power.prune <- function(dat,method=1,dist.outcome="binary")
 			# print(i)
 			print(paste("finding summary set for --", id.set.unique[i],"-- with largest sample size", sep=""))
 			dat1<-dat[id.sets == id.set.unique[i],]
-			id.subset<-paste(dat1$exposure,dat1$outcome)
+			id.subset<-paste(dat1$exposure,dat1$id.exposure,dat1$outcome,dat1$id.outcome)
 			id.subset.unique<-unique(id.subset)
 			dat1$id.subset<-as.numeric(factor(id.subset))
 			ncase<-dat1$ncase.outcome
@@ -280,13 +287,13 @@ power.prune <- function(dat,method=1,dist.outcome="binary")
 			print(id.set.unique[i])
 			dat1<-dat[id.sets == id.set.unique[i],]
 			# unique(dat1[,c("exposure","outcome")])
-			id.subset<-paste(dat1$exposure,dat1$outcome)
+			id.subset<-paste(dat1$exposure,dat1$id.exposure,dat1$outcome,dat1$id.outcome)
 			id.subset.unique<-unique(id.subset)
 			dat1$id.subset<-as.numeric(factor(id.subset))
 			L1<-NULL
 			for(j in 1:length(id.subset.unique)){
 				# print(j)
-				print(paste("estimating power for summary set: ",id.subset.unique[j],sep=""))
+				print(paste("identifying best powered summary set: ",id.subset.unique[j],sep=""))
 				dat2<-dat1[id.subset ==id.subset.unique[j], ]
 				p<-dat2$eaf.exposure #effect allele frequency
 				# b<-abs(dat2$beta.exposure) # effect of SNP on risk factor
