@@ -6,15 +6,10 @@
 #'
 #' @export
 #' @return NULL
-toggle_api <- function(where="release")
+toggle_api <- function(where="dev")
 {
 	url <- switch(where,
-		local = "http://localhost/",
-		localtest = "http://localhost:8019/",
-		test = "http://apitest.mrbase.org/",
-		release = "http://api.mrbase.org/",
-		jojo = "http://jojo.epi.bris.ac.uk:8019/",
-		elastic = "http://crashdown.epi.bris.ac.uk:8080/"
+		dev = "http://ieu-db-interface.epi.bris.ac.uk:8084/"
 	)
 	if(is.null(url))
 	{
