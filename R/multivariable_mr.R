@@ -161,6 +161,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 	marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
 	p <- list()
 	nom <- colnames(beta.exposure)
+	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
 	for (i in 1:nexp) {
 
 		# For this exposure, only keep SNPs that meet some p-value threshold
@@ -205,13 +206,13 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			ggplot2::geom_point() +
 			ggplot2::geom_abline(intercept=0, slope=effs[i]) +
 			# ggplot2::stat_smooth(method="lm") +
-			ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+			ggplot2::labs(x=paste0("SNP effect on ", nom2[i]), y="Marginal SNP effect on outcome")
 		}
 	}
-	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
-
+	result <- data.frame(id.exposure = nom, id.outcome = mvdat$outname$id.outcome, outcome=mvdat$outname$outcome, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
+	result <- merge(mvdat$expname, result)
 	out <- list(
-		result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE),
+		result=result,
 		marginal_outcome=marginal_outcome
 	)
 
@@ -249,6 +250,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 	# marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
 	p <- list()
 	nom <- colnames(beta.exposure)
+	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
 	for (i in 1:nexp)
 	{
 		# For this exposure, only keep SNPs that meet some p-value threshold
@@ -292,7 +294,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			ggplot2::geom_point() +
 			ggplot2::geom_abline(intercept=0, slope=effs[i]) +
 			# ggplot2::stat_smooth(method="lm") +
-			ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+			ggplot2::labs(x=paste0("SNP effect on ", nom2[i]), y="Marginal SNP effect on outcome")
 		}
 	}
 	result <- data.frame(id.exposure = nom, id.outcome = mvdat$outname$id.outcome, outcome=mvdat$outname$outcome, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
@@ -330,6 +332,7 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 	marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
 	p <- list()
 	nom <- colnames(beta.exposure)
+	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
 	for (i in 1:nexp) {
 
 		# For this exposure, only keep SNPs that meet some p-value threshold
@@ -355,7 +358,7 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 		ggplot2::geom_point() +
 		ggplot2::geom_abline(intercept=0, slope=effs[i]) +
 		# ggplot2::stat_smooth(method="lm") +
-		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+		ggplot2::labs(x=paste0("SNP effect on ", nom2[i]), y="Marginal SNP effect on outcome")
 	}
 	result <- data.frame(id.exposure = nom, id.outcome = mvdat$outname$id.outcome, outcome=mvdat$outname$outcome, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
 	result <- merge(mvdat$expname, result)
@@ -390,6 +393,7 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 	# marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
 	p <- list()
 	nom <- colnames(beta.exposure)
+	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
 	for (i in 1:nexp) {
 
 		# For this exposure, only keep SNPs that meet some p-value threshold
@@ -415,7 +419,7 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 		ggplot2::geom_point() +
 		ggplot2::geom_abline(intercept=0, slope=effs[i]) +
 		# ggplot2::stat_smooth(method="lm") +
-		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+		ggplot2::labs(x=paste0("SNP effect on ", nom2[i]), y="Marginal SNP effect on outcome")
 	}
 	result <- data.frame(id.exposure = nom, id.outcome = mvdat$outname$id.outcome, outcome=mvdat$outname$outcome, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
 	result <- merge(mvdat$expname, result)
