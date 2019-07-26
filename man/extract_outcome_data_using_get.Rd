@@ -5,10 +5,12 @@
 \title{Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 WARNING: This is unlikely to work correctly if there are a large number of SNPs}
 \usage{
-extract_outcome_data_using_get(snps, outcomes)
+extract_outcome_data_using_get(snps, outcomes, mac_threshold = 90)
 }
 \arguments{
 \item{outcomes}{Array of IDs (see \code{id} column in output from \code{available_outcomes})}
+
+\item{mac_threshold}{minor allele count exclusion threshold. Default = 90. If the minor allele count is less than this threshold, in either cases or the total sample, the SNP will be dropped from MR analyses.}
 
 \item{exposure_dat}{Output from \code{read_exposure_data}}
 }

@@ -4,10 +4,12 @@
 \alias{format_d}
 \title{Format the returned table from the MySQL database}
 \usage{
-format_d(d)
+format_d(d, mac_threshold = 90)
 }
 \arguments{
 \item{d}{Data frame}
+
+\item{mac_threshold}{minor allele count exclusion threshold. Default = 90. If the minor allele count is less than this threshold, in either cases or the total sample, the SNP will be dropped from MR analyses.}
 }
 \value{
 Data frame

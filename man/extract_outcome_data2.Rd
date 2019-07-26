@@ -6,7 +6,7 @@
 \usage{
 extract_outcome_data2(snps, outcomes, proxies = TRUE, rsq = 0.8,
   align_alleles = 1, palindromes = 1, maf_threshold = 0.3,
-  access_token = get_mrbase_access_token())
+  access_token = get_mrbase_access_token(), mac_threshold = 90)
 }
 \arguments{
 \item{snps}{Array of SNP rs IDs}
@@ -24,6 +24,8 @@ extract_outcome_data2(snps, outcomes, proxies = TRUE, rsq = 0.8,
 \item{maf_threshold}{= 0.3 MAF threshold to try to infer palindromic SNPs.}
 
 \item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data}
+
+\item{mac_threshold}{minor allele count exclusion threshold. Default = 90. If the minor allele count is less than this threshold, in either cases or the total sample, the SNP will be dropped from MR analyses.}
 }
 \value{
 Dataframe of summary statistics for all available outcomes

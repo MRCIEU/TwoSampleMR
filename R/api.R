@@ -168,15 +168,16 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 #' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
 #' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#' @param mac_threshold minor allele count exclusion threshold. Default = 90. If the minor allele count is less than this threshold, in either cases or the total sample, the SNP will be dropped from MR analyses. 
 #' @param ... Other options to pass to internal extraction function
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000, proxy_splitsize=500)
+extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000, proxy_splitsize=500,mac_threshold = 90)
 {
 	outcomes <- unique(outcomes)
 	snps <- unique(snps)
-	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token, splitsize = splitsize)
+	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token, splitsize = splitsize,mac_threshold = mac_threshold)
 
 
 	if(proxies)
@@ -192,7 +193,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			if(length(missedsnps)>0)
 			{
 				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
-				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, splitsize = proxy_splitsize)
+				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, splitsize = proxy_splitsize,mac_threshold=mac_threshold)
 				if(!is.null(temp))
 				{
 					firstpass <- plyr::rbind.fill(firstpass, temp)
@@ -207,7 +208,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 
 
 
-extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000)
+extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000,mac_threshold = 90)
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
@@ -316,7 +317,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		# message("None of the requested SNPs were available in the specified GWASs.")
 		return(NULL)
 	}
-	d <- format_d(d)
+	d <- format_d(d,mac_threshold=mac_threshold)
 	if (nrow(d)>0){
 		d$data_source.outcome <- "mrbase"
 		return(d)
@@ -337,9 +338,10 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 #' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
 #' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
+#' @param mac_threshold minor allele count exclusion threshold. Default = 90. If the minor allele count is less than this threshold, in either cases or the total sample, the SNP will be dropped from MR analyses. 
 #'
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data2 <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token())
+extract_outcome_data2 <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(),mac_threshold=90)
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
@@ -484,7 +486,7 @@ extract_outcome_data2 <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, ali
 		message("None of the requested SNPs were available in the specified GWASs.")
 		return(NULL)
 	}
-	d <- format_d(d)
+	d <- format_d(d,mac_threshold=mac_threshold)
 	d$data_source.outcome <- "mrbase"
 	return(d)
 }
@@ -516,8 +518,9 @@ get_se <- function(eff, pval)
 #' Format the returned table from the MySQL database
 #'
 #' @param d Data frame
+#' @param mac_threshold minor allele count exclusion threshold. Default = 90. If the minor allele count is less than this threshold, in either cases or the total sample, the SNP will be dropped from MR analyses. 
 #' @return Data frame
-format_d <- function(d)
+format_d <- function(d,mac_threshold=90)
 {
 	d1 <- data.frame(
 		SNP = as.character(d$name),
@@ -594,13 +597,27 @@ format_d <- function(d)
 
 	mrcols <- c("beta.outcome", "se.outcome", "effect_allele.outcome")
 	d$mr_keep.outcome <- apply(d[, mrcols], 1, function(x) !any(is.na(x)))
+	
+	#Identify SNPs with minor allele count less than 90 in either cases or the total sample 
+	maf<-d$eaf
+	maf[maf>=0.5]<-1-maf[maf>=0.5]
+	ncase<-d$ncase.outcome
+	ntotal<-d$samplesize.outcome
+	ntest<-ncase
+	ntest[ntest==0 | is.na(ntest)]<-ntotal[ntest==0 | is.na(ntest)] #if number of cases is 0 or missing then using total sample size
+	mac <- 2 * ntest * maf
+	Pos_mac<-mac<mac_threshold 
+	if(any(Pos_mac)){
+		d$mr_keep.outcome[Pos_mac]<-FALSE 
+	}
+
 	if(any(!d$mr_keep.outcome))
 	{
-		warning("The following SNP(s) are missing required information for the MR tests and will be excluded\n", paste(subset(d, !mr_keep.outcome)$SNP, collapse="\n"))
+		warning("The following SNP(s) are missing required information for the MR tests, or have a minor allele count < 90 in cases or the total sample, and will be excluded\n", paste(subset(d, !mr_keep.outcome)$SNP, collapse="\n"))
 	}
 	if(all(!d$mr_keep.outcome))
 	{
-		warning("None of the provided SNPs can be used for MR analysis, they are missing required information.")
+		warning("None of the provided SNPs can be used for MR analysis. They are missing required information or have a minor allele count < 90 in cases or the total sample.")
 	}
 
 	return(d)	
@@ -616,9 +633,10 @@ format_d <- function(d)
 #'
 #' @param exposure_dat Output from \code{read_exposure_data}
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
+#' @param mac_threshold minor allele count exclusion threshold. Default = 90. If the minor allele count is less than this threshold, in either cases or the total sample, the SNP will be dropped from MR analyses. 
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data_using_get <- function(snps, outcomes)
+extract_outcome_data_using_get <- function(snps, outcomes,mac_threshold=90)
 {
 	access_token <- get_mrbase_access_token()
 	snps <- unique(snps)
@@ -634,5 +652,5 @@ extract_outcome_data_using_get <- function(snps, outcomes)
 	  message("None of the requested SNPs were available in the specified GWASs.")
 	  return(NULL)
 	}
-	return(format_d(d))
+	return(format_d(d,mac_threshold=mac_threshold))
 }
