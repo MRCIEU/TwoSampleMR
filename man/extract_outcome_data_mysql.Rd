@@ -4,8 +4,8 @@
 \alias{extract_outcome_data_mysql}
 \title{Extract SNP effects from GWAS summary statistics}
 \usage{
-extract_outcome_data_mysql(exposure_dat, outcomes, user, password, dbname, host,
-  port)
+extract_outcome_data_mysql(exposure_dat, outcomes, user, password, dbname,
+  host, port)
 }
 \arguments{
 \item{exposure_dat}{Output from \code{read_exposure_data}}

@@ -4,7 +4,8 @@
 \alias{mr_sign}
 \title{MR sign test}
 \usage{
-mr_sign(b_exp, b_out, se_exp = NULL, se_out = NULL, parameters = NULL)
+mr_sign(b_exp, b_out, se_exp = NULL, se_out = NULL,
+  parameters = NULL)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

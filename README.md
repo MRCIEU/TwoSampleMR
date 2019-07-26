@@ -1,5 +1,7 @@
 # Two Sample MR
 
+[![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
+
 Extended documentation is available here:
 
 [https://mrcieu.github.io/TwoSampleMR/](https://mrcieu.github.io/TwoSampleMR/)

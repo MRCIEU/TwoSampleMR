@@ -4,11 +4,12 @@
 \alias{forest_plot}
 \title{Forest plot for multiple exposures and multiple outcomes}
 \usage{
-forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
+forest_plot(mr_res, exponentiate = FALSE,
+  single_snp_method = "Wald ratio",
   multi_snp_method = "Inverse variance weighted",
-  group_single_categories = TRUE, by_category = TRUE, in_columns = FALSE,
-  threshold = NULL, xlab = "", xlim = NULL, trans = "identity",
-  ao_slc = T, priority = "Cardiometabolic")
+  group_single_categories = TRUE, by_category = TRUE,
+  in_columns = FALSE, threshold = NULL, xlab = "", xlim = NULL,
+  trans = "identity", ao_slc = T, priority = "Cardiometabolic")
 }
 \arguments{
 \item{mr_res}{Results from mr()}
