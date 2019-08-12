@@ -6,7 +6,10 @@
                 "[>] Check news(package='TwoSampleMR') for bug fixes and updates\n",
                 "[>] By generating access tokens to retrieve data from the MR-Base\n",
                 "    database you consent to having your email address logged on\n",
-                "    our servers. For info on how this is used see logging_info()\n"
+                "    our servers. For info on how this is used see logging_info()\n",
+                "[>] NOTE: We will be rolling out extensive changes to the database\n",
+                "    in the next few weeks. To ensure backwards compatibility please\n",
+                "    ensure you keep the R package updated."
         )
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))

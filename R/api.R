@@ -131,7 +131,9 @@ get_mrbase_status <- function()
 available_outcomes <- function(access_token = get_mrbase_access_token())
 {
 	url <- paste0(options()$mrbaseapi, "get_studies?access_token=", access_token)
-	return(fromJSON_safe(url))
+	a <- fromJSON_safe(url)
+	a$id <- gsub("IEU-a:", "", a$id)
+	return(a)
 }
 
 
@@ -175,6 +177,10 @@ upload_file_to_api <- function(x, max_file_size=16*1024*1024, header=FALSE)
 extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = get_mrbase_access_token(), splitsize=10000, proxy_splitsize=500)
 {
 	outcomes <- unique(outcomes)
+
+	# ieu_index <- ! grepl("[A-Z]+-[a-z]+:", outcomes)
+	# outcomes[ieu_index] <- paste0("IEU-a:", outcomes[ieu_index])
+
 	snps <- unique(snps)
 	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token, splitsize = splitsize)
 
@@ -519,6 +525,9 @@ get_se <- function(eff, pval)
 #' @return Data frame
 format_d <- function(d)
 {
+
+	d$id <- gsub("IEU-a:", "", d$id)
+
 	d1 <- data.frame(
 		SNP = as.character(d$name),
 		beta.outcome = as.numeric(d$beta),

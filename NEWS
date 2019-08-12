@@ -1,3 +1,11 @@
+TwoSampleMR v0.4.23 (Release date: 2019-08-12)
+==============
+
+Changes:
+
+* Forcing server to `extract_instruments` when pre-computed outcomes are not present by default. The old behaviour is still possible by setting `extract_instruments(force_server_if_empty=FALSE)`
+
+
 TwoSampleMR v0.4.22 (Release date: 2019-02-22)
 ==============
 
