@@ -11,12 +11,18 @@
 #' @param kb = 10000 Clumping distance cutoff
 #' @param access_token = get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data
 #' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package
+#' @param force_server_if_empty Some of the newly added MR-Base datasets don't have pre-calculated clumped results yet. This option is soon to be deprecated but temporarily we are forcing the search for instruments when an outcome doesn't have any precalculated results. Default = TRUE.
 #'
 #' @export
 #' @return data frame
-extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(), force_server=FALSE)
+extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(), force_server=FALSE, force_server_if_empty=TRUE)
 {
 	outcomes <- unique(outcomes)
+
+	# ieu_index <- ! grepl("[A-Z]+-[a-z]+:", outcomes)
+	# outcomes[ieu_index] <- paste0("IEU-a:", outcomes[ieu_index])
+
+	# TODO: UKB-b traits don't have MRInstruments entry
 
 	if(clump & p1 == 5e-8 & r2 == 0.001 & kb == 10000 & !force_server)
 	{
@@ -44,11 +50,32 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 
 		if(nrow(a) == 0)
 		{
-			message("None of the requested outcomes had GWAS hits at the specified threshold.")
-			return(NULL)
+			if(!force_server_if_empty)
+			{
+				message("None of the requested outcomes had GWAS hits at the specified threshold.")
+				return(NULL)
+			}
 		}
-		a$exposure <- paste0(a$exposure, " || id:", a$id)
-		return(a)
+		if(nrow(a) > 0)
+		{
+			a$id <- gsub("IEU-a:", "", a$id)
+			a$exposure <- paste0(a$exposure, " || id:", a$id)
+		}
+		missing_outcomes <- outcomes[!outcomes %in% a$id]
+		message(length(outcomes) - length(missing_outcomes), " out of ", length(outcomes), " requested outcomes have pre-calculated instruments. ")
+		if(length(missing_outcomes) == 0)
+		{
+			return(a)
+		} else {
+			if(!force_server_if_empty)
+			{
+				message("force_server_if_empty=FALSE, so not checking server for outcomes with no instruments")
+				return(a)
+			} else {
+				found_outcomes <- outcomes[outcomes %in% a$id]
+				outcomes <- missing_outcomes
+			}
+		}
 	}
 
 	message("Extracting data from ", length(unique(outcomes)), " GWAS(s)")
@@ -104,6 +131,12 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		id_col="id"
 	)
 	d$data_source.exposure <- "mrbase"
+	d$id.exposure <- gsub("IEU-a:", "", d$id.exposure)
+
+	if(force_server_if_empty)
+	{
+		d <- plyr::rbind.fill(d, a)
+	}
 
 	return(d)
 }

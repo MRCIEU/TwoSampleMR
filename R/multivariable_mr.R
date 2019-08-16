@@ -1,154 +1,3 @@
-# library(TwoSampleMR)
-
-
-# set.seed(100)
-
-# n <- 500000
-# nsnp <- 6
-# g <- matrix(0, n, nsnp)
-# for(i in 1:nsnp)
-# {
-# 	g[,1] <- rbinom(n, 2, 0.5)
-# 	g[,2] <- rbinom(n, 2, 0.5)
-# 	g[,3] <- rbinom(n, 2, 0.5)
-# 	g[,4] <- rbinom(n, 2, 0.5)
-# 	g[,5] <- rbinom(n, 2, 0.5)
-# 	g[,6] <- rbinom(n, 2, 0.5)
-# }
-
-# Bx1 <- rnorm(4)
-# Bx2 <- rnorm(3)
-# Bx3 <- rnorm(3)
-
-# x1 <- g[,1] * Bx1[1] + g[,2] * Bx1[2] + g[,3] * Bx1[3] + g[,4] * Bx1[4] + rnorm(n) * sd(g[,1])
-# x2 <- g[,4] * Bx2[1] + g[,5] * Bx2[2] + g[,6] * Bx2[3] + rnorm(n) * sd(g[,1])
-# x3 <- g[,1] * Bx3[1] + g[,2] * Bx3[2] + g[,6] * Bx3[3] + rnorm(n) * sd(g[,1])
-
-# y <- x1 * 0.5 + x2 * -5 + rnorm(n) * sd(x1)
-
-
-# by <- bx1 <- bx2 <- bx3 <- array(0, 6)
-# for(i in 1:6)
-# {
-# 	bx1[i] <- lm(x1 ~ g[,i])$coef[2]
-# 	bx2[i] <- lm(x2 ~ g[,i])$coef[2]
-# 	bx3[i] <- lm(x3 ~ g[,i])$coef[2]
-# 	by[i]  <- lm(y ~ g[,i])$coef[2]
-# }
-
-# beta1 = lm(lm(by ~ bx2 + bx3)$res ~ bx1)$coef[2]
-# beta2 = lm(lm(by ~ bx1 + bx3)$res ~ bx2)$coef[2]
-# beta3 = lm(lm(by ~ bx1 + bx2)$res ~ bx3)$coef[2]
-# beta1se = summary(lm(lm(by ~ bx2 + bx3)$res ~ bx1))$coef[2,2]
-# beta2se = summary(lm(lm(by ~ bx1 + bx3)$res ~ bx2))$coef[2,2]
-# beta3se = summary(lm(lm(by ~ bx1 + bx2)$res ~ bx3))$coef[2,2]
-
-
-# beta1
-# beta2
-# beta3
-
-# beta1se
-# beta2se
-# beta3se
-
-
-# 1. identify exposures
-# 2. get best instruments for each exposure
-# 3. get effects of each instrument from each exposure and the outcome
-# 4. create matrix of xs
-
-
-#' Perform multivariable MR
-#'
-#' WARNING: EXPERIMENTAL, needs more testing
-#' 1. identify exposures
-#' 2. get best instruments for each exposure
-#' 3. get effects of each instrument from each exposure and the outcome
-#' 4. create matrix of exposure effects
-#' 5. perform multivariable MR
-#'
-#' @param id_exposure Array of ids from \code{available_outcomes}
-#' @param id_outcome Single id from \code{available_outcomes}
-#'
-#' @export
-#' @return List of results table, exposure effects and outcome effects
-multivariable_mr <- function(id_exposure, id_outcome, harmonise_strictness=2)
-{
-	require(reshape2)
-	message("Warning: This analysis is still experimental")
-	message("Testing the regression based multivariable MR")
-	stopifnot(length(id_exposure) > 1)
-	stopifnot(length(id_outcome) == 1)
-
-	# Get best instruments for each exposure
-	exposure_dat <- extract_instruments(id_exposure, r2 = 0.0000001, kb=10000)
-	temp <- exposure_dat
-	temp$id.exposure <- 1
-	temp <- clump_data(temp, clump_r2=0.0000001)
-	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
-
-
-	# Get effects of each instrument from each exposure
-	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure)
-	d1 <- subset(d1, mr_keep.outcome)
-	d2 <- subset(d1, id.outcome != id_exposure[1])
-	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
-
-	# Harmonise against the first id
-	d <- harmonise_data(d1, d2, action=harmonise_strictness)
-
-	# Only keep SNPs that are present in all
-	tab <- table(d$SNP)
-	keepsnps <- names(tab)[tab == length(id_exposure)-1]
-	d <- subset(d, SNP %in% keepsnps)
-	
-	# Reshape exposures
-	dh1 <- subset(d, id.outcome == id.outcome[1], select=c(SNP, exposure, id.exposure, effect_allele.exposure, other_allele.exposure, beta.exposure, se.exposure))
-	dh2 <- subset(d, select=c(SNP, outcome, id.outcome, effect_allele.outcome, other_allele.outcome, beta.outcome, se.outcome))
-	names(dh2) <- gsub("outcome", "exposure", names(dh2))
-	dh <- rbind(dh1, dh2)
-	exposure_mat <- reshape2::dcast(dh, SNP ~ exposure, value.var="beta.exposure")
-
-
-	# Get outcome data
-	outcome_dat <- extract_outcome_data(keepsnps, id_outcome)
-	dat <- harmonise_data(d1, outcome_dat, action=harmonise_strictness)
-	exposure_mat <- subset(exposure_mat, SNP %in% dat$SNP)
-	dat$SNP <- as.character(dat$SNP)
-	exposure_mat$SNP <- as.character(exposure_mat$SNP)
-	index <- match(exposure_mat$SNP, dat$SNP)
-	dat <- dat[index, ]
-	stopifnot(all(dat$SNP == exposure_mat$SNP))
-
-	exposure_mat <- as.matrix(exposure_mat[,-1])
-	rownames(exposure_mat) <- dat$SNP
-	effs <- array(1:length(id_exposure))
-	se <- array(1:length(id_exposure))
-	pval <- array(1:length(id_exposure))
-	for(i in 1:length(id_exposure))
-	{
-		mod <- summary(lm(lm(dat$beta.outcome ~ exposure_mat[,-c(i)])$res ~ exposure_mat[,i]))
-		effs[i] <- mod$coef[2,1]
-		se[i] <- mod$coef[2,2]
-		pval[i] <- 2 * pnorm(abs(effs[i]) / se[i], lower.tail=FALSE)
-	}
-
-	nom <- unique(dh$exposure)
-	return(list(
-		results = data.frame(
-			exposure=nom,
-			outcome=unique(dat$outcome),
-			b=effs,
-			se=se,
-			pval=pval,
-			stringsAsFactors=FALSE
-		),
-		exposure_effects = exposure_mat,
-		outcome_effects  = dat$beta.outcome
-	))
-}
-
 
 #' Convert outcome format to exposure format
 #'
@@ -188,8 +37,6 @@ convert_outcome_to_exposure <- function(outcome_dat)
 mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = get_mrbase_access_token(), find_proxies=TRUE, force_server=FALSE)
 {
 	require(reshape2)
-	message("Warning: This analysis is still experimental")
-	message("Testing the regression based multivariable MR")
 	stopifnot(length(id_exposure) > 1)
 
 	# Get best instruments for each exposure
@@ -235,31 +82,31 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 {
 
-	stopifnot(all(c("SNP", "exposure", "effect_allele.exposure", "beta.exposure", "se.exposure", "pval.exposure") %in% names(exposure_dat)))
-	nexp <- length(unique(exposure_dat$exposure))
+	stopifnot(all(c("SNP", "id.exposure", "exposure", "effect_allele.exposure", "beta.exposure", "se.exposure", "pval.exposure") %in% names(exposure_dat)))
+	nexp <- length(unique(exposure_dat$id.exposure))
 	stopifnot(nexp > 1)
 	tab <- table(exposure_dat$SNP)
 	keepsnp <- names(tab)[tab == nexp]
 	exposure_dat <- subset(exposure_dat, SNP %in% keepsnp)
 
 
-	exposure_mat <- reshape2::dcast(exposure_dat, SNP ~ exposure, value.var="beta.exposure")
+	exposure_mat <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var="beta.exposure")
 
 
 	# Get outcome data
-	dat <- harmonise_data(subset(exposure_dat, exposure == exposure_dat$exposure[1]), outcome_dat, action=harmonise_strictness)
+	dat <- harmonise_data(subset(exposure_dat, id.exposure == exposure_dat$id.exposure[1]), outcome_dat, action=harmonise_strictness)
 	dat <- subset(dat, mr_keep)
 	dat$SNP <- as.character(dat$SNP)
 
-	exposure_beta <- reshape2::dcast(exposure_dat, SNP ~ exposure, value.var="beta.exposure")
+	exposure_beta <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var="beta.exposure")
 	exposure_beta <- subset(exposure_beta, SNP %in% dat$SNP)
 	exposure_beta$SNP <- as.character(exposure_beta$SNP)
 
-	exposure_pval <- reshape2::dcast(exposure_dat, SNP ~ exposure, value.var="pval.exposure")
+	exposure_pval <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var="pval.exposure")
 	exposure_pval <- subset(exposure_pval, SNP %in% dat$SNP)
 	exposure_pval$SNP <- as.character(exposure_pval$SNP)
 
-	exposure_se <- reshape2::dcast(exposure_dat, SNP ~ exposure, value.var="se.exposure")
+	exposure_se <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var="se.exposure")
 	exposure_se <- subset(exposure_se, SNP %in% dat$SNP)
 	exposure_se$SNP <- as.character(exposure_se$SNP)
 
@@ -279,7 +126,11 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 	outcome_se <- dat$se.outcome
 	outcome_pval <- dat$pval.outcome
 
-	return(list(exposure_beta=exposure_beta, exposure_pval=exposure_pval, exposure_se=exposure_se, outcome_beta=outcome_beta, outcome_pval=outcome_pval, outcome_se=outcome_se))
+	expname <- subset(exposure_dat, !duplicated(id.exposure), select=c(id.exposure, exposure))
+	outname <- subset(outcome_dat, !duplicated(id.outcome), select=c(id.outcome, outcome))
+
+
+	return(list(exposure_beta=exposure_beta, exposure_pval=exposure_pval, exposure_se=exposure_se, outcome_beta=outcome_beta, outcome_pval=outcome_pval, outcome_se=outcome_se, expname=expname, outname=outname))
 }
 
 
@@ -310,6 +161,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 	marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
 	p <- list()
 	nom <- colnames(beta.exposure)
+	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
 	for (i in 1:nexp) {
 
 		# For this exposure, only keep SNPs that meet some p-value threshold
@@ -354,13 +206,13 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			ggplot2::geom_point() +
 			ggplot2::geom_abline(intercept=0, slope=effs[i]) +
 			# ggplot2::stat_smooth(method="lm") +
-			ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+			ggplot2::labs(x=paste0("SNP effect on ", nom2[i]), y="Marginal SNP effect on outcome")
 		}
 	}
-	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
-
+	result <- data.frame(id.exposure = nom, id.outcome = mvdat$outname$id.outcome, outcome=mvdat$outname$outcome, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
+	result <- merge(mvdat$expname, result)
 	out <- list(
-		result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE),
+		result=result,
 		marginal_outcome=marginal_outcome
 	)
 
@@ -398,6 +250,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 	# marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
 	p <- list()
 	nom <- colnames(beta.exposure)
+	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
 	for (i in 1:nexp)
 	{
 		# For this exposure, only keep SNPs that meet some p-value threshold
@@ -441,13 +294,13 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			ggplot2::geom_point() +
 			ggplot2::geom_abline(intercept=0, slope=effs[i]) +
 			# ggplot2::stat_smooth(method="lm") +
-			ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+			ggplot2::labs(x=paste0("SNP effect on ", nom2[i]), y="Marginal SNP effect on outcome")
 		}
 	}
-	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
-
+	result <- data.frame(id.exposure = nom, id.outcome = mvdat$outname$id.outcome, outcome=mvdat$outname$outcome, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
+	result <- merge(mvdat$expname, result)
 	out <- list(
-		result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
+		result=result
 	)
 	if(plots)
 		out$plots=p
@@ -479,6 +332,7 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 	marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
 	p <- list()
 	nom <- colnames(beta.exposure)
+	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
 	for (i in 1:nexp) {
 
 		# For this exposure, only keep SNPs that meet some p-value threshold
@@ -504,11 +358,12 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 		ggplot2::geom_point() +
 		ggplot2::geom_abline(intercept=0, slope=effs[i]) +
 		# ggplot2::stat_smooth(method="lm") +
-		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+		ggplot2::labs(x=paste0("SNP effect on ", nom2[i]), y="Marginal SNP effect on outcome")
 	}
-	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
+	result <- data.frame(id.exposure = nom, id.outcome = mvdat$outname$id.outcome, outcome=mvdat$outname$outcome, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
+	result <- merge(mvdat$expname, result)
 
-	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), marginal_outcome=marginal_outcome, plots=p))
+	return(list(result=result, marginal_outcome=marginal_outcome, plots=p))
 }
 
 
@@ -538,6 +393,7 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 	# marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
 	p <- list()
 	nom <- colnames(beta.exposure)
+	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
 	for (i in 1:nexp) {
 
 		# For this exposure, only keep SNPs that meet some p-value threshold
@@ -563,32 +419,63 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 		ggplot2::geom_point() +
 		ggplot2::geom_abline(intercept=0, slope=effs[i]) +
 		# ggplot2::stat_smooth(method="lm") +
-		ggplot2::labs(x=paste0("SNP effect on ", nom[i]), y="Marginal SNP effect on outcome")
+		ggplot2::labs(x=paste0("SNP effect on ", nom2[i]), y="Marginal SNP effect on outcome")
 	}
-	warning("Up to 0.4.9 there was a problem with the p-value calculation, this has now been fixed")
+	result <- data.frame(id.exposure = nom, id.outcome = mvdat$outname$id.outcome, outcome=mvdat$outname$outcome, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE)
+	result <- merge(mvdat$expname, result)
 
-	return(list(result=data.frame(exposure = nom, nsnp = nsnp, b = effs, se = se, pval = pval, stringsAsFactors = FALSE), plots=p))
+	return(list(result=result, plots=p))
 }
 
+#' Apply LASSO feature selection to mvdat object
+#'
+#' @param mvdat Output from \code{mv_harmonise_data}
+#'
+#' @export
+#' @return data frame of retained features
+mv_lasso_feature_selection <- function(mvdat)
+{
+	message("Performing feature selection")
+	b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
+	c <- coef(b, s = "lambda.min")
+  	i <- !c[,1] == 0
+  	d <- dplyr::tibble(exposure=rownames(c)[i], b=c[i,])
+	return(d)
+}
 
-# mod 1
-# y ~ 0 + iv1 + iv2
+#' Perform multivariable MR on subset of features
+#'
+#' Step 1: Select features (by default this is done using LASSO feature selection)
+#' Step 2: Subset the mvdat to only retain relevant features and instruments
+#' Step 3: Perform MVMR on remaining data
+#'
+#' @param mvdat Output from \code{mv_harmonise_data}
+#' @param features Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. By default = mvdat_lasso_feature_selection(mvdat)
+#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
+#' @param pval_threshold=5e-8 P-value threshold to include instruments
+#' @param plots Create plots? FALSE by default
+#'
+#' @export
+#' @return List of results
+mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
+{
+	# Update mvdat object
+	mvdat$exposure_beta <- mvdat$exposure_beta[, features$exposure, drop=FALSE]
+	mvdat$exposure_se <- mvdat$exposure_se[, features$exposure, drop=FALSE]
+	mvdat$exposure_pval <- mvdat$exposure_pval[, features$exposure, drop=FALSE]
 
-# mod 2
-# y ~ iv1 + iv2
+	# Find relevant instruments
+	instruments <- apply(mvdat$exposure_pval, 1, function(x) any(x < pval_threshold))
+	stopifnot(sum(instruments) > nrow(features))
 
-# mod 3
-# y(r) ~ iv1 + iv2
+	mvdat$exposure_beta <- mvdat$exposure_beta[instruments,,drop=FALSE]
+	mvdat$exposure_se <- mvdat$exposure_se[instruments,,drop=FALSE]
+	mvdat$exposure_pval <- mvdat$exposure_pval[instruments,,drop=FALSE]	
+	mvdat$outcome_beta <- mvdat$outcome_beta[instruments]
+	mvdat$outcome_se <- mvdat$outcome_se[instruments]
+	mvdat$outcome_pval <- mvdat$outcome_pval[instruments]
 
-
-# full or residual
-# instrument specific or not
-
-
-# intercept or not
-
-# full, all instruments
-# full, instrument specific
-# residual, all instruments
-# residual, instrument specific
+	mv_multiple(mvdat, intercept=intercept, instrument_specific=instrument_specific, pval_threshold=pval_threshold, plots=plots)
+}
 

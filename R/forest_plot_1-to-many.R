@@ -13,16 +13,21 @@
 #'
 #' @export
 #' @return data frame.
-format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",addcols=NULL)
+format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL)
 {
-
+	# mr_res
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("plyr", quietly=TRUE)
 
 	if(!is.null(by)){
+		mr_res<-mr_res[,names(mr_res)!="subcategory"]
 		names(mr_res)[names(mr_res)==by]<-"subcategory"
 	}else{
 		mr_res$subcategory<-""
+	}
+
+	if(is.null(weight)) {
+		mr_res$weight=3
 	}
 
 	if(TraitM=="exposure"){ #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
@@ -33,7 +38,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 	names(mr_res)[names(mr_res)==b ]<-"b"
 	names(mr_res)[names(mr_res)==se ]<-"se"
 	Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
-	Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
+	Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters),paste0("D",Letters)))
 	mr_res$outcome2<-mr_res[,TraitM]
 	mr_res[,TraitM]<-paste(Letters[1:length(mr_res[,TraitM])],mr_res[,TraitM])
 
@@ -96,9 +101,11 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 		outcome2= as.character(dat$outcome2),
 		category = as.character(dat$subcategory),
 		effect = dat$b,
+		se = dat$se,
 		up_ci = dat$up_ci,
 		lo_ci = dat$lo_ci,
 		index = dat$index,
+		weight=dat$weight,
 		stringsAsFactors = FALSE
 	)
 
@@ -129,15 +136,17 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
 #' @param trait_m The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
 #' @param group Name of grouping variable in mr_res. 
-#' @param priority If sort_action=3, choose which value of the grouping variable, defined by the group argument, should be given priority and go above the other group values. The trait with the largest effect size for the prioritised group will go to the top of the plot. 
-#' @param sort_action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from observational and Mendelian randomization studies or from different MR methods); use the priority argument to indicate which trait and group should go to the top of the plot. 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
+#' @param priority If sort_action=3, choose which value of the trait_m variable should be given priority and go above the other trait_m values. The trait with the largest effect size for the prioritised group will go to the top of the plot. 
+#' @param sort_action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from different MR methods); 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
 #'
 #' @export
 #' @return data frame.
 # 
 
-sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,group_order=NULL,priority=NULL){
+sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,priority=NULL){
 
+	mr_res[,trait_m]<-as.character(mr_res[,trait_m])
+	mr_res[,group]<-as.character(mr_res[,group])
 	if(!b %in% names(mr_res)) warning("Column with effect estimates not found. Did you forget to specify the column of data containing your effect estimates?")
 	if(sort_action==1){
 		if(is.null(group)) warning("You must indicate a grouping variable")
@@ -163,30 +172,32 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 	if(sort_action==3){
 		if(is.null(group)) warning("You must indicate a grouping variable")
 		if(is.null(priority)) warning("You must indicate which value of the grouping variable ",group," to use as the priority value")
-		mr_res$b.sort<-NA
-		mr_res1<-mr_res[mr_res[,trait_m] %in% mr_res[,trait_m][duplicated(mr_res[,trait_m])],]
-		mr_res2<-mr_res[!mr_res[,trait_m] %in% mr_res[,trait_m][duplicated(mr_res[,trait_m])],]
 
-		mr_res1$b.sort[mr_res1[,group]==priority]<-mr_res1[,b][mr_res1[,group]==priority]
+		mr_res$b.sort<-NA
+		mr_res1<-mr_res[mr_res[,group] %in% mr_res[,group][duplicated(mr_res[,group])],]
+		mr_res2<-mr_res[!mr_res[,group] %in% mr_res[,group][duplicated(mr_res[,group])],]
+
+		mr_res1$b.sort[mr_res1[,trait_m]==priority]<-mr_res1[,b][mr_res1[,trait_m]==priority]
 		# mr_res1$b.sort[mr_res1[,group]==priority]<-1000
-		for(i in unique(mr_res1[,trait_m]))
+		for(i in unique(mr_res1[,group]))
 		{
-			mr_res1$b.sort[mr_res1[,trait_m] == i & is.na(mr_res1$b.sort)]<-mr_res1$b.sort[mr_res1[,trait_m]== i & !is.na(mr_res1$b.sort)]
+			mr_res1$b.sort[mr_res1[,group] == i & is.na(mr_res1$b.sort)]<-mr_res1$b.sort[mr_res1[,group]== i & !is.na(mr_res1$b.sort)]
 		}
 		# mr_res1$b.sort[is.na(mr_res1$b.sort)]<-mr_res1$b.sort[!is.na(mr_res1$b.sort)]
 		mr_res2$b.sort<-mr_res2$b
-		mr_res<-rbind(mr_res1,mr_res2) 
-		group<-as.character(mr_res[,group])
-		
-		Index<-rep(NA,nrow(mr_res))
-		Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
-		Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
-		for(i in 1:length(group_order)){
-			Index[which(group == group_order[i] )]<-Letters[i]
-		}
-		
-		mr_res<-mr_res[order(Index),]
+		mr_res<-rbind(mr_res1,mr_res2)
+
 		mr_res<-mr_res[order(mr_res$b.sort,decreasing=T),]
+		groups<-unique(mr_res[,group])
+		List<-NULL
+		for(i in 1:length(groups)){
+			Test<-mr_res[mr_res[,group]==groups[i],]
+			Test1<-Test[Test[,trait_m] != priority,]
+			Test2<-Test[Test[,trait_m] == priority,]
+			List[[i]]<-rbind(Test2,Test1)
+		}
+		mr_res<-do.call(rbind,List)
+		
 	}
 
 	if(sort_action ==4){
@@ -216,9 +227,11 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 #' @param lo Lower limit of x axis 
 #' @param up Upper limit of x axis 
 #' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument
+#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points black. 
+#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).
 #'
 #' @return ggplot object
-forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size)
+forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
 {
 	if(bottom)
 	{
@@ -264,14 +277,14 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	if(!is.null(colour_group))
 	{
 		dat <- subset(dat, exposure == colour_group)
-		point_plot <- ggplot2::geom_point(size=2)
+		point_plot <- ggplot2::geom_point(size=dat$weight,colour=colour_scheme,fill=colour_scheme,shape=shape_points)
 	} else {
-		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)
+		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=colour_scheme), size=dat$weight,fill=colour_scheme)
 	}
 
 	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
 	{
-		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome2,colour="red"), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
+		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome2,colour=colour_scheme), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
 		main_title <- ifelse(is.null(section), "", section)
 		title_colour <- "black"
 
@@ -292,15 +305,19 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	dat <- dat[nrow(dat):1, ]
 
 	p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	ggplot2::geom_rect(ggplot2::aes(fill=col), colour=colour_scheme,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, size=0.3) +
 	ggplot2::geom_vline(xintercept=null_line, colour="#333333", size=0.3) +
-	ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
-	ggplot2::geom_point(colour="black", size=2.2) +
+	# ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
+	ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour=colour_scheme) +
+	# ggplot2::geom_point(colour="black", size=2.2) +
+	ggplot2::geom_point(colour=colour_scheme, size=2.2,shape=shape_points,fill=colour_scheme) +
+	# ggplot2::scale_fill_manual(values="cyan4")+
 	point_plot +
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(trans=trans, limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
+	# ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
 	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
 	ggplot2::theme(
 		axis.line=ggplot2::element_blank(),
@@ -320,7 +337,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		plot.margin=ggplot2::unit(c(2,3,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
+		panel.background=ggplot2::element_rect(colour="white", fill=colour_scheme, size=1),
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
@@ -330,7 +347,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 }
 
 
-forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size)
+forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5)
 {
 	if(bottom)
 	{
@@ -372,7 +389,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		ggplot2::aes(label=eval(parse(text=var1))), 
 		x=lo, 
 		y=mean(c(1, length(unique(dat$exposure)))), 
-		hjust=0, vjust=0.5, size=2
+		hjust=0, vjust=0.5, size=col_text_size,color=colour_scheme
 	)
 
 	# print(paste0("title=",title))
@@ -381,12 +398,13 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 
 	dat$lab<-dat$outcome
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
+
 	l$col[1:nrow(l) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 
 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	ggplot2::geom_rect(ggplot2::aes(fill=col),colour=colour_scheme, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
@@ -409,7 +427,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
+		panel.background=ggplot2::element_rect(colour=colour_scheme, fill=colour_scheme, size=1),
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
@@ -419,7 +437,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 }
 
 
-forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size)
+forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5)
 {
 	print(addcol)
 	# print(addcol_title)
@@ -456,9 +474,9 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 	outcome_labels <- ggplot2::geom_text(
 		ggplot2::aes(label=eval(parse(text=addcol))), 
-		x=lo, 
+		x=lo,
 		y=mean(c(1, length(unique(dat$exposure)))), 
-		hjust=0, vjust=0.5, size=2.0
+		hjust=0, vjust=0.5, size=col_text_size,colour=colour_scheme
 	)
 
 	main_title <- section
@@ -470,7 +488,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 
 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
-	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	ggplot2::geom_rect(ggplot2::aes(fill=col),colour=colour_scheme ,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
@@ -493,7 +511,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour="red", fill="grey", size=1),
+		panel.background=ggplot2::element_rect(colour="red", fill=colour_scheme, size=1),
 		strip.text.y = ggplot2::element_blank(),
 		strip.text.x = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
@@ -505,7 +523,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 #' 1-to-many forest plot 
 #'
-#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. 
+#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
 #' 
 #' @param mr_res Data frame of results supplied by the user
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
@@ -523,10 +541,12 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".
 #' @param lo Lower limit of X axis to plot. 
 #' @param up upper limit of X axis to plot. 
+#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points black. 
+#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).
 #'
 #' @export
 #' @return grid plot object
-forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles=NULL,subheading_size=6){
+forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
@@ -536,16 +556,20 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 	
 	xlim=NULL
 	ncols=1+length(addcols)
+	if(addcol_titles==""){
+		addcol_titles<-rep(addcol_titles,length(addcols))
+	}
 	
 	dat <- format_1_to_many(
-		mr_res, 
+		mr_res=mr_res, 
 		b=b,
 		se=se,
 		exponentiate=exponentiate, 
 		ao_slc=ao_slc,
 		by=by,
 		TraitM=TraitM,
-		addcols=addcols 
+		addcols=addcols,
+		weight=weight
 	)
 	
 
@@ -553,6 +577,7 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 		ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=outcome)) + 
 		ggplot2::geom_point(ggplot2::aes(colour=exposure)) + 
 		ggplot2::scale_colour_brewer(type="qual") + 
+		# ggplot2::labs(colour="Exposure") + 
 		ggplot2::labs(colour="Exposure") + 
 		ggplot2::theme(text=ggplot2::element_text(size=10))
 	)
@@ -575,8 +600,12 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 			sec[i],
 			bottom = i==length(sec),
 			title=col1_title,
-			subheading_size=subheading_size
+			subheading_size=subheading_size,
+			colour_scheme=colour_scheme,
+			shape_points=shape_points,
+			col_text_size=col_text_size
 		)
+
 		count <- count + 1
 
 		if(!is.null(addcols)){
@@ -588,7 +617,10 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 					addcol=addcols[j],
 					addcol_title=addcol_titles[j],
 					bottom = i==length(sec),
-					subheading_size=subheading_size
+					subheading_size=subheading_size,
+					colour_scheme=colour_scheme,
+					shape_points=shape_points,
+					col_text_size=col_text_size
 				)
 
 				count <- count + 1
@@ -609,12 +641,14 @@ forest_plot_1_to_many <- function(mr_res, b="b",se="se",TraitM="outcome",col1_wi
 				up=up,
 				trans = trans,
 				xlim = xlim,
-				subheading_size=subheading_size
+				subheading_size=subheading_size,
+				colour_scheme=colour_scheme,
+				shape_points=shape_points
 			)
 			count <- count + 1
 		}
 	}
-	h <- h + 1
+	h <- h + 5
 	h[length(sec)] <- h[length(sec)] + 1
 	# message(length(l))
 	# message(count)

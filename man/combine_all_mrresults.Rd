@@ -4,8 +4,8 @@
 \alias{combine_all_mrresults}
 \title{Combine all mr results}
 \usage{
-combine_all_mrresults(res, het, plt, sin, ao_slc = T, exp = F,
-  split_exposure = T, split_outcome = T)
+combine_all_mrresults(res, het, plt, sin, ao_slc = T, Exp = F,
+  split.exposure = F, split.outcome = F)
 }
 \arguments{
 \item{res}{Results from mr()}
@@ -16,11 +16,11 @@ combine_all_mrresults(res, het, plt, sin, ao_slc = T, exp = F,
 
 \item{ao_slc}{Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE.}
 
-\item{exp}{Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE.}
+\item{Exp}{Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE.}
 
-\item{split_exposure}{Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is TRUE.}
+\item{split.exposure}{Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is FALSE.}
 
-\item{split_outcome}{Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is TRUE.}
+\item{split.outcome}{Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is FALSE.}
 
 \item{pleiotropy}{Results from mr_pleiotropy_test()}
 }
