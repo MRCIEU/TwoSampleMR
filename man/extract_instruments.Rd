@@ -6,7 +6,7 @@
 \usage{
 extract_instruments(outcomes, p1 = 5e-08, clump = TRUE, p2 = 5e-08,
   r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(),
-  force_server = FALSE)
+  force_server = FALSE, force_server_if_empty = TRUE)
 }
 \arguments{
 \item{outcomes}{Array of outcome IDs (see \code{available_outcomes})}
@@ -24,6 +24,8 @@ extract_instruments(outcomes, p1 = 5e-08, clump = TRUE, p2 = 5e-08,
 \item{access_token}{= get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data}
 
 \item{force_server}{Force the analysis to extract results from the server rather than the MRInstruments package}
+
+\item{force_server_if_empty}{Some of the newly added MR-Base datasets don't have pre-calculated clumped results yet. This option is soon to be deprecated but temporarily we are forcing the search for instruments when an outcome doesn't have any precalculated results. Default = TRUE.}
 }
 \value{
 data frame
