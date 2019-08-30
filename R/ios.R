@@ -8,19 +8,19 @@
 #' Summarising across multiple traits can be dune using mean, sd, iqr, median, 95% value, maximum value
 #'
 #' @param exposure_dat Instruments for the exposure, obtained using \code{extract_instruments}
-#' @param outcome_dat Effects for the instruments on a set of variables, used to calculate index of suspicion
+#' @param background_dat Effects for the instruments on a set of variables, used to calculate index of suspicion
 #'
 #' @export
 #' @return Data.frame
-ios <- function(exposure_dat, outcome_dat)
+ios <- function(exposure_dat, background_dat)
 {
 	require(dplyr)
 	require(reshape2)
-	outcome_dat$vgu <- outcome_dat$beta.outcome^2 * 2 * outcome_dat$eaf.outcome * (1 - outcome_dat$eaf.outcome)
+	background_dat$vgu <- background_dat$beta.outcome^2 * 2 * background_dat$eaf.outcome * (1 - background_dat$eaf.outcome)
 	exposure_dat$vgx <- exposure_dat$beta.exposure^2 * 2 * exposure_dat$eaf.exposure * (1 - exposure_dat$eaf.exposure)
-	outcome_dat <- merge(outcome_dat, subset(exposure_dat, select=c(SNP, vgx)), by="SNP")
-	outcome_dat$r2_ratio <- outcome_dat$vgu / outcome_dat$vgx
-	ios <- dplyr::group_by(outcome_dat, SNP) %>%
+	background_dat <- merge(background_dat, subset(exposure_dat, select=c(SNP, vgx)), by="SNP")
+	background_dat$r2_ratio <- background_dat$vgu / background_dat$vgx
+	ios <- dplyr::group_by(background_dat, SNP) %>%
 		dplyr::summarise(
 			ios1_mean = sum(vgu, na.rm=TRUE),
 			ios1_sd = sd(vgu, na.rm=TRUE),

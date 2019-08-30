@@ -4,12 +4,12 @@
 \alias{ios}
 \title{Calculate index of suspicion}
 \usage{
-ios(exposure_dat, outcome_dat)
+ios(exposure_dat, background_dat)
 }
 \arguments{
 \item{exposure_dat}{Instruments for the exposure, obtained using \code{extract_instruments}}
 
-\item{outcome_dat}{Effects for the instruments on a set of variables, used to calculate index of suspicion}
+\item{background_dat}{Effects for the instruments on a set of variables, used to calculate index of suspicion}
 }
 \value{
 Data.frame
