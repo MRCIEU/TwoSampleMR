@@ -9,7 +9,7 @@
                 "    our servers. For info on how this is used see logging_info()\n",
                 "[>] NOTE: We will be rolling out extensive changes to the database\n",
                 "    in the next few weeks. To ensure backwards compatibility please\n",
-                "    ensure you keep the R package updated."
+                "    keep the R package updated."
         )
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
