@@ -175,11 +175,20 @@ gwasinfo <- function(id=NULL, access_token = get_mrbase_access_token())
 	if(!is.null(id))
 	{
 		stopifnot(is.vector(id))
-		api_query('gwasinfo', query = list(id=id), access_token=access_token)
+		out <- api_query('gwasinfo', query = list(id=id), access_token=access_token)
 	} else {
-		api_query('gwasinfo', access_token=access_token)
+		out <- api_query('gwasinfo', access_token=access_token)
 	}
+	out <- dplyr::bind_rows(out) %>%
+		select(id, trait, sample_size, nsnp, year, consortium, author, everything(), -path)
+	class(out) <- c("GwasInfo", class(out))
+	return(out)
 }
+
+# print.GwasInfo <- function(x)
+# {
+# 	dplyr::glimpse(x)
+# }
 
 
 #' Upload a file using POST request through API
@@ -264,7 +273,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = 1, rsq = 0.8
 
 	if((length(snps) < splitsize & length(outcomes) < splitsize) | (length(outcomes) < splitsize & length(snps) < splitsize))
 	{
-		d <- api_query('assoc',
+		d <- api_query('associations',
 			query = list(
 				id = outcomes,
 				rsid = snps,
