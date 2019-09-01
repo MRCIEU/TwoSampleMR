@@ -48,3 +48,4 @@ License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
+Encoding: UTF-8

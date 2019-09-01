@@ -11,7 +11,8 @@ format_data(dat, type = "exposure", snps = NULL, header = TRUE,
   other_allele_col = "other_allele", pval_col = "pval",
   units_col = "units", ncase_col = "ncase",
   ncontrol_col = "ncontrol", samplesize_col = "samplesize",
-  gene_col = "gene", id_col = "id", min_pval = 1e-200)
+  gene_col = "gene", id_col = "id", min_pval = 1e-200, z_col = "z",
+  info_col = "info")
 }
 \arguments{
 \item{dat}{Data frame. Must have header with at least SNP column present.}

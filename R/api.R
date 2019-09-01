@@ -121,7 +121,7 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 	{
 		return(jsonlite::fromJSON(httr::content(r, "text", encoding='UTF-8')))
 	} else {
-		stop("Sorry the server either timed out or is not available.\nIf simple queries aren't operating then it's likely that the MR-Base server is down.\nWe will be working to fix this but let us know if the problem persists.")
+		stop("error code: ", httr::status_code(r), "\n  message: ", jsonlite::fromJSON(httr::content(r, "text", encoding='UTF-8')))
 	}
 }
 
@@ -301,7 +301,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = 1, rsq = 0.8
 			{
 				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
-				out <- api_query('assoc',
+				out <- api_query('associations',
 					query = list(
 						id = outcomes,
 						rsid = snps,
@@ -333,7 +333,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = 1, rsq = 0.8
 			{
 				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
-				out <- api_query('assoc',
+				out <- api_query('associations',
 					query = list(
 						id = outcomes,
 						rsid = snps,
@@ -398,55 +398,49 @@ get_se <- function(eff, pval)
 #' @return Data frame
 format_d <- function(d)
 {
-	d1 <- data.frame(
-		SNP = as.character(d$name),
-		beta.outcome = as.numeric(d$beta),
-		se.outcome = as.numeric(d$se),
-		samplesize.outcome = as.numeric(d$n),
-		ncase.outcome = as.numeric(d$ncase),
-		ncontrol.outcome = as.numeric(d$ncontrol),
-		pval.outcome = as.numeric(d$p),
-		eaf.outcome = as.numeric(d$effect_allelel_freq),
-		effect_allele.outcome = as.character(d$effect_allele),
-		other_allele.outcome = as.character(d$other_allele),
-		units.outcome = as.character(d$unit),
-		outcome = as.character(d$trait),
-		consortium.outcome = as.character(d$consortium),
-		year.outcome = as.numeric(d$year),
-		pmid.outcome = as.numeric(d$pmid),
-		id.outcome = as.character(d$id),
-		category.outcome = as.character(d$category),
-		subcategory.outcome = as.character(d$subcategory),
-		originalname.outcome = 0,
-		stringsAsFactors=FALSE
+	nom <- c(
+		SNP = "name",
+		beta.outcome = "beta",
+		se.outcome = "se",
+		samplesize.outcome = "n",
+		ncase.outcome = "ncase",
+		ncontrol.outcome = "ncontrol",
+		pval.outcome = "p",
+		eaf.outcome = "effect_allele_freq",
+		effect_allele.outcome = "effect_allele",
+		other_allele.outcome = "other_allele",
+		units.outcome = "unit",
+		outcome = "trait",
+		consortium.outcome = "consortium",
+		year.outcome = "year",
+		pmid.outcome = "pmid",
+		id.outcome = "id",
+		category.outcome = "category",
+		subcategory.outcome = "subcategory",
+		proxy.outcome = "proxy",
+		target_snp.outcome = "target_snp",
+		proxy_snp.outcome = "proxy_snp",
+		target_a1.outcome = "target_a1",
+		target_a2.outcome = "target_a2",
+		proxy_a1.outcome = "proxy_a1",
+		proxy_a2.outcome = "proxy_a2"
 	)
 
-	if("proxy" %in% names(d))
-	{
-		p <- data.frame(
-			proxy.outcome = d$proxy,
-			target_snp.outcome = d$target_snp,
-			proxy_snp.outcome = d$proxy_snp,
-			target_a1.outcome = d$target_a1,
-			target_a2.outcome = d$target_a2,
-			proxy_a1.outcome = d$proxy_a1,
-			proxy_a2.outcome = d$proxy_a2,
-			stringsAsFactors = FALSE
-		)
-		d <- cbind(d1, p)
+	d <- subset(d, select=names(d)[names(d) %in% nom])
 
+	index <- match(names(d), nom)
+	names(d) <- names(nom)[index]
+	d$originalname.outcome <- 0
+
+	if("proxy.outcome" %in% names(d))
+	{
 		# If two SNPs have the same proxy SNP then one has to be removed
-		d <- plyr::ddply(d, c("outcome"), function(x)
+		d <- plyr::ddply(d, c("id.outcome"), function(x)
 		{
 			x <- plyr::mutate(x)
 			subset(x, !duplicated(proxy_snp.outcome))
 		})
-
-	} else {
-		d <- d1
 	}
-
-
 
 	if(nrow(d) == 0)
 	{

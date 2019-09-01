@@ -74,8 +74,8 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = 1, p2 = 5e-8, r2 = 
 
 	# d$phenotype.deprecated <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
 	d$phenotype <- paste0(d$trait, " || id:", d$id)
-	d$ncase <- as.numeric(d$ncase)
-	d$ncontrol <- as.numeric(d$ncontrol)
+	if("ncase" %in% names(d)) d$ncase <- as.numeric(d$ncase)
+	if("ncontrol" %in% names(d)) d$ncontrol <- as.numeric(d$ncontrol)
 	d <- format_data(
 		d,
 		type="exposure",

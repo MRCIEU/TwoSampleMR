@@ -5,10 +5,12 @@
 \title{Perform LD clumping on SNP data}
 \usage{
 clump_data(dat, clump_kb = 10000, clump_r2 = 0.001, clump_p1 = 1,
-  clump_p2 = 1)
+  clump_p2 = 1, access_token = get_mrbase_access_token())
 }
 \arguments{
 \item{dat}{Output from \code{format_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated}
+
+\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data}
 
 \item{clump_kb=10000}{Clumping window}
 
