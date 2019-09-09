@@ -29,3 +29,11 @@ test_that("gwasinfo",
 })
 
 
+
+
+test_that("variants",
+
+o <- variants_gene("ENSG00000123374")
+
+
+)

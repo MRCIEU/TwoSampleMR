@@ -1,3 +1,4 @@
+
 library(dplyr)
 
 al <- matrix(c(
@@ -15,9 +16,24 @@ al <- matrix(c(
 "I", "D", "D", "I"
 ), nrow=4) %>% t
 
-recode_indels_22(al[,1], al[,2], al[,3], al[,4]) %>% cbind(al, .)
-recode_indels_21(al[,1], al[,2], al[,3]) %>% cbind(al, .)
-recode_indels_12(al[,1], al[,3], al[,4]) %>% cbind(al, .)
+test_that("recode indels", {
+
+	expect_true(all(
+		recode_indels_22(al[,1], al[,2], al[,3], al[,4])$keep == 
+		c(T,T,T,T,T,T,T,T,T,T,F,T)
+	))
+
+	expect_true(all(
+		recode_indels_21(al[,1], al[,2], al[,3])$keep == 
+		c(T,T,T,T,T,T,F,F,F,F,F,F)
+	))
+
+	expect_true(all(
+		recode_indels_12(al[,1], al[,3], al[,4])$keep == 
+		c(T,T,F,F,F,F,T,T,T,T,F,F)
+	))
+
+})
 
 
 
@@ -25,52 +41,45 @@ recode_indels_12(al[,1], al[,3], al[,4]) %>% cbind(al, .)
 a <- extract_instruments(2)
 b <- extract_outcome_data(a$SNP, 7)
 ab <- harmonise_data(a,b)
-mr(ab, method_list="mr_ivw")
+b <- mr(ab, method_list="mr_ivw")$b
 
 
-a1 <- a
-b1 <- b
+test_that("harmonise indels1", {
+	a1 <- a
+	b1 <- b
 
-a1$effect_allele.exposure[1] <- "GAAAA"
-b1$other_allele.outcome[23] <- "GAAAA"
+	a1$effect_allele.exposure[1] <- "GAAAA"
+	b1$other_allele.outcome[23] <- "GAAAA"
+	ab1 <- harmonise_data(a1,b1)
+	expect_equal(mr(ab1, method_list="mr_ivw")$b, b)
 
-ab1 <- harmonise_data(a1,b1)
-mr(ab1, method_list="mr_ivw")
+	a1 <- a
+	b1 <- b
 
+	a1$effect_allele.exposure[1] <- "GAAAA"
+	b1$other_allele.outcome[23] <- "I"
+	b1$effect_allele.outcome[23] <- "D"
 
-
-a1 <- a
-b1 <- b
-
-a1$effect_allele.exposure[1] <- "GAAAA"
-b1$other_allele.outcome[23] <- "I"
-b1$effect_allele.outcome[23] <- "D"
-
-ab1 <- harmonise_data(a1,b1)
-mr(ab1, method_list="mr_ivw")
-
-
-
-a1 <- a
-b1 <- b
-
-b1$other_allele.outcome <- NA
-
-ab1 <- harmonise_data(a1,b1)
-mr(ab1, method_list="mr_ivw")
+	ab2 <- harmonise_data(a1,b1)
+	expect_equal(mr(ab2, method_list="mr_ivw")$b, b)
+})
 
 
 
-a1 <- a
-b1 <- b
 
-a1$effect_allele.exposure[1] <- "GAAAA"
-b1$other_allele.outcome[23] <- "I"
-b1$effect_allele.outcome[23] <- "D"
-b1$other_allele.outcome <- NA
 
-ab1 <- harmonise_data(a1,b1)
-mr(ab1, method_list="mr_ivw")
+
+
+
+
+test_that("harmonise indels1", {
+	a1 <- a
+	b1 <- b
+
+	b1$other_allele.outcome <- NA
+
+	ab3 <- harmonise_data(a1,b1)
+mr(ab3, method_list="mr_ivw")
 
 
 
@@ -82,8 +91,9 @@ b1$other_allele.outcome[23] <- "I"
 b1$effect_allele.outcome[23] <- "D"
 b1$other_allele.outcome <- NA
 
-ab1 <- harmonise_data(a1,b1)
-mr(ab1, method_list="mr_ivw")
+ab4 <- harmonise_data(a1,b1)
+mr(ab4, method_list="mr_ivw")
+
 
 
 

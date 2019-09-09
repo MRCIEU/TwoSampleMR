@@ -6,10 +6,11 @@
 #'
 #' @export
 #' @return NULL
-toggle_api <- function(where="dev")
+toggle_api <- function(where="test")
 {
 	url <- switch(where,
-		dev = "http://ieu-db-interface.epi.bris.ac.uk:8084/"
+		test = "http://ieu-db-interface.epi.bris.ac.uk:8084/",
+		dev = "http://localhost:8019/"
 	)
 	if(is.null(url))
 	{
@@ -68,6 +69,10 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 		'X-Api-Token'=access_token,
 		'X-Api-Source'=ifelse(is.null(options()$mrbase.environment), 'R/TwoSampleMR', 'mr-base-shiny')
 	)
+a <- httr::GET("http://localhost:8019/variants/gene/ENSG00000123374?radius=0", headers)
+a <- httr::GET("http://localhost:8019/gwasinfo/2", headers)
+
+
 	while(ntry <= ntries)
 	{
 		if(!is.null(query))
@@ -118,9 +123,11 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 	}
 
 	if(httr::status_code(r) >= 200 & httr::status_code(r) < 300)
+	# if(httr::status_code(r) >= 200)
 	{
 		return(jsonlite::fromJSON(httr::content(r, "text", encoding='UTF-8')))
 	} else {
+		return(r)
 		stop("error code: ", httr::status_code(r), "\n  message: ", jsonlite::fromJSON(httr::content(r, "text", encoding='UTF-8')))
 	}
 }
