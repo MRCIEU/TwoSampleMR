@@ -1,3 +1,11 @@
+TwoSampleMR v0.4.24 (Release date: 2019-08-12)
+==============
+
+Changes:
+
+* Bug found in extract_instruments when requesting non-default parameters. Thanks to Shantanu Bafna for pointing this out.
+
+
 TwoSampleMR v0.4.23 (Release date: 2019-08-12)
 ==============
 

@@ -24,7 +24,9 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 
 	# TODO: UKB-b traits don't have MRInstruments entry
 
-	if(clump & p1 == 5e-8 & r2 == 0.001 & kb == 10000 & !force_server)
+	default_flag <- clump & p1 == 5e-8 & r2 == 0.001 & kb == 10000
+
+	if(default_flag & !force_server)
 	{
 		message("Requesting default values. Extracting from pre-clumped data")
 		a <- require(MRInstruments)
@@ -133,7 +135,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 	d$data_source.exposure <- "mrbase"
 	d$id.exposure <- gsub("IEU-a:", "", d$id.exposure)
 
-	if(force_server_if_empty)
+	if(force_server_if_empty & default_flag)
 	{
 		d <- plyr::rbind.fill(d, a)
 	}
