@@ -60,6 +60,16 @@ revoke_mrbase_access_token <- function()
 }
 
 
+#' Wrapper for sending queries and payloads to API
+#'
+#' There are a number of different GET and POST endpoints in the GWAS database API. This is a generic way to access them
+#'
+#' @param path Either a full query path (e.g. for get) or an endpoint (e.g. for post) queries
+#' @param query If post query, provide a list of arguments as the payload. NULL by default
+#' @param access_token=get_mrbase_access_token()
+#'
+#' @export
+#' @return Parsed json output from query, often in form of data frame
 api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 {
 	ntry <- 0
