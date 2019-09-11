@@ -3,8 +3,8 @@ library(TwoSampleMR)
 library(dplyr)
 library(magrittr)
 
-a <- extract_instruments(c(300, 301))
-b <- extract_outcome_data(a$SNP, c(2,7))
+a <- extract_instruments(c("IEU-a-300", "IEU-a-301"), force_server=TRUE)
+b <- extract_outcome_data(a$SNP, c("IEU-a-2","IEU-a-7"))
 
 test_that("extract_outcome_data is working", {
 	expect_gt(nrow(b), 0)

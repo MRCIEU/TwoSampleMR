@@ -65,13 +65,10 @@ api_query <- function(path, query=NULL, access_token=get_mrbase_access_token())
 	ntry <- 0
 	ntries <- 3
 	headers <- httr::add_headers(
-		'Content-Type'='application/json; charset=UTF-8',
+		# 'Content-Type'='application/json; charset=UTF-8',
 		'X-Api-Token'=access_token,
 		'X-Api-Source'=ifelse(is.null(options()$mrbase.environment), 'R/TwoSampleMR', 'mr-base-shiny')
 	)
-a <- httr::GET("http://localhost:8019/variants/gene/ENSG00000123374?radius=0", headers)
-a <- httr::GET("http://localhost:8019/gwasinfo/2", headers)
-
 
 	while(ntry <= ntries)
 	{
@@ -187,7 +184,7 @@ gwasinfo <- function(id=NULL, access_token = get_mrbase_access_token())
 		out <- api_query('gwasinfo', access_token=access_token)
 	}
 	out <- dplyr::bind_rows(out) %>%
-		select(id, trait, sample_size, nsnp, year, consortium, author, everything(), -path)
+		dplyr::select(id, trait, sample_size, nsnp, year, consortium, author, dplyr::everything())
 	class(out) <- c("GwasInfo", class(out))
 	return(out)
 }

@@ -16,10 +16,10 @@ test_that("status",
 test_that("gwasinfo", 
 {
 	expect_true(
-		nrow(api_query('gwasinfo/2',access_token=NULL)) == 1
+		nrow(api_query('gwasinfo/IEU-a-2',access_token=NULL)) == 1
 	)
 	expect_equal(
-		nrow(api_query('gwasinfo', query=list(id=c(2,1001)))), 
+		nrow(api_query('gwasinfo', query=list(id=c("IEU-a-2","IEU-a-1001")))), 
 		2
 	)
 	expect_gt(
@@ -30,10 +30,3 @@ test_that("gwasinfo",
 
 
 
-
-test_that("variants",
-
-o <- variants_gene("ENSG00000123374")
-
-
-)
