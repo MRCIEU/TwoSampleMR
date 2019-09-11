@@ -1,7 +1,5 @@
 context("Associations")
 library(TwoSampleMR)
-library(dplyr)
-library(magrittr)
 
 a <- extract_instruments(c("IEU-a-300", "IEU-a-301"), force_server=TRUE)
 b <- extract_outcome_data(a$SNP, c("IEU-a-2","IEU-a-7"))

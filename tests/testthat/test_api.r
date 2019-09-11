@@ -1,8 +1,5 @@
 context("API")
 library(TwoSampleMR)
-library(dplyr)
-library(magrittr)
-library(httr)
 
 test_that("status", 
 {
