@@ -69,7 +69,16 @@ get_mrbase_access_token <- function()
 	} else {
 		unlink(tf)
 	}
-	a <- googleAuthR::gar_auth("mrbase.oauth")
+	if(file.exists("mrbase.oauth"))
+	{
+		a <- googleAuthR::gar_auth("mrbase.oauth", email=TRUE)
+	} else {
+		a <- googleAuthR::gar_auth(cache="mrbase.oauth2", email=TRUE)
+		fn <- file.path("mrbase.oauth2", dir("mrbase.oauth2"))
+		file.copy(fn, "mrbase.oauth")
+		unlink("mrbase.oauth2", recursive=TRUE)
+	}
+
 	if(! a$validate())
 	{
 		a$refresh()
