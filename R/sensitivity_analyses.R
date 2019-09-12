@@ -152,7 +152,6 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 #' @return Data frame
 mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list = subset(mr_method_list(), heterogeneity_test & use_by_default)$obj)
 {
-	warning("Please check news(package='TwoSampleMR') for information on recent bug fixes")
 	het_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
