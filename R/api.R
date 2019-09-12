@@ -59,6 +59,15 @@ toggle_api <- function(where="release")
 #' @return access token string
 get_mrbase_access_token <- function()
 {
+
+	garv <- packageVersion("googleAuthR")
+	if(garv > "0.9.0")
+	{
+		stop("Recent changes to the googleAuthR have broken the way the TwoSampleMR package authenticates.\n",
+			"While we're working to fix this, please revert back to a previous version of googleAuthR:\n",
+			"devtools::install_github('MarkEdmondson1234/googleAuthR@v0.8.1')")
+	}
+
 	tf <- basename(tempfile())
 	check <- suppressWarnings(file.create(tf))
 	if(!check)
