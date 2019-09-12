@@ -10,12 +10,12 @@
 variants_gene <- function(gene, radius=0)
 {
 	l <- list()
-	print(gene)
 	for(i in 1:length(gene))
 	{
-		l[[gene[i]]] <- api_query(paste0('variants/gene/', gene[i], "?radius=", radius))
+		message("Looking up ", gene[i])
+		l[[gene[i]]] <- api_query(paste0('variants/gene/', gene[i], "?radius=", format(radius, scientific=FALSE)))
 	}
-	return(l)
+	return(bind_rows(l))
 }
 
 

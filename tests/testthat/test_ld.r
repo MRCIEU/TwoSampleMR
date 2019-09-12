@@ -1,8 +1,8 @@
 context("LD functions")
 library(TwoSampleMR)
-library(dplyr)
-library(magrittr)
 
+
+a <- extract_instruments(2)
 
 test_that("ld ref", {
 	expect_equal(

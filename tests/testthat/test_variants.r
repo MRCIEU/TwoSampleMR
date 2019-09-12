@@ -2,7 +2,7 @@ context("Variants")
 library(TwoSampleMR)
 
 o1 <- variants_gene("ENSG00000123374")
-o2 <- variants_gene("ENSG00000123374", 1000000)
+o2 <- variants_gene("ENSG00000123374", 100000)
 
 test_that("variants",
 {
