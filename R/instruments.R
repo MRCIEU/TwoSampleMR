@@ -135,7 +135,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 	d$data_source.exposure <- "mrbase"
 	d$id.exposure <- gsub("IEU-a:", "", d$id.exposure)
 
-	if(force_server_if_empty & default_flag)
+	if(force_server_if_empty & default_flag & !force_server)
 	{
 		d <- plyr::rbind.fill(d, a)
 	}
