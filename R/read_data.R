@@ -22,10 +22,11 @@
 #' @param gene_col="gene" Optional column name for gene name.
 #' @param id_col="id" Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination
 #' @param min_pval=1e-200 Minimum allowed pval
+#' @param log_pval=FALSE The pval is -log10(P)
 #'
 #' @export
 #' @return data frame
-read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
+read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE)
 {
 	outcome_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	outcome_dat <- format_data(
@@ -46,7 +47,8 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 		samplesize_col=samplesize_col,
 		gene_col=gene_col,
 		id_col=id_col,
-		min_pval=min_pval
+		min_pval=min_pval,
+		log_pval=log_pval
 	)
 	outcome_dat$data_source.outcome <- "textfile"
 	return(outcome_dat)
@@ -73,10 +75,11 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #' @param gene_col="gene" Optional column name for gene name.
 #' @param id_col="id" Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination
 #' @param min_pval=1e-200 Minimum allowed pval
+#' @param log_pval=FALSE The pval is -log10(P)
 #'
 #' @export
 #' @return data frame
-read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
+read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE)
 {
 	exposure_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
@@ -97,7 +100,8 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 		samplesize_col=samplesize_col,
 		gene_col=gene_col,
 		id_col=id_col,
-		min_pval=min_pval
+		min_pval=min_pval,
+		log_pval=log_pval
 	)
 	exposure_dat$data_source.exposure <- "textfile"
 	if(clump)
@@ -128,10 +132,11 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #' @param samplesize_col="samplesize" Optional column name for sample size.
 #' @param gene_col="gene" Optional column name for gene name.
 #' @param min_pval=1e-200 Minimum allowed pval
+#' @param log_pval=FALSE The pval is -log10(P)
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, z_col="z", info_col="info", chr_col="chr", pos_col="pos")
+format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, z_col="z", info_col="info", chr_col="chr", pos_col="pos", log_pval=FALSE)
 {
 	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col, z_col, info_col, chr_col, pos_col)
 
@@ -168,6 +173,11 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		{
 			dat <- dat[,-which(names(dat)==phenotype_col)]
 		}
+	}
+
+	if ( log_pval )
+	{
+		dat$pval <- 10^-dat$pval
 	}
 
 	# Remove duplicated SNPs
