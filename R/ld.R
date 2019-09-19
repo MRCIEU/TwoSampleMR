@@ -105,7 +105,7 @@ ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_
 	y <- subset(dat, !SNP %in% res$SNP)
 	if(nrow(y) > 0)
 	{
-		message("Removing the following SNPs due to LD with other SNPs:\n", paste(y$SNP, collapse="\n"), sep="\n")
+		message("Removing the following SNPs due to LD with other SNPs, or absence from the 1000 genomes LD reference panel (which has been filtered to include Europeans only, common SNPs only):\n", paste(y$SNP, collapse="\n"), sep="\n")
 	}
 	return(subset(dat, SNP %in% res$SNP))
 }
