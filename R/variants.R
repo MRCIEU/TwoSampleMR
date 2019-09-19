@@ -15,7 +15,7 @@ variants_gene <- function(gene, radius=0)
 		message("Looking up ", gene[i])
 		l[[gene[i]]] <- api_query(paste0('variants/gene/', gene[i], "?radius=", format(radius, scientific=FALSE)))
 	}
-	return(bind_rows(l))
+	return(dplyr::bind_rows(l))
 }
 
 

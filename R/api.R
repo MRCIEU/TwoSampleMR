@@ -287,7 +287,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = 1, rsq = 0.8
 
 	if((length(snps) < splitsize & length(outcomes) < splitsize) | (length(outcomes) < splitsize & length(snps) < splitsize))
 	{
-		d <- api_query('associations',
+		d <- api_query('associations/',
 			query = list(
 				id = outcomes,
 				rsid = snps,
@@ -315,7 +315,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = 1, rsq = 0.8
 			{
 				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
-				out <- api_query('associations',
+				out <- api_query('associations/',
 					query = list(
 						id = outcomes,
 						rsid = snps,
@@ -347,7 +347,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = 1, rsq = 0.8
 			{
 				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
-				out <- api_query('associations',
+				out <- api_query('associations/',
 					query = list(
 						id = outcomes,
 						rsid = snps,
