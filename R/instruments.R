@@ -60,7 +60,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = 1, p2 = 5e-8, r2 = 
 	for(i in 1:length(outcomes))
 	{
 		message(" [>] ", i, " of ", length(outcomes))		
-		out <- api_query('tophits', query = list(id = outcomes[i], pval = p1, clump = as.numeric(clump), r2 = r2, kb = kb), access_token=access_token)
+		out <- id.exposure::api_query('tophits', query = list(id = outcomes[i], pval = p1, clump = as.numeric(clump), r2 = r2, kb = kb), access_token=access_token)
 		if(!is.data.frame(out)) out <- data.frame()
 		d[[i]] <- out
 	}

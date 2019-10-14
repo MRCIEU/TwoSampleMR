@@ -37,11 +37,12 @@ Suggests:
     psych,
     testthat
 Imports:
+    ieugwasr,
     meta,
     jsonlite,
     RCurl,
     data.table,
-    googleAuthR (>= 0.6.2),
+    googleAuthR (>= 1.1.1),
     httpuv,
     httr
 License: Artistic-2.0
