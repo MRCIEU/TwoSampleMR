@@ -179,8 +179,8 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
 		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
 	d <- format_radial(BXG=b_exp, BYG=b_out, seBXG=se_exp, seBYG=se_out, RSID=1:length(b_exp))
 	out <- ivw_radial(d, alpha=0.05, weights=3)
-	b <- out$coef[1]
-	se <- out$coef[2]
+	b <- out$coef[1,1]
+	se <- out$coef[1,2]
 	pval <- 2 * pnorm(abs(b/se), low = FALSE)
 	Q_df <- out$df
 	Q <- out$qstatistic
