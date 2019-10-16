@@ -71,13 +71,15 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		} else {
 			if(!force_server_if_empty)
 			{
-				message("force_server_if_empty=FALSE, so not checking server for outcomes with no instruments")
+				message("force_server_if_empty=FALSE, so not checking server for outcomes with no pre-computed instruments")
 				return(a)
 			} else {
 				found_outcomes <- outcomes[outcomes %in% a$id]
 				outcomes <- missing_outcomes
 			}
 		}
+	} else {
+		a <- data.frame()
 	}
 
 	message("Extracting data from ", length(unique(outcomes)), " GWAS(s)")
@@ -105,8 +107,13 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 
 	if(length(d) == 0)
 	{
-		message("None of the requested outcomes had GWAS hits at the specified threshold.")
-		return(NULL)
+		if(nrow(a) == 0)
+		{
+			message("None of the requested outcomes had GWAS hits at the specified threshold.")
+			return(NULL)
+		} else {
+			return(a)
+		}
 	}
 
 	# d$phenotype.deprecated <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)

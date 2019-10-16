@@ -63,7 +63,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 			if("rucker" %in% methods & !"rucker jackknife" %in% methods & FALSE)
 			{
 				message("r")
-				temp <- try(mr_rucker_internal(x, parameters)$results)
+				temp <- try(mr_rucker_internal(x, parameters)$rucker)
 				if(class(temp) != "try-error")
 				{
 					l[[i]] <- temp
@@ -76,6 +76,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 				temp <- try(mr_rucker_jackknife_internal(x, parameters))
 				if(class(temp) != "try-error")
 				{
+
 					l[[i]] <- temp$res
 					p$rucker1 <- temp$q_plot
 					p$rucker2 <- temp$e_plot
@@ -90,7 +91,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 				temp <- try(mr_median(x, parameters))
 				if(class(temp) != "try-error")
 				{
-					l[[i]] <- temp
+					l[[i]] <- rename_result_cols(temp)
 					i <- i + 1
 				}
 			}
@@ -100,7 +101,7 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 				temp <- try(mr_mode(x, parameters))
 				if(class(temp) != "try-error")
 				{
-					l[[i]] <- temp
+					l[[i]] <- rename_result_cols(temp)
 					i <- i + 1
 				}
 			}
@@ -147,4 +148,17 @@ run_mr <- function(dat, parameters=default_parameters(), methods=c("rucker jackk
 	# ggplot(dat, aes(x=))
 
 	return(res)
+}
+
+
+
+rename_result_cols <- function(x)
+{
+	names(x)[names(x) == "method"] <- "Method"
+	names(x)[names(x) == "b"] <- "Estimate"
+	names(x)[names(x) == "se"] <- "SE"
+	names(x)[names(x) == "ci_low"] <- "CI_low"
+	names(x)[names(x) == "ci_upp"] <- "CI_upp"
+	names(x)[names(x) == "pval"] <- "P"
+	return(x)
 }
