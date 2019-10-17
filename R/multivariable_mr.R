@@ -168,30 +168,34 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		index <- pval.exposure[,i] < pval_threshold
 
 		# Get outcome effects adjusted for all effects on all other exposures
-
 		if(intercept)
 		{
 			if(instrument_specific)
 			{
-				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ beta.exposure[index, -c(i)])$res
+				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ beta.exposure[index, -c(i), drop=FALSE])$res
 				mod <- summary(lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
 			} else {
-				marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
+				marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i), drop=FALSE])$res
 				mod <- summary(lm(marginal_outcome[,i] ~ beta.exposure[,i]))
 			}
 		} else {
 			if(instrument_specific)
 			{
-				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i)])$res
+				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i), drop=FALSE])$res
 				mod <- summary(lm(marginal_outcome[index,i] ~ 0 + beta.exposure[index, i]))
 			} else {
-				marginal_outcome[,i] <- lm(beta.outcome ~ 0 + beta.exposure[, -c(i)])$res
+				marginal_outcome[,i] <- lm(beta.outcome ~ 0 + beta.exposure[, -c(i), drop=FALSE])$res
 				mod <- summary(lm(marginal_outcome[,i] ~ 0 + beta.exposure[,i]))
 			}			
 		}
-		
-		effs[i] <- mod$coef[as.numeric(intercept) + 1, 1]
-		se[i] <- mod$coef[as.numeric(intercept) + 1, 2]
+		if(sum(index) > (nexp + as.numeric(intercept)))
+		{
+			effs[i] <- mod$coef[as.numeric(intercept) + 1, 1]
+			se[i] <- mod$coef[as.numeric(intercept) + 1, 2]
+		} else {
+			effs[i] <- NA
+			se[i] <- NA
+		}
 		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
@@ -260,26 +264,31 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		# marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
 
 		# Get the effect of the exposure on the residuals of the outcome
-
 		if(!intercept)
 		{
 			if(instrument_specific)
 			{
-				mod <- summary(lm(beta.outcome[index] ~ 0 + beta.exposure[index, ], weights=w[index]))
+				mod <- summary(lm(beta.outcome[index] ~ 0 + beta.exposure[index, ,drop=FALSE], weights=w[index]))
 			} else {
 				mod <- summary(lm(beta.outcome ~ 0 + beta.exposure, weights=w))
 			}
 		} else {
 			if(instrument_specific)
 			{
-				mod <- summary(lm(beta.outcome[index] ~ beta.exposure[index, ], weights=w[index]))
+				mod <- summary(lm(beta.outcome[index] ~ beta.exposure[index, ,drop=FALSE], weights=w[index]))
 			} else {
 				mod <- summary(lm(beta.outcome ~ beta.exposure, weights=w))
 			}
 		}
 
-		effs[i] <- mod$coef[as.numeric(intercept) + i, 1]
-		se[i] <- mod$coef[as.numeric(intercept) + i, 2]
+		if(instrument_specific & sum(index) <= (nexp + as.numeric(intercept)))
+		{
+			effs[i] <- NA
+			se[i] <- NA
+		} else {
+			effs[i] <- mod$coef[as.numeric(intercept) + i, 1]
+			se[i] <- mod$coef[as.numeric(intercept) + i, 2]
+		}
 		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
