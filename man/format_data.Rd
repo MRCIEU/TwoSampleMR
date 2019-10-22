@@ -12,7 +12,8 @@ format_data(dat, type = "exposure", snps = NULL, header = TRUE,
   units_col = "units", ncase_col = "ncase",
   ncontrol_col = "ncontrol", samplesize_col = "samplesize",
   gene_col = "gene", id_col = "id", min_pval = 1e-200, z_col = "z",
-  info_col = "info", chr_col = "chr", pos_col = "pos")
+  info_col = "info", chr_col = "chr", pos_col = "pos",
+  log_pval = FALSE)
 }
 \arguments{
 \item{dat}{Data frame. Must have header with at least SNP column present.}
@@ -48,6 +49,8 @@ format_data(dat, type = "exposure", snps = NULL, header = TRUE,
 \item{gene_col="gene"}{Optional column name for gene name.}
 
 \item{min_pval=1e-200}{Minimum allowed pval}
+
+\item{log_pval=FALSE}{The pval is -log10(P)}
 }
 \value{
 data frame

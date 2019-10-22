@@ -9,20 +9,18 @@
 #' @param p2 = 5e-8 Secondary clumping threshold
 #' @param r2 = 0.001 Clumping r2 cut off
 #' @param kb = 10000 Clumping distance cutoff
-#' @param access_token = get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data
+#' @param access_token = ieugwasr::check_access_token() Google OAuth2 access token. Used to authenticate level of access to data
 #' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package
 #' @param force_server_if_empty Some of the newly added MR-Base datasets don't have pre-calculated clumped results yet. This option is soon to be deprecated but temporarily we are forcing the search for instruments when an outcome doesn't have any precalculated results. Default = TRUE.
 #'
 #' @export
 #' @return data frame
-extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(), force_server=FALSE, force_server_if_empty=TRUE)
+extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = ieugwasr::check_access_token(), force_server=FALSE, force_server_if_empty=TRUE)
 {
+	.Deprecated("ieugwasr::tophits()")
 	outcomes <- unique(outcomes)
 
-	# ieu_index <- ! grepl("[A-Z]+-[a-z]+:", outcomes)
-	# outcomes[ieu_index] <- paste0("IEU-a:", outcomes[ieu_index])
-
-	# TODO: UKB-b traits don't have MRInstruments entry
+	# outcomes <- ids_old_to_new(outcomes)
 
 	default_flag <- clump & p1 == 5e-8 & r2 == 0.001 & kb == 10000
 
@@ -91,15 +89,8 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 	for(i in 1:length(outcomes))
 	{
 		message(" [>] ", i, " of ", length(outcomes))
-		url <- paste0(options()$mrbaseapi, "extract_instruments?access_token=", access_token,
-			"&outcomes=", outcomes[i], 
-			"&pval=", p1,
-			"&clump=", ifelse(clump, "yes", "no"),
-			"&p2=", p2,
-			"&r2=", r2,
-			"&kb=", kb
-		)
-		out <- fromJSON_safe(url)
+		out <- ieugwasr::tophits(ids_old_to_new2(outcomes[i]), pval=p1, clump=clump, r2=r2, kb=kb, access_token=access_token)
+
 		if(!is.data.frame(out)) out <- data.frame()
 		d[[i]] <- out
 	}
@@ -118,8 +109,6 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 
 	# d$phenotype.deprecated <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
 	d$phenotype <- paste0(d$trait, " || id:", d$id)
-	d$ncase <- as.numeric(d$ncase)
-	d$ncontrol <- as.numeric(d$ncontrol)
 	d <- format_data(
 		d,
 		type="exposure",
@@ -128,19 +117,16 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 		snp_col="name",
 		beta_col="beta",
 		se_col="se",
-		eaf_col="effect_allelel_freq",
-		effect_allele_col="effect_allele",
-		other_allele_col="other_allele",
+		eaf_col="eaf",
+		effect_allele_col="ea",
+		other_allele_col="nea",
 		pval_col="p",
-		units_col="unit",
-		ncase_col="ncase",
-		ncontrol_col="ncontrol",
 		samplesize_col="n",
 		min_pval=1e-200,
 		id_col="id"
 	)
 	d$data_source.exposure <- "mrbase"
-	d$id.exposure <- gsub("IEU-a:", "", d$id.exposure)
+	d$id.exposure <- ids_new_to_old2(d$id.exposure)
 
 	if(force_server_if_empty & default_flag & !force_server)
 	{

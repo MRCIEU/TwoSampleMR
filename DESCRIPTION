@@ -25,7 +25,6 @@ Suggests:
     knitr,
     markdown,
     gtable,
-    RMySQL,
     rmarkdown,
     MRInstruments,
     MendelianRandomization,
@@ -38,12 +37,9 @@ Suggests:
     testthat,
     randomForest
 Imports:
+    ieugwasr,
     meta,
-    jsonlite,
-    RCurl,
-    data.table,
-    googleAuthR (>= 0.6.2),
-    httpuv
+    data.table
 License: Artistic-2.0
 LazyData: true
 VignetteBuilder: knitr
