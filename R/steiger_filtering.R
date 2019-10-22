@@ -116,7 +116,7 @@ steiger_filtering_internal <- function(dat)
 		r34 = sqrt(dat$rsq.outcome)
 	)
 	dat$steiger_dir <- dat$rsq.exposure > dat$rsq.outcome
-	dat$steiger_pval <- st$p
+	dat$steiger_pval <- pnorm(-abs(st$z), lower.tail=FALSE) * 2
 
 	return(dat)
 }
