@@ -1,3 +1,10 @@
+#' I-square calculation
+#'
+#' @param y Vector of effects
+#' @param s Vector of standard errors
+#'
+#' @export
+#' @return Isq value
 Isq <- function(y,s)
 {
 	k <- length(y)
@@ -9,24 +16,6 @@ Isq <- function(y,s)
 	Isq <- max(0,Isq)
 	return(Isq)
 }
-
-# mr_ivw_fe <- function (b_exp, b_out, se_exp, se_out)
-# {
-# 	lapply(x, function(x){
-# 		wj <- x$wj
-# 		bj <- x$bj
-# 		b <- sum(wj * bj) / sum(wj)
-# 		se <- sqrt(1 / sum(wj))
-# 		pval <- 2 * pnorm(abs(b/se), low = FALSE)
-# 		Q <- sum(wj * (bj - b)^2)
-# 		Q_df <- length(b_exp) - 1
-# 		Q_pval <- pchisq(Q, Q_df, low = FALSE)
-# 		data.frame(
-# 			b1=b, se1=se, pval1=pval,
-# 		)
-# 		return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
-# 	})
-# }
 
 
 PM <- function(y = y, s = s, Alpha = 0.1)
@@ -92,7 +81,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	attributes(res)$id.exposure <- d$id.exposure
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
-	attributes(res)$outcome <- d$id.exposure
+	attributes(res)$outcome <- d$outcome
 	for(j in 1:nrow(d))
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
@@ -101,10 +90,6 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	}
 	return(res)
 }
-
-
-
-
 
 
 mr_rucker_internal <- function(dat, parameters=default_parameters())
@@ -382,7 +367,7 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	attributes(res)$id.exposure <- d$id.exposure
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
-	attributes(res)$outcome <- d$id.exposure
+	attributes(res)$outcome <- d$outcome
 	for(j in 1:nrow(d))
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])

@@ -11,7 +11,6 @@
 #' @return List of MRInput objects for each exposure/outcome combination
 dat_to_MRInput <- function(dat, get_correlations=FALSE)
 {
-	library(MendelianRandomization)
 	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
 	{
 		x <- plyr::mutate(x)
@@ -118,14 +117,13 @@ harmonise_ld_dat <- function(x, ld)
 #' @return List of results for every exposure/outcome combination
 run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 {
-	require(MRPRESSO)
 	dat <- subset(dat, mr_keep)
 	d <- subset(dat, !duplicated(paste(id.exposure, " - ", id.outcome)), select=c(exposure, outcome, id.exposure, id.outcome))
 	res <- list()
 	attributes(res)$id.exposure <- d$id.exposure
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
-	attributes(res)$outcome <- d$id.exposure
+	attributes(res)$outcome <- d$outcome
 	for(j in 1:nrow(d))
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
@@ -173,12 +171,11 @@ dat_to_RadialMR <- function(dat)
 #'         pval: p-value
 mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
-	require(RadialMR)
 	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) &
 		!is.na(se_out)) < 2)
 		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
-	d <- format_radial(BXG=b_exp, BYG=b_out, seBXG=se_exp, seBYG=se_out, RSID=1:length(b_exp))
-	out <- ivw_radial(d, alpha=0.05, weights=3)
+	d <- RadialMR::format_radial(BXG=b_exp, BYG=b_out, seBXG=se_exp, seBYG=se_out, RSID=1:length(b_exp))
+	out <- RadialMR::ivw_radial(d, alpha=0.05, weights=3)
 	b <- out$coef[1,1]
 	se <- out$coef[1,2]
 	pval <- 2 * pnorm(abs(b/se), low = FALSE)

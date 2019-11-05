@@ -4,16 +4,16 @@
 \alias{mr_mode}
 \title{MR mode estimators}
 \usage{
-mr_mode(dat, parameters = default_parameters(), mode_method = "all")
+mr_mode(dat, parameters = default_parameters())
 }
 \arguments{
 \item{dat}{Output from harmonise_data()}
 
-\item{parameters=default_parameters()}{<what param does>}
+\item{parameters}{default_parameters()}
 }
 \value{
 data frame
 }
 \description{
-<full description>
+Perform simple, weighted, penalised modes, as well as version that use NOME assumption
 }

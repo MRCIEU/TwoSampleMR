@@ -1,13 +1,20 @@
 #' MR mode estimators
 #'
-#' <full description>
+#' Perform simple, weighted, penalised modes, as well as version that use NOME assumption
 #'
 #' @param dat Output from harmonise_data()
-#' @param parameters=default_parameters() <what param does>
+#' @param parameters default_parameters()
 #'
 #' @export
 #' @return data frame
-mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
+mr_mode <- function(dat, parameters=default_parameters())
+{
+	res <- plyr::ddply(dat, c("id.exposure", "exposure", "id.outcome", "outcome"), mr_mode_internal)
+	return(res)
+}
+
+
+mr_mode_internal <- function(dat, parameters=default_parameters(), mode_method="all")
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 

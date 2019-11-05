@@ -38,7 +38,8 @@ Imports:
     MRPRESSO,
     MRInstruments,
     RadialMR,
-    MRMix
+    MRMix,
+    magrittr
 Remotes:
     rondolab/MR-PRESSO,
     mrcieu/MRInstruments,
