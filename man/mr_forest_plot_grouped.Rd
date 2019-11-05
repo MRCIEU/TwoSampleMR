@@ -49,7 +49,3 @@ grid object giving the forest plot (or plot as pdf, and )
 \description{
 Grouped forest plot
 }
-\examples{
-mr_forest_plot()
-
-}

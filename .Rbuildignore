@@ -1,0 +1,4 @@
+^mrbase\.oauth$
+^mrbase\.oauth2$
+^LICENSE\.md$
+^\.travis\.yml$

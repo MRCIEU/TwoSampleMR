@@ -23,7 +23,7 @@ The mr_moe function modified the `estimates` item in the list of results from th
 Note that the mixture of experts has only been trained on datasets with at least 5 SNPs. If your dataset has fewer than 5 SNPs this function might return errors
 }
 \examples{
-
+\dontrun{
 # Load libraries
 library(dplyr)
 library(randomForest)
@@ -47,4 +47,5 @@ r <- mr_moe(r, rf)
 # been sorted in order from most likely to least likely to 
 # be accurate, based on MOE prediction
 r[[1]]$estimates
+}
 }

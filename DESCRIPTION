@@ -1,6 +1,6 @@
 Package: TwoSampleMR
 Title: Two Sample MR functions and interface to MR Base database
-Version: 0.4.25
+Version: 1.0.0
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
@@ -15,7 +15,7 @@ Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
 Description: See title
 Depends:
     R (>= 3.1.0)
-Suggests:
+Imports:
     ggplot2,
     gridExtra,
     cowplot,
@@ -26,21 +26,27 @@ Suggests:
     markdown,
     gtable,
     rmarkdown,
-    MRInstruments,
     MendelianRandomization,
-    MRPRESSO,
     dplyr,
-    igraph,
     mr.raps,
-    RadialMR,
     psych,
     testthat,
-    randomForest
-Imports:
-    ieugwasr,
+    randomForest,
     meta,
-    data.table
-License: Artistic-2.0
+    data.table,
+    ieugwasr,
+    MRPRESSO,
+    MRInstruments,
+    RadialMR,
+    MRMix
+Remotes:
+    rondolab/MR-PRESSO,
+    mrcieu/MRInstruments,
+    mrcieu/ieugwasr,
+    mrcieu/MRInstruments,
+    WSpiller/RadialMR,
+    gqi/MRMix
+License: MIT + file LICENSE
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1

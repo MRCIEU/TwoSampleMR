@@ -1,0 +1,19 @@
+language: r
+r:
+  - release
+  - devel
+cache: packages
+
+r_github_packages:
+  - rondolab/MR-PRESSO
+  - mrcieu/MRInstruments
+  - mrcieu/ieugwasr
+  - mrcieu/MRInstruments
+  - WSpiller/RadialMR
+  - gqi/MRMix
+
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'

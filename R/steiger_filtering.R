@@ -18,6 +18,14 @@ steiger_filtering <- function(dat)
 
 steiger_filtering_internal <- function(dat)
 {
+	if(! "units.outcome" %in% names(dat))
+	{
+		dat$units.outcome <- NA
+	}
+	if(! "units.exposure" %in% names(dat))
+	{
+		dat$units.exposure <- NA
+	}
 	stopifnot(length(unique(dat$exposure)) == 1)
 	stopifnot(length(unique(dat$outcome)) == 1)
 	stopifnot(length(unique(dat$units.exposure)) == 1)
@@ -27,7 +35,7 @@ steiger_filtering_internal <- function(dat)
 	if(!"rsq.exposure" %in% names(dat))
 	{
 		dat$pval.exposure[dat$pval.exposure < 1e-300] <- 1e-300
-		if(dat$units.exposure[1] == "log odds")
+		if(compareNA(dat$units.exposure[1], "log odds"))
 		{
 			# message("Estimating rsq.exposure for binary trait")
 			# message("Ensure that beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure are all specified with no missing values")
@@ -71,7 +79,7 @@ steiger_filtering_internal <- function(dat)
 	if(!"rsq.outcome" %in% names(dat))
 	{
 		dat$pval.outcome[dat$pval.outcome < 1e-300] <- 1e-300
-		if(dat$units.outcome[1] == "log odds")
+		if(compareNA(dat$units.outcome[1], "log odds"))
 		{
 			if(! "prevalence.outcome" %in% names(dat))
 			{
@@ -121,3 +129,9 @@ steiger_filtering_internal <- function(dat)
 	return(dat)
 }
 
+
+compareNA <- function(v1,v2) {
+    same <- (v1 == v2) | (is.na(v1) & is.na(v2))
+    same[is.na(same)] <- FALSE
+    return(same)
+}

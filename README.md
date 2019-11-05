@@ -1,6 +1,8 @@
 # Two Sample MR
 
-[![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.org/MRCIEU/TwoSampleMR.svg?branch=master)](https://travis-ci.org/MRCIEU/TwoSampleMR) [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) [![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
+<!-- badges: end -->
 
 Extended documentation is available here:
 
