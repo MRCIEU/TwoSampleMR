@@ -12,6 +12,8 @@ r_github_packages:
   - WSpiller/RadialMR
   - gqi/MRMix
 
+warnings_are_errors: false
+
 r_packages:
   - covr
 
