@@ -14,7 +14,7 @@ Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
 			 )
 Description: See title
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.6.0)
 Imports:
     ggplot2,
     gridExtra,
@@ -51,3 +51,5 @@ LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
 Encoding: UTF-8
+Suggests: 
+    covr

@@ -2,3 +2,4 @@
 ^mrbase\.oauth2$
 ^LICENSE\.md$
 ^\.travis\.yml$
+^codecov\.yml$
