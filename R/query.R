@@ -9,7 +9,7 @@ available_outcomes <- function(access_token = ieugwasr::check_access_token())
 {
 	.Deprecated("ieugwasr::gwasinfo()")
 	a <- ieugwasr::gwasinfo(access_token=access_token)	
-	a$id <- ids_new_to_old(a$id)
+	a$id <- ids_new_to_old2(a$id)
 	return(a)
 }
 
@@ -36,6 +36,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	.Deprecated("ieugwasr::associations()")
 	outcomes <- unique(outcomes)
 
+	outcomes_old <- outcomes
 	outcomes <- ids_old_to_new2(outcomes)
 
 	snps <- unique(snps)
@@ -50,11 +51,11 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			{
 				missedsnps <- snps
 			} else {
-				missedsnps <- snps[!snps %in% subset(firstpass, id.outcome == outcomes[i])$SNP]
+				missedsnps <- snps[!snps %in% subset(firstpass, id.outcome == outcomes_old[i])$SNP]
 			}
 			if(length(missedsnps)>0)
 			{
-				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
+				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes_old[i])
 				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, splitsize = proxy_splitsize)
 				if(!is.null(temp))
 				{
@@ -100,6 +101,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 			access_token=access_token
 		)
 		if(!is.data.frame(d)) d <- data.frame()
+		d$id <- ids_new_to_old2(d$id)
 
 	} else if(length(snps) > length(outcomes)) {
 
@@ -212,8 +214,7 @@ get_se <- function(eff, pval)
 #' @return Data frame
 format_d <- function(d)
 {
-
-	d$id <- ids_new_to_old(d$id)
+	d$id <- ids_new_to_old2(d$id)
 
 	d1 <- data.frame(
 		SNP = as.character(d$name),

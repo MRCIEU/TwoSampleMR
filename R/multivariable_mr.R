@@ -1,26 +1,4 @@
 
-#' Convert outcome format to exposure format
-#'
-#' @param outcome_dat Output from \code{format_data(type="outcome")}
-#'
-#' @export
-#' @return Data frame
-convert_outcome_to_exposure <- function(outcome_dat)
-{
-	exposure_dat <- format_data(
-		outcome_dat,
-		beta_col = "beta.outcome",
-		se_col="se.outcome",
-		pval_col="pval.outcome",
-		phenotype_col="outcome",
-		effect_allele_col="effect_allele.outcome",
-		other_allele_col="other_allele.outcome",
-		eaf_col="eaf.outcome",
-		units_col="units.outcome"
-	)
-	return(exposure_dat)
-}
-
 #' Extract exposure variables for multivariable MR
 #'
 #' Requires a list of IDs from \code{available_outcomes()}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand. 
@@ -49,7 +27,6 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 	# Get effects of each instrument from each exposure
 	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure, access_token = access_token, proxies=find_proxies)
-	d1$units.outcome[is.na(d1$units.outcome)] <- "NA"
 	d1 <- subset(d1, mr_keep.outcome)
 	d2 <- subset(d1, id.outcome != id_exposure[1])
 	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
