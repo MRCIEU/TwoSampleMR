@@ -19,6 +19,6 @@ b <- ld_matrix(out$SNP)
 test_that("matrix", {
 	expect_equal(nrow(b), nrow(out))
 	expect_equal(ncol(b), nrow(out))
-}
+})
 
 
