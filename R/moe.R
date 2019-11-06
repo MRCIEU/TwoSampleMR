@@ -19,8 +19,6 @@ Isq <- function(y,s)
 
 system_metrics <- function(dat)
 {
-	library(car)
-
 	# Number of SNPs
 	# Sample size outcome
 	# Sample size exposure
@@ -78,9 +76,6 @@ system_metrics <- function(dat)
 		metrics$cooks_egger <- sum(inf2[,4] > cooksthresh2) / nrow(dat)
 
 		# Homoscedasticity
-		metrics$homosc_ivw <- car::ncvTest(ruck$lmod_ivw)$ChiSquare
-		metrics$homosc_egg <- car::ncvTest(ruck$lmod_egger)$ChiSquare
-
 		# Normality of residuals
 		metrics$shap_ivw <- shapiro.test(residuals(ruck$lmod_ivw))$statistic
 		metrics$shap_egger <- shapiro.test(residuals(ruck$lmod_egger))$statistic

@@ -31,6 +31,8 @@ Imports:
     mr.raps,
     psych,
     testthat,
+    magrittr,
+    car,
     randomForest,
     meta,
     data.table,
@@ -38,8 +40,7 @@ Imports:
     MRPRESSO,
     MRInstruments,
     RadialMR,
-    MRMix,
-    magrittr
+    MRMix
 Remotes:
     rondolab/MR-PRESSO,
     mrcieu/MRInstruments,
