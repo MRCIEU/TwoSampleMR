@@ -4,7 +4,7 @@
 \alias{mr_mode}
 \title{MR mode estimators}
 \usage{
-mr_mode(dat, parameters = default_parameters())
+mr_mode(dat, parameters = default_parameters(), mode_method = "all")
 }
 \arguments{
 \item{dat}{Output from harmonise_data()}

@@ -7,14 +7,7 @@
 #'
 #' @export
 #' @return data frame
-mr_mode <- function(dat, parameters=default_parameters())
-{
-	res <- plyr::ddply(dat, c("id.exposure", "exposure", "id.outcome", "outcome"), mr_mode_internal)
-	return(res)
-}
-
-
-mr_mode_internal <- function(dat, parameters=default_parameters(), mode_method="all")
+mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
@@ -278,3 +271,17 @@ mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default
 
 	return(mr_mode(data.frame(beta.exposure=b_exp, beta.outcome=b_out, se.exposure=se_exp, se.outcome=se_out), parameters=parameters, mode_method="Simple mode (NOME)"))
 }
+
+
+mr_mode_broken <- function(dat, parameters=default_parameters(), mode_method="all")
+{
+	res <- plyr::ddply(dat, c("id.exposure", "exposure", "id.outcome", "outcome"), function(x) mr_mode_internal(x, parameters, mode_method="all"))
+	if(mode_method != "all")
+	{
+		return(subset(res, method %in% mode_method))
+	} else {
+		return(res)
+	}
+}
+
+
