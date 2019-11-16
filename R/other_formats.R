@@ -189,3 +189,59 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
         Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
 
+
+#' Perform MRMix analysis on harmonised dat object
+#'
+#' See https://github.com/gqi/MRMix for more details
+#'
+#' @param dat Output from harmonised_data. Ensure that eaf.exposure
+#'
+#' @export
+#' @return List of results, with one list item for every exposure/outcome pair in dat object
+run_mrmix <- function(dat)
+{
+	plyr::dlply(dat, c("id.exposure", "id.outcome"), function(x)
+	{
+		message("Analysing ", x$id.exposure[1], " against ", x$id.outcome[1])
+		if(grepl("log odds", x$units.exposure[1]))
+		{
+			xunit <- "binary"
+		} else if(grepl("^SD", x$units.exposure[1]))
+		{
+			xunit <- "n"
+		} else {
+			xunit <- "continuous"
+		}
+		if(grepl("log odds", x$units.outcome[1]))
+		{
+			yunit <- "binary"
+		} else if(grepl("^SD", x$units.outcome[1]))
+		{
+			yunit <- "n"
+		} else {
+			yunit <- "continuous"
+		}
+		index <- is.na(x$eaf.exposure)
+		if(any(index))
+		{
+			warning(paste0(x$id.exposure[1], ".", x$id.outcome[1], " - Some eaf.exposure values are missing, using eaf.outcome in their place"))
+			x$eaf.exposure[index] <- x$eaf.outcome[index]
+		}
+		l <- MRMix::standardize(
+			x$beta.exposure, 
+			x$beta.outcome, 
+			x$se.exposure, 
+			x$se.outcome, 
+			xunit,
+			yunit,
+			x$samplesize.exposure,
+			x$samplesize.outcome,
+			x$eaf.exposure
+		)
+		x$beta.exposure <- l$betahat_x_std
+		x$beta.outcome <- l$betahat_y_std
+		x$se.exposure <- l$sx_std
+		x$se.outcome <- l$sy_std
+		MRMix::MRMix(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
+	})
+}
