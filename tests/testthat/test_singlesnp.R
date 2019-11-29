@@ -1,11 +1,11 @@
 context("singlesnp")
 library(TwoSampleMR)
 
-dat <- make_dat(2, 7)
+dat <- make_dat("ieu-a-2", "ieu-a-7")
 
 test_that("singlesnp", {
 	w <- mr_singlesnp(dat)
-	expect_true(nrow(w) == nrow(dat) + 2)
+	expect_true(nrow(w) == sum(dat$mr_keep) + 2)
 })
 
 

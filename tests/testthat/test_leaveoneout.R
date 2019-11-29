@@ -5,7 +5,7 @@ dat <- make_dat(2, 7)
 
 test_that("leaveoneout", {
 	w <- mr_leaveoneout(dat)
-	expect_true(nrow(w) == nrow(dat) + 1)
+	expect_true(nrow(w) == sum(dat$mr_keep) + 1)
 })
 
 test_that("leaveoneout_plot", {

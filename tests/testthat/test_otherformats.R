@@ -1,7 +1,7 @@
 context("other formats")
 library(TwoSampleMR)
 
-dat <- make_dat(2, 7)
+dat <- make_dat("ieu-a-2", "ieu-a-7")
 
 test_that("MRInput", {
 	w <- dat_to_MRInput(dat, get_correlations=FALSE)
@@ -12,7 +12,7 @@ test_that("MRInput", {
 
 test_that("MRInput with cor", {
 	w <- dat_to_MRInput(dat, get_correlations=TRUE)[[1]]
-	expect_true(nrow(w@correlation) == nrow(dat))
+	expect_true(nrow(w@correlation) == length(w@betaX))
 })
 
 

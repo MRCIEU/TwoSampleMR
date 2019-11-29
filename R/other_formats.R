@@ -66,6 +66,11 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE)
 harmonise_ld_dat <- function(x, ld)
 {
 	snpnames <- do.call(rbind, strsplit(rownames(ld), split="_"))
+	i1 <- snpnames[,1] %in% x$SNP
+	ld <- ld[i1,i1]
+	snpnames <- snpnames[i1,]
+	i2 <- x$SNP %in% snpnames[,1]
+	x <- x[i2,]
 	stopifnot(all(snpnames[,1] == x$SNP))
 	x$effect_allele.exposure <- as.character(x$effect_allele.exposure)
 	x$other_allele.exposure <- as.character(x$other_allele.exposure)
