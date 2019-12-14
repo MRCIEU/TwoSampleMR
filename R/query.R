@@ -209,7 +209,9 @@ format_d <- function(d)
 {
 
 	d1 <- data.frame(
-		SNP = as.character(d$name),
+		SNP = as.character(d$rsid),
+		chr = as.character(d$chr),
+		pos = as.character(d$position),
 		beta.outcome = as.numeric(d$beta),
 		se.outcome = as.numeric(d$se),
 		samplesize.outcome = as.numeric(d$n),

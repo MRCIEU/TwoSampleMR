@@ -33,9 +33,9 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 		dat$id.exposure <- random_string(1)
 	}
 
-	d <- data.frame(variant=dat$SNP, pval=dat$pval.exposure, id=dat$id.exposure)
+	d <- data.frame(rsid=dat$SNP, pval=dat$pval.exposure, id=dat$id.exposure)
 	out <- ieugwasr::ld_clump(d, clump_kb=clump_kb, clump_r2=clump_r2, clump_p=clump_p1)
-	keep <- paste(dat$SNP, dat$id.exposure) %in% paste(out$variant, out$id)
+	keep <- paste(dat$SNP, dat$id.exposure) %in% paste(out$rsid, out$id)
 	return(dat[keep, ])
 }
 
