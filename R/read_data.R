@@ -490,9 +490,9 @@ check_units <- function(x, id, col)
 #' @export
 #' @return Data frame
 #' @examples \dontrun{
-#' data(gwas_catalog)
 #' require(MRInstruments)
-#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
+#' data(gwas_catalog)
+#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units))
 #' bmi <- format_data(bmi)
 #'}
 format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")

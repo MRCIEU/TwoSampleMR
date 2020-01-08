@@ -1,0 +1,10 @@
+pandoc: 2.7.3
+pkgdown: 1.4.1
+pkgdown_sha: ~
+articles:
+  exposure: exposure.html
+  harmonise: harmonise.html
+  introduction: introduction.html
+  outcome: outcome.html
+  perform_mr: perform_mr.html
+
