@@ -5,11 +5,35 @@
 [![Codecov test coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/ieugwasr/graph/badge.svg)](https://codecov.io/gh/MRCIEU/TwoSampleMR?branch=ieugwasr)
 <!-- badges: end -->
 
+* * * 
+
+## Version 1.0.0: MAJOR UPDATE
+
+**We have made substantial changes to the package, database and reference panels.** For full details of the changes, please visit https://mrcieu.github.io/gwasglue/articles/gwas2020.html
+
+To install the latest version of TwoSampleMR, perform as normal:
+
+```
+install.packages("devtools")
+devtools::install_github("MRCIEU/TwoSampleMR")
+```
+
+To update the package just run the `install_github("MRCIEU/TwoSampleMR")` command again.
+
+We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:
+
+```
+install.packages("devtools")
+devtools::install_github("MRCIEU/TwoSampleMR@0.4.25")
+```
+
 Extended documentation is available here:
 
 [https://mrcieu.github.io/TwoSampleMR/](https://mrcieu.github.io/TwoSampleMR/)
 
 * * *
+
+## Background
 
 Two sample Mendelian randomisation is a technique that makes causal inference about an exposure on an outcome using only summary statistics from a GWAS. This means you obtain SNPs (the instruments) that are robustly associated with your exposure, obtain a set of GWAS summary associations for the outcome you are interested, extract the instrument SNPs from the outcome GWAS, and by contrasting the effect sizes of the SNPs on the exposure with the effect sizes of the SNPs on the outcome one can estimate the causal effect.
 
@@ -41,17 +65,8 @@ PLoS Genetics. 2017. 13(11).](http://journals.plos.org/plosgenetics/article?id=1
 
 ## License
 
-This project is licensed under GNU GPL v3.
+This project is made available under the open source MIT license.
 
 ## Installing the TwoSampleMR R package
-
-The package is hosted on github, and this allows installation and update to be very easy. First make sure you have the `devtools` package installed:
-
-    install.packages("devtools")
-
-Then to install:
-
-    library(devtools)
-    install_github("MRCIEU/TwoSampleMR")
 
 To update the package just run the `install_github("MRCIEU/TwoSampleMR")` command again.
