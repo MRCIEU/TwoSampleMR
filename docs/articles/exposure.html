@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -157,12 +157,12 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886</code>
 <span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; 5        LRRN6C              247166      BMI             TRUE</span></span>
 <span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; 6       LBXCOR1              227886      BMI             TRUE</span></span>
 <span id="cb3-24"><a href="#cb3-24"></a><span class="co">#&gt;   pval_origin.exposure units.exposure_dat id.exposure data_source.exposure</span></span>
-<span id="cb3-25"><a href="#cb3-25"></a><span class="co">#&gt; 1             reported              kg/m2      0N2RR0             textfile</span></span>
-<span id="cb3-26"><a href="#cb3-26"></a><span class="co">#&gt; 2             reported              kg/m2      0N2RR0             textfile</span></span>
-<span id="cb3-27"><a href="#cb3-27"></a><span class="co">#&gt; 3             reported              kg/m2      0N2RR0             textfile</span></span>
-<span id="cb3-28"><a href="#cb3-28"></a><span class="co">#&gt; 4             reported              kg/m2      0N2RR0             textfile</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a><span class="co">#&gt; 5             reported              kg/m2      0N2RR0             textfile</span></span>
-<span id="cb3-30"><a href="#cb3-30"></a><span class="co">#&gt; 6             reported              kg/m2      0N2RR0             textfile</span></span></code></pre></div>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="co">#&gt; 1             reported              kg/m2      moNCTq             textfile</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a><span class="co">#&gt; 2             reported              kg/m2      moNCTq             textfile</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a><span class="co">#&gt; 3             reported              kg/m2      moNCTq             textfile</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a><span class="co">#&gt; 4             reported              kg/m2      moNCTq             textfile</span></span>
+<span id="cb3-29"><a href="#cb3-29"></a><span class="co">#&gt; 5             reported              kg/m2      moNCTq             textfile</span></span>
+<span id="cb3-30"><a href="#cb3-30"></a><span class="co">#&gt; 6             reported              kg/m2      moNCTq             textfile</span></span></code></pre></div>
 <p>The output from this function is a new data frame with standardised column names:</p>
 <ul>
 <li><code>SNP</code></li>
@@ -235,12 +235,12 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span id="cb6-36"><a href="#cb6-36"></a><span class="co">#&gt; 5        LRRN6C              247166 exposure             TRUE</span></span>
 <span id="cb6-37"><a href="#cb6-37"></a><span class="co">#&gt; 6       LBXCOR1              227886 exposure             TRUE</span></span>
 <span id="cb6-38"><a href="#cb6-38"></a><span class="co">#&gt;   pval_origin.exposure units.exposure_dat id.exposure data_source.exposure</span></span>
-<span id="cb6-39"><a href="#cb6-39"></a><span class="co">#&gt; 1             reported              kg/m2      0j3jVx             textfile</span></span>
-<span id="cb6-40"><a href="#cb6-40"></a><span class="co">#&gt; 2             reported              kg/m2      0j3jVx             textfile</span></span>
-<span id="cb6-41"><a href="#cb6-41"></a><span class="co">#&gt; 3             reported              kg/m2      0j3jVx             textfile</span></span>
-<span id="cb6-42"><a href="#cb6-42"></a><span class="co">#&gt; 4             reported              kg/m2      0j3jVx             textfile</span></span>
-<span id="cb6-43"><a href="#cb6-43"></a><span class="co">#&gt; 5             reported              kg/m2      0j3jVx             textfile</span></span>
-<span id="cb6-44"><a href="#cb6-44"></a><span class="co">#&gt; 6             reported              kg/m2      0j3jVx             textfile</span></span></code></pre></div>
+<span id="cb6-39"><a href="#cb6-39"></a><span class="co">#&gt; 1             reported              kg/m2      vqFFyw             textfile</span></span>
+<span id="cb6-40"><a href="#cb6-40"></a><span class="co">#&gt; 2             reported              kg/m2      vqFFyw             textfile</span></span>
+<span id="cb6-41"><a href="#cb6-41"></a><span class="co">#&gt; 3             reported              kg/m2      vqFFyw             textfile</span></span>
+<span id="cb6-42"><a href="#cb6-42"></a><span class="co">#&gt; 4             reported              kg/m2      vqFFyw             textfile</span></span>
+<span id="cb6-43"><a href="#cb6-43"></a><span class="co">#&gt; 5             reported              kg/m2      vqFFyw             textfile</span></span>
+<span id="cb6-44"><a href="#cb6-44"></a><span class="co">#&gt; 6             reported              kg/m2      vqFFyw             textfile</span></span></code></pre></div>
 <p>If the <code>Phenotype</code> column is not provided (as is the case in this example) then it will assume that the phenotype’s name is simply “exposure”. This is entered in the <code>exposure</code> column. It can be renamed manually:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>bmi_exp_dat<span class="op">$</span>exposure &lt;-<span class="st"> "BMI"</span></span></code></pre></div>
 </div>
@@ -272,8 +272,8 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt; 1 rs1             1           1                      A exposure</span></span>
 <span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; 2 rs2             2           2                      T exposure</span></span>
 <span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt;   mr_keep.exposure pval.exposure pval_origin.exposure id.exposure</span></span>
-<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; 1             TRUE     0.1586553             inferred      CtnRSr</span></span>
-<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt; 2             TRUE     0.1586553             inferred      CtnRSr</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; 1             TRUE     0.1586553             inferred      iE54Wz</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt; 2             TRUE     0.1586553             inferred      iE54Wz</span></span>
 <span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt;   other_allele.exposure eaf.exposure</span></span>
 <span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; 1                    NA           NA</span></span>
 <span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; 2                    NA           NA</span></span></code></pre></div>
@@ -495,7 +495,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span id="cb21-22"><a href="#cb21-22"></a><span class="co">#&gt; [1] "Available"</span></span>
 <span id="cb21-23"><a href="#cb21-23"></a><span class="co">#&gt; </span></span>
 <span id="cb21-24"><a href="#cb21-24"></a><span class="co">#&gt; $`Total associations`</span></span>
-<span id="cb21-25"><a href="#cb21-25"></a><span class="co">#&gt; [1] 111216595784</span></span>
+<span id="cb21-25"><a href="#cb21-25"></a><span class="co">#&gt; [1] 111216940568</span></span>
 <span id="cb21-26"><a href="#cb21-26"></a><span class="co">#&gt; </span></span>
 <span id="cb21-27"><a href="#cb21-27"></a><span class="co">#&gt; $`Total complete datasets`</span></span>
 <span id="cb21-28"><a href="#cb21-28"></a><span class="co">#&gt; [1] 11104</span></span>
@@ -555,7 +555,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span id="cb25-3"><a href="#cb25-3"></a><span class="co">#&gt; Use 'ieugwasr::ld_clump()' instead.</span></span>
 <span id="cb25-4"><a href="#cb25-4"></a><span class="co">#&gt; See help("Deprecated")</span></span>
 <span id="cb25-5"><a href="#cb25-5"></a><span class="co">#&gt; Warning: since v0.4.2 the default r2 value for clumping has changed from 0.01 to 0.001</span></span>
-<span id="cb25-6"><a href="#cb25-6"></a><span class="co">#&gt; Clumping 0j3jVx, 30 variants</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a><span class="co">#&gt; Clumping vqFFyw, 30 variants</span></span>
 <span id="cb25-7"><a href="#cb25-7"></a><span class="co">#&gt; Removing 3 of 30 variants due to LD with other variants or absence from LD reference panel</span></span></code></pre></div>
 <p>The <code>clump_data</code> command takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the R/MRInstruments package the SNPs are already LD clumped.</p>
 <p><strong>Note:</strong> The LD reference panel only includes SNPs (no INDELs), with MAF &gt; 0.01 in 1000 genomes European samples. Therefore, if a variant is dropped from your unclumped data it could be because it is absent from the reference panel. For more flexibility, including using your own LD reference data, see here: <a href="https://mrcieu.github.io/ieugwasr/" class="uri">https://mrcieu.github.io/ieugwasr/</a></p>

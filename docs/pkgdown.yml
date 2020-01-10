@@ -3,6 +3,7 @@ pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
   exposure: exposure.html
+  gwas2020: gwas2020.html
   harmonise: harmonise.html
   introduction: introduction.html
   outcome: outcome.html

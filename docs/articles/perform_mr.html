@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -101,10 +101,10 @@
 <span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   78 0.3927767</span></span>
 <span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt;           se         pval</span></span>
 <span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; 1 0.14504282 1.033826e-03</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; 2 0.07434114 1.352668e-07</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; 2 0.07542357 2.037217e-07</span></span>
 <span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; 3 0.05932029 3.920738e-14</span></span>
-<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; 4 0.15482881 2.162177e-02</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt; 5 0.10885457 5.458093e-04</span></span></code></pre></div>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; 4 0.15783899 2.415991e-02</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt; 5 0.09796155 1.396315e-04</span></span></code></pre></div>
 <p>This returns a data frame of estimates of the causal effect of the exposure on the outcome for a range of different MR methods.</p>
 <p>If there were multiple exposures against multiple outcomes in <code>dat</code>, the <code><a href="../reference/mr.html">mr()</a></code> function will perform each MR method for each combination of exposure-outcome traits.</p>
 </div>
@@ -698,10 +698,10 @@
 <span id="cb47-15"><a href="#cb47-15"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   78 0.3927767</span></span>
 <span id="cb47-16"><a href="#cb47-16"></a><span class="co">#&gt;           se         pval</span></span>
 <span id="cb47-17"><a href="#cb47-17"></a><span class="co">#&gt; 1 0.14504282 1.033826e-03</span></span>
-<span id="cb47-18"><a href="#cb47-18"></a><span class="co">#&gt; 2 0.07545942 2.064431e-07</span></span>
+<span id="cb47-18"><a href="#cb47-18"></a><span class="co">#&gt; 2 0.07717491 3.814337e-07</span></span>
 <span id="cb47-19"><a href="#cb47-19"></a><span class="co">#&gt; 3 0.05932029 3.920738e-14</span></span>
-<span id="cb47-20"><a href="#cb47-20"></a><span class="co">#&gt; 4 0.15076759 1.844029e-02</span></span>
-<span id="cb47-21"><a href="#cb47-21"></a><span class="co">#&gt; 5 0.09328573 6.844741e-05</span></span></code></pre></div>
+<span id="cb47-20"><a href="#cb47-20"></a><span class="co">#&gt; 4 0.15678035 2.325000e-02</span></span>
+<span id="cb47-21"><a href="#cb47-21"></a><span class="co">#&gt; 5 0.09921402 1.665850e-04</span></span></code></pre></div>
 </div>
 <div id="split-exposure-names" class="section level3">
 <h3 class="hasAnchor">
@@ -727,10 +727,10 @@
 <span id="cb48-13"><a href="#cb48-13"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   78 0.3927767</span></span>
 <span id="cb48-14"><a href="#cb48-14"></a><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
 <span id="cb48-15"><a href="#cb48-15"></a><span class="co">#&gt; 1 0.14504282 1.033826e-03 0.21070907 0.7792769 1.640487 1.234553 2.179895</span></span>
-<span id="cb48-16"><a href="#cb48-16"></a><span class="co">#&gt; 2 0.07545942 2.064431e-07 0.24399354 0.5397945 1.479781 1.276336 1.715654</span></span>
+<span id="cb48-16"><a href="#cb48-16"></a><span class="co">#&gt; 2 0.07717491 3.814337e-07 0.24063118 0.5431568 1.479781 1.272052 1.721433</span></span>
 <span id="cb48-17"><a href="#cb48-17"></a><span class="co">#&gt; 3 0.05932029 3.920738e-14 0.33240696 0.5649425 1.566235 1.394320 1.759347</span></span>
-<span id="cb48-18"><a href="#cb48-18"></a><span class="co">#&gt; 4 0.15076759 1.844029e-02 0.06751946 0.6585284 1.437670 1.069851 1.931947</span></span>
-<span id="cb48-19"><a href="#cb48-19"></a><span class="co">#&gt; 5 0.09328573 6.844741e-05 0.20993668 0.5756167 1.481088 1.233600 1.778227</span></span></code></pre></div>
+<span id="cb48-18"><a href="#cb48-18"></a><span class="co">#&gt; 4 0.15678035 2.325000e-02 0.05573445 0.6703134 1.437670 1.057317 1.954850</span></span>
+<span id="cb48-19"><a href="#cb48-19"></a><span class="co">#&gt; 5 0.09921402 1.665850e-04 0.19831723 0.5872362 1.481088 1.219349 1.799009</span></span></code></pre></div>
 </div>
 <div id="subset-on-method" class="section level3">
 <h3 class="hasAnchor">
@@ -766,7 +766,7 @@
 <span id="cb50-15"><a href="#cb50-15"></a><span class="co">#&gt;                        exposure nsnp          b         se         pval</span></span>
 <span id="cb50-16"><a href="#cb50-16"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2   78  0.4486747 0.05932029 3.920738e-14</span></span>
 <span id="cb50-17"><a href="#cb50-17"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2   78  0.4949930 0.14504282 1.033826e-03</span></span>
-<span id="cb50-18"><a href="#cb50-18"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2   78  0.3630239 0.15910165 2.526946e-02</span></span>
+<span id="cb50-18"><a href="#cb50-18"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2   78  0.3630239 0.16110547 2.708398e-02</span></span>
 <span id="cb50-19"><a href="#cb50-19"></a><span class="co">#&gt; 4 Body mass index || id:ieu-a-2    1  1.1494985 0.37045723 1.916225e-03</span></span>
 <span id="cb50-20"><a href="#cb50-20"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2    1 -0.7901087 0.53475543 1.395379e-01</span></span>
 <span id="cb50-21"><a href="#cb50-21"></a><span class="co">#&gt; 6 Body mass index || id:ieu-a-2    1  0.5506335 0.48253394 2.538162e-01</span></span>

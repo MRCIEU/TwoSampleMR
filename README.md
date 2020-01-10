@@ -13,16 +13,16 @@ A package for performing Mendelian randomization using GWAS summary data. It use
 
 ## January 2020 major update 
 
-**We have made substantial changes to the package, database and reference panels.** For full details of the changes, please visit https://mrcieu.github.io/gwasglue/articles/gwas2020.html
+**We have made substantial changes to the package, database and reference panels.** For full details of the changes, please visit https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html
 
 To install the latest version of TwoSampleMR, perform as normal:
 
 ```
 install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR@ieugwasr")
+devtools::install_github("MRCIEU/TwoSampleMR")
 ```
 
-To update the package just run the `install_github("MRCIEU/TwoSampleMR@ieugwasr")` command again.
+To update the package just run the `install_github("MRCIEU/TwoSampleMR")` command again.
 
 We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:
 
