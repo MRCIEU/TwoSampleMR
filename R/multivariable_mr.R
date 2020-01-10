@@ -12,7 +12,7 @@
 #'
 #' @export
 #' @return data frame in exposure_dat format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = get_mrbase_access_token(), find_proxies=TRUE, force_server=FALSE)
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE)
 {
 	require(reshape2)
 	stopifnot(length(id_exposure) > 1)

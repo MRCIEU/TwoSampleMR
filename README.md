@@ -7,7 +7,7 @@
 
 * * * 
 
-This package is performing Mendelian randomization using GWAS summary data. It uses the [IEU GWAS database](https://gwas.mrcieu.ac.uk/) to obtain data automatically, and a wide range of methods to run the analysis. You can use the [MR-Base web app](http://www.mrbase.org/) to try it out a limited range of the functionality in this package, but for any serious work we strongly recommend using this R package.
+A package for performing Mendelian randomization using GWAS summary data. It uses the [IEU GWAS database](https://gwas.mrcieu.ac.uk/) to obtain data automatically, and a wide range of methods to run the analysis. You can use the [MR-Base web app](http://www.mrbase.org/) to try out a limited range of the functionality in this package, but for any serious work we strongly recommend using this R package.
 
 **Full documentation available here:** [https://mrcieu.github.io/TwoSampleMR](https://mrcieu.github.io/TwoSampleMR/)
 
@@ -19,10 +19,10 @@ To install the latest version of TwoSampleMR, perform as normal:
 
 ```
 install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR")
+devtools::install_github("MRCIEU/TwoSampleMR@ieugwasr")
 ```
 
-To update the package just run the `install_github("MRCIEU/TwoSampleMR")` command again.
+To update the package just run the `install_github("MRCIEU/TwoSampleMR@ieugwasr")` command again.
 
 We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:
 
@@ -33,7 +33,7 @@ devtools::install_github("MRCIEU/TwoSampleMR@0.4.25")
 
 ## Citation
 
-If using MR-Base, IEU GWAS database or the TwoSampleMR R package:
+If using MR-Base, the IEU GWAS database or the TwoSampleMR R package:
 
 [Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration.</br>
 **The MR-Base platform supports systematic causal inference across the human phenome.** <br/>
