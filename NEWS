@@ -1,9 +1,10 @@
-Forthcoming release
+TwoSampleMR v0.4.26 (Release date: 2019-12-01)
 ==============
 
 Changes:
 
 * Improved precision of low p-values in steiger tests. Thanks to Hannah V Meyer and Tom Palmer for this.
+* Improved instrument extraction for new datasets
 
 
 TwoSampleMR v0.4.25 (Release date: 2019-09-12)
