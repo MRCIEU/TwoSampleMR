@@ -1,3 +1,11 @@
+TwoSampleMR v0.5.0 (Release date: 2020-11-01)
+==============
+
+Changes:
+
+* Major update, details here: https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html
+
+
 TwoSampleMR v0.4.26 (Release date: 2019-12-01)
 ==============
 
@@ -13,6 +21,7 @@ TwoSampleMR v0.4.25 (Release date: 2019-09-12)
 Changes:
 
 * Changes in googleAuthR package break authentication. Added interception to install older version while this is being fixed. Please use `devtools::install_github("MarkEdmondson1234/googleAuthR@v0.8.1")`
+
 
 TwoSampleMR v0.4.24 (Release date: 2019-09-10)
 ==============
