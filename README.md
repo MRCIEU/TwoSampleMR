@@ -28,7 +28,7 @@ We recommend using this new version going forwards but for a limited time we are
 
 ```
 install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR@0.4.25")
+devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")
 ```
 
 ## Citation
