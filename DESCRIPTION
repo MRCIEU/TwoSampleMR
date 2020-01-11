@@ -1,8 +1,8 @@
 Package: TwoSampleMR
 Title: Two Sample MR functions and interface to MR Base database
-Version: 0.4.26
+Version: 0.5.0
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
-                  role = c("aut", "cre")),
+                  role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0920-1055")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
                   role = c("aut")),
              person("Jie", "Zheng", email = "Jie.Zheng@bristol.ac.uk",
@@ -14,8 +14,8 @@ Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
 			 )
 Description: See title
 Depends:
-    R (>= 3.1.0)
-Suggests:
+    R (>= 3.6.0)
+Imports:
     ggplot2,
     gridExtra,
     cowplot,
@@ -25,27 +25,33 @@ Suggests:
     knitr,
     markdown,
     gtable,
-    RMySQL,
     rmarkdown,
-    MRInstruments,
     MendelianRandomization,
-    MRPRESSO,
     dplyr,
-    igraph,
     mr.raps,
-    RadialMR,
     psych,
     testthat,
-    randomForest
-Imports:
+    magrittr,
+    car,
+    randomForest,
     meta,
-    jsonlite,
-    RCurl,
     data.table,
-    googleAuthR (>= 0.6.2),
-    httpuv
-License: Artistic-2.0
+    ieugwasr,
+    MRPRESSO,
+    MRInstruments,
+    RadialMR,
+    MRMix
+Remotes:
+    rondolab/MR-PRESSO,
+    mrcieu/MRInstruments,
+    mrcieu/ieugwasr,
+    mrcieu/MRInstruments,
+    WSpiller/RadialMR,
+    gqi/MRMix
+License: MIT + file LICENSE
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Encoding: UTF-8
+Suggests: 
+    covr

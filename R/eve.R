@@ -15,7 +15,7 @@ mr_mean_ivw <- function(d)
 	if(nrow(d) == 1)
 	{
 		res <- mr_wald_ratio(b_exp, b_out, se_exp, se_out)
-		out <- data_frame(
+		out <- dplyr::data_frame(
 			id.exposure = id.exposure,
 			id.outcome = id.outcome,
 			method = "Wald ratio",
@@ -180,12 +180,12 @@ mr_mean <- function(dat)
 			return(m1)
 		} else {
 			out <- list(
-				estimates = bind_rows(m1$estimates, m2$estimates),
-				heterogeneity = bind_rows(m1$heterogeneity, m2$heterogeneity),
+				estimates = dplyr::bind_rows(m1$estimates, m2$estimates),
+				heterogeneity = dplyr::bind_rows(m1$heterogeneity, m2$heterogeneity),
 				directional_pleiotropy = m2$directional_pleiotropy,
 				outliers = m1$outliers
 			)
-			temp <- data_frame(
+			temp <- dplyr::data_frame(
 				id.exposure = dat$id.exposure[1],
 				id.outcome = dat$id.outcome[1],
 				method = "Rucker",
@@ -193,7 +193,7 @@ mr_mean <- function(dat)
 				df = 1,
 				pval = pchisq(Q, df, lower.tail=FALSE)
 			)
-			out$heterogeneity <- bind_rows(out$heterogeneity, temp)
+			out$heterogeneity <- dplyr::bind_rows(out$heterogeneity, temp)
 			return(out)
 		}
 	}
@@ -206,12 +206,12 @@ mr_all <- function(dat)
 	{
 		m2 <- try(mr_median(dat))
 		m3 <- try(mr_mode(dat)[1:3,])
-		m1$estimates <- bind_rows(m1$estimates, m2, m3)
+		m1$estimates <- dplyr::bind_rows(m1$estimates, m2, m3)
 	}
 	m1$info <- c(list(
 			id.exposure = dat$id.exposure[1], id.outcome = dat$id.outcome[1]),		
 			TwoSampleMR:::system_metrics(dat)
-		) %>% as_data_frame
+		) %>% dplyr::as_data_frame()
 	return(m1)
 }
 
@@ -219,7 +219,7 @@ mr_wrapper_single <- function(dat)
 {
 	dat <- steiger_filtering(dat)
 	m <- list()
-	snps_retained <- data_frame(
+	snps_retained <- dplyr::data_frame(
 		SNP = dat$SNP,
 		outlier = FALSE, steiger = FALSE, both = FALSE
 	)
@@ -241,7 +241,7 @@ mr_wrapper_single <- function(dat)
 		if(nrow(dat_st) == 0)
 		{
 			m[[3]] <- m[[4]] <- list(
-				estimates=data_frame(method="Steiger null", nsnp = 0, b=0, se=NA, ci_low=NA, ci_upp=NA, pval=1)
+				estimates=dplyr::data_frame(method="Steiger null", nsnp = 0, b=0, se=NA, ci_low=NA, ci_upp=NA, pval=1)
 			)
 		} else {
 			m[[3]] <- mr_all(dat_st)
@@ -305,10 +305,10 @@ mr_wrapper_single <- function(dat)
 	nom <- lapply(m, names) %>% unlist %>% unique %>% as.list
 	nom <- nom[nom != "outliers"]
 	o <- lapply(nom, function(i) {
-		lapply(m, function(y) y[[i]]) %>% bind_rows
+		lapply(m, function(y) y[[i]]) %>% dplyr::bind_rows()
 	})
 	names(o) <- nom
-	o$info <- o$info %>% dplyr::mutate(nsnp_removed = first(nsnp)-nsnp)
+	o$info <- o$info %>% dplyr::mutate(nsnp_removed = dplyr::first(nsnp)-nsnp)
 	o$snps_retained <- snps_retained
 
 	return(o)

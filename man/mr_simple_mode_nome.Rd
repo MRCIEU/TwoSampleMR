@@ -4,8 +4,13 @@
 \alias{mr_simple_mode_nome}
 \title{MR weighted mode estimator (NOME)}
 \usage{
-mr_simple_mode_nome(b_exp, b_out, se_exp, se_out,
-  parameters = default_parameters())
+mr_simple_mode_nome(
+  b_exp,
+  b_out,
+  se_exp,
+  se_out,
+  parameters = default_parameters()
+)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

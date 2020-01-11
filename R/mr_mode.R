@@ -1,9 +1,9 @@
 #' MR mode estimators
 #'
-#' <full description>
+#' Perform simple, weighted, penalised modes, as well as version that use NOME assumption
 #'
 #' @param dat Output from harmonise_data()
-#' @param parameters=default_parameters() <what param does>
+#' @param parameters default_parameters()
 #'
 #' @export
 #' @return data frame
@@ -271,3 +271,17 @@ mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default
 
 	return(mr_mode(data.frame(beta.exposure=b_exp, beta.outcome=b_out, se.exposure=se_exp, se.outcome=se_out), parameters=parameters, mode_method="Simple mode (NOME)"))
 }
+
+
+mr_mode_broken <- function(dat, parameters=default_parameters(), mode_method="all")
+{
+	res <- plyr::ddply(dat, c("id.exposure", "exposure", "id.outcome", "outcome"), function(x) mr_mode_internal(x, parameters, mode_method="all"))
+	if(mode_method != "all")
+	{
+		return(subset(res, method %in% mode_method))
+	} else {
+		return(res)
+	}
+}
+
+

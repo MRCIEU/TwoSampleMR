@@ -4,16 +4,32 @@
 \alias{format_data}
 \title{Read exposure or outcome data}
 \usage{
-format_data(dat, type = "exposure", snps = NULL, header = TRUE,
-  phenotype_col = "Phenotype", snp_col = "SNP", beta_col = "beta",
-  se_col = "se", eaf_col = "eaf",
+format_data(
+  dat,
+  type = "exposure",
+  snps = NULL,
+  header = TRUE,
+  phenotype_col = "Phenotype",
+  snp_col = "SNP",
+  beta_col = "beta",
+  se_col = "se",
+  eaf_col = "eaf",
   effect_allele_col = "effect_allele",
-  other_allele_col = "other_allele", pval_col = "pval",
-  units_col = "units", ncase_col = "ncase",
-  ncontrol_col = "ncontrol", samplesize_col = "samplesize",
-  gene_col = "gene", id_col = "id", min_pval = 1e-200, z_col = "z",
-  info_col = "info", chr_col = "chr", pos_col = "pos",
-  log_pval = FALSE)
+  other_allele_col = "other_allele",
+  pval_col = "pval",
+  units_col = "units",
+  ncase_col = "ncase",
+  ncontrol_col = "ncontrol",
+  samplesize_col = "samplesize",
+  gene_col = "gene",
+  id_col = "id",
+  min_pval = 1e-200,
+  z_col = "z",
+  info_col = "info",
+  chr_col = "chr",
+  pos_col = "pos",
+  log_pval = FALSE
+)
 }
 \arguments{
 \item{dat}{Data frame. Must have header with at least SNP column present.}

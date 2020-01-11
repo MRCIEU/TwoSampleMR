@@ -4,9 +4,14 @@
 \alias{mv_subset}
 \title{Perform multivariable MR on subset of features}
 \usage{
-mv_subset(mvdat, features = mv_lasso_feature_selection(mvdat),
-  intercept = FALSE, instrument_specific = FALSE,
-  pval_threshold = 5e-08, plots = FALSE)
+mv_subset(
+  mvdat,
+  features = mv_lasso_feature_selection(mvdat),
+  intercept = FALSE,
+  instrument_specific = FALSE,
+  pval_threshold = 5e-08,
+  plots = FALSE
+)
 }
 \arguments{
 \item{mvdat}{Output from \code{mv_harmonise_data}}

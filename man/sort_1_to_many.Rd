@@ -4,8 +4,14 @@
 \alias{sort_1_to_many}
 \title{Sort results for 1-to-many forest plot}
 \usage{
-sort_1_to_many(mr_res, b = "b", trait_m = "outcome", sort_action = 4,
-  group = NULL, priority = NULL)
+sort_1_to_many(
+  mr_res,
+  b = "b",
+  trait_m = "outcome",
+  sort_action = 4,
+  group = NULL,
+  priority = NULL
+)
 }
 \arguments{
 \item{mr_res}{Data frame of results supplied by the user}

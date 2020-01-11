@@ -490,9 +490,9 @@ check_units <- function(x, id, col)
 #' @export
 #' @return Data frame
 #' @examples \dontrun{
-#' data(gwas_catalog)
 #' require(MRInstruments)
-#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
+#' data(gwas_catalog)
+#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units))
 #' bmi <- format_data(bmi)
 #'}
 format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
@@ -607,76 +607,6 @@ format_aries_mqtl <- function(aries_mqtl_subset, type="exposure")
 	dat[[paste0("data_source.", type)]] <- "aries_mqtl"
 
 	return(dat)
-}
-
-
-
-
-
-
-ucsc_get_position <- function(snp)
-{
-	snp <- paste(snp, collapse="', '")
-	require(RMySQL)
-	message("Connecting to UCSC MySQL database")
-	mydb <- dbConnect(MySQL(), user="genome", dbname="hg19", host="genome-mysql.cse.ucsc.edu")
-
-	query <- paste0(
-		"SELECT * from snp144 where name in ('", snp, "');"
-	)
-	message(query)
-	out <- dbSendQuery(mydb, query)
-	d <- fetch(out, n=-1)
-	# dbClearResult(dbListResults(mydb)[[1]])
-	dbDisconnect(mydb)
-	return(d)
-
-}
-
-
-ensembl_get_position <- function(snp)
-{
-	require(biomaRt)
-	require(stringr)
-	Mart <- useMart(host="grch37.ensembl.org", biomart="ENSEMBL_MART_SNP",dataset="hsapiens_snp")
-	Attr <- listAttributes(Mart)
-	ensembl <- getBM(attributes=c("refsnp_id","chr_name","chrom_start","allele","minor_allele","minor_allele_freq"),filters="snp_filter",values=snp,mart=Mart)
-
-	# Sort out chromosome name
-	ensembl$chr_name <- str_match(ensembl$chr_name, "(HSCHR)?([0-9X]*)")[,3]
-	ensembl$chr_name[ensembl$chr_name == "X"] <- 23
-	ensembl$chr_name[! ensembl$chr_name %in% 1:23] <- NA
-	ensembl$chr_name <- as.numeric(ensembl$chr_name)
-
-	# Remove SNPs that are problematic:
-	# - No chromosome name
-	# - No position
-	# - Not normal alleles
-	# - Not biallelic
-	# - No MAF
-	# - Duplicate SNPs
-	# - minor allele doesn't match the alleles
-	# Add major allele
-	remove <- is.na(ensembl$chr_name) |
-		is.na(ensembl$chrom_start) |
-		nchar(ensembl$allele) != 3 |
-		! ensembl$minor_allele %in% c("A", "C", "T", "G") |
-		is.na(ensembl$minor_allele_freq)
-	ensembl <- ensembl[!remove, , drop=FALSE]
-	ensembl <- subset(ensembl, !duplicated(refsnp_id))
-	al <- do.call(rbind, strsplit(ensembl$allele, split="/"))
-	i1 <- al[,1] == ensembl$minor_allele
-	i2 <- al[,2] == ensembl$minor_allele
-	i <- (i1 | i2)
-	ensembl <- ensembl[i, ]
-	al <- al[i, , drop=FALSE]
-	i1 <- i1[i]
-	i2 <- i2[i]
-	ensembl <- subset(ensembl, select=-c(allele))
-	ensembl$major_allele[!i1] <- al[!i1, 1]
-	ensembl$major_allele[!i2] <- al[!i2, 2]
-
-	return(ensembl)
 }
 
 

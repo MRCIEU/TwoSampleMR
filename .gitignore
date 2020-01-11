@@ -8,3 +8,5 @@ vignettes/vcf/*.txt.gz
 vignettes/vcf/*.rdata
 vignettes/vcf/*.RData
 vignettes/vcf/*.Rhistory
+doc
+Meta

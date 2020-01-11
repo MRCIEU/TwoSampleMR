@@ -4,8 +4,15 @@
 \alias{get_r_from_lor}
 \title{Estimate proportion of variance of liability explained by SNP in general population}
 \usage{
-get_r_from_lor(lor, af, ncase, ncontrol, prevalence, model = "logit",
-  correction = FALSE)
+get_r_from_lor(
+  lor,
+  af,
+  ncase,
+  ncontrol,
+  prevalence,
+  model = "logit",
+  correction = FALSE
+)
 }
 \arguments{
 \item{lor}{Vector of Log odds ratio}

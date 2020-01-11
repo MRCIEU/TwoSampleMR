@@ -14,9 +14,9 @@ DEPRECATED. Please use \code{format_data} instead
 }
 \examples{
 \dontrun{
-data(gwas_catalog)
 require(MRInstruments)
-bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
+data(gwas_catalog)
+bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units))
 bmi <- format_data(bmi)
 }
 }

@@ -1,0 +1,21 @@
+navbar:
+  left:
+    - text: "Vignettes"
+      href: articles/index.html
+    - text: "Functions"
+      href: reference/index.html
+    - text: "Source"
+      href: https://github.com/mrcieu/TwoSampleMR
+
+articles:
+  - title: "Vignettes"
+    desc: >
+      The following vignettes provide detailed illustrations of the
+      TwoSampleMR package.
+    contents:
+    - introduction
+    - exposure
+    - outcome
+    - harmonise
+    - perform_mr
+    - gwas2020

@@ -4,8 +4,11 @@
 \alias{subset_on_method}
 \title{Subset MR-results on method}
 \usage{
-subset_on_method(mr_res, single_snp_method = "Wald ratio",
-  multi_snp_method = "Inverse variance weighted")
+subset_on_method(
+  mr_res,
+  single_snp_method = "Wald ratio",
+  multi_snp_method = "Inverse variance weighted"
+)
 }
 \arguments{
 \item{mr_res}{Results from mr()}
