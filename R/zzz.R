@@ -1,9 +1,8 @@
 .onLoad <- function(libname, pkgname) {
 
         packageStartupMessage(
-                "New version 0.5.0 of TwoSampleMR\n",
-                "[>] Full documentation: https://mrcieu.github.io/TwoSampleMR\n",
-                "[>] List of changes and information about backgwards compatibility here:\n",
+                "TwoSampleMR 0.5.0 - Major update!\n",
+                "[>] List of changes and information about backwards compatibility here:\n",
                 "    https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html\n",
                 "[>] Browse available data at https://gwas.mrcieu.ac.uk\n"
         )
