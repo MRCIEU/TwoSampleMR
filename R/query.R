@@ -120,7 +120,6 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 					maf_threshold = maf_threshold,
 					access_token=access_token
 				)
-				out <- fromJSON_safe(url)
 				if(!is.data.frame(out)) out <- data.frame()
 				return(out)
 			})
