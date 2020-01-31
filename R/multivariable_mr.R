@@ -27,7 +27,6 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 	# Get effects of each instrument from each exposure
 	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure, access_token = access_token, proxies=find_proxies)
-	print(str(d1))
 	d1 <- subset(d1, mr_keep.outcome)
 	d2 <- subset(d1, id.outcome != id_exposure[1])
 	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
