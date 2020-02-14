@@ -3,8 +3,8 @@
         packageStartupMessage(
                 "TwoSampleMR 0.5.1\n",
                 "[>] IMPORTANT: Some datasets have been updated, and some are disabled while we update them.\n",
-                "    Sorry for this inconvenience, they will be back up as soon as possible.\n",
-                "    See https://gwas.mrcieu.ac.uk for more information\n",
+                "    Apologies for this inconvenience, they will be back up as soon as possible.\n",
+                "    See news(package='TwoSampleMR') and https://gwas.mrcieu.ac.uk for more information\n",
                 "[>] To temporarily revert to the previous database, see here:\n",
                 "    https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html\n"
         )
