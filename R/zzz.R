@@ -6,7 +6,7 @@
                 "    Sorry for this inconvenience, they will be back up as soon as possible.\n",
                 "    See https://gwas.mrcieu.ac.uk for more information\n",
                 "[>] To temporarily revert to the previous database, see here:\n",
-                "    https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html\n",
+                "    https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html\n"
         )
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
