@@ -1,10 +1,12 @@
 .onLoad <- function(libname, pkgname) {
 
         packageStartupMessage(
-                "TwoSampleMR 0.5.0 - Major update!\n",
-                "[>] List of changes and information about backwards compatibility here:\n",
+                "TwoSampleMR 0.5.1\n",
+                "[>] IMPORTANT: Some datasets have been updated, and some are disabled while we update them.\n",
+                "    Sorry for this inconvenience, they will be back up as soon as possible.\n",
+                "    See https://gwas.mrcieu.ac.uk for more information\n",
+                "[>] To temporarily revert to the previous database, see here:\n",
                 "    https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html\n",
-                "[>] Browse available data at https://gwas.mrcieu.ac.uk\n"
         )
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))

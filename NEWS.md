@@ -1,3 +1,11 @@
+TwoSampleMR v0.5.1 (Release date: 2020-02-14)
+==============
+
+Changes:
+
+* A number of datasets have been found to have issues since 0.5.0. These include some non-effect alleles being incorrect in the ieu-a batch, p-value issues with the ubm-a batch, effect allele frequency issues with the ukb-a batch. These are being fixed, and some have been temporarily disabled.
+
+
 TwoSampleMR v0.5.0 (Release date: 2020-11-01)
 ==============
 
