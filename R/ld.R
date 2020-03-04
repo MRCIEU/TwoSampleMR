@@ -12,7 +12,7 @@
 #' @return Data frame
 clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1)
 {
-	.Deprecated("ieugwasr::ld_clump()")
+	# .Deprecated("ieugwasr::ld_clump()")
 
 	if(missing(clump_r2))
 	{
@@ -53,7 +53,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 #' @return Matrix of LD r values
 ld_matrix <- function(snps, with_alleles=TRUE)
 {
-	.Deprecated("ieugwasr::ld_matrix()")
+	# .Deprecated("ieugwasr::ld_matrix()")
 	ieugwasr::ld_matrix(variants=snps, with_alleles=with_alleles)
 }
 

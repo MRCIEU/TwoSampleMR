@@ -1,3 +1,12 @@
+TwoSampleMR v0.5.2 (Release candidate)
+==============
+
+Changes:
+
+* No longer marking LD functions as deprecated for now. Thanks to Jonas Bovijn for discussions on this.
+* Reinstating all datasets that were previously disabled (ukb-a, ukb-d, ubm-a)
+
+
 TwoSampleMR v0.5.1 (Release date: 2020-02-14)
 ==============
 
