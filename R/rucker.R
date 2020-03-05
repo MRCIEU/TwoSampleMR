@@ -266,7 +266,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #' @param parameters=default_parameters() <what param does>
 #'
 #' @return List
-#' @importFrom stats median pt qchisq qnorm quantile
+#' @importFrom stats median pt qchisq qnorm quantile rnorm
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)

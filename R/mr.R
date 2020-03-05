@@ -537,6 +537,7 @@ linreg <- function(x, y, w=rep(x,1))
 #'         pval_i: p-value of intercept
 #'         mod: Summary of regression
 #'         dat: Original data used for MR Egger regression
+#' @importFrom stats rnorm
 mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -696,6 +697,7 @@ weighted_median <- function(b_iv, weights)
 #'
 #' @export
 #' @return Empirical standard error
+#' @importFrom stats rnorm
 weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nboot)
 {
 	med <- rep(0, nboot)

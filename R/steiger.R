@@ -278,7 +278,7 @@ get_r_from_pn_less_accurate <- function(p, n)
 	return(r)
 }
 
-#' @importFrom stats coefficients cor lm
+#' @importFrom stats coefficients cor lm rnorm
 test_r_from_pn <- function()
 {
 	require(ggplot2)
@@ -341,7 +341,7 @@ test_r_from_pn <- function()
 #' - vz1: Volume of the paramtere space that gives the correct answer
 #' - sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
 #' - sensitivity_plot: Plot of parameter space of causal directions and measurement error
-#' @importFrom stats pnorm
+#' @importFrom stats pnorm rnorm
 mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
