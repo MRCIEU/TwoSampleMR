@@ -41,7 +41,8 @@ Imports:
     MRInstruments,
     RadialMR,
     MRMix,
-    glmnet
+    glmnet,
+    lattice
 Remotes:
     rondolab/MR-PRESSO,
     mrcieu/MRInstruments,
