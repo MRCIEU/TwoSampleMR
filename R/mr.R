@@ -375,6 +375,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         se: standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
+#' @importFrom stats optim
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
