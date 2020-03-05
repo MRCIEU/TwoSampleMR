@@ -7,7 +7,7 @@
 #'
 #' @export
 #' @return data frame
-#' @importFrom stats pchisq
+#' @importFrom stats pchisq pt
 mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)

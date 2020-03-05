@@ -438,7 +438,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 #'         mod: Summary of regression
 #'         dat: Original data used for MR Egger regression
-#' @importFrom stats coefficients lm pchisq
+#' @importFrom stats coefficients lm pchisq pt
 mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	stopifnot(length(b_exp) == length(b_out))

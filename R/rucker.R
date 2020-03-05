@@ -91,7 +91,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-#' @importFrom stats coefficients cooks.distance lm mad pchisq pnorm
+#' @importFrom stats coefficients cooks.distance lm mad pchisq pnorm pt
 mr_rucker_internal <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
@@ -266,7 +266,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #' @param parameters=default_parameters() <what param does>
 #'
 #' @return List
-#' @importFrom stats median
+#' @importFrom stats median pt
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -378,7 +378,7 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-#' @importFrom stats mad median
+#' @importFrom stats mad median pt
 mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
