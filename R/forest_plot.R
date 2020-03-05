@@ -49,6 +49,7 @@
 #'
 #' @return grid object giving the forest plot (or plot as pdf, and )
 #' @importFrom grDevices dev.off pdf
+#' @importFrom stats qnorm
 mr_forest_plot_grouped <-
     function(name, eff_Col = "b", exposure_Name="exposure", outcome_Name="outcome", forest_Title = '', outfile_Name = 'annot_FP.pdf', left_Col_Names=c("Exposure", "Outcome"), left_Col_Titles = NULL, right_Col_Names = c("p", "Outcome.n.case", "Outcome.n.control", "Outcome.sample.size"), right_Col_Titles =
                  NULL, debug = FALSE,  log_ES = FALSE, decrease = TRUE,  returnRobj = TRUE, se_Col = "se") {

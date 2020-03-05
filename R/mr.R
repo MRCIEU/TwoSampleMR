@@ -753,6 +753,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'
 #' @export
 #' @return data frame
+#' @importFrom stats qnorm
 mr_median <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
