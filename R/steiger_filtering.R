@@ -16,6 +16,7 @@ steiger_filtering <- function(dat)
 	plyr::ddply(dat, c("id.exposure", "id.outcome"), steiger_filtering_internal)
 }
 
+#' @importFrom stats pnorm
 steiger_filtering_internal <- function(dat)
 {
 	if(! "units.outcome" %in% names(dat))

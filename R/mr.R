@@ -260,6 +260,7 @@ default_parameters <- function()
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
+#' @importFrom stats pnorm
 mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(length(b_exp) > 1)
@@ -286,6 +287,7 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
+#' @importFrom stats pnorm
 mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -498,7 +500,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 
 
-#' @importFrom stats cov
+#' @importFrom stats cov pnorm
 linreg <- function(x, y, w=rep(x,1))
 {
 	xp <- w*x
@@ -599,6 +601,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
+#' @importFrom stats pnorm
 mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -628,6 +631,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
+#' @importFrom stats pnorm
 mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -722,7 +726,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
-#' @importFrom stats pchisq
+#' @importFrom stats pchisq pnorm
 mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -801,7 +805,7 @@ mr_median <- function(dat, parameters=default_parameters())
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats lm pchisq
+#' @importFrom stats lm pchisq pnorm
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -836,7 +840,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats lm pchisq
+#' @importFrom stats lm pchisq pnorm
 mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -870,7 +874,7 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats lm pchisq
+#' @importFrom stats lm pchisq pnorm
 mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -902,7 +906,7 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats lm pchisq
+#' @importFrom stats lm pchisq pnorm
 mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -939,7 +943,7 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' }
 #'
 #' @export
-#'
+#' @importFrom stats pnorm
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
     cpg <- require(mr.raps)

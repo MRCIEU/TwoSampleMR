@@ -158,6 +158,7 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' - vz1: Volume of the paramtere space that gives the correct answer
 #' - sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
 #' - sensitivity_plot: Plot of parameter space of causal directions and measurement error
+#' @importFrom stats pnorm
 mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
@@ -340,6 +341,7 @@ test_r_from_pn <- function()
 #' - vz1: Volume of the paramtere space that gives the correct answer
 #' - sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
 #' - sensitivity_plot: Plot of parameter space of causal directions and measurement error
+#' @importFrom stats pnorm
 mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
