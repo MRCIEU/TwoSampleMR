@@ -6,6 +6,7 @@
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
+#' @importFrom stats pchisq
 fishers_combined_test <- function(pval)
 {
 	pval <- pval[is.finite(pval) & pval <=1 & pval >= 0]
