@@ -174,6 +174,7 @@ dat_to_RadialMR <- function(dat)
 #'         b: causal effect estimate
 #'         se: standard error
 #'         pval: p-value
+#' @importFrom stats pchisq
 mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) &
