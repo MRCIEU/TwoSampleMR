@@ -331,7 +331,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
-%>% 
+
 
 
 #' Perform 2 sample IV using random effects meta analysis and delta method for standard errors
