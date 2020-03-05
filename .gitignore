@@ -10,3 +10,4 @@ vignettes/vcf/*.RData
 vignettes/vcf/*.Rhistory
 doc
 Meta
+.Rproj.user
