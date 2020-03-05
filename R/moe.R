@@ -229,7 +229,7 @@ mr_moe_single <- function(res, rf)
 	{
 		d <- tibble(
 			method = m,
-			MOE = predict(rf[[m]], metric, type="prob")[,2]
+			MOE = randomForest::predict(rf[[m]], metric, type="prob")[,2]
 		)
 		return(d)
 	}) %>% bind_rows %>% arrange(desc(MOE))
