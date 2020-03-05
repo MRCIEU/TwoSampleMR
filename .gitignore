@@ -11,3 +11,4 @@ vignettes/vcf/*.Rhistory
 doc
 Meta
 .Rproj.user
+.Rhistory
