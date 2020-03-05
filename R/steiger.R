@@ -275,7 +275,7 @@ get_r_from_pn_less_accurate <- function(p, n)
 	return(r)
 }
 
-#' @importFrom stats coefficients cor
+#' @importFrom stats coefficients cor lm
 test_r_from_pn <- function()
 {
 	require(ggplot2)
