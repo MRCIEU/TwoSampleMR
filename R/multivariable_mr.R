@@ -424,7 +424,7 @@ mv_lasso_feature_selection <- function(mvdat)
 {
 	message("Performing feature selection")
 	b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
-	c <- coef(b, s = "lambda.min")
+	c <- glmnet::coef(b, s = "lambda.min")
   	i <- !c[,1] == 0
   	d <- dplyr::tibble(exposure=rownames(c)[i], b=c[i,])
 	return(d)
