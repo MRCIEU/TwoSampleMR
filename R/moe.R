@@ -17,7 +17,7 @@ Isq <- function(y,s)
 	return(Isq)
 }
 
-#' @importFrom stats influence.measures
+#' @importFrom stats influence.measures ks.test
 system_metrics <- function(dat)
 {
 	# Number of SNPs
