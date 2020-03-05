@@ -7,6 +7,7 @@
 #'
 #' @export
 #' @return data frame
+#' @importFrom stats pchisq
 mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
@@ -56,7 +57,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	#BetaIV.in: ratio estimates
 	#seBetaIV.in: standard errors of ratio estimates
 	#beta_Mode.in: point causal effect estimates
-	#' @importFrom stats density
+	#' @importFrom stats density pchisq
 	boot <- function(BetaIV.in, seBetaIV.in, beta_Mode.in, nboot)
 	{
 		#Set up a matrix to store the results from each bootstrap iteration
