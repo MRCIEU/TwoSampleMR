@@ -28,7 +28,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	#--------------------------------------#
 	#BetaIV.in: ratio estimates
 	#seBetaIV.in: standard errors of ratio estimates
-	#' @importFrom stats mad
+	#' @importFrom stats mad sd
 	beta <- function(BetaIV.in, seBetaIV.in, phi)
 	{
 		#Bandwidth rule - modified Silverman's rule proposed by Bickel (2002)

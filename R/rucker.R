@@ -266,7 +266,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #' @param parameters=default_parameters() <what param does>
 #'
 #' @return List
-#' @importFrom stats median pt qchisq qnorm quantile rnorm
+#' @importFrom stats median pt qchisq qnorm quantile rnorm sd
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -378,7 +378,7 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-#' @importFrom stats mad median pt qchisq qnorm quantile
+#' @importFrom stats mad median pt qchisq qnorm quantile sd
 mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
