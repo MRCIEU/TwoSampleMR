@@ -500,7 +500,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 
 
-#' @importFrom stats cov pnorm
+#' @importFrom stats cov pnorm var
 linreg <- function(x, y, w=rep(x,1))
 {
 	xp <- w*x
