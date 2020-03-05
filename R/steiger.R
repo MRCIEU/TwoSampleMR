@@ -76,6 +76,7 @@ get_r_from_pn <- function(p, n)
 #' - sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
 #' - pl: plot of parameter sapce
 #' @importFrom grDevices rgb
+#' @importFrom lattice wireframe
 steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 {
 	requireNamespace("lattice", quietly=TRUE)
