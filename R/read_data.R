@@ -333,7 +333,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 			if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat))
 			{
 				index <- is.na(dat$pval.outcome)
-				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower=FALSE)
+				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
 				dat$pval_origin.outcome[index] <- "inferred"
 			}
 		}
