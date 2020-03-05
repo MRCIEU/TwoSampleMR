@@ -213,7 +213,7 @@ mr_all <- function(dat)
 	}
 	m1$info <- c(list(
 			id.exposure = dat$id.exposure[1], id.outcome = dat$id.outcome[1]),		
-			TwoSampleMR:::system_metrics(dat)
+			system_metrics(dat)
 		) %>% dplyr::as_data_frame()
 	return(m1)
 }
