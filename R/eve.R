@@ -1,4 +1,4 @@
-#' @importFrom stats coefficients lm
+#' @importFrom stats coefficients lm pchisq
 mr_mean_ivw <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -91,7 +91,7 @@ mr_mean_ivw <- function(d)
 	return(ret)
 }
 
-#' @importFrom stats coefficients lm
+#' @importFrom stats coefficients lm pchisq
 mr_mean_egger <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -169,6 +169,7 @@ mr_mean_egger <- function(d)
 	return(ret)
 }
 
+#' @importFrom stats pchisq
 mr_mean <- function(dat)
 {
 	m1 <- try(mr_mean_ivw(dat))
