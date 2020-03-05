@@ -1,3 +1,4 @@
+#' @importFrom stats coefficients
 mr_mean_ivw <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -90,6 +91,7 @@ mr_mean_ivw <- function(d)
 	return(ret)
 }
 
+#' @importFrom stats coefficients
 mr_mean_egger <- function(d)
 {
 	d <- subset(d, mr_keep)
