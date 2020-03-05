@@ -23,7 +23,7 @@ get_p_from_r2n <- function(r2, n)
 #'
 #' @export
 #' @return r value
-#' @importFrom stats optim
+#' @importFrom stats optim qf
 get_r_from_pn <- function(p, n)
 {
 	message("Estimating correlation for quantitative trait.")
