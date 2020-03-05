@@ -91,7 +91,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-#' @importFrom stats coefficients
+#' @importFrom stats coefficients cooks.distance
 mr_rucker_internal <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
