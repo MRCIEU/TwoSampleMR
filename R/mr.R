@@ -968,6 +968,7 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
 #'         se: NA
 #'         pval: p-value
 #'         nsnp: Number of SNPs (excludes NAs and effect estimates that are 0)
+#' @importFrom stats binom.test
 mr_sign <- function(b_exp, b_out, se_exp=NULL, se_out=NULL, parameters=NULL)
 {
 	b_exp[b_exp == 0] <- NA
