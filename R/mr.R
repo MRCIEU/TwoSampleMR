@@ -313,6 +313,7 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         se: standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
+#' @importFrom stats pchisq
 mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
@@ -344,6 +345,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         se: standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
+#' @importFrom stats pchisq
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -375,7 +377,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         se: standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats optim
+#' @importFrom stats optim pchisq
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -434,7 +436,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 #'         mod: Summary of regression
 #'         dat: Original data used for MR Egger regression
-#' @importFrom stats coefficients lm
+#' @importFrom stats coefficients lm pchisq
 mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	stopifnot(length(b_exp) == length(b_out))
@@ -720,6 +722,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #'         b: MR estimate
 #'         se: Standard error
 #'         pval: p-value
+#' @importFrom stats pchisq
 mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -798,7 +801,7 @@ mr_median <- function(dat, parameters=default_parameters())
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats lm
+#' @importFrom stats lm pchisq
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -833,7 +836,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats lm
+#' @importFrom stats lm pchisq
 mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -867,7 +870,7 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats lm
+#' @importFrom stats lm pchisq
 mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -899,7 +902,7 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
-#' @importFrom stats lm
+#' @importFrom stats lm pchisq
 mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
