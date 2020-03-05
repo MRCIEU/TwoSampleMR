@@ -124,6 +124,7 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats lm
 mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
@@ -216,6 +217,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats lm
 mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
@@ -304,6 +306,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats lm
 mv_basic <- function(mvdat, pval_threshold=5e-8)
 {
 	# This is a matrix of 
@@ -445,6 +448,7 @@ mv_lasso_feature_selection <- function(mvdat)
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats lm
 mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# Update mvdat object
