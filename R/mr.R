@@ -328,10 +328,10 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.fixed
 	se <- res$seTE.fixed
 	pval <- res$pval.fixed
-	Q_pval <- pchisq(res$Q, res$df.Q, low=FALSE)
+	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
-
+%>% 
 
 
 #' Perform 2 sample IV using random effects meta analysis and delta method for standard errors
@@ -360,7 +360,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.random
 	se <- res$seTE.random
 	pval <- res$pval.random
-	Q_pval <- pchisq(res$Q, res$df.Q, low=FALSE)
+	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
@@ -408,11 +408,11 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
 	}
 
-	pval <- 2 * pnorm(abs(b) / se, low=FALSE)
+	pval <- 2 * pnorm(abs(b) / se, lower.tail=FALSE)
 
 	Q <- 2 * opt$value
 	Q_df <- length(b_exp) - 1
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
@@ -490,7 +490,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 		Q <- smod$sigma^2 * (length(b_exp) - 2)
 		Q_df <- length(b_exp) - 2
-		Q_pval <- pchisq(Q, Q_df, low=FALSE)
+		Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	} else {
 		warning("Collinearities in MR Egger, try LD pruning the exposure variables.")
 		return(nulllist)
@@ -514,7 +514,7 @@ linreg <- function(x, y, w=rep(x,1))
 
 	sum(w * (y-yhat)^2)
 	se <- sqrt(sum(w*(y-yhat)^2) /  (sum(!is.na(yhat)) - 2) / (sum(w*x^2)))
-	pval <- 2 * pnorm(abs(bhat / se), low=FALSE)
+	pval <- 2 * pnorm(abs(bhat / se), lower.tail=FALSE)
 	return(list(ahat=ahat,bhat=bhat,se=se, pval=pval))
 }
 
@@ -612,7 +612,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, Q=NA, Q_df=NA, Q_pval=NA, nsnp=length(b_exp)))
 }
 
@@ -641,7 +641,7 @@ mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_pa
 	b_iv <- b_out / b_exp
 	b <- weighted_median(b_iv, rep(1/length(b_exp), length(b_exp)))
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, rep(1/length(b_exp), length(b_exp)), parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -742,7 +742,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, pen.weights, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -817,10 +817,10 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -852,10 +852,10 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -886,10 +886,10 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -918,10 +918,10 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/ivw.res$sigma
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))

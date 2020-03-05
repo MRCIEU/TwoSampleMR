@@ -184,10 +184,10 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
 	out <- RadialMR::ivw_radial(d, alpha=0.05, weights=3)
 	b <- out$coef[1,1]
 	se <- out$coef[1,2]
-	pval <- 2 * pnorm(abs(b/se), low = FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail = FALSE)
 	Q_df <- out$df
 	Q <- out$qstatistic
-	Q_pval <- pchisq(Q, Q_df, low=F)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=F)
 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp),
         Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }

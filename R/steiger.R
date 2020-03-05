@@ -11,7 +11,7 @@
 get_p_from_r2n <- function(r2, n)
 {
 	fval <- r2 * (n-2) / (1 - r2)
-	pval <- pf(fval, 1, n-1, low=FALSE)
+	pval <- pf(fval, 1, n-1, lower.tail=FALSE)
 	return(pval)
 }
 
@@ -41,7 +41,7 @@ get_r_from_pn <- function(p, n)
 		n <- rep(n, length(p))
 	}
 
-	Fval <- suppressWarnings(qf(p, 1, n-1, low=FALSE))
+	Fval <- suppressWarnings(qf(p, 1, n-1, lower.tail=FALSE))
 	R2 <- Fval / (n - 2 + Fval)
 	index <- !is.finite(Fval)
 	if(any(index))
@@ -269,7 +269,7 @@ get_r_from_pn_less_accurate <- function(p, n)
 	# qval <- qf(p, 1, n-2, low=FALSE)
 	p[p == 1] <- 0.999
 	p[p == 0] <- 1e-200
-	qval <- qchisq(p, 1, low=F) / (qchisq(p, n-2, low=F)/(n-2))
+	qval <- qchisq(p, 1, lower.tail=F) / (qchisq(p, n-2, low=F)/(n-2))
 	r <- sqrt(sum(qval / (n - qval)))
 
 	if(r >= 1)

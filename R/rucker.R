@@ -132,7 +132,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	# Q_ivw <- sum((y - x*b_ivw_fe)^2)
 	Q_ivw <- mod_ivw$sigma^2 * (nsnp - 1)
 	Q_df_ivw <- length(b_exp) - 1
-	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, low = FALSE)
+	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, lower.tail = FALSE)
 	phi_ivw <- Q_ivw / (nsnp - 1)
 
 	se_ivw_fe <- coefficients(mod_ivw)[1,2] / max(mod_ivw$sigma, 1)
@@ -170,7 +170,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	# )
 	Q_egger <- mod_egger$sigma^2 * (nsnp - 2)
 	Q_df_egger <- nsnp - 2
-	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, low=FALSE)
+	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, lower.tail=FALSE)
 	phi_egger <- Q_egger / (nsnp - 2)
 
 	se1_egger_fe <- coefficients(mod_egger)[2,2] / max(mod_egger$sigma, 1)
@@ -334,7 +334,7 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 		ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 		ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 		ggplot2::geom_abline(slope=1, colour="grey") +
-		ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, low=FALSE), linetype="dotted") +
+		ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, lower.tail=FALSE), linetype="dotted") +
 		ggplot2::geom_hline(yintercept = qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
 		ggplot2::geom_vline(xintercept = qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
 		ggplot2::labs(x="Q", y="Q'")
@@ -455,7 +455,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 			ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 			ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 			ggplot2::geom_abline(slope=1, colour="grey") +
-			ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, low=FALSE), linetype="dotted") +
+			ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, lower.tail=FALSE), linetype="dotted") +
 			ggplot2::geom_hline(yintercept = qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
 			ggplot2::geom_vline(xintercept = qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
 			ggplot2::labs(x="Q", y="Q'")
