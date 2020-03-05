@@ -12,7 +12,7 @@
 #'
 #' @export
 #' @return Data.frame
-#' @importFrom stats median
+#' @importFrom stats median quantile
 ios <- function(exposure_dat, background_dat)
 {
 	require(dplyr)
