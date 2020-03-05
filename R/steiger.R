@@ -262,7 +262,7 @@ directionality_test <- function(dat)
 	return(dtest)
 }
 
-
+#' @importFrom stats qchisq
 get_r_from_pn_less_accurate <- function(p, n)
 {
 	# qval <- qf(p, 1, n-2, low=FALSE)

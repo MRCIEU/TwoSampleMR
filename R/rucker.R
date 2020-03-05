@@ -17,7 +17,7 @@ Isq <- function(y,s)
 	return(Isq)
 }
 
-
+#' @importFrom stats qchisq
 PM <- function(y = y, s = s, Alpha = 0.1)
 {
 	k = length(y)
@@ -266,7 +266,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #' @param parameters=default_parameters() <what param does>
 #'
 #' @return List
-#' @importFrom stats median pt
+#' @importFrom stats median pt qchisq
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -378,7 +378,7 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-#' @importFrom stats mad median pt
+#' @importFrom stats mad median pt qchisq
 mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
