@@ -433,7 +433,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'         Q, Q_df, Q_pval: Heterogeneity stats
 #'         mod: Summary of regression
 #'         dat: Original data used for MR Egger regression
-#' @importFrom stats coefficients
+#' @importFrom stats coefficients lm
 mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	stopifnot(length(b_exp) == length(b_out))
@@ -797,6 +797,7 @@ mr_median <- function(dat, parameters=default_parameters())
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
+#' @importFrom stats lm
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -831,6 +832,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
+#' @importFrom stats lm
 mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -864,6 +866,7 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
+#' @importFrom stats lm
 mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -895,6 +898,7 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 #'         se: Standard error
 #'         pval: p-value
 #'         Q, Q_df, Q_pval: Heterogeneity stats
+#' @importFrom stats lm
 mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
