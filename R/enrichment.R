@@ -51,7 +51,7 @@ enrichment_method_list <- function()
 #'
 #'
 #' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param method_list=enrichment_method_list()$obj List of methods to use in analysis. See \code{enrichment_method_list()} for details.
+#' @param method_list List of methods to use in analysis. Default is \code{enrichment_method_list()$obj}. See \code{enrichment_method_list()} for details.
 #'
 #' @export
 #' @return data frame
