@@ -171,9 +171,11 @@ dat_to_RadialMR <- function(dat)
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' }
 #' @importFrom stats pchisq pnorm
 mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
