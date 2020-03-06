@@ -826,10 +826,12 @@ mr_median <- function(dat, parameters=default_parameters())
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
 #' @importFrom stats lm pchisq pnorm
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
@@ -861,10 +863,12 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
 #' @importFrom stats lm pchisq pnorm
 mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
@@ -895,10 +899,12 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
 #' @importFrom stats lm pchisq pnorm
 mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
@@ -927,10 +933,12 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
 #' @importFrom stats lm pchisq pnorm
 mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
@@ -1003,10 +1011,12 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: Concordance (see description)
-#'         se: NA
-#'         pval: p-value
-#'         nsnp: Number of SNPs (excludes NAs and effect estimates that are 0)
+#' \describe{
+#' \item{b}{Concordance (see description)}
+#' \item{se}{NA}
+#' \item{pval}{p-value}
+#' \item{nsnp}{Number of SNPs (excludes NAs and effect estimates that are 0)}
+#' }
 #' @importFrom stats binom.test
 mr_sign <- function(b_exp, b_out, se_exp=NULL, se_out=NULL, parameters=NULL)
 {
