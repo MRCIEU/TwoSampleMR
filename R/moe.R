@@ -219,8 +219,8 @@ mr_moe <- function(res, rf)
 
 mr_moe_single <- function(res, rf)
 {
-  requireNamespace(dplyr, quietly = TRUE)
-  requireNamespace(randomForest, quietly = TRUE)
+  requireNamespace("dplyr", quietly = TRUE)
+  requireNamespace("randomForest", quietly = TRUE)
 	metric <- res$info[1,] %>% dplyr::select(-c(id.exposure, id.outcome, steiger_filtered, outlier_filtered, nsnp_removed))
 
 	methodlist <- names(rf)
