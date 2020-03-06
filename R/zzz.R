@@ -1,4 +1,4 @@
-.onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
 
         packageStartupMessage(
                 "TwoSampleMR 0.5.1\n",
