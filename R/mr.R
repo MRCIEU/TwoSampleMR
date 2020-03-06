@@ -980,7 +980,7 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' @importFrom mr.raps mr.raps.shrinkage
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
-    cpg <- require(mr.raps)
+    cpg <- requireNamespace("mr.raps", quietly = TRUE)
     if (!cpg)
     {
         stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
