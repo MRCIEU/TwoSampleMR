@@ -1,14 +1,5 @@
 .onLoad <- function(libname, pkgname) {
 
-        packageStartupMessage(
-                "TwoSampleMR 0.5.1\n",
-                "[>] IMPORTANT: Some datasets have been updated, and some are disabled while we update them.\n",
-                "    Apologies for this inconvenience, they will be back up as soon as possible.\n",
-                "    See news(package='TwoSampleMR') and https://gwas.mrcieu.ac.uk for more information\n",
-                "[>] To temporarily revert to the previous database, see here:\n",
-                "    https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html\n"
-        )
-
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
 
 	if(!class(a) == 'try-error')
@@ -28,4 +19,15 @@
 
 	invisible()
 
+}
+
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage(
+    "TwoSampleMR 0.5.1\n",
+    "[>] IMPORTANT: Some datasets have been updated, and some are disabled while we update them.\n",
+    "    Apologies for this inconvenience, they will be back up as soon as possible.\n",
+    "    See news(package='TwoSampleMR') and https://gwas.mrcieu.ac.uk for more information\n",
+    "[>] To temporarily revert to the previous database, see here:\n",
+    "    https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html\n"
+  )
 }
