@@ -356,7 +356,7 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 #' Run rucker with jackknife estimates
 #'
 #' @param dat Output from harmonise_data
-#' @param parameters=default_parameters()
+#' @param parameters=default_parameters() <what param does>
 #'
 #' @export
 #' @return List
