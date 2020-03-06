@@ -91,7 +91,7 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 
 #' @param res Results from mr()
 #' @param het Results from mr_heterogeneity()
-#' @param pleiotropy Results from mr_pleiotropy_test()
+#' @param plt Results from mr_pleiotropy_test()
 #' @param sin Results from mr_singlesnp()
 #' @param ao_slc Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE. 
 #' @param Exp Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE. 
