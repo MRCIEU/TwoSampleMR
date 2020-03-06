@@ -947,6 +947,7 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #'
 #' @export
 #' @importFrom stats pnorm
+#' @importFrom mr.raps mr.raps.shrinkage
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
     cpg <- require(mr.raps)
