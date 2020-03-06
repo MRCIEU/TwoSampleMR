@@ -396,7 +396,7 @@ mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 #' @param af Allele frequency of effect allele 
 #' @param prop Proportion of cases
 #' @param odds_ratio Odds ratio
-#' @param eps=1e-15 tolerance
+#' @param eps tolerance, default is 1e-15
 #'
 #' @export
 #' @return 2x2 contingency table as matrix
