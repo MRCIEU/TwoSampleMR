@@ -351,10 +351,12 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
 #' @importFrom stats pchisq
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
@@ -383,10 +385,12 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
 #' @importFrom stats optim pchisq
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
@@ -437,15 +441,17 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'
 #' @export
 #' @return List of with the following elements:
-#'         b: MR estimate
-#'         se: Standard error of MR estimate
-#'         pval: p-value of MR estimate
-#'         b_i: Estimate of horizontal pleiotropy (intercept)
-#'         se_i: Standard error of intercept
-#'         pval_i: p-value of intercept
-#'         Q, Q_df, Q_pval: Heterogeneity stats
-#'         mod: Summary of regression
-#'         dat: Original data used for MR Egger regression
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error of MR estimate}
+#' \item{pval}{p-value of MR estimate}
+#' \item{b_i}{Estimate of horizontal pleiotropy (intercept)}
+#' \item{se_i}{Standard error of intercept}
+#' \item{pval_i}{p-value of intercept}
+#' \item{Q, Q_df, Q_pval: Heterogeneity stats}
+#' \item{mod}{Summary of regression}
+#' \item{dat}{Original data used for MR Egger regression}
+#' }
 #' @importFrom stats coefficients lm pchisq pt
 mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
@@ -537,14 +543,16 @@ linreg <- function(x, y, w=rep(x,1))
 #'
 #' @export
 #' @return List of with the following elements:
-#'         b: MR estimate
-#'         se: Standard error of MR estimate
-#'         pval: p-value of MR estimate
-#'         b_i: Estimate of horizontal pleiotropy (intercept)
-#'         se_i: Standard error of intercept
-#'         pval_i: p-value of intercept
-#'         mod: Summary of regression
-#'         dat: Original data used for MR Egger regression
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error of MR estimate}
+#' \item{pval}{p-value of MR estimate}
+#' \item{b_i}{Estimate of horizontal pleiotropy (intercept)}
+#' \item{se_i}{Standard error of intercept}
+#' \item{pval_i}{p-value of intercept}
+#' \item{mod}{Summary of regression}
+#' \item{dat}{Original data used for MR Egger regression}
+#' }
 #' @importFrom stats rnorm sd
 mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
@@ -607,9 +615,11 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
 #' @importFrom stats pnorm
 mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
@@ -637,9 +647,11 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
 #' @importFrom stats pnorm
 mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
@@ -733,9 +745,11 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
 #' @importFrom stats pchisq pnorm
 mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
