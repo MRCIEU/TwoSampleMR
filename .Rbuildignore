@@ -7,7 +7,7 @@
 ^Meta$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-.github
+^.github$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
