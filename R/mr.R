@@ -448,7 +448,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' \item{b_i}{Estimate of horizontal pleiotropy (intercept)}
 #' \item{se_i}{Standard error of intercept}
 #' \item{pval_i}{p-value of intercept}
-#' \item{Q, Q_df, Q_pval: Heterogeneity stats}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' \item{mod}{Summary of regression}
 #' \item{dat}{Original data used for MR Egger regression}
 #' }
