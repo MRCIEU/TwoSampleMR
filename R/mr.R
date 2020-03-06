@@ -7,8 +7,10 @@
 #'
 #' @export
 #' @return List with the following elements:
-#'         mr: Table of MR results
-#'         extra: Table of extra results
+#' \describe{
+#' \item{mr}{Table of MR results}
+#' \item{extra}{Table of extra results}
+#' }
 mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_method_list(), use_by_default)$obj)
 {
 	mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
@@ -257,9 +259,11 @@ default_parameters <- function()
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' }
 #' @importFrom stats pnorm
 mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
@@ -284,9 +288,11 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' }
 #' @importFrom stats pnorm
 mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
@@ -311,10 +317,12 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
 #' @importFrom stats pchisq
 mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
