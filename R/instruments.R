@@ -11,7 +11,6 @@
 #' @param kb = 10000 Clumping distance cutoff
 #' @param access_token = ieugwasr::check_access_token() Google OAuth2 access token. Used to authenticate level of access to data
 #' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package
-#' @param force_server_if_empty Some of the newly added MR-Base datasets don't have pre-calculated clumped results yet. This option is soon to be deprecated but temporarily we are forcing the search for instruments when an outcome doesn't have any precalculated results. Default = TRUE.
 #'
 #' @export
 #' @return data frame
