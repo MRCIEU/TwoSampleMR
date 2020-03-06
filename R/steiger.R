@@ -287,7 +287,7 @@ get_r_from_pn_less_accurate <- function(p, n)
 test_r_from_pn <- function()
 {
 	requireNamespace("ggplot2", quietly = TRUE)
-	requireNamespace("tidyr", quietly = TRUE)
+	# requireNamespace("tidyr", quietly = TRUE) # not used
 
 	param <- expand.grid(
 		n = c(10, 100, 1000, 10000, 100000),
