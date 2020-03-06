@@ -534,6 +534,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param addcols Name of additional columns to plot. Character vector. Default = NULL 
 #' @param addcol_titles Titles of additional columns specified by the addcols argument. Character vector. Default = NULL 
 #' @param addcol_widths Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. Default = NULL 
+#' @param xlab X-axis label, default is "Effect (95% confidence interval)"
 #' @param by Name of the grouping variable to stratify results on. Default=NULL
 #' @param subheading_size text size for the subheadings specified in by argument.
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
