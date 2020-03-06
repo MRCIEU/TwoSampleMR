@@ -286,8 +286,8 @@ get_r_from_pn_less_accurate <- function(p, n)
 #' @importFrom stats coefficients cor lm rnorm
 test_r_from_pn <- function()
 {
-	require(ggplot2)
-	require(tidyr)
+	requireNamespace("ggplot2", quietly = TRUE)
+	requireNamespace("tidyr", quietly = TRUE)
 
 	param <- expand.grid(
 		n = c(10, 100, 1000, 10000, 100000),

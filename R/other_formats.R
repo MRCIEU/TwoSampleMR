@@ -148,7 +148,6 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 #' @return List of RadialMR format datasets
 dat_to_RadialMR <- function(dat)
 {
-	require(RadialMR)
 	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
 	{
 		x <- plyr::mutate(x)
@@ -156,7 +155,7 @@ dat_to_RadialMR <- function(dat)
 		message(" - exposure: ", x$exposure[1])
 		message(" - outcome: ", x$outcome[1])
 		d <- subset(x, mr_keep=TRUE)
-		d <- format_radial(d$beta.exposure, d$beta.outcome, d$se.exposure, d$se.outcome, RSID=d$SNP)
+		d <- RadialMR::format_radial(d$beta.exposure, d$beta.outcome, d$se.exposure, d$se.outcome, RSID=d$SNP)
 		return(d)
 	})
 	return(out)
@@ -179,7 +178,7 @@ dat_to_RadialMR <- function(dat)
 #' @importFrom stats pchisq pnorm
 mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
-	if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) &
+  if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) &
 		!is.na(se_out)) < 2)
 		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
 	d <- RadialMR::format_radial(BXG=b_exp, BYG=b_out, seBXG=se_exp, seBYG=se_out, RSID=1:length(b_exp))

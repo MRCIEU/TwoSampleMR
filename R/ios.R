@@ -16,8 +16,8 @@
 #' @importFrom stats median quantile sd
 ios <- function(exposure_dat, background_dat)
 {
-	require(dplyr)
-	require(reshape2)
+	requireNamespace("dplyr", quietly = TRUE)
+	requireNamespace("reshape2", quietly = TRUE)
 	background_dat$vgu <- background_dat$beta.outcome^2 * 2 * background_dat$eaf.outcome * (1 - background_dat$eaf.outcome)
 	exposure_dat$vgx <- exposure_dat$beta.exposure^2 * 2 * exposure_dat$eaf.exposure * (1 - exposure_dat$eaf.exposure)
 	background_dat <- merge(background_dat, subset(exposure_dat, select=c(SNP, vgx)), by="SNP")

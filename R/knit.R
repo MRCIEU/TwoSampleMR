@@ -19,8 +19,8 @@
 #' @return NULL
 knit_report <- function(input_filename, output_filename, ...)
 {
-	require(knitr)
-    require(markdown)
+	requireNamespace("knitr", quietly = TRUE)
+    requireNamespace("markdown", quietly = TRUE)
     output_filename <- normalizePath(output_filename)
 
     output_dir <- dirname(output_filename)
@@ -45,12 +45,12 @@ knit_report <- function(input_filename, output_filename, ...)
         return(knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
     else if (is.pdf)
     {        
-        require(rmarkdown)
+        requireNamespace("rmarkdown", quietly = TRUE)
         return(render(input_filename, pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
     {        
-        require(rmarkdown)
+        requireNamespace("rmarkdown", quietly = TRUE)
         return(render(input_filename, word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else

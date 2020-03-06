@@ -203,8 +203,8 @@ get_rsq <- function(dat)
 #'}
 mr_moe <- function(res, rf)
 {
-	require(dplyr)
-	require(randomForest)
+	requireNamespace("dplyr", quietly = TRUE)
+	requireNamespace("randomForest", quietly = TRUE)
 	lapply(res, function(x)
 	{
 		o <- try(mr_moe_single(x, rf))
@@ -219,8 +219,8 @@ mr_moe <- function(res, rf)
 
 mr_moe_single <- function(res, rf)
 {
-	require(dplyr)
-	require(randomForest)
+  requireNamespace(dplyr, quietly = TRUE)
+  requireNamespace(randomForest, quietly = TRUE)
 	metric <- res$info[1,] %>% dplyr::select(-c(id.exposure, id.outcome, steiger_filtered, outlier_filtered, nsnp_removed))
 
 	methodlist <- names(rf)
