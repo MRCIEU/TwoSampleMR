@@ -58,3 +58,4 @@ RoxygenNote: 7.0.2
 Encoding: UTF-8
 Suggests: 
     covr
+Roxygen: list(markdown = TRUE)
