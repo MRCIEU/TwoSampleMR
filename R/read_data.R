@@ -4,6 +4,7 @@
 #'
 #' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se.
 #'
+#' @md
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param snps SNPs to extract. If `NULL`, which the default, then doesn't extract any and keeps all.
 #' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`.
