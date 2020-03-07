@@ -119,9 +119,9 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #' @md
 #' @param mvdat Output from [`mv_harmonise_data`].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
-#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
-#' @param plots Create plots? FALSE by default
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
+#' @param plots Create plots? The default is `FALSE`.
 #'
 #' @export
 #' @return List of results
@@ -209,12 +209,13 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #' Perform IVW multivariable MR
 #'
 #' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
-#'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
-#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
-#' @param plots Create plots? FALSE by default
+#' 
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
+#' @param plots Create plots? The default is `FALSE`.
 #'
 #' @export
 #' @return List of results
