@@ -1,17 +1,19 @@
 
 #' Extract exposure variables for multivariable MR
 #'
-#' Requires a list of IDs from \code{available_outcomes()}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand. 
+#' Requires a list of IDs from \code{\link{available_outcomes}}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand. 
 #'
+#' @md
 #' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
-#' @param clump_r2=0.01 Once a full list of
-#' @param clump_kb=10000 <what param does>
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
-#' @param find_proxies Look for proxies? This slows everything down but is more accurate. Default TRUE
-#' @param force_server=FALSE Whether to search through pre-clumped dataset or to re-extract and clump directly from the server
+#' @param clump_r2 The default is `0.01`.
+#' @param clump_kb The default is `10000`.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
+#' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
+#' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
 #'
 #' @export
-#' @return data frame in exposure_dat format
+#' @md
+#' @return data frame in `exposure_dat` format
 mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE)
 {
 	requireNamespace("reshape2", quietly = TRUE)
