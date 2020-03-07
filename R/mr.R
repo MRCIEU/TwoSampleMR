@@ -894,12 +894,12 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 
 #' Inverse variance weighted regression (multiplicative random effects model)
 #'
-#' Same as mr_ivw but no correction for under dispersion 
+#' Same as \code{\link{mr_ivw}} but no correction for under dispersion.
 #' 
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
 #'
 #' @export
 #' @return List with the following elements:
