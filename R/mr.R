@@ -655,6 +655,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 #' \item{b}{MR estimate}
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
+#' \item{nsnp}{The number of SNPs}
 #' }
 #' @importFrom stats pnorm
 mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
