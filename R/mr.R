@@ -858,10 +858,11 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #' The standard error is corrected for under dispersion
 #' Use the \code{mr_ivw_mre} function for estimates that don't correct for under dispersion
 #' 
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
 #' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @export
