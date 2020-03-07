@@ -116,8 +116,9 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #'
 #' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
 #' @param pval_threshold=5e-8 P-value threshold to include instruments
 #' @param plots Create plots? FALSE by default
@@ -436,17 +437,20 @@ mv_lasso_feature_selection <- function(mvdat)
 }
 
 #' Perform multivariable MR on subset of features
-#'
-#' Step 1: Select features (by default this is done using LASSO feature selection)
-#' Step 2: Subset the mvdat to only retain relevant features and instruments
-#' Step 3: Perform MVMR on remaining data
-#'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param features Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. By default = mvdat_lasso_feature_selection(mvdat)
-#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
-#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
-#' @param plots Create plots? FALSE by default
+#' 
+#' The function proceeds as follows:
+#' \enumerate{
+#' \item Select features (by default this is done using LASSO feature selection).
+#' \item Subset the mvdat to only retain relevant features and instruments.
+#' \item Perform MVMR on remaining data.
+#' }
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param features Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. The default is `mvdat_lasso_feature_selection(mvdat)`.
+#' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, the default).
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
+#' @param plots Create plots? The default is `FALSE`.
 #'
 #' @export
 #' @return List of results
