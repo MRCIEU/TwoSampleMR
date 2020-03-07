@@ -642,11 +642,12 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 #'
 #' Perform MR using summary statistics. Bootstraps used to calculate standard error.
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param nboot Number of bootstraps to calculate se. Default 1000
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters The number of bootstrap replications used to calculate the SE can be set through `parameters=list(nboot = 1000)`. The default is `nboot=1000`.
 #'
 #' @export
 #' @return List with the following elements:
