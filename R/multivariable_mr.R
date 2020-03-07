@@ -315,8 +315,9 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #' 
 #' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
 #'
 #' @export
 #' @return List of results
