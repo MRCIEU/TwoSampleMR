@@ -357,7 +357,7 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 #'
 #' @md
 #' @param dat Output from harmonise_data.
-#' @param parameters The default is `default_parameters()`.
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @export
 #' @return List
