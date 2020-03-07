@@ -7,6 +7,7 @@
 #' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
 #' @param clump_r2 The default is `0.01`.
 #' @param clump_kb The default is `10000`.
+#' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
