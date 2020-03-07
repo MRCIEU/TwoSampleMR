@@ -51,12 +51,22 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 #' Harmonise exposure and outcome for multivariable MR
 #'
-#'
-#' @param exposure_dat Output from \code{mv_extract_exposures}
-#' @param outcome_dat Output from \code{extract_outcome_data(exposure_dat$SNP, id_output)}
+#' @md
+#' @param exposure_dat Output from [`mv_extract_exposures`].
+#' @param outcome_dat Output from `extract_outcome_data(exposure_dat$SNP, id_output)`.
 #'
 #' @export
-#' @return List of vectors and matrices required for mv analysis. exposure_beta is a matrix of beta coefficients, rows correspond to SNPs and columns correspond to exposures. exposure_pval is the same as exposure_beta, but for p-values. exposure_se is the same as exposure_beta, but for standard errors. outcome_beta is an array of effects for the outcome, corresponding to the SNPs in exposure_beta. outcome_se and outcome_pval are as in outcome_beta.
+#' @return List of vectors and matrices required for mv analysis. 
+#' \describe{
+#' \item{exposure_beta}{a matrix of beta coefficients}
+#' \item{rows}{correspond to SNPs and columns correspond to exposures.}
+#' \item{exposure_pval}{the same as exposure_beta, but for p-values.}
+#' \item{exposure_se}{is the same as exposure_beta, but for standard errors.}
+#' \item{outcome_beta}{an array of effects for the outcome, corresponding to the SNPs in exposure_beta.}
+#' \item{outcome_se}{an array of standard errors for the outcome.}
+#' \item{outcome_pval}{an array of p-values for the outcome.}
+#' }
+#' 
 mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 {
 
@@ -364,8 +374,9 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 #'
 #' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 #'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
 #'
 #' @export
 #' @return List of results
