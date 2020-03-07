@@ -481,10 +481,11 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 #'
 #' Uses Cook's distance D > 4/nsnp to iteratively remove outliers
 #'
-#' @param dat <what param does>
-#' @param parameters=default_parameters() <what param does>
+#' @md
+#' @param dat Output from [`harmonise_data`].
+#' @param parameters The default is `default_parameters()`.
 #'
-#' @return list
+#' @return List
 mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 {
 
