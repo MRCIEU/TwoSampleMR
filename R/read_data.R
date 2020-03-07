@@ -58,8 +58,9 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #'
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
 #'
+#' @md
 #' @param filename Filename. Must have header with at least SNP column present.
-#' @param clump Whether to perform LD clumping with `\link{clump_data}` on the exposure data. The default is `FALSE`.
+#' @param clump Whether to perform LD clumping with [`clump_data`] on the exposure data. The default is `FALSE`.
 #' @param sep Specify delimeter in file. The default is a space, i.e. `" "`.
 #' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome". The default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
