@@ -56,6 +56,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #' @md
 #' @param exposure_dat Output from [`mv_extract_exposures`].
 #' @param outcome_dat Output from `extract_outcome_data(exposure_dat$SNP, id_output)`.
+#' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
 #'
 #' @export
 #' @return List of vectors and matrices required for mv analysis. 
