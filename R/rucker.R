@@ -262,8 +262,9 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #'
 #' <full description>
 #'
-#' @param dat <what param does>
-#' @param parameters=default_parameters() <what param does>
+#' @md
+#' @param dat Output from [`harmonise_data`].
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @return List
 #' @importFrom stats median pt qchisq qnorm quantile rnorm sd
@@ -483,7 +484,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 #'
 #' @md
 #' @param dat Output from [`harmonise_data`].
-#' @param parameters The default is `default_parameters()`.
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @return List
 mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
