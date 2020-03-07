@@ -250,7 +250,7 @@ default_parameters <- function()
 }
 
 
-#' Perform 2 sample IV using Wald ratio
+#' Perform 2 sample IV using Wald ratio.
 #'
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome
@@ -263,9 +263,10 @@ default_parameters <- function()
 #' \item{b}{causal effect estimate}
 #' \item{se}{standard error}
 #' \item{pval}{p-value}
+#' \item{nsnp}{1}
 #' }
 #' @importFrom stats pnorm
-mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
+mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out)
 {
 	if(length(b_exp) > 1)
 	{
