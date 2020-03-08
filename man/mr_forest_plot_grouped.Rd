@@ -27,13 +27,13 @@ mr_forest_plot_grouped(
 
 \item{eff_Col}{= (character) name of the column in the delimited file that contains the effect sizes}
 
-\item{exposure_Name}{= (character) name of the column in the delimited file containing the *types* of studies}
+\item{exposure_Name}{= (character) name of the column in the delimited file containing the \emph{types} of studies}
 
 \item{outcome_Name}{= (character) name of the column in the delimited file containing the names of each study}
 
 \item{forest_Title}{= (character) the title to be used for a forest plot}
 
-\item{outfile_Name}{= (character) name to be used for output file (*.pdf) or (*.wmf)}
+\item{outfile_Name}{= (character) name to be used for output file (\emph{.pdf) or (}.wmf)}
 
 \item{left_Col_Names}{= (character vector) vector containing the names of the left-hand-side annotation columns in the delimited file}
 

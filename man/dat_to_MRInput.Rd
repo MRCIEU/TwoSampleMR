@@ -15,7 +15,7 @@ dat_to_MRInput(dat, get_correlations = FALSE)
 List of MRInput objects for each exposure/outcome combination
 }
 \description{
-The MendelianRandomization package offers MR methods that can 
+The MendelianRandomization package offers MR methods that can
 be used with the same data used in the TwoSampleMR package. This
 function converts from the TwoSampleMR format to the MRInput class.
 }

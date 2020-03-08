@@ -7,11 +7,11 @@
 mr_pleiotropy_test(dat)
 }
 \arguments{
-\item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.}
 }
 \value{
 data frame
 }
 \description{
-Performs MR Egger and returns intercept values
+Performs MR Egger and returns intercept values.
 }

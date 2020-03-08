@@ -22,5 +22,5 @@ If a SNP influences multiple other traits then it could be 'suspicious', and mor
 }
 }
 \details{
-Summarising across multiple traits can be dune using mean, sd, iqr, median, 95% value, maximum value
+Summarising across multiple traits can be dune using mean, sd, iqr, median, 95\% value, maximum value
 }

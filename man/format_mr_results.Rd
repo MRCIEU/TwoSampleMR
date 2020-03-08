@@ -31,7 +31,7 @@ data frame.
 }
 \description{
 This function takes the results from \code{mr()} and is particularly useful
-if the MR has been applied using multiple exposures and multiple outcomes. 
+if the MR has been applied using multiple exposures and multiple outcomes.
 It creates a new data frame with the following:
 \itemize{
 \item exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp

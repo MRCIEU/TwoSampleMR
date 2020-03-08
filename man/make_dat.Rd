@@ -15,5 +15,5 @@ make_dat(exposures = c(2, 301), outcomes = c(7, 1001))
 Harmonised data frame
 }
 \description{
-<full description>
+Convenient function to create a harmonised dataset.
 }

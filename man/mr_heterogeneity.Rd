@@ -11,7 +11,7 @@ mr_heterogeneity(
 )
 }
 \arguments{
-\item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.}
 
 \item{parameters}{Parameters to be used for various MR methods. Default is output from \code{dafault_param}.}
 

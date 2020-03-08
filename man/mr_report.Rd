@@ -15,17 +15,17 @@ mr_report(
 )
 }
 \arguments{
-\item{dat}{Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Output from \code{\link{harmonise_data}}}
 
-\item{output_path}{Directory in which reports should be saved}
+\item{output_path}{Directory in which reports should be saved.}
 
 \item{output_type}{Choose "html" or "md". Default is "html".
 All output files including cache and figures will appear in the
 folder specified in \code{output_path}.}
 
-\item{author}{Author name}
+\item{author}{Author name.}
 
-\item{study}{Study title}
+\item{study}{Study title.}
 
 \item{path}{The filepath to the report template.}
 
