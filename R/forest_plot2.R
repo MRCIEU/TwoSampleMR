@@ -200,17 +200,18 @@ create_label <- function(n1, nom)
 #' A basic forest plot
 #'
 #' This function is used to create a basic forest plot.
-#' It requires the output from format_mr_results().
-#' It is 
+#' It requires the output from \code{\link{format_mr_results}}.
 #'
-#' @param dat Output from format_mr_results()
-#' @param section Which category in dat to plot. If NULL then prints everything
-#' @param colour_group Which exposure to plot. If NULL then prints everything grouping by colour.
-#' @param xlab x-axis label. Default=NULL
-#' @param bottom Show x-axis? Default=FALSE
-#' @param trans Transformation of x axis
-#' @param xlim x-axis limits
-#' @param threshold p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied
+#' @md
+#' @param dat Output from [`format_mr_results()`].
+#' @param section Which category in dat to plot. If `NULL` then prints everything.
+#' @param colour_group Which exposure to plot. If `NULL` then prints everything grouping by colour.
+#' @param colour_group_first The default is `TRUE`.
+#' @param xlab x-axis label. Default=`NULL`.
+#' @param bottom Show x-axis? Default=`FALSE`.
+#' @param trans Transformation of x axis.
+#' @param xlim x-axis limits.
+#' @param threshold p-value threshold to use for colouring points by significance level. If `NULL` (default) then colour layer won't be applied.
 #'
 #' @return ggplot object
 forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, threshold=NULL)
