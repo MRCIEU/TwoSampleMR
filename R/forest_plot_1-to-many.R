@@ -224,20 +224,22 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 #' A basic forest plot
 #'
 #' This function is used to create a basic forest plot.
-#' It requires the output from format_1_to_many().
+#' It requires the output from \code{\link{format_1_to_many}}.
 #'
-#' @param dat Output from format_1_to_many()
-#' @param section Which category in dat to plot. If NULL then prints everything
-#' @param colour_group Which exposure to plot. If NULL then prints everything grouping by colour.
-#' @param xlab x-axis label. Default=NULL
-#' @param bottom Show x-axis? Default=FALSE
-#' @param trans x-axis scale
-#' @param xlim x-axis limits
-#' @param lo Lower limit of x axis 
-#' @param up Upper limit of x axis 
-#' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument
-#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points black. 
-#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).
+#' @md
+#' @param dat Output from [`format_1_to_many()`]
+#' @param section Which category in dat to plot. If `NULL` then prints everything.
+#' @param colour_group Which exposure to plot. If `NULL` then prints everything grouping by colour.
+#' @param colour_group_first The default is `TRUE`.
+#' @param xlab x-axis label. Default=`NULL`.
+#' @param bottom Show x-axis? Default=`FALSE`.
+#' @param trans x-axis scale.
+#' @param xlim x-axis limits.
+#' @param lo Lower limit of x axis.
+#' @param up Upper limit of x axis.
+#' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument.
+#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points `"black"`.
+#' @param shape_points the shape of the data points to pass to `ggplot2::geom_points()`. Default is set to `15` (filled square).
 #'
 #' @return ggplot object
 forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
