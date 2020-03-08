@@ -489,7 +489,11 @@ check_units <- function(x, id, col)
 
 #' Get data selected from GWAS catalog into correct format
 #'
-#' DEPRECATED. Please use \code{format_data} instead
+#' DEPRECATED. Please use \code{\link{format_data}} instead.
+#'
+#' @md
+#' @param gwas_catalog_subset The GWAS catalog subset.
+#' @param type The default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -508,10 +512,11 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 
 #' Get data from eQTL catalog into correct format
 #'
-#' See \code{format_data}
+#' See \code{\link{format_data}}.
 #'
-#' @param gtex_eqtl_subset Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' @md
+#' @param gtex_eqtl_subset Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package.
+#' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -535,10 +540,11 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 
 #' Get data from metabolomic QTL results
 #'
-#' See \code{format_data}
-#'
-#' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' See \code{\link{format_data}}.
+#' 
+#' @md
+#' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package.
+#' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -562,10 +568,11 @@ format_metab_qtls <- function(metab_qtls_subset, type="exposure")
 
 #' Get data from proteomic QTL results
 #'
-#' See \code{format_data}
+#' See \code{\link{format_data}}.
 #'
-#' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' @md
+#' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package.
+#' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -589,10 +596,11 @@ format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 
 #' Get data from methylation QTL results
 #'
-#' See \code{format_data}
+#' See \code{\link{format_data}}.
 #'
-#' @param aries_mqtl_subset Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' @md
+#' @param aries_mqtl_subset Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package.
+#' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -637,12 +645,12 @@ create_ids <- function(x)
 
 #' Combine data
 #'
-#' Taking exposure or outcome data (returned from \code{format_data})
+#' Taking exposure or outcome data (returned from \code{\link{format_data}})
 #' combine multiple datasets together so they can be analysed in one
 #' batch. Removes duplicate SNPs, preferentially keeping those usable
-#' in MR analysis
+#' in MR analysis.
 #'
-#' @param x List of data frames returned from \code{format_data}
+#' @param x List of data frames returned from \code{\link{format_data}}.
 #'
 #' @export
 #' @return data frame
@@ -680,9 +688,9 @@ combine_data <- function(x)
 
 #' Convert outcome data to exposure data
 #'
-#' Helper function to convert results from extract_outcome_data to exposure_dat format
+#' Helper function to convert results from \code{\link{extract_outcome_data}} to \code{\link{exposure_dat format}}.
 #'
-#' @param outcome_dat Output from \code{extract_outcome_data}
+#' @param outcome_dat Output from \code{\link{extract_outcome_data}}.
 #'
 #' @export
 #' @return data frame
