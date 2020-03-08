@@ -124,6 +124,7 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #' @param dat Data frame. Must have header with at least SNP column present.
 #' @param type Is this the exposure or the outcome data that is being read in? The default is `"exposure"`.
 #' @param snps SNPs to extract. If NULL then doesn't extract any and keeps all. The default is `NULL`.
+#' @param header The default is `TRUE`.
 #' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. The default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
 #' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.
@@ -137,7 +138,12 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #' @param ncontrol_col Optional column name for number of controls. The default is `"ncontrol"`.
 #' @param samplesize_col Optional column name for sample size. The default is `"samplesize"`.
 #' @param gene_col Optional column name for gene name. The default is `"gene"`.
+#' @param id_col The default is `"id"`.
 #' @param min_pval Minimum allowed p-value. The default is `1e-200`.
+#' @param z_col The default is `"z"`.
+#' @param info_col The default is `"info_col"`.
+#' @param chr_col The default is `"chr_col"`.
+#' @param pos_col The default is `"pos"`.
 #' @param log_pval The pval is -log10(P). The default is `FALSE`.
 #'
 #' @export
