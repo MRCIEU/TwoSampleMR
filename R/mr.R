@@ -441,11 +441,12 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 #' Egger's regression for Mendelian randomization
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param bootstrap Number of bootstraps to estimate standard error. If NULL then don't use bootstrap
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List of with the following elements:
