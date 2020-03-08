@@ -691,7 +691,7 @@ combine_data <- function(x)
 
 #' Convert outcome data to exposure data
 #'
-#' Helper function to convert results from \code{\link{extract_outcome_data}} to \code{\link{exposure_dat format}}.
+#' Helper function to convert results from \code{\link{extract_outcome_data}} to \code{exposure_dat} format.
 #'
 #' @param outcome_dat Output from \code{\link{extract_outcome_data}}.
 #'
