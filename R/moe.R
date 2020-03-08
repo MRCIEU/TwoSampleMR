@@ -166,7 +166,7 @@ get_rsq <- function(dat)
 #' Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.
 #'
 #' @md
-#' @param dat Output from \code{mr_wrapper}. 
+#' @param res Output from \code{mr_wrapper}. 
 #' @param rf The trained random forest for the methods. This is available to download at <https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0>.
 #' 
 #' @md
