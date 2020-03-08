@@ -116,26 +116,29 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 
 #' Read exposure or outcome data
 #'
-#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. If it is the exposure then looks up SNPs in biomaRt to get basic info.
+#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. 
+#' Infers p-values when possible from beta and se. 
+#' If it is the exposure then looks up SNPs in biomaRt to get basic info.
 #'
+#' @md
 #' @param dat Data frame. Must have header with at least SNP column present.
-#' @param type="exposure". Is this the exposure or the outcome data that is being read in?
-#' @param snps=NULL SNPs to extract. If NULL then doesn't extract any and keeps all.
-#' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
-#' @param snp_col="SNP" Required name of column with SNP rs IDs
-#' @param beta_col="beta" Required for MR. Name of column with effect sizes
-#' @param se_col="se" Required for MR. Name of column with standard errors
-#' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
-#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G"
-#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G"
-#' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
-#' @param units_col="units" Optional column name for units.
-#' @param ncase_col="ncase" Optional column name for number of cases.
-#' @param ncontrol_col="ncontrol" Optional column name for number of controls.
-#' @param samplesize_col="samplesize" Optional column name for sample size.
-#' @param gene_col="gene" Optional column name for gene name.
-#' @param min_pval=1e-200 Minimum allowed pval
-#' @param log_pval=FALSE The pval is -log10(P)
+#' @param type Is this the exposure or the outcome data that is being read in? The default is `"exposure"`.
+#' @param snps SNPs to extract. If NULL then doesn't extract any and keeps all. The default is `NULL`.
+#' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. The default is `"Phenotype"`.
+#' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
+#' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.
+#' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
+#' @param eaf_col Required for MR. Name of column with effect allele frequency. The default is `"eaf"`.
+#' @param effect_allele_col Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"effect_allele"`.
+#' @param other_allele_col Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"other_allele"`.
+#' @param pval_col Required for enrichment tests. Name of column with p-value. The default is `"pval"`.
+#' @param units_col Optional column name for units. The default is `"units"`.
+#' @param ncase_col Optional column name for number of cases. The default is `"ncase"`.
+#' @param ncontrol_col Optional column name for number of controls. The default is `"ncontrol"`.
+#' @param samplesize_col Optional column name for sample size. The default is `"samplesize"`.
+#' @param gene_col Optional column name for gene name. The default is `"gene"`.
+#' @param min_pval Minimum allowed p-value. The default is `1e-200`.
+#' @param log_pval The pval is -log10(P). The default is `FALSE`.
 #'
 #' @export
 #' @return data frame
