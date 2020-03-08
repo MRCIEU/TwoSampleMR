@@ -967,8 +967,11 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' Robust adjusted profile score
 #'
 #' @inheritParams mr_ivw
-#' @param over.dispersion Should the model consider overdispersion (systematic pleiotropy)? Default is TRUE.
-#' @param loss.function Either the squared error loss ("l2") or robust loss functions/scores ("huber" or "tukey"). Default is "tukey"".
+#' @md
+#' @param parameters A list of parameters. Specifically, `over.dispersion` and `loss.function`. 
+#' `over.dispersion` is a logical concerning should the model consider overdispersion (systematic pleiotropy). 
+#' And `loss.function` allows using either the squared error loss (`"l2"`) or robust loss functions/scores (`"huber"` or `"tukey"`). 
+#' The default is `parameters=list(overdispersion = TRUE, loss.function = "tukey")`.
 #'
 #' @details This function calls the \code{mr.raps} package. Please refer to the documentation of that package for more detail.
 #'
