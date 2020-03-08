@@ -1,7 +1,9 @@
 #' I-square calculation
 #'
-#' @param y Vector of effects
-#' @param s Vector of standard errors
+#' This function calculates the I-squared_GX statistic.
+#' 
+#' @param y Vector of effects.
+#' @param s Vector of standard errors.
 #'
 #' @export
 #' @return Isq value
