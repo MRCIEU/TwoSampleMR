@@ -25,9 +25,11 @@ mr_penalised_weighted_median(
 }
 \value{
 List with the following elements:
-        b: MR estimate
-        se: Standard error
-        pval: p-value
+\describe{
+\item{b}{MR estimate}
+\item{se}{Standard error}
+\item{pval}{p-value}
+}
 }
 \description{
 Modification to standard weighted median MR

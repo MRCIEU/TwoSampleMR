@@ -25,20 +25,20 @@ format_mr_results(
 \item{ao_slc}{Logical; retrieve sample size and subcategory using available_outcomes(). If set to FALSE mr_res must contain the following additional columns: subcategory and sample_size.}
 
 \item{priority}{Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"}
-
-\item{group_single_categories}{If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE}
 }
 \value{
 data frame.
 }
 \description{
-This function takes the results from mr() and is particularly useful
+This function takes the results from \code{mr()} and is particularly useful
 if the MR has been applied using multiple exposures and multiple outcomes. 
 It creates a new data frame with the following:
-- exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
-- only one estimate for each exposure-outcome
-- exponentiated effects if required
+\itemize{
+\item exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
+\item only one estimate for each exposure-outcome
+\item exponentiated effects if required
+}
 }
 \details{
-By default it uses the available_outcomes() function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If ao_slc set to TRUE then the user must supply their own study level characteris. This is useful when the user has supplied their own outcome GWAS results (ie they are not in MR-Base).
+By default it uses the \code{available_outcomes()} function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If \code{ao_slc} set to \code{TRUE} then the user must supply their own study level characteristics. This is useful when the user has supplied their own outcome GWAS results (i.e. they are not in MR-Base).
 }

@@ -34,43 +34,57 @@ format_data(
 \arguments{
 \item{dat}{Data frame. Must have header with at least SNP column present.}
 
-\item{type="exposure".}{Is this the exposure or the outcome data that is being read in?}
+\item{type}{Is this the exposure or the outcome data that is being read in? The default is \code{"exposure"}.}
 
-\item{snps=NULL}{SNPs to extract. If NULL then doesn't extract any and keeps all.}
+\item{snps}{SNPs to extract. If NULL then doesn't extract any and keeps all. The default is \code{NULL}.}
 
-\item{phenotype_col="Phenotype"}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"}
+\item{header}{The default is \code{TRUE}.}
 
-\item{snp_col="SNP"}{Required name of column with SNP rs IDs}
+\item{phenotype_col}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value \code{"Outcome"}. The default is \code{"Phenotype"}.}
 
-\item{beta_col="beta"}{Required for MR. Name of column with effect sizes}
+\item{snp_col}{Required name of column with SNP rs IDs. The default is \code{"SNP"}.}
 
-\item{se_col="se"}{Required for MR. Name of column with standard errors}
+\item{beta_col}{Required for MR. Name of column with effect sizes. The default is \code{"beta"}.}
 
-\item{eaf_col="eaf"}{Required for MR. Name of column with effect allele frequency}
+\item{se_col}{Required for MR. Name of column with standard errors. The default is \code{"se"}.}
 
-\item{effect_allele_col="effect_allele"}{Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G"}
+\item{eaf_col}{Required for MR. Name of column with effect allele frequency. The default is \code{"eaf"}.}
 
-\item{other_allele_col="other_allele"}{Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G"}
+\item{effect_allele_col}{Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is \code{"effect_allele"}.}
 
-\item{pval_col="pval"}{Required for enrichment tests. Name of column with p-value.}
+\item{other_allele_col}{Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is \code{"other_allele"}.}
 
-\item{units_col="units"}{Optional column name for units.}
+\item{pval_col}{Required for enrichment tests. Name of column with p-value. The default is \code{"pval"}.}
 
-\item{ncase_col="ncase"}{Optional column name for number of cases.}
+\item{units_col}{Optional column name for units. The default is \code{"units"}.}
 
-\item{ncontrol_col="ncontrol"}{Optional column name for number of controls.}
+\item{ncase_col}{Optional column name for number of cases. The default is \code{"ncase"}.}
 
-\item{samplesize_col="samplesize"}{Optional column name for sample size.}
+\item{ncontrol_col}{Optional column name for number of controls. The default is \code{"ncontrol"}.}
 
-\item{gene_col="gene"}{Optional column name for gene name.}
+\item{samplesize_col}{Optional column name for sample size. The default is \code{"samplesize"}.}
 
-\item{min_pval=1e-200}{Minimum allowed pval}
+\item{gene_col}{Optional column name for gene name. The default is \code{"gene"}.}
 
-\item{log_pval=FALSE}{The pval is -log10(P)}
+\item{id_col}{The default is \code{"id"}.}
+
+\item{min_pval}{Minimum allowed p-value. The default is \code{1e-200}.}
+
+\item{z_col}{The default is \code{"z"}.}
+
+\item{info_col}{The default is \code{"info_col"}.}
+
+\item{chr_col}{The default is \code{"chr_col"}.}
+
+\item{pos_col}{The default is \code{"pos"}.}
+
+\item{log_pval}{The pval is -log10(P). The default is \code{FALSE}.}
 }
 \value{
 data frame
 }
 \description{
-Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. If it is the exposure then looks up SNPs in biomaRt to get basic info.
+Reads in exposure data. Checks and organises columns for use with MR or enrichment tests.
+Infers p-values when possible from beta and se.
+If it is the exposure then looks up SNPs in biomaRt to get basic info.
 }

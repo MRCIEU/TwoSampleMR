@@ -2,9 +2,9 @@
 % Please edit documentation in R/mr.R
 \name{mr_wald_ratio}
 \alias{mr_wald_ratio}
-\title{Perform 2 sample IV using Wald ratio}
+\title{Perform 2 sample IV using Wald ratio.}
 \usage{
-mr_wald_ratio(b_exp, b_out, se_exp, se_out, parameters)
+mr_wald_ratio(b_exp, b_out, se_exp, se_out)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}
@@ -17,10 +17,13 @@ mr_wald_ratio(b_exp, b_out, se_exp, se_out, parameters)
 }
 \value{
 List with the following elements:
-        b: causal effect estimate
-        se: standard error
-        pval: p-value
+\describe{
+\item{b}{causal effect estimate}
+\item{se}{standard error}
+\item{pval}{p-value}
+\item{nsnp}{1}
+}
 }
 \description{
-Perform 2 sample IV using Wald ratio
+Perform 2 sample IV using Wald ratio.
 }

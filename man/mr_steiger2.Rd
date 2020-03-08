@@ -22,20 +22,22 @@ mr_steiger2(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo = 1, ...)
 \item{...}{Further arguments to be passed to wireframe}
 }
 \value{
-List
-- r2_exp: Estimated variance explained in x
-- r2_out: Estimated variance explained in y
-- r2_exp_adj: Predicted variance explained in x accounting for estimated measurement error
-- r2_out_adj: Predicted variance explained in y accounting for estimated measurement error
-- correct_causal_direction: TRUE/FALSE
-- steiger_test: p-value for inference of direction
-- correct_causal_direction_adj: TRUE/FALSE, direction of causality for given measurement error parameters
-- steiger_test_adj: p-value for inference of direction of causality for given measurement error parameters
-- vz: Total volume of the error parameter space
-- vz0: Volume of the parameter space that gives the incorrect answer
-- vz1: Volume of the paramtere space that gives the correct answer
-- sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
-- sensitivity_plot: Plot of parameter space of causal directions and measurement error
+List with the following elements:
+\describe{
+\item{r2_exp}{Estimated variance explained in x}
+\item{r2_out}{Estimated variance explained in y}
+\item{r2_exp_adj}{Predicted variance explained in x accounting for estimated measurement error}
+\item{r2_out_adj}{Predicted variance explained in y accounting for estimated measurement error}
+\item{correct_causal_direction}{TRUE/FALSE}
+\item{steiger_test}{p-value for inference of direction}
+\item{correct_causal_direction_adj}{TRUE/FALSE, direction of causality for given measurement error parameters}
+\item{steiger_test_adj}{p-value for inference of direction of causality for given measurement error parameters}
+\item{vz}{Total volume of the error parameter space}
+\item{vz0}{Volume of the parameter space that gives the incorrect answer}
+\item{vz1}{Volume of the paramtere space that gives the correct answer}
+\item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
+\item{sensitivity_plot}{Plot of parameter space of causal directions and measurement error}
+}
 }
 \description{
 A statistical test for whether the assumption that exposure causes outcome is valid

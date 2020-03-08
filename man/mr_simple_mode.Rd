@@ -19,9 +19,11 @@ mr_simple_mode(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
 }
 \value{
 List with the following elements:
-        b: MR estimate
-        se: Standard error
-        pval: p-value
+\describe{
+\item{b}{MR estimate}
+\item{se}{Standard error}
+\item{pval}{p-value}
+}
 }
 \description{
 MR simple mode estimator

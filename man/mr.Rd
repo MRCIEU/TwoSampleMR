@@ -19,8 +19,10 @@ mr(
 }
 \value{
 List with the following elements:
-        mr: Table of MR results
-        extra: Table of extra results
+\describe{
+\item{mr}{Table of MR results}
+\item{extra}{Table of extra results}
+}
 }
 \description{
 Perform all Mendelian randomization tests

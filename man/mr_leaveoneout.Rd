@@ -7,9 +7,11 @@
 mr_leaveoneout(dat, parameters = default_parameters(), method = mr_ivw)
 }
 \arguments{
-\item{dat}{Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 
-\item{method=mr_ivw}{Choose which method to use}
+\item{parameters}{List of parameters.}
+
+\item{method}{Choose which method to use. The default is \code{mr_ivw}.}
 }
 \value{
 List of data frames

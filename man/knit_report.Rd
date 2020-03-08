@@ -16,14 +16,14 @@ generated.
 All output files including cache and figures will appear in the
 same folder as \code{output_filename}.}
 
-\item{...}{Arguments to be passed to \code{\link{knitr::knit}}}
+\item{...}{Arguments to be passed to \code{\link[knitr:knit]{knitr::knit}}}
 }
 \description{
-Warning: It is quite likely that this will be called within an RMD file
-implying a recursive call to knit(). This will generate "duplicate label"
+Warning: It is quite likely that this will be called within an Rmd file
+implying a recursive call to \code{knit()}. This will generate "duplicate label"
 errors for unlabelled chunks. To avoid this, all code chunks
-in \code{rmd.filename} should be named.
+in your Rmd file should be named.
 Supposedly this error can also be avoided by setting the following option:
-     options(knitr.duplicate.label='allow')
+\code{options(knitr.duplicate.label = 'allow')}.
 I tried this but it didn't seem to help.
 }

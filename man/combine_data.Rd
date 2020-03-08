@@ -7,14 +7,14 @@
 combine_data(x)
 }
 \arguments{
-\item{x}{List of data frames returned from \code{format_data}}
+\item{x}{List of data frames returned from \code{\link{format_data}}.}
 }
 \value{
 data frame
 }
 \description{
-Taking exposure or outcome data (returned from \code{format_data})
+Taking exposure or outcome data (returned from \code{\link{format_data}})
 combine multiple datasets together so they can be analysed in one
 batch. Removes duplicate SNPs, preferentially keeping those usable
-in MR analysis
+in MR analysis.
 }

@@ -9,9 +9,9 @@ Isq(y, s)
 Isq(y, s)
 }
 \arguments{
-\item{y}{Vector of effects}
+\item{y}{Vector of effects.}
 
-\item{s}{Vector of standard errors}
+\item{s}{Vector of standard errors.}
 }
 \value{
 Numeric
@@ -19,7 +19,5 @@ Numeric
 Isq value
 }
 \description{
-Calculate I-square
-
-I-square calculation
+This function calculates the I-squared_GX statistic.
 }

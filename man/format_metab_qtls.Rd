@@ -7,13 +7,13 @@
 format_metab_qtls(metab_qtls_subset, type = "exposure")
 }
 \arguments{
-\item{metab_qtls_subset}{Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package}
+\item{metab_qtls_subset}{Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package.}
 
-\item{type}{Are these data used as "exposure" or "outcome"? Default is "exposure"}
+\item{type}{Are these data used as \code{"exposure"} or \code{"outcome"}? Default is \code{"exposure"}.}
 }
 \value{
 Data frame
 }
 \description{
-See \code{format_data}
+See \code{\link{format_data}}.
 }

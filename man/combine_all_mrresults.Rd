@@ -20,6 +20,8 @@ combine_all_mrresults(
 
 \item{het}{Results from mr_heterogeneity()}
 
+\item{plt}{Results from mr_pleiotropy_test()}
+
 \item{sin}{Results from mr_singlesnp()}
 
 \item{ao_slc}{Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE.}
@@ -29,8 +31,6 @@ combine_all_mrresults(
 \item{split.exposure}{Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is FALSE.}
 
 \item{split.outcome}{Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is FALSE.}
-
-\item{pleiotropy}{Results from mr_pleiotropy_test()}
 }
 \value{
 data frame

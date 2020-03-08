@@ -13,21 +13,23 @@ mr_weighted_median(
 )
 }
 \arguments{
-\item{b_exp}{Vector of genetic effects on exposure}
+\item{b_exp}{Vector of genetic effects on exposure.}
 
-\item{b_out}{Vector of genetic effects on outcome}
+\item{b_out}{Vector of genetic effects on outcome.}
 
-\item{se_exp}{Standard errors of genetic effects on exposure}
+\item{se_exp}{Standard errors of genetic effects on exposure.}
 
-\item{se_out}{Standard errors of genetic effects on outcome}
+\item{se_out}{Standard errors of genetic effects on outcome.}
 
-\item{nboot}{Number of bootstraps to calculate se. Default 1000}
+\item{parameters}{The default is \code{default_parameters()}. Specify the number of bootstrap replications to calculate the SE with \code{nboot}. The default is \code{nboot=1000}.}
 }
 \value{
 List with the following elements:
-        b: MR estimate
-        se: Standard error
-        pval: p-value
+\describe{
+\item{b}{MR estimate}
+\item{se}{Standard error}
+\item{pval}{p-value}
+}
 }
 \description{
 Perform MR using summary statistics. Bootstraps used to calculate standard error.

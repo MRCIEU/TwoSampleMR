@@ -13,7 +13,7 @@ contingency(af, prop, odds_ratio, eps = 1e-15)
 
 \item{odds_ratio}{Odds ratio}
 
-\item{eps=1e-15}{tolerance}
+\item{eps}{tolerance, default is 1e-15}
 }
 \value{
 2x2 contingency table as matrix

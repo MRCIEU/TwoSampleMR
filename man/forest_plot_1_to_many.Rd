@@ -29,41 +29,47 @@ forest_plot_1_to_many(
 )
 }
 \arguments{
-\item{mr_res}{Data frame of results supplied by the user}
+\item{mr_res}{Data frame of results supplied by the user. The default is \code{"mr_res"}.}
 
-\item{b}{Name of the column specifying the effect of the exposure on the outcome. Default = "b"}
+\item{b}{Name of the column specifying the effect of the exposure on the outcome. The default is \code{"b"}.}
 
-\item{se}{Name of the column specifying the standard error for b. Default = "se"}
+\item{se}{Name of the column specifying the standard error for b. The default is \code{"se"}.}
 
-\item{TraitM}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"}
+\item{TraitM}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. The default is \code{"outcome"}.}
 
-\item{col1_width}{Width of Y axis label for the column specified by the TraitM argument. Default=1}
+\item{col1_width}{Width of Y axis label for the column specified by the TraitM argument. The default is \code{1}.}
 
-\item{col1_title}{Title for the column specified by the TraitM argument. Default=""}
+\item{col1_title}{Title for the column specified by the TraitM argument. The default is \code{""}.}
 
-\item{exponentiate}{Convert log odds ratios to odds ratios? Default=FALSE}
+\item{exponentiate}{Convert log odds ratios to odds ratios? Default is \code{FALSE}.}
 
-\item{trans}{Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".}
+\item{trans}{Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default is \code{"identity"}.}
 
-\item{ao_slc}{Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE}
+\item{ao_slc}{Logical; retrieve trait subcategory information using available_outcomes(). Default is \code{FALSE}.}
 
 \item{lo}{Lower limit of X axis to plot.}
 
 \item{up}{upper limit of X axis to plot.}
 
-\item{by}{Name of the grouping variable to stratify results on. Default=NULL}
+\item{by}{Name of the grouping variable to stratify results on. Default is \code{NULL}.}
 
-\item{addcols}{Name of additional columns to plot. Character vector. Default = NULL}
+\item{xlab}{X-axis label, default is \code{"Effect (95\\\% confidence interval)"}.}
 
-\item{addcol_widths}{Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. Default = NULL}
+\item{addcols}{Name of additional columns to plot. Character vector. The default is \code{NULL}.}
 
-\item{addcol_titles}{Titles of additional columns specified by the addcols argument. Character vector. Default = NULL}
+\item{addcol_widths}{Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. The default is \code{NULL}.}
 
-\item{subheading_size}{text size for the subheadings specified in by argument.}
+\item{addcol_titles}{Titles of additional columns specified by the addcols argument. Character vector. The default is \code{NULL}.}
 
-\item{shape_points}{the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).}
+\item{subheading_size}{text size for the subheadings specified in by argument. The default is \code{6}.}
 
-\item{colour_scheme}{the general colour scheme for the plot. Default is to make all text and data points black.}
+\item{shape_points}{the shape of the data points to pass to geom_points(). Default is set to \code{15} (filled square).}
+
+\item{colour_scheme}{the general colour scheme for the plot. Default is to make all text and data points \code{"black"}.}
+
+\item{col_text_size}{The default is \code{5}.}
+
+\item{weight}{The default is \code{NULL}.}
 }
 \value{
 grid plot object

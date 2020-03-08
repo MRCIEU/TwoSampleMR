@@ -7,13 +7,13 @@
 mr_rucker_cooksdistance(dat, parameters = default_parameters())
 }
 \arguments{
-\item{dat}{<what param does>}
+\item{dat}{Output from \code{\link{harmonise_data}}.}
 
-\item{parameters=default_parameters()}{<what param does>}
+\item{parameters}{List of parameters. The default is \code{default_parameters()}.}
 }
 \value{
-list
+List
 }
 \description{
-Uses Cook's distance D > 4/nsnp to iteratively remove outliers
+Uses Cook's distance D > 4/nsnp to iteratively remove outliers.
 }
