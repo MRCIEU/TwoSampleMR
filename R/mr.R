@@ -1,9 +1,9 @@
 
 #' Perform all Mendelian randomization tests
 #'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param parameters Parameters to be used for various MR methods. Default is output from \code{dafault_param}.
-#' @param method_list List of methods to use in analysis. See \code{mr_method_list()} for details.
+#' @param dat Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.
+#' @param parameters Parameters to be used for various MR methods. Default is output from \code{default_parameters}.
+#' @param method_list List of methods to use in analysis. See \code{\link{mr_method_list}} for details.
 #'
 #' @export
 #' @return List with the following elements:
