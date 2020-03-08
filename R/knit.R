@@ -1,11 +1,11 @@
 #' Knit report using working environment
 #'
-#' Warning: It is quite likely that this will be called within an RMD file
-#' implying a recursive call to knit(). This will generate "duplicate label"
+#' Warning: It is quite likely that this will be called within an Rmd file
+#' implying a recursive call to \code{knit()}. This will generate "duplicate label"
 #' errors for unlabelled chunks. To avoid this, all code chunks
-#' in \code{rmd.filename} should be named.
+#' in your Rmd file should be named.
 #' Supposedly this error can also be avoided by setting the following option:
-#'      options(knitr.duplicate.label='allow')
+#' \code{options(knitr.duplicate.label = 'allow')}.
 #' I tried this but it didn't seem to help.
 #'
 #' @param input_filename Rmd file.
@@ -61,8 +61,9 @@ knit_report <- function(input_filename, output_filename, ...)
 #' Generate MR report
 #'
 #' Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
-#' A separate report is produced for each exposure - outcome pair that was analysed
+#' A separate report is produced for each exposure - outcome pair that was analysed.
 #'
+#' @md
 #' @param dat Output from \code{harmonise_exposure_outcome}
 #' @param output_path Directory in which reports should be saved
 #' @param output_type Choose "html" or "md". Default is "html".
@@ -70,7 +71,8 @@ knit_report <- function(input_filename, output_filename, ...)
 #' folder specified in \code{output_path}.
 #' @param author Author name
 #' @param study Study title
-#' @param ... Extra options to be passed to knitr
+#' @param path The filepath to the report template.
+#' @param ... Extra options to be passed to \code{\link[knitr:knit]{knitr::knit}}.
 #'
 #' @export
 #' @return NULL
