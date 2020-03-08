@@ -68,10 +68,11 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 
 #' MR Rucker framework
 #'
-#' <full description>
+#' MR Rucker framework.
 #'
-#' @param dat <what param does>
-#' @param parameters List of Qthresh for determing transition between models, and alpha values for calculating confidence intervals. Defaults to 0.05 for both in default_parameters() 
+#' @md
+#' @param dat Output from [`harmonise_data()`].
+#' @param parameters List of Qthresh for determing transition between models, and alpha values for calculating confidence intervals. Defaults to 0.05 for both in `default_parameters()`.
 #'
 #' @export
 #' @return list
@@ -262,7 +263,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 
 #' Run rucker with bootstrap estimates
 #'
-#' <full description>
+#' Run Rucker with bootstrap estimates.
 #'
 #' @md
 #' @param dat Output from [`harmonise_data`].
@@ -357,6 +358,8 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 
 
 #' Run rucker with jackknife estimates
+#'
+#' Run rucker with jackknife estimates.
 #'
 #' @md
 #' @param dat Output from harmonise_data.
@@ -482,7 +485,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 
 #' MR Rucker with outliers automatically detected and removed
 #'
-#' Uses Cook's distance D > 4/nsnp to iteratively remove outliers
+#' Uses Cook's distance D > 4/nsnp to iteratively remove outliers.
 #'
 #' @md
 #' @param dat Output from [`harmonise_data`].
