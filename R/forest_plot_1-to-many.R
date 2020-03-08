@@ -1,15 +1,24 @@
 #' Format MR results for a 1-to-many forest plot
 #'
-#' This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
+#' This function formats user-supplied results for the \code{\link{forest_plot_1_to_many}} function. 
+#' The user supplies their results in the form of a data frame. 
+#' The data frame is assumed to contain at least three columns of data: 
+#' \enumerate{
+#' \item effect estimates, from an analysis of the effect of an exposure on an outcome; 
+#' \item standard errors for the effect estimates; and 
+#' \item a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
+#' }
 #' 
-#' @param mr_res Data frame of results supplied by the user
-#' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
-#' @param se Name of the column specifying the standard error for b. Default = "se"
-#' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param addcols Name of any additional columns to add to the plot. Character vector
-#' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
-#' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
-#' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
+#' @md
+#' @param mr_res Data frame of results supplied by the user.
+#' @param b Name of the column specifying the effect of the exposure on the outcome. Default = `"b"`.
+#' @param se Name of the column specifying the standard error for b. Default = `"se"`.
+#' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default=`"outcome"`.
+#' @param addcols Name of any additional columns to add to the plot. Character vector. The default is `NULL`.
+#' @param by Name of the column indicating a grouping variable to stratify results on. Default=`NULL`.
+#' @param exponentiate Convert log odds ratios to odds ratios? Default=`FALSE`.
+#' @param ao_slc Logical; retrieve trait subcategory information using [`available_outcomes()`]. Default=`FALSE`.
+#' @param weight The default is `NULL`.
 #'
 #' @export
 #' @return data frame.
