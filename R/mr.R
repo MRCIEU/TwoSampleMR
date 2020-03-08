@@ -543,11 +543,12 @@ linreg <- function(x, y, w=rep(x,1))
 
 #' Run bootstrap to generate standard errors for MR
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param nboot Number of bootstraps. Default 1000
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters. Specifically, the `boot` parameter can be specified for the number of bootstrap replications. The default is `parameters=list(nboot=1000)`.
 #'
 #' @export
 #' @return List of with the following elements:
