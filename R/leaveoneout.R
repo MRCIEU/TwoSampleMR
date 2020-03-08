@@ -1,7 +1,9 @@
 #' Leave one out sensitivity analysis
 #'
-#' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_ivw Choose which method to use
+#' @md
+#' @param dat Output from [`harmonise_data()`].
+#' @param method Choose which method to use. The default is `mr_ivw`.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List of data frames
