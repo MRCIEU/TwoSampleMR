@@ -1,6 +1,7 @@
 #' Convenient function to create a harmonised dataset
 #'
-#' <full description>
+#' Convenient function to create a harmonised dataset.
+#' 
 #' @param exposures default 2 and 301 (bmi and ldl)
 #' @param outcomes default 7 and 1001 (edu and chd)
 #'
