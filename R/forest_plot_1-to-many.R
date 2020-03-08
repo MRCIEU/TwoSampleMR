@@ -536,6 +536,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #'
 #' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
 #' 
+#' @md
 #' @param mr_res Data frame of results supplied by the user. The default is `"mr_res"`.
 #' @param b Name of the column specifying the effect of the exposure on the outcome. The default is `"b"`.
 #' @param se Name of the column specifying the standard error for b. The default is `"se"`.
@@ -555,6 +556,8 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param up upper limit of X axis to plot. 
 #' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points `"black"`. 
 #' @param shape_points the shape of the data points to pass to geom_points(). Default is set to `15` (filled square).
+#' @param col_text_size The default is `5`.
+#' @param weight The default is `NULL`.
 #'
 #' @export
 #' @return grid plot object
