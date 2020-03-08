@@ -783,8 +783,9 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 
 #' MR median estimators
 #'
-#' @param dat Output from harmonise_data()
-#' @param parameters=default_parameters() <what param does>
+#' @md
+#' @param dat Output from [`harmonise_data()`].
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @export
 #' @return data frame
