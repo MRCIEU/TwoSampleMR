@@ -10,7 +10,9 @@ Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
              person("Tom", "Gaunt", email = "Tom.Gaunt@bristol.ac.uk",
                   role = c("aut"), comment = c(ORCID = "0000-0003-0924-3247")),
              person("Ben", "Elsworth", email = "Ben.Elsworth@bristol.ac.uk",
-                  role = c("aut"), comment = c(ORCID = "0000-0001-7328-4233"))
+                  role = c("aut"), comment = c(ORCID = "0000-0001-7328-4233")),
+             person("Tom", "Palmer", email = "tom.palmer@bristol.ac.uk",
+                  role = c("ctb"), comment = c(ORCID = "0000-0003-4655-4511"))
 			 )
 Description: Please see the title.
 Depends:
