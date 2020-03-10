@@ -3,6 +3,8 @@
 \docType{package}
 \name{TwoSampleMR-package}
 \alias{TwoSampleMR-package}
+\alias{TwoSampleMR}
+\alias{twosamplemr}
 \title{TwoSampleMR: Two Sample MR functions and interface to MR Base database}
 \description{
 A package for performing Mendelian randomization using GWAS summary data.
