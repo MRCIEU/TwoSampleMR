@@ -66,7 +66,7 @@ knit_report <- function(input_filename, output_filename, ...)
 #' @md
 #' @param dat Output from \code{\link{harmonise_data}}
 #' @param output_path Directory in which reports should be saved.
-#' @param output_type Choose "html" or "md". Default is "html".
+#' @param output_type Choose `"html"` or `"md"`. Default is `"html"`.
 #' All output files including cache and figures will appear in the
 #' folder specified in \code{output_path}.
 #' @param author Author name.
