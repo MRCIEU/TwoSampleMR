@@ -21,7 +21,7 @@ mr_penalised_weighted_median(
 
 \item{se_out}{Standard errors of genetic effects on outcome}
 
-\item{parameters}{List containing "penk" - Constant term in penalisation, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=20 and nboot=1000}
+\item{parameters}{List containing \code{penk} - Constant term in penalisation, and \code{nboot} - number of bootstrap replications to calculate SE. \code{default_parameters()} sets \code{parameters=list(penk=20, nboot=1000)}.}
 }
 \value{
 List with the following elements:
