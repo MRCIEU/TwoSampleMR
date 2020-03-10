@@ -7,11 +7,11 @@
 run_mrmix(dat)
 }
 \arguments{
-\item{dat}{Output from harmonised_data. Ensure that eaf.exposure}
+\item{dat}{Output from \code{\link{harmonise_data}}. Ensures that no eaf.exposure values are missing.}
 }
 \value{
 List of results, with one list item for every exposure/outcome pair in dat object
 }
 \description{
-See https://github.com/gqi/MRMix for more details
+See \url{https://github.com/gqi/MRMix} for more details.
 }
