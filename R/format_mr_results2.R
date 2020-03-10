@@ -87,16 +87,20 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 
 #' Combine all mr results
 #'
-#' This function combines results of mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single data frame. It also merges the results with outcome study level characteristics in available_outcomes(). If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). The exposure and outcome columns from the output from mr() contain both the trait names and trait ids. The combine_all_mrresults() function splits these into separate columns by default. 
-
-#' @param res Results from mr()
-#' @param het Results from mr_heterogeneity()
-#' @param plt Results from mr_pleiotropy_test()
-#' @param sin Results from mr_singlesnp()
-#' @param ao_slc Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE. 
-#' @param Exp Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE. 
-#' @param split.exposure Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is FALSE. 
-#' @param split.outcome Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is FALSE.  
+#' This function combines results of [`mr()`], [`mr_heterogeneity()`], [`mr_pleiotropy_test()`] and [`mr_singlesnp()`] into a single data frame. 
+#' It also merges the results with outcome study level characteristics in [`available_outcomes()`]. 
+#' If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). 
+#' The exposure and outcome columns from the output from [`mr()`] contain both the trait names and trait ids. 
+#' The `combine_all_mrresults()` function splits these into separate columns by default. 
+#' 
+#' @param res Results from [`mr()`].
+#' @param het Results from [`mr_heterogeneity()`].
+#' @param plt Results from [`mr_pleiotropy_test()`].
+#' @param sin Results from [`mr_singlesnp()`].
+#' @param ao_slc Logical; if set to `TRUE` then outcome study level characteristics are retrieved from [`available_outcomes()`]. Default is `TRUE`. 
+#' @param Exp Logical; if set to `TRUE` results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is `FALSE`. 
+#' @param split.exposure Logical; if set to `TRUE` the exposure column is split into separate columns for the exposure name and exposure ID. Default is `FALSE`. 
+#' @param split.outcome Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is `FALSE`.  
 #' 
 #' @export
 #' @return data frame
@@ -219,12 +223,19 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,Exp=F,split.exposure=
 
 #' Power prune 
 #'
-#' When there are duplicate summary sets for a particular exposure-outcome combination, this function keeps the exposure-outcome summary set with the highest expected statistical power. This can be done by dropping the duplicate summary sets with the smaller sample sizes. Alternatively, the pruning procedure can take into account instrument strength and outcome sample size. The latter is useful, for example, when there is considerable variation in SNP coverage between duplicate summary sets (e.g. because some studies have used targeted or fine mapping arrays). If there are a large number of SNPs available to instrument an exposure, the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. 
+#' When there are duplicate summary sets for a particular exposure-outcome combination, this function keeps the 
+#' exposure-outcome summary set with the highest expected statistical power. 
+#' This can be done by dropping the duplicate summary sets with the smaller sample sizes. 
+#' Alternatively, the pruning procedure can take into account instrument strength and outcome sample size. 
+#' The latter is useful, for example, when there is considerable variation in SNP coverage between duplicate summary sets 
+#' (e.g. because some studies have used targeted or fine mapping arrays). 
+#' If there are a large number of SNPs available to instrument an exposure, 
+#' the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. 
 #'
-#' @param dat Results from harmonise_data() 
-#' @param method Should the duplicate summary sets be pruned on the basis of sample size alone (method = 1) or a combination of instrument strength and sample size (method = 2)? Default set to 1. When set to 1, the duplicate summary sets are first dropped on the basis of the outcome sample size (smaller duplicates dropped). If duplicates are still present, remaining duplicates are dropped on the basis of the exposure sample size (smaller duplicates dropped). When method set to 2, duplicates are dropped on the basis of instrument strength (amount of variation explained in the exposure by the instrumental SNPs) and sample size, and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure cannot be binary). The SNP-outcome effects can correspond to either a binary or continuous trait. If the exposure is binary then method 1 should be used. 
-
-#' @param dist.outcome The distribution of the outcome. Can either be binary or continuous. Default set to binary. 
+#' @param dat Results from [`harmonise_data()`].
+#' @param method Should the duplicate summary sets be pruned on the basis of sample size alone (`method = 1`) or a combination of instrument strength and sample size (method = 2)? Default set to 1. When set to 1, the duplicate summary sets are first dropped on the basis of the outcome sample size (smaller duplicates dropped). If duplicates are still present, remaining duplicates are dropped on the basis of the exposure sample size (smaller duplicates dropped). When method set to 2, duplicates are dropped on the basis of instrument strength (amount of variation explained in the exposure by the instrumental SNPs) and sample size, and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure cannot be binary). The SNP-outcome effects can correspond to either a binary or continuous trait. If the exposure is binary then `method=1` should be used. 
+#' 
+#' @param dist.outcome The distribution of the outcome. Can either be binary or continuous. Default set to `"binary"`. 
 #' 
 #' @export
 #' @return data.frame with duplicate summary sets removed
@@ -366,9 +377,11 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 
 #' Size prune 
 #'
-#' Whens there are duplicate summary sets for a particular exposure-outcome combination, this function drops the duplicates with the smaller total sample size (for binary outcomes, the number of cases is used instead of total sample size).  
+#' Whens there are duplicate summary sets for a particular exposure-outcome combination, 
+#' this function drops the duplicates with the smaller total sample size 
+#' (for binary outcomes, the number of cases is used instead of total sample size).  
 #'
-#' @param dat Results from harmonise_data() 
+#' @param dat Results from [`harmonise_data()`].
 #' 
 #' @export
 #' @return data frame
@@ -381,7 +394,3 @@ size.prune <- function(dat)
 	id.keep<-id.expout[!duplicated(paste(dat$exposure,dat$originalname.outcome))]
 	dat<-dat[id.expout %in% id.keep,]
 }
-
-
-
-
