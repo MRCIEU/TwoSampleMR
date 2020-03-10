@@ -21,7 +21,7 @@ mr_weighted_median(
 
 \item{se_out}{Standard errors of genetic effects on outcome.}
 
-\item{parameters}{The default is \code{default_parameters()}. Specify the number of bootstrap replications to calculate the SE with \code{nboot}. The default is \code{nboot=1000}.}
+\item{parameters}{The default is \code{default_parameters()}. Specify the number of bootstrap replications to calculate the SE with \code{nboot}. The default is \code{list(nboot=1000)}.}
 }
 \value{
 List with the following elements:

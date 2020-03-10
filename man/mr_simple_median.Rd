@@ -21,7 +21,7 @@ mr_simple_median(
 
 \item{se_out}{Standard errors of genetic effects on outcome.}
 
-\item{parameters}{The number of bootstrap replications used to calculate the SE can be set through \code{parameters=list(nboot = 1000)}. The default is \code{nboot=1000}.}
+\item{parameters}{The number of bootstrap replications used to calculate the SE can be set through \code{parameters=list(nboot = 1000)}. The default is \code{list(nboot=1000)}.}
 }
 \value{
 List with the following elements:
