@@ -439,13 +439,13 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 #' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is `"Inverse variance weighted"`.
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. The default is `TRUE`.
 #' @param by_category Separate the results into sections by category? The default is `TRUE`.
-#' @param in_columns Separate the exposures into different columns. The default `FALSE`.
+#' @param in_columns Separate the exposures into different columns. The default is `FALSE`.
 #' @param threshold p-value threshold to use for colouring points by significance level. If `NULL` (default) then colour layer won't be applied.
 #' @param xlab x-axis label. If `in_columns=TRUE` then the exposure values are appended to the end of `xlab`. e.g. if `xlab="Effect of"` then x-labels will read `"Effect of exposure1"`, `"Effect of exposure2"` etc. Otherwise will be printed as is.
 #' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. The default is `NULL`.
-#' @param trans Transformation to apply to x-axis. e.g. `"identity"`, `"log2"`, etc. Default is `"identity"`.
+#' @param trans Transformation to apply to x-axis. e.g. `"identity"`, `"log2"`, etc. The default is `"identity"`.
 #' @param ao_slc retrive sample size and subcategory from [`available_outcomes()`]. If set to `FALSE` then `mr_res` must contain the following additional columns: `sample_size` and `subcategory`. The default behaviour is to use [`available_outcomes()`] to retrieve sample size and subcategory.
-#' @param priority Name of category to prioritise at the top of the forest plot. Default = `"Cardiometabolic"`.
+#' @param priority Name of category to prioritise at the top of the forest plot. The default is `"Cardiometabolic"`.
 #'
 #' @export
 #' @return grid plot object
