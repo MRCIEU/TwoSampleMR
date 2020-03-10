@@ -320,7 +320,7 @@ mr_wrapper_single <- function(dat)
 #' Perform full set of MR analyses
 #'
 #'
-#' @param dat Output from harmonise_data()
+#' @param dat Output from [`harmonise_data()`].
 #'
 #' @export
 #' @return list
