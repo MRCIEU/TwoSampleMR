@@ -52,9 +52,9 @@ split_exposure <- function(mr_res)
 
 #' Generate odds ratios 
 #'
-#' This function takes b and se from mr() and generates odds ratios and 95 percent confidence intervals
+#' This function takes b and se from [`mr()`] and generates odds ratios and 95 percent confidence intervals.
 #'
-#' @param mr_res Results from mr()
+#' @param mr_res Results from [`mr()`].
 #'
 #' @export
 #' @return data frame		
