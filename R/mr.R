@@ -252,10 +252,11 @@ default_parameters <- function()
 
 #' Perform 2 sample IV using Wald ratio.
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
@@ -266,7 +267,7 @@ default_parameters <- function()
 #' \item{nsnp}{1}
 #' }
 #' @importFrom stats pnorm
-mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out)
+mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(length(b_exp) > 1)
 	{
