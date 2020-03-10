@@ -625,7 +625,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #' @param b_out Vector of genetic effects on outcome.
 #' @param se_exp Standard errors of genetic effects on exposure.
 #' @param se_out Standard errors of genetic effects on outcome.
-#' @param parameters The default is `default_parameters()`. Specify the number of bootstrap replications to calculate the SE with `nboot`. The default is `nboot=1000`.
+#' @param parameters The default is `default_parameters()`. Specify the number of bootstrap replications to calculate the SE with `nboot`. The default is `list(nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
@@ -658,7 +658,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 #' @param b_out Vector of genetic effects on outcome.
 #' @param se_exp Standard errors of genetic effects on exposure.
 #' @param se_out Standard errors of genetic effects on outcome.
-#' @param parameters The number of bootstrap replications used to calculate the SE can be set through `parameters=list(nboot = 1000)`. The default is `nboot=1000`.
+#' @param parameters The number of bootstrap replications used to calculate the SE can be set through `parameters=list(nboot = 1000)`. The default is `list(nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
@@ -722,14 +722,14 @@ weighted_median <- function(b_iv, weights)
 
 #' Calculate standard errors for weighted median method using bootstrap
 #'
-#' Based on new script for weighted median confidence interval, update 31 July 2015
+#' Based on new script for weighted median confidence interval, update 31 July 2015.
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param weights Weights to apply to each SNP
-#' @param nboot Number of bootstraps. Default 1000
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param weights Weights to apply to each SNP.
+#' @param nboot Number of bootstrap replications. The default is `1000`.
 #'
 #' @export
 #' @return Empirical standard error
