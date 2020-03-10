@@ -7,7 +7,7 @@
 mr_wrapper(dat)
 }
 \arguments{
-\item{dat}{Output from harmonise_data()}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 }
 \value{
 list

@@ -7,7 +7,7 @@
 mv_lasso_feature_selection(mvdat)
 }
 \arguments{
-\item{mvdat}{Output from \code{mv_harmonise_data}}
+\item{mvdat}{Output from \code{\link{mv_harmonise_data}}.}
 }
 \value{
 data frame of retained features
