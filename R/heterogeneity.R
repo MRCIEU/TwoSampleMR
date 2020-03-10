@@ -5,7 +5,7 @@
 #' Get heterogeneity statistics.
 #'
 #' @param dat Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.
-#' @param parameters Parameters to be used for various MR methods. Default is output from [`dafault_parameters`].
+#' @param parameters Parameters to be used for various MR methods. Default is output from [`default_parameters`].
 #' @param method_list List of methods to use in analysis. See [`mr_method_list()`] for details.
 #'
 #' @export
