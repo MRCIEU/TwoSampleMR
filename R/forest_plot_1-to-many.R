@@ -139,20 +139,27 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 
 #' Sort results for 1-to-many forest plot
 #'
-#' This function sorts user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame.    
+#' This function sorts user-supplied results for the [`forest_plot_1_to_many()`] function. The user supplies their results in the form of a data frame.    
 #' 
-#' @param mr_res Data frame of results supplied by the user
-#' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
-#' @param trait_m The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param group Name of grouping variable in mr_res. 
-#' @param priority If sort_action=3, choose which value of the trait_m variable should be given priority and go above the other trait_m values. The trait with the largest effect size for the prioritised group will go to the top of the plot. 
-#' @param sort_action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from different MR methods); 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
+#' @param mr_res Data frame of results supplied by the user.
+#' @param b Name of the column specifying the effect of the exposure on the outcome. The default is `"b"`.
+#' @param trait_m The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. The default is `"outcome"`.
+#' @param group Name of grouping variable in `mr_res`. 
+#' @param priority If `sort_action = 3`, choose which value of the `trait_m` variable should be given priority and go above the other `trait_m` values. 
+#' The trait with the largest effect size for the prioritised group will go to the top of the plot. 
+#' @param sort_action Choose how to sort results. 
+#' \itemize{
+#' \item `sort_action = 1`: sort results by effect size within groups. Use the group order supplied by the user. 
+#' \item `sort_action = 2`: sort results by effect size and group. Overides the group ordering supplied by the user. 
+#' \item `sort_action = 3`: group results for the same trait together (e.g. multiple results for the same trait from different MR methods).
+#' \item `sort_action = 4`: sort by decreasing effect size (largest effect size at top and smallest at bottom). 
+#' \item `sort_action = 5`: sort by increasing effect size (smallest effect size at top and largest at bottom).
+#' }
 #'
 #' @export
 #' @return data frame.
-# 
-
-sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,priority=NULL){
+#' 
+sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,priority=NULL){
 
 	mr_res[,trait_m]<-as.character(mr_res[,trait_m])
 	mr_res[,group]<-as.character(mr_res[,group])
