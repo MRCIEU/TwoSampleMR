@@ -12,3 +12,5 @@ doc
 Meta
 .Rproj.user
 .Rhistory
+vignettes/*_cache/
+vignettes/*_files/
