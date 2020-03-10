@@ -15,23 +15,24 @@ get_r_from_lor(
 )
 }
 \arguments{
-\item{lor}{Vector of Log odds ratio}
+\item{lor}{Vector of Log odds ratio.}
 
-\item{af}{Vector of allele frequencies}
+\item{af}{Vector of allele frequencies.}
 
-\item{ncase}{Vector of Number of cases}
+\item{ncase}{Vector of Number of cases.}
 
-\item{ncontrol}{Vector of Number of controls}
+\item{ncontrol}{Vector of Number of controls.}
 
-\item{prevalence}{Vector of Disease prevalence in the population}
+\item{prevalence}{Vector of Disease prevalence in the population.}
 
-\item{model}{Is the effect size estiamted in "logit" (default) or "probit" model}
+\item{model}{Is the effect size estimated from the \code{"logit"} (default) or \code{"probit"} model.}
 
-\item{correction}{Scale the estimated r by correction value. Default = FALSE}
+\item{correction}{Scale the estimated r by correction value. The default is \code{FALSE}.}
 }
 \value{
 Vector of r values
 }
 \description{
-This uses equation 10 in Genetic Epidemiology 36 : 214–224 (2012)
+This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis.
+Genetic Epidemiology 36: 214–224 (2012) \url{https://doi.org/10.1002/gepi.21614}.
 }
