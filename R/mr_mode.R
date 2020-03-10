@@ -169,7 +169,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
+#' @param parameters List containing `phi` - Bandwidth parameter, and `nboot` - number of bootstraps to calculate SE. `default_parameters()` sets `list(phi=1, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
@@ -231,7 +231,7 @@ mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_para
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
+#' @param parameters List containing `phi` - Bandwidth parameter, and `nboot` - number of bootstraps to calculate SE. `default_parameters()` sets `list(phi=1, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
@@ -255,14 +255,15 @@ mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=defau
 }
 
 
-#' MR weighted mode estimator (NOME)
-#'
+#' MR simple mode estimator (NOME)
+#' 
+#' MR simple mode estimator (NOME).
 #'
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
+#' @param parameters List containing `phi` - Bandwidth parameter, and `nboot` - number of bootstraps to calculate SE. `default_parameters()` sets `list(phi=1, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
