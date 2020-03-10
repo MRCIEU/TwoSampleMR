@@ -199,7 +199,7 @@ mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_pa
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
+#' @param parameters List containing `phi` - Bandwidth parameter, and `nboot` - number of bootstraps to calculate SE. `default_parameters()` sets `list(phi=1, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
