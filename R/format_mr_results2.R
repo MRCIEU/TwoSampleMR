@@ -70,11 +70,11 @@ generate_odds_ratios <- function(mr_res)
 
 #' Subset MR-results on method
 #'
-#' This function takes MR results from mr() and restricts to a single method per exposure x disease combination 
+#' This function takes MR results from [`mr()`] and restricts to a single method per exposure x disease combination.
 #'
-#' @param mr_res Results from mr()
-#' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"
-#' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
+#' @param mr_res Results from [`mr()`].
+#' @param single_snp_method Which of the single SNP methods to use when only 1 SNP was used to estimate the causal effect? The default is `"Wald ratio"`.
+#' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is `"Inverse variance weighted"`.
 #'
 #' @export
 #' @return data frame.
