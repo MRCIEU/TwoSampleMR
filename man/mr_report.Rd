@@ -19,7 +19,7 @@ mr_report(
 
 \item{output_path}{Directory in which reports should be saved.}
 
-\item{output_type}{Choose "html" or "md". Default is "html".
+\item{output_type}{Choose \code{"html"} or \code{"md"}. Default is \code{"html"}.
 All output files including cache and figures will appear in the
 folder specified in \code{output_path}.}
 

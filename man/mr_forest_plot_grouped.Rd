@@ -23,38 +23,38 @@ mr_forest_plot_grouped(
 )
 }
 \arguments{
-\item{name}{= (character) name of the delimited file containing all of the results on the first sheet (needs to have headers), or of the r object}
+\item{name}{(character) name of the delimited file containing all of the results on the first sheet (needs to have headers), or of the r object.}
 
-\item{eff_Col}{= (character) name of the column in the delimited file that contains the effect sizes}
+\item{eff_Col}{(character) name of the column in the delimited file that contains the effect sizes.}
 
-\item{exposure_Name}{= (character) name of the column in the delimited file containing the \emph{types} of studies}
+\item{exposure_Name}{(character) name of the column in the delimited file containing the \emph{types} of studies.}
 
-\item{outcome_Name}{= (character) name of the column in the delimited file containing the names of each study}
+\item{outcome_Name}{(character) name of the column in the delimited file containing the names of each study.}
 
-\item{forest_Title}{= (character) the title to be used for a forest plot}
+\item{forest_Title}{(character) the title to be used for a forest plot.}
 
-\item{outfile_Name}{= (character) name to be used for output file (\emph{.pdf) or (}.wmf)}
+\item{outfile_Name}{(character) name to be used for output file (\emph{.pdf) or (}.wmf).}
 
-\item{left_Col_Names}{= (character vector) vector containing the names of the left-hand-side annotation columns in the delimited file}
+\item{left_Col_Names}{(character vector) vector containing the names of the left-hand-side annotation columns in the delimited file.}
 
-\item{left_Col_Titles}{= (character vector) vector containing the titles for each left-hand-side annotation column}
+\item{left_Col_Titles}{(character vector) vector containing the titles for each left-hand-side annotation column.}
 
-\item{right_Col_Names}{= (character vector) vector containing the names of the right-hand-side annotation columns in the delimited file}
+\item{right_Col_Names}{(character vector) vector containing the names of the right-hand-side annotation columns in the delimited file.}
 
-\item{right_Col_Titles}{= (character vector) vector containing the titles for each right-hand-side annotation column}
+\item{right_Col_Titles}{(character vector) vector containing the titles for each right-hand-side annotation column.}
 
-\item{debug}{= (logical) show warnings y/n?}
+\item{debug}{(logical) show warnings \code{TRUE}/\code{FALSE}?}
 
-\item{log_ES}{= (logical) perform natural log transform of effect sizes and confidence bounds y/n?}
+\item{log_ES}{(logical) perform natural log transform of effect sizes and confidence bounds \code{TRUE}/\code{FALSE}?}
 
-\item{decrease}{= (logical) sort the studies by decreasing effect sizes y/n?}
+\item{decrease}{(logical) sort the studies by decreasing effect sizes \code{TRUE}/\code{FALSE}?}
 
-\item{returnRobj}{= (logical) return the graph as an internal R object y/n?}
+\item{returnRobj}{(logical) return the graph as an internal R object \code{TRUE}/\code{FALSE}?}
 
-\item{se_Col}{= (character) name of the column giving the standard error of the effect sizes}
+\item{se_Col}{(character) name of the column giving the standard error of the effect sizes.}
 }
 \value{
-grid object giving the forest plot (or plot as pdf, and )
+grid object giving the forest plot (or plot as pdf)
 }
 \description{
 Grouped forest plot
