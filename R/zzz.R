@@ -1,7 +1,7 @@
 .onAttach <- function(libname, pkgname) {
 
         packageStartupMessage(
-                "TwoSampleMR 0.5.1\n",
+                paste("TwoSampleMR version", packageVersion("TwoSampleMR"), "\n"),
                 "[>] IMPORTANT: Some datasets have been updated, and some are disabled while we update them.\n",
                 "    Apologies for this inconvenience, they will be back up as soon as possible.\n",
                 "    See news(package='TwoSampleMR') and https://gwas.mrcieu.ac.uk for more information\n",
