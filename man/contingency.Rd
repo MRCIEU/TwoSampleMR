@@ -7,18 +7,18 @@
 contingency(af, prop, odds_ratio, eps = 1e-15)
 }
 \arguments{
-\item{af}{Allele frequency of effect allele}
+\item{af}{Allele frequency of effect allele.}
 
-\item{prop}{Proportion of cases}
+\item{prop}{Proportion of cases.}
 
-\item{odds_ratio}{Odds ratio}
+\item{odds_ratio}{Odds ratio.}
 
-\item{eps}{tolerance, default is 1e-15}
+\item{eps}{tolerance, default is \code{1e-15}.}
 }
 \value{
 2x2 contingency table as matrix
 }
 \description{
-Columns are the case and control frequencies
-Rows are the frequencies for allele 1 and allele 2
+Columns are the case and control frequencies.
+Rows are the frequencies for allele 1 and allele 2.
 }
