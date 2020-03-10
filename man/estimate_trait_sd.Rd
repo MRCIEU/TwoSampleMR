@@ -7,17 +7,17 @@
 estimate_trait_sd(b, se, n, p)
 }
 \arguments{
-\item{b}{vector of effect sizes}
+\item{b}{vector of effect sizes.}
 
-\item{se}{vector of standard errors}
+\item{se}{vector of standard errors.}
 
-\item{n}{vector of sample sizes}
+\item{n}{vector of sample sizes.}
 
-\item{p}{vector of allele frequencies}
+\item{p}{vector of allele frequencies.}
 }
 \value{
-vector of sd estimates for each association
+Vector of sd estimates for each association.
 }
 \description{
-Assumes that sample size and allele frequency is correct for each SNP, and that allele frequency gives a reasonable estimate of the variance of the SNP
+Assumes that sample size and allele frequency is correct for each SNP, and that allele frequency gives a reasonable estimate of the variance of the SNP.
 }

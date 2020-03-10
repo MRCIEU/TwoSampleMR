@@ -16,21 +16,21 @@ extract_instruments(
 )
 }
 \arguments{
-\item{outcomes}{Array of outcome IDs (see \code{available_outcomes})}
+\item{outcomes}{Array of outcome IDs (see \code{\link{available_outcomes}}).}
 
-\item{p1}{= 5e-8 Significance threshold}
+\item{p1}{Significance threshold. The default is \code{5e-8}.}
 
-\item{clump}{= TRUE Whether to clump results}
+\item{clump}{Logical; whether to clump results. The default is \code{TRUE}.}
 
-\item{p2}{= 5e-8 Secondary clumping threshold}
+\item{p2}{Secondary clumping threshold. The default is \code{5e-8}.}
 
-\item{r2}{= 0.001 Clumping r2 cut off}
+\item{r2}{Clumping r2 cut off. The default is \code{0.001}.}
 
-\item{kb}{= 10000 Clumping distance cutoff}
+\item{kb}{Clumping distance cutoff. The default is \code{10000}.}
 
-\item{access_token}{= ieugwasr::check_access_token() Google OAuth2 access token. Used to authenticate level of access to data}
+\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data. The default is \code{ieugwasr::check_access_token()}.}
 
-\item{force_server}{Force the analysis to extract results from the server rather than the MRInstruments package}
+\item{force_server}{Force the analysis to extract results from the server rather than the MRInstruments package.}
 }
 \value{
 data frame

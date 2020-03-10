@@ -14,31 +14,36 @@ format_mr_results(
 )
 }
 \arguments{
-\item{mr_res}{Results from mr()}
+\item{mr_res}{Results from \code{\link[=mr]{mr()}}.}
 
-\item{exponentiate}{Convert effects to OR? Default=FALSE}
+\item{exponentiate}{Convert effects to OR? The default is \code{FALSE}.}
 
-\item{single_snp_method}{Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"}
+\item{single_snp_method}{Which of the single SNP methods to use when only 1 SNP was used to estimate the causal effect? The default is \code{"Wald ratio"}.}
 
-\item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"}
+\item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is \code{"Inverse variance weighted"}.}
 
-\item{ao_slc}{Logical; retrieve sample size and subcategory using available_outcomes(). If set to FALSE mr_res must contain the following additional columns: subcategory and sample_size.}
+\item{ao_slc}{Logical; retrieve sample size and subcategory using \code{\link[=available_outcomes]{available_outcomes()}}. If set to \code{FALSE} \code{mr_res} must contain the following additional columns: \code{subcategory} and \code{sample_size}.}
 
-\item{priority}{Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"}
+\item{priority}{Name of category to prioritise at the top of the forest plot. The default is \code{"Cardiometabolic"}.}
 }
 \value{
 data frame.
 }
 \description{
-This function takes the results from \code{mr()} and is particularly useful
+This function takes the results from \code{\link[=mr]{mr()}} and is particularly useful
 if the MR has been applied using multiple exposures and multiple outcomes.
 It creates a new data frame with the following:
 \itemize{
-\item exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
+\item Variables: exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
 \item only one estimate for each exposure-outcome
 \item exponentiated effects if required
 }
 }
 \details{
-By default it uses the \code{available_outcomes()} function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If \code{ao_slc} set to \code{TRUE} then the user must supply their own study level characteristics. This is useful when the user has supplied their own outcome GWAS results (i.e. they are not in MR-Base).
+By default it uses the \code{\link[=available_outcomes]{available_outcomes()}} function to retrieve the study level characteristics for the outcome trait,
+including sample size and outcome category.
+This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base.
+
+If \code{ao_slc} is set to \code{TRUE} then the user must supply their own study level characteristics.
+This is useful when the user has supplied their own outcome GWAS results (i.e. they are not in MR-Base).
 }
