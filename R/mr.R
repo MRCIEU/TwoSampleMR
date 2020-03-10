@@ -834,7 +834,7 @@ mr_median <- function(dat, parameters=default_parameters())
 #' 
 #' The default multiplicative random effects IVW estimate. 
 #' The standard error is corrected for under dispersion
-#' Use the \code{mr_ivw_mre} function for estimates that don't correct for under dispersion.
+#' Use the [`mr_ivw_mre`] function for estimates that don't correct for under dispersion.
 #' 
 #' @md
 #' @param b_exp Vector of genetic effects on exposure.
