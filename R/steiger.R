@@ -307,12 +307,12 @@ test_r_from_pn <- function()
 
 	param <- gather(param, key=out, value=value, rsq1, rsq2)
 
-	p <- ggplot(param, aes(x=rsq_emp, value)) +
-	geom_abline(slope=1, linetype="dotted") +
-	geom_line(aes(colour=out)) +
-	facet_grid(. ~ n) +
-	scale_x_log10() +
-	scale_y_log10()
+	p <- ggplot2::ggplot(param, ggplot2::aes(x=rsq_emp, value)) +
+	  ggplot2::geom_abline(slope=1, linetype="dotted") +
+	  ggplot2::geom_line(aes(colour=out)) +
+	  ggplot2::facet_grid(. ~ n) +
+	  ggplot2::scale_x_log10() +
+	  ggplot2::scale_y_log10()
 	return(list(dat=param, p=p))
 }
 
