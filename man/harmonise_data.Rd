@@ -13,9 +13,11 @@ harmonise_data(exposure_dat, outcome_dat, action = 2)
 
 \item{action}{Level of strictness in dealing with SNPs.
 \itemize{
-\item \code{1}=Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended);
-\item \code{2}=Try to infer positive strand alleles, using allele frequencies for palindromes;
-\item \code{3}=Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis. If a single value is passed then this action is applied to all outcomes. But multiple values can be supplied as a vector, each element relating to a different outcome.
+\item \code{action = 1}: Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended);
+\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes;
+\item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis.
+If a single value is passed then this action is applied to all outcomes.
+But multiple values can be supplied as a vector, each element relating to a different outcome.
 }}
 }
 \value{
@@ -50,5 +52,8 @@ This means the inputs must be dataframes with the following columns:
 \item \code{eaf.exposure}
 }
 
-The function tries to harmonise INDELs. If they are coded as sequence strings things work more smoothly. If they are coded as D/I in one dataset it will try to convert them to sequences if the other dataset has adequate information. If coded as D/I in one dataset and as a variant with equal length INDEL alleles in the other, the variant is dropped. If one or both the datasets only has one allele (i.e. the effect allele) then harmonisation is naturally going to be more ambiguous and more variants will be dropped.
+The function tries to harmonise INDELs. If they are coded as sequence strings things work more smoothly.
+If they are coded as D/I in one dataset it will try to convert them to sequences if the other dataset has adequate information.
+If coded as D/I in one dataset and as a variant with equal length INDEL alleles in the other, the variant is dropped.
+If one or both the datasets only has one allele (i.e. the effect allele) then harmonisation is naturally going to be more ambiguous and more variants will be dropped.
 }
