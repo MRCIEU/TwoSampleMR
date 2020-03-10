@@ -43,12 +43,12 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 
 #' Get LD matrix for list of SNPs
 #'
-#' This function takes a list of SNPs and searches for them in 502 European samples from 1000 Genomes phase 3 data
-#' It then creates an LD matrix of r values (signed, and not squared)
-#' All LD values are with respect to the major alleles in the 1000G dataset. You can specify whether the allele names are displayed
+#' This function takes a list of SNPs and searches for them in 502 European samples from 1000 Genomes phase 3 data.
+#' It then creates an LD matrix of r values (signed, and not squared).
+#' All LD values are with respect to the major alleles in the 1000G dataset. You can specify whether the allele names are displayed.
 #'
-#' @param snps List of SNPs
-#' @param with_alleles Whether to append the allele names to the SNP names. Default: TRUE
+#' @param snps List of SNPs.
+#' @param with_alleles Whether to append the allele names to the SNP names. The default is `TRUE`.
 #'
 #' @export
 #' @return Matrix of LD r values
