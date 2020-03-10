@@ -9,9 +9,16 @@ power_prune(dat, method = 1, dist.outcome = "binary")
 \arguments{
 \item{dat}{Results from \code{\link[=harmonise_data]{harmonise_data()}}.}
 
-\item{method}{Should the duplicate summary sets be pruned on the basis of sample size alone (\code{method = 1}) or a combination of instrument strength and sample size (method = 2)? Default set to 1. When set to 1, the duplicate summary sets are first dropped on the basis of the outcome sample size (smaller duplicates dropped). If duplicates are still present, remaining duplicates are dropped on the basis of the exposure sample size (smaller duplicates dropped). When method set to 2, duplicates are dropped on the basis of instrument strength (amount of variation explained in the exposure by the instrumental SNPs) and sample size, and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure cannot be binary). The SNP-outcome effects can correspond to either a binary or continuous trait. If the exposure is binary then \code{method=1} should be used.}
+\item{method}{Should the duplicate summary sets be pruned on the basis of sample size alone (\code{method = 1})
+or a combination of instrument strength and sample size (\code{method = 2})? Default set to \code{1}.
+When set to 1, the duplicate summary sets are first dropped on the basis of the outcome sample size (smaller duplicates dropped).
+If duplicates are still present, remaining duplicates are dropped on the basis of the exposure sample size (smaller duplicates dropped).
+When method is set to \code{2}, duplicates are dropped on the basis of instrument strength
+(amount of variation explained in the exposure by the instrumental SNPs) and sample size,
+and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure cannot be binary).
+The SNP-outcome effects can correspond to either a binary or continuous trait. If the exposure is binary then \code{method=1} should be used.}
 
-\item{dist.outcome}{The distribution of the outcome. Can either be binary or continuous. Default set to \code{"binary"}.}
+\item{dist.outcome}{The distribution of the outcome. Can either be \code{"binary"} or \code{"continuous"}. Default set to \code{"binary"}.}
 }
 \value{
 data.frame with duplicate summary sets removed
