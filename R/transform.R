@@ -1,8 +1,8 @@
 #' Try to standardise continuous traits to be in standard deviation units
 #'
-#' Uses \code{estimate_trait_sd}
+#' Uses [`estimate_trait_sd`].
 #'
-#' @param dat Output from \code{harmonise_data}
+#' @param dat Output from [`harmonise_data`].
 #'
 #' @export
 #' @return Data frame
