@@ -112,11 +112,11 @@ harmonise_ld_dat <- function(x, ld)
 
 #' Wrapper for MR-PRESSO
 #'
-#' See https://github.com/rondolab/MR-PRESSO
+#' See <https://github.com/rondolab/MR-PRESSO> for more details.
 #'
-#' @param dat Output from harmonise_data
-#' @param NbDistribution = 1000 Number of bootstraps
-#' @param SignifThreshold = 0.05 Outlier significance threshold
+#' @param dat Output from [`harmonise_data`].
+#' @param NbDistribution Number of bootstrap replications. The default is `1000`.
+#' @param SignifThreshold Outlier significance threshold. The default is `0.05`.
 #'
 #' @export
 #' @return List of results for every exposure/outcome combination
@@ -198,9 +198,9 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
 
 #' Perform MRMix analysis on harmonised dat object
 #'
-#' See https://github.com/gqi/MRMix for more details
+#' See <https://github.com/gqi/MRMix> for more details.
 #'
-#' @param dat Output from harmonised_data. Ensure that eaf.exposure
+#' @param dat Output from [`harmonise_data`]. Ensures that no eaf.exposure values are missing.
 #'
 #' @export
 #' @return List of results, with one list item for every exposure/outcome pair in dat object
