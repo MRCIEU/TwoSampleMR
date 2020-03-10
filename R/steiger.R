@@ -457,15 +457,15 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 
 #' Estimate proportion of variance of liability explained by SNP in general population
 #'
-#' This uses equation 10 in Genetic Epidemiology 36 : 214–224 (2012)
+#' This uses equation 10 in Lee et al. Genetic Epidemiology 36: 214–224 (2012) <https://doi.org/10.1002/gepi.21614>.
 #'
-#' @param lor Vector of Log odds ratio
-#' @param af Vector of allele frequencies 
-#' @param ncase Vector of Number of cases
-#' @param ncontrol Vector of Number of controls
-#' @param prevalence Vector of Disease prevalence in the population
-#' @param model Is the effect size estiamted in "logit" (default) or "probit" model
-#' @param correction Scale the estimated r by correction value. Default = FALSE
+#' @param lor Vector of Log odds ratio.
+#' @param af Vector of allele frequencies.
+#' @param ncase Vector of Number of cases.
+#' @param ncontrol Vector of Number of controls.
+#' @param prevalence Vector of Disease prevalence in the population.
+#' @param model Is the effect size estimated from the `"logit"` (default) or `"probit"` model.
+#' @param correction Scale the estimated r by correction value. The default is `FALSE`.
 #'
 #' @export
 #' @return Vector of r values
