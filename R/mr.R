@@ -755,7 +755,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing `penk` - Constant term in penalisation, and `nboot` - number of bootstrap replications to calculate SE. `default_parameters()` sets `parameters=list(penk=20, nboot=1000)`
+#' @param parameters List containing `penk` - Constant term in penalisation, and `nboot` - number of bootstrap replications to calculate SE. `default_parameters()` sets `parameters=list(penk=20, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
