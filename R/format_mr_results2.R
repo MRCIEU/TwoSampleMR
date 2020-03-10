@@ -233,9 +233,16 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,Exp=F,split.exposure=
 #' the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. 
 #'
 #' @param dat Results from [`harmonise_data()`].
-#' @param method Should the duplicate summary sets be pruned on the basis of sample size alone (`method = 1`) or a combination of instrument strength and sample size (method = 2)? Default set to 1. When set to 1, the duplicate summary sets are first dropped on the basis of the outcome sample size (smaller duplicates dropped). If duplicates are still present, remaining duplicates are dropped on the basis of the exposure sample size (smaller duplicates dropped). When method set to 2, duplicates are dropped on the basis of instrument strength (amount of variation explained in the exposure by the instrumental SNPs) and sample size, and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure cannot be binary). The SNP-outcome effects can correspond to either a binary or continuous trait. If the exposure is binary then `method=1` should be used. 
+#' @param method Should the duplicate summary sets be pruned on the basis of sample size alone (`method = 1`) 
+#' or a combination of instrument strength and sample size (`method = 2`)? Default set to `1`. 
+#' When set to 1, the duplicate summary sets are first dropped on the basis of the outcome sample size (smaller duplicates dropped). 
+#' If duplicates are still present, remaining duplicates are dropped on the basis of the exposure sample size (smaller duplicates dropped). 
+#' When method is set to `2`, duplicates are dropped on the basis of instrument strength 
+#' (amount of variation explained in the exposure by the instrumental SNPs) and sample size, 
+#' and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure cannot be binary). 
+#' The SNP-outcome effects can correspond to either a binary or continuous trait. If the exposure is binary then `method=1` should be used. 
 #' 
-#' @param dist.outcome The distribution of the outcome. Can either be binary or continuous. Default set to `"binary"`. 
+#' @param dist.outcome The distribution of the outcome. Can either be `"binary"` or `"continuous"`. Default set to `"binary"`. 
 #' 
 #' @export
 #' @return data.frame with duplicate summary sets removed
