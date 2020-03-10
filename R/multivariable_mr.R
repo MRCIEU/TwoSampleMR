@@ -438,7 +438,7 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 
 #' Apply LASSO feature selection to mvdat object
 #'
-#' @param mvdat Output from \code{mv_harmonise_data}
+#' @param mvdat Output from [`mv_harmonise_data`].
 #'
 #' @export
 #' @return data frame of retained features
