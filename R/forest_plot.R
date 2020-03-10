@@ -28,26 +28,23 @@
 
 #' Grouped forest plot
 #'
-#' @param name = (character) name of the delimited file containing all of the results on the first sheet (needs to have headers), or of the r object
-
-#' @param eff_Col = (character) name of the column in the delimited file that contains the effect sizes
-
-#' @param exposure_Name = (character) name of the column in the delimited file containing the *types* of studies
-#' @param outcome_Name = (character) name of the column in the delimited file containing the names of each study
-#' @param outfile_Name = (character) name to be used for output file (*.pdf) or (*.wmf)
-#' @param forest_Title = (character) the title to be used for a forest plot
-#' @param left_Col_Names = (character vector) vector containing the names of the left-hand-side annotation columns in the delimited file
-#' @param left_Col_Titles = (character vector) vector containing the titles for each left-hand-side annotation column
-#' @param right_Col_Names = (character vector) vector containing the names of the right-hand-side annotation columns in the delimited file
-#' @param right_Col_Titles = (character vector) vector containing the titles for each right-hand-side annotation column
-#' @param debug = (logical) show warnings y/n?
-
-#' @param log_ES = (logical) perform natural log transform of effect sizes and confidence bounds y/n?
-#' @param decrease = (logical) sort the studies by decreasing effect sizes y/n?
-#' @param se_Col = (character) name of the column giving the standard error of the effect sizes
-#' @param returnRobj = (logical) return the graph as an internal R object y/n?
+#' @param name (character) name of the delimited file containing all of the results on the first sheet (needs to have headers), or of the r object.
+#' @param eff_Col (character) name of the column in the delimited file that contains the effect sizes.
+#' @param exposure_Name (character) name of the column in the delimited file containing the *types* of studies.
+#' @param outcome_Name (character) name of the column in the delimited file containing the names of each study.
+#' @param outfile_Name (character) name to be used for output file (*.pdf) or (*.wmf).
+#' @param forest_Title (character) the title to be used for a forest plot.
+#' @param left_Col_Names (character vector) vector containing the names of the left-hand-side annotation columns in the delimited file.
+#' @param left_Col_Titles (character vector) vector containing the titles for each left-hand-side annotation column.
+#' @param right_Col_Names (character vector) vector containing the names of the right-hand-side annotation columns in the delimited file.
+#' @param right_Col_Titles (character vector) vector containing the titles for each right-hand-side annotation column.
+#' @param debug (logical) show warnings `TRUE`/`FALSE`?
+#' @param log_ES (logical) perform natural log transform of effect sizes and confidence bounds `TRUE`/`FALSE`?
+#' @param decrease (logical) sort the studies by decreasing effect sizes `TRUE`/`FALSE`?
+#' @param se_Col (character) name of the column giving the standard error of the effect sizes.
+#' @param returnRobj (logical) return the graph as an internal R object `TRUE`/`FALSE`?
 #'
-#' @return grid object giving the forest plot (or plot as pdf, and )
+#' @return grid object giving the forest plot (or plot as pdf)
 #' @importFrom grDevices dev.off pdf
 #' @importFrom stats qnorm
 mr_forest_plot_grouped <-
