@@ -9,5 +9,6 @@
 #' **Full documentation available here:** [https://mrcieu.github.io/TwoSampleMR](https://mrcieu.github.io/TwoSampleMR/)
 #'
 #' @name TwoSampleMR-package
+#' @aliases TwoSampleMR twosamplemr
 #' @docType package
 NULL
