@@ -390,13 +390,13 @@ mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 
 #' Obtain 2x2 contingency table from marginal parameters and odds ratio
 #'
-#' Columns are the case and control frequencies
-#' Rows are the frequencies for allele 1 and allele 2
+#' Columns are the case and control frequencies.
+#' Rows are the frequencies for allele 1 and allele 2.
 #'
-#' @param af Allele frequency of effect allele 
-#' @param prop Proportion of cases
-#' @param odds_ratio Odds ratio
-#' @param eps tolerance, default is 1e-15
+#' @param af Allele frequency of effect allele.
+#' @param prop Proportion of cases.
+#' @param odds_ratio Odds ratio.
+#' @param eps tolerance, default is `1e-15`.
 #'
 #' @export
 #' @return 2x2 contingency table as matrix
