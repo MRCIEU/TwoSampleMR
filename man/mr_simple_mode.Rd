@@ -15,7 +15,7 @@ mr_simple_mode(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
 
 \item{se_out}{Standard errors of genetic effects on outcome}
 
-\item{parameters}{List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000}
+\item{parameters}{List containing \code{phi} - Bandwidth parameter, and \code{nboot} - number of bootstraps to calculate SE. \code{default_parameters()} sets \code{list(phi=1, nboot=1000)}.}
 }
 \value{
 List with the following elements:
