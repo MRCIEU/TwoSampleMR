@@ -248,7 +248,7 @@ mr_forest_plot_grouped <-
             width_vec <- c(left_RW,0.34,right_RW)
             width_vec <- width_vec / sum(width_vec)
             # convert the grid objects (now grouped) into a table of grid objects that can be plotted using grid.draw
-            grp_FP <- gtable_matrix( name = "groupplot", grobs = matrix(grob_Bag, nrow = 1), widths = unit(width_vec, "npc"), heights = unit(1,"npc") )
+            grp_FP <- gtable::gtable_matrix( name = "groupplot", grobs = matrix(grob_Bag, nrow = 1), widths = unit(width_vec, "npc"), heights = unit(1,"npc") )
 
             # return the grid object table, to be plotted
             return(grp_FP)
