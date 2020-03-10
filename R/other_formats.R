@@ -140,9 +140,9 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 
 #' Convert dat to RadialMR format
 #'
-#' Creates a list of RadialMR format datasets for each exposure - outcome pair
+#' Creates a list of RadialMR format datasets for each exposure - outcome pair.
 #'
-#' @param dat Output from \code{harmonise_data}
+#' @param dat Output from [`harmonise_data`].
 #'
 #' @export
 #' @return List of RadialMR format datasets
