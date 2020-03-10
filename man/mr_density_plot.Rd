@@ -12,13 +12,13 @@ mr_density_plot(
 )
 }
 \arguments{
-\item{singlesnp_results}{from \code{mr_singlesnp}}
+\item{singlesnp_results}{from \code{\link{mr_singlesnp}}.}
 
-\item{mr_results}{Results from \code{mr}}
+\item{mr_results}{Results from \code{\link{mr}}.}
 
-\item{exponentiate}{Plot on exponential scale. Default=FALSE}
+\item{exponentiate}{Plot on exponentiated scale. The default is \code{FALSE}.}
 
-\item{bandwidth}{Density bandwidth parameter}
+\item{bandwidth}{Density bandwidth parameter.}
 }
 \value{
 List of plots
