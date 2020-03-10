@@ -7,20 +7,21 @@
 ios(exposure_dat, background_dat)
 }
 \arguments{
-\item{exposure_dat}{Instruments for the exposure, obtained using \code{extract_instruments}}
+\item{exposure_dat}{Instruments for the exposure, obtained using \code{\link{extract_instruments}}.}
 
-\item{background_dat}{Effects for the instruments on a set of variables, used to calculate index of suspicion}
+\item{background_dat}{Effects for the instruments on a set of variables, used to calculate index of suspicion.}
 }
 \value{
 Data.frame
 }
 \description{
-If a SNP influences multiple other traits then it could be 'suspicious', and more likely to be pleiotropic. This function implements two basic approaches to estimate IOS
-\describe{
-\item{ios1}{A summary of the SNP r2 with the other traits (r2_gu)}
-\item{ios2}{A summary of the ratio of r2_gu / r2_gx, where r2_gx is the variance explained by the SNP on the exposure. Estimates the index of suspicion, whereupon SNPs which have a larger effect on a set of traits given their effect on the exposure are deemed more suspicious}
+If a SNP influences multiple other traits then it could be 'suspicious', and more likely to be pleiotropic.
+This function implements two basic approaches to estimate IOS
+\itemize{
+\item ios1: A summary of the SNP r2 with the other traits (r2_gu).
+\item ios2: A summary of the ratio of r2_gu / r2_gx, where r2_gx is the variance explained by the SNP on the exposure. Estimates the index of suspicion, whereupon SNPs which have a larger effect on a set of traits given their effect on the exposure are deemed more suspicious.
 }
 }
 \details{
-Summarising across multiple traits can be dune using mean, sd, iqr, median, 95\% value, maximum value
+Summarising across multiple traits can be dune using mean, sd, iqr, median, 95\% value, maximum value.
 }

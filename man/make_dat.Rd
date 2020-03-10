@@ -7,9 +7,9 @@
 make_dat(exposures = c(2, 301), outcomes = c(7, 1001))
 }
 \arguments{
-\item{exposures}{default 2 and 301 (bmi and ldl)}
+\item{exposures}{The default is \code{c(2, 301)} (BMI and LDL).}
 
-\item{outcomes}{default 7 and 1001 (edu and chd)}
+\item{outcomes}{The default is \code{c(7, 1001)} (EDU and CHD).}
 }
 \value{
 Harmonised data frame
