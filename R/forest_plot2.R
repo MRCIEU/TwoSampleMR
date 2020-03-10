@@ -4,15 +4,16 @@
 #' if the MR has been applied using multiple exposures and multiple outcomes. 
 #' It creates a new data frame with the following:
 #' \itemize{
-#' \item exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
+#' \item Variables: exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
 #' \item only one estimate for each exposure-outcome
 #' \item exponentiated effects if required
 #' }
 #'
 #' By default it uses the [`available_outcomes()`] function to retrieve the study level characteristics for the outcome trait, 
 #' including sample size and outcome category. 
-#' This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. 
-#' If \code{ao_slc} set to \code{TRUE} then the user must supply their own study level characteristics. 
+#' This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base.
+#'  
+#' If \code{ao_slc} is set to \code{TRUE} then the user must supply their own study level characteristics. 
 #' This is useful when the user has supplied their own outcome GWAS results (i.e. they are not in MR-Base).  
 #' 
 #' @param mr_res Results from [`mr()`].
