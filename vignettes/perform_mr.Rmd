@@ -24,6 +24,7 @@ knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
 suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
 suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
 suppressWarnings(suppressPackageStartupMessages(library(knitr)))
+suppressWarnings(suppressPackageStartupMessages(library(ggplot2)))
 ```
 
 ## Introduction
@@ -161,7 +162,7 @@ res <- mr(dat, method_list=c("mr_egger_regression", "mr_ivw"))
 p1 <- mr_scatter_plot(res, dat)
 ```
 
-It is possible to save this plot using the `ggsave()` function, e.g. to save as a pdf
+It is possible to save this plot using the `ggsave()` function from the `ggplot2` package, e.g. to save as a pdf
 
 ```{r eval=FALSE}
 ggsave(p1[[1]], file="filename.pdf", width=7, height=7)
@@ -173,7 +174,7 @@ or save as a png
 ggsave(p1[[1]], file="filename.png", width=7, height=7)
 ```
 
-See `?ggsave` for more info.
+See `?ggplot2::ggsave` for more info.
 
 
 ### Forest plot

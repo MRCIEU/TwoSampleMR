@@ -2,7 +2,7 @@
 % Please edit documentation in R/query.R
 \name{extract_outcome_data}
 \alias{extract_outcome_data}
-\title{Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.}
+\title{Supply the output from \code{\link{read_exposure_data}} and all the SNPs therein will be queried against the requested outcomes in remote database using API.}
 \usage{
 extract_outcome_data(
   snps,
@@ -18,27 +18,29 @@ extract_outcome_data(
 )
 }
 \arguments{
-\item{snps}{Array of SNP rs IDs}
+\item{snps}{Array of SNP rs IDs.}
 
-\item{outcomes}{Array of IDs (see \code{id} column in output from \code{available_outcomes})}
+\item{outcomes}{Array of IDs (see \code{id} column in output from \code{\link{available_outcomes}}).}
 
-\item{proxies}{Look for LD tags? Default is TRUE.}
+\item{proxies}{Look for LD tags? Default is \code{TRUE}.}
 
-\item{rsq}{Minimum LD rsq value (if proxies = 1). Default = 0.8.}
+\item{rsq}{Minimum LD rsq value (if proxies = 1). Default = \code{0.8}.}
 
-\item{align_alleles}{= 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no}
+\item{align_alleles}{Try to align tag alleles to target alleles (if proxies = 1). \code{1} = yes, \code{0} = no. The default is \code{1}.}
 
-\item{palindromes}{= 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no}
+\item{palindromes}{Allow palindromic SNPs (if proxies = 1). \code{1} = yes, \code{0} = no. The default is \code{1}.}
 
-\item{maf_threshold}{= 0.3 MAF threshold to try to infer palindromic SNPs.}
+\item{maf_threshold}{MAF threshold to try to infer palindromic SNPs. The default is \code{0.3}.}
 
-\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data}
+\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data.}
 
-\item{...}{Other options to pass to internal extraction function}
+\item{splitsize}{The default is \code{10000}.}
+
+\item{proxy_splitsize}{The default is \code{500}.}
 }
 \value{
 Dataframe of summary statistics for all available outcomes
 }
 \description{
-Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
+Supply the output from \code{\link{read_exposure_data}} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 }

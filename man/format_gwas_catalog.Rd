@@ -6,11 +6,16 @@
 \usage{
 format_gwas_catalog(gwas_catalog_subset, type = "exposure")
 }
+\arguments{
+\item{gwas_catalog_subset}{The GWAS catalog subset.}
+
+\item{type}{The default is \code{"exposure"}.}
+}
 \value{
 Data frame
 }
 \description{
-DEPRECATED. Please use \code{format_data} instead
+DEPRECATED. Please use \code{\link{format_data}} instead.
 }
 \examples{
 \dontrun{

@@ -3,15 +3,14 @@
 #' This function searches for GWAS significant SNPs (for a given p-value) for a specified set of outcomes.
 #' It then performs LD based clumping to return only independent significant associations.
 #'
-#' @param outcomes Array of outcome IDs (see \code{available_outcomes})
-#' @param p1 = 5e-8 Significance threshold
-#' @param clump = TRUE Whether to clump results
-#' @param p2 = 5e-8 Secondary clumping threshold
-#' @param r2 = 0.001 Clumping r2 cut off
-#' @param kb = 10000 Clumping distance cutoff
-#' @param access_token = ieugwasr::check_access_token() Google OAuth2 access token. Used to authenticate level of access to data
-#' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package
-#' @param force_server_if_empty Some of the newly added MR-Base datasets don't have pre-calculated clumped results yet. This option is soon to be deprecated but temporarily we are forcing the search for instruments when an outcome doesn't have any precalculated results. Default = TRUE.
+#' @param outcomes Array of outcome IDs (see [`available_outcomes`]).
+#' @param p1 Significance threshold. The default is `5e-8`.
+#' @param clump Logical; whether to clump results. The default is `TRUE`.
+#' @param p2 Secondary clumping threshold. The default is `5e-8`.
+#' @param r2 Clumping r2 cut off. The default is `0.001`.
+#' @param kb Clumping distance cutoff. The default is `10000`.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data. The default is `ieugwasr::check_access_token()`.
+#' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package.
 #'
 #' @export
 #' @return data frame

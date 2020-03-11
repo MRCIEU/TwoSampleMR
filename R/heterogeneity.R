@@ -1,10 +1,12 @@
 
 
-#' Get heterogeneity stats
+#' Get heterogeneity statistics
+#' 
+#' Get heterogeneity statistics.
 #'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param parameters Parameters to be used for various MR methods. Default is output from \code{dafault_param}.
-#' @param method_list List of methods to use in analysis. See \code{mr_method_list()} for details.
+#' @param dat Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.
+#' @param parameters Parameters to be used for various MR methods. Default is output from [`default_parameters`].
+#' @param method_list List of methods to use in analysis. See [`mr_method_list()`] for details.
 #'
 #' @export
 #' @return Data frame
@@ -42,9 +44,9 @@ mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list =
 
 #' Test for horizontal pleiotropy in MR analysis
 #'
-#' Performs MR Egger and returns intercept values
+#' Performs MR Egger and returns intercept values.
 #'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
+#' @param dat Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.
 #'
 #' @export
 #' @return data frame

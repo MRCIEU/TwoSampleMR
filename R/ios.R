@@ -1,21 +1,24 @@
 #' Calculate index of suspicion
 #'
-#' If a SNP influences multiple other traits then it could be 'suspicious', and more likely to be pleiotropic. This function implements two basic approaches to estimate IOS
+#' If a SNP influences multiple other traits then it could be 'suspicious', and more likely to be pleiotropic. 
+#' This function implements two basic approaches to estimate IOS
+#' \itemize{
+#' \item ios1: A summary of the SNP r2 with the other traits (r2_gu).
+#' \item ios2: A summary of the ratio of r2_gu / r2_gx, where r2_gx is the variance explained by the SNP on the exposure. Estimates the index of suspicion, whereupon SNPs which have a larger effect on a set of traits given their effect on the exposure are deemed more suspicious.
+#' }
 #'
-#' - ios1: A summary of the SNP r2 with the other traits (r2_gu)
-#' - ios2: A summary of the ratio of r2_gu / r2_gx, where r2_gx is the variance explained by the SNP on the exposure. Estimates the index of suspicion, whereupon SNPs which have a larger effect on a set of traits given their effect on the exposure are deemed more suspicious
+#' Summarising across multiple traits can be dune using mean, sd, iqr, median, 95% value, maximum value.
 #'
-#' Summarising across multiple traits can be dune using mean, sd, iqr, median, 95% value, maximum value
-#'
-#' @param exposure_dat Instruments for the exposure, obtained using \code{extract_instruments}
-#' @param background_dat Effects for the instruments on a set of variables, used to calculate index of suspicion
+#' @param exposure_dat Instruments for the exposure, obtained using [`extract_instruments`].
+#' @param background_dat Effects for the instruments on a set of variables, used to calculate index of suspicion.
 #'
 #' @export
 #' @return Data.frame
+#' @importFrom stats median quantile sd
 ios <- function(exposure_dat, background_dat)
 {
-	require(dplyr)
-	require(reshape2)
+	requireNamespace("dplyr", quietly = TRUE)
+	requireNamespace("reshape2", quietly = TRUE)
 	background_dat$vgu <- background_dat$beta.outcome^2 * 2 * background_dat$eaf.outcome * (1 - background_dat$eaf.outcome)
 	exposure_dat$vgx <- exposure_dat$beta.exposure^2 * 2 * exposure_dat$eaf.exposure * (1 - exposure_dat$eaf.exposure)
 	background_dat <- merge(background_dat, subset(exposure_dat, select=c(SNP, vgx)), by="SNP")

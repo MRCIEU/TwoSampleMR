@@ -14,12 +14,14 @@ steiger_sensitivity(rgx_o, rgy_o, ...)
 \item{...}{Further arguments to be passed to wireframe}
 }
 \value{
-List
-- vz: Total volume of the error parameter space
-- vz0: Volume of the parameter space that gives the incorrect answer
-- vz1: Volume of the paramtere space that gives the correct answer
-- sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
-- pl: plot of parameter sapce
+List with the following elements:
+\describe{
+\item{vz}{Total volume of the error parameter space}
+\item{vz0}{Volume of the parameter space that gives the incorrect answer}
+\item{vz1}{Volume of the paramtere space that gives the correct answer}
+\item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
+\item{pl}{plot of parameter space}
+}
 }
 \description{
 Evaluate the Steiger test's sensitivity to measurement error

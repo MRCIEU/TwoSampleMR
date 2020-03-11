@@ -16,17 +16,19 @@ available_outcomes <- function(access_token = ieugwasr::check_access_token())
 
 # Extract summary statistics from MySQL db through API given a list of SNPs and outcomes
 #'
-#' Supply the output from \code{read_exposure_data} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
+#' Supply the output from \code{\link{read_exposure_data}} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 #'
-#' @param snps Array of SNP rs IDs
-#' @param outcomes Array of IDs (see \code{id} column in output from \code{available_outcomes})
-#' @param proxies Look for LD tags? Default is TRUE.
-#' @param rsq Minimum LD rsq value (if proxies = 1). Default = 0.8.
-#' @param align_alleles = 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no
-#' @param palindromes = 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no
-#' @param maf_threshold = 0.3 MAF threshold to try to infer palindromic SNPs.
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
-#' @param ... Other options to pass to internal extraction function
+#' @md
+#' @param snps Array of SNP rs IDs.
+#' @param outcomes Array of IDs (see \code{id} column in output from \code{\link{available_outcomes}}).
+#' @param proxies Look for LD tags? Default is `TRUE`.
+#' @param rsq Minimum LD rsq value (if proxies = 1). Default = `0.8`.
+#' @param align_alleles Try to align tag alleles to target alleles (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
+#' @param palindromes Allow palindromic SNPs (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
+#' @param maf_threshold MAF threshold to try to infer palindromic SNPs. The default is `0.3`.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
+#' @param splitsize The default is `10000`.
+#' @param proxy_splitsize The default is `500`.
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
@@ -194,6 +196,7 @@ cleanup_outcome_data <- function(d)
 #' @param eff effect size
 #' @param pval pvals
 #' @return array
+#' @importFrom stats qnorm
 get_se <- function(eff, pval)
 {
 	abs(eff) / abs(qnorm(pval / 2))

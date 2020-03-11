@@ -17,19 +17,21 @@ mv_extract_exposures(
 \arguments{
 \item{id_exposure}{Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)}
 
-\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data}
+\item{clump_r2}{The default is \code{0.01}.}
 
-\item{find_proxies}{Look for proxies? This slows everything down but is more accurate. Default TRUE}
+\item{clump_kb}{The default is \code{10000}.}
 
-\item{clump_r2=0.01}{Once a full list of}
+\item{harmonise_strictness}{See the \code{action} option of \code{\link{harmonise_data}}. The default is \code{2}.}
 
-\item{clump_kb=10000}{<what param does>}
+\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data.}
 
-\item{force_server=FALSE}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server}
+\item{find_proxies}{Look for proxies? This slows everything down but is more accurate. The default is \code{TRUE}.}
+
+\item{force_server}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is \code{FALSE}.}
 }
 \value{
-data frame in exposure_dat format
+data frame in \code{exposure_dat} format
 }
 \description{
-Requires a list of IDs from \code{available_outcomes()}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.
+Requires a list of IDs from \code{\link{available_outcomes}}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.
 }

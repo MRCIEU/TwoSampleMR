@@ -1,7 +1,9 @@
 #' Leave one out sensitivity analysis
 #'
-#' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_ivw Choose which method to use
+#' @md
+#' @param dat Output from [`harmonise_data()`].
+#' @param method Choose which method to use. The default is `mr_ivw`.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List of data frames
@@ -76,8 +78,10 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 
 
 #' Plot results from leaveoneout analysis
+#' 
+#' Plot results from leaveoneout analysis.
 #'
-#' @param leaveoneout_results Output from \code{mr_leaveoneout}
+#' @param leaveoneout_results Output from [`mr_leaveoneout`].
 #'
 #' @export
 #' @return List of plots

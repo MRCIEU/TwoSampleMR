@@ -7,19 +7,23 @@
 mr_ivw_radial(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
 }
 \arguments{
-\item{b_exp}{Vector of genetic effects on exposure}
+\item{b_exp}{Vector of genetic effects on exposure.}
 
-\item{b_out}{Vector of genetic effects on outcome}
+\item{b_out}{Vector of genetic effects on outcome.}
 
-\item{se_exp}{Standard errors of genetic effects on exposure}
+\item{se_exp}{Standard errors of genetic effects on exposure.}
 
-\item{se_out}{Standard errors of genetic effects on outcome}
+\item{se_out}{Standard errors of genetic effects on outcome.}
+
+\item{parameters}{List of parameters.}
 }
 \value{
 List with the following elements:
-        b: causal effect estimate
-        se: standard error
-        pval: p-value
+\describe{
+\item{b}{causal effect estimate}
+\item{se}{standard error}
+\item{pval}{p-value}
+}
 }
 \description{
 Radial IVW analysis

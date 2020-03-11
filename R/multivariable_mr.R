@@ -1,20 +1,23 @@
 
 #' Extract exposure variables for multivariable MR
 #'
-#' Requires a list of IDs from \code{available_outcomes()}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand. 
+#' Requires a list of IDs from \code{\link{available_outcomes}}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand. 
 #'
+#' @md
 #' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
-#' @param clump_r2=0.01 Once a full list of
-#' @param clump_kb=10000 <what param does>
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
-#' @param find_proxies Look for proxies? This slows everything down but is more accurate. Default TRUE
-#' @param force_server=FALSE Whether to search through pre-clumped dataset or to re-extract and clump directly from the server
+#' @param clump_r2 The default is `0.01`.
+#' @param clump_kb The default is `10000`.
+#' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
+#' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
+#' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
 #'
 #' @export
-#' @return data frame in exposure_dat format
+#' @md
+#' @return data frame in `exposure_dat` format
 mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE)
 {
-	require(reshape2)
+	requireNamespace("reshape2", quietly = TRUE)
 	stopifnot(length(id_exposure) > 1)
 
 	# Get best instruments for each exposure
@@ -51,12 +54,23 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 #' Harmonise exposure and outcome for multivariable MR
 #'
-#'
-#' @param exposure_dat Output from \code{mv_extract_exposures}
-#' @param outcome_dat Output from \code{extract_outcome_data(exposure_dat$SNP, id_output)}
+#' @md
+#' @param exposure_dat Output from [`mv_extract_exposures`].
+#' @param outcome_dat Output from `extract_outcome_data(exposure_dat$SNP, id_output)`.
+#' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
 #'
 #' @export
-#' @return List of vectors and matrices required for mv analysis. exposure_beta is a matrix of beta coefficients, rows correspond to SNPs and columns correspond to exposures. exposure_pval is the same as exposure_beta, but for p-values. exposure_se is the same as exposure_beta, but for standard errors. outcome_beta is an array of effects for the outcome, corresponding to the SNPs in exposure_beta. outcome_se and outcome_pval are as in outcome_beta.
+#' @return List of vectors and matrices required for mv analysis. 
+#' \describe{
+#' \item{exposure_beta}{a matrix of beta coefficients}
+#' \item{rows}{correspond to SNPs and columns correspond to exposures.}
+#' \item{exposure_pval}{the same as exposure_beta, but for p-values.}
+#' \item{exposure_se}{is the same as exposure_beta, but for standard errors.}
+#' \item{outcome_beta}{an array of effects for the outcome, corresponding to the SNPs in exposure_beta.}
+#' \item{outcome_se}{an array of standard errors for the outcome.}
+#' \item{outcome_pval}{an array of p-values for the outcome.}
+#' }
+#' 
 mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 {
 
@@ -116,14 +130,16 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #'
 #' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
-#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
-#' @param plots Create plots? FALSE by default
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
+#' @param plots Create plots? The default is `FALSE`.
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats lm pnorm
 mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
@@ -207,15 +223,17 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #' Perform IVW multivariable MR
 #'
 #' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
-#'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
-#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
-#' @param plots Create plots? FALSE by default
+#' 
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
+#' @param plots Create plots? The default is `FALSE`.
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats lm pnorm
 mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
@@ -299,11 +317,13 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #' 
 #' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats lm pnorm
 mv_basic <- function(mvdat, pval_threshold=5e-8)
 {
 	# This is a matrix of 
@@ -359,11 +379,13 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 #'
 #' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 #'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats pnorm
 mv_ivw <- function(mvdat, pval_threshold=5e-8)
 {
 	# This is a matrix of 
@@ -416,35 +438,40 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 
 #' Apply LASSO feature selection to mvdat object
 #'
-#' @param mvdat Output from \code{mv_harmonise_data}
+#' @param mvdat Output from [`mv_harmonise_data`].
 #'
 #' @export
 #' @return data frame of retained features
+#' @importFrom glmnet cv.glmnet coef.glmnet
 mv_lasso_feature_selection <- function(mvdat)
 {
 	message("Performing feature selection")
 	b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
-	c <- coef(b, s = "lambda.min")
+	c <- glmnet::coef.glmnet(b, s = "lambda.min")
   	i <- !c[,1] == 0
   	d <- dplyr::tibble(exposure=rownames(c)[i], b=c[i,])
 	return(d)
 }
 
 #' Perform multivariable MR on subset of features
-#'
-#' Step 1: Select features (by default this is done using LASSO feature selection)
-#' Step 2: Subset the mvdat to only retain relevant features and instruments
-#' Step 3: Perform MVMR on remaining data
-#'
-#' @param mvdat Output from \code{mv_harmonise_data}
-#' @param features Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. By default = mvdat_lasso_feature_selection(mvdat)
-#' @param intercept Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)
-#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)
-#' @param pval_threshold=5e-8 P-value threshold to include instruments
-#' @param plots Create plots? FALSE by default
+#' 
+#' The function proceeds as follows:
+#' \enumerate{
+#' \item Select features (by default this is done using LASSO feature selection).
+#' \item Subset the mvdat to only retain relevant features and instruments.
+#' \item Perform MVMR on remaining data.
+#' }
+#' @md
+#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param features Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. The default is `mvdat_lasso_feature_selection(mvdat)`.
+#' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, the default).
+#' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
+#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
+#' @param plots Create plots? The default is `FALSE`.
 #'
 #' @export
 #' @return List of results
+#' @importFrom stats lm
 mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# Update mvdat object

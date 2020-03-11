@@ -7,11 +7,11 @@
 mr_leaveoneout_plot(leaveoneout_results)
 }
 \arguments{
-\item{leaveoneout_results}{Output from \code{mr_leaveoneout}}
+\item{leaveoneout_results}{Output from \code{\link{mr_leaveoneout}}.}
 }
 \value{
 List of plots
 }
 \description{
-Plot results from leaveoneout analysis
+Plot results from leaveoneout analysis.
 }

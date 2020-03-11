@@ -7,9 +7,9 @@
 mv_basic(mvdat, pval_threshold = 5e-08)
 }
 \arguments{
-\item{mvdat}{Output from \code{mv_harmonise_data}}
+\item{mvdat}{Output from \code{\link{mv_harmonise_data}}.}
 
-\item{pval_threshold=5e-8}{P-value threshold to include instruments}
+\item{pval_threshold}{P-value threshold to include instruments. The default is \code{5e-8}.}
 }
 \value{
 List of results

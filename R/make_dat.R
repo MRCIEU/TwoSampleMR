@@ -1,8 +1,9 @@
 #' Convenient function to create a harmonised dataset
 #'
-#' <full description>
-#' @param exposures default 2 and 301 (bmi and ldl)
-#' @param outcomes default 7 and 1001 (edu and chd)
+#' Convenient function to create a harmonised dataset.
+#' 
+#' @param exposures The default is `c(2, 301)` (BMI and LDL).
+#' @param outcomes The default is `c(7, 1001)` (EDU and CHD).
 #'
 #' @export
 #' @return Harmonised data frame

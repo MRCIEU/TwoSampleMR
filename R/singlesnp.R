@@ -1,7 +1,10 @@
 #' Perform 2 sample MR on each SNP individually
 #'
-#' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param method=mr_two_sample_ml Function to use for MR analysis
+#' @md
+#' @param dat Output from [`harmonise_data`].
+#' @param parameters List of parameters. The default is `default_parameters()`.
+#' @param single_method Function to use for MR analysis. The default is `"mr_wald_ratio"`.
+#' @param all_method Functions to use for MR analysis. The default is `c("mr_ivw", "mr_egger_regression")`.
 #'
 #' @export
 #' @return List of data frames
@@ -68,8 +71,8 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 
 #' Forest plot
 #'
-#' @param singlesnp_results from \code{mr_singlesnp}
-#' @param exponentiate Plot on exponential scale. Default=FALSE
+#' @param singlesnp_results from [`mr_singlesnp`].
+#' @param exponentiate Plot on exponential scale. The default is `FALSE`.
 #'
 #' @export
 #' @return List of plots
@@ -133,10 +136,10 @@ mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 
 #' Density plot
 #'
-#' @param singlesnp_results from \code{mr_singlesnp}
-#' @param mr_results Results from \code{mr}
-#' @param exponentiate Plot on exponential scale. Default=FALSE
-#' @param bandwidth Density bandwidth parameter
+#' @param singlesnp_results from [`mr_singlesnp`].
+#' @param mr_results Results from [`mr`].
+#' @param exponentiate Plot on exponentiated scale. The default is `FALSE`.
+#' @param bandwidth Density bandwidth parameter.
 #'
 #' @export
 #' @return List of plots
@@ -179,9 +182,9 @@ mr_density_plot <- function(singlesnp_results, mr_results, exponentiate=FALSE, b
 
 #' Funnel plot
 #'
-#' Create funnel plot from single SNP analyses
+#' Create funnel plot from single SNP analyses.
 #'
-#' @param singlesnp_results from \code{mr_singlesnp}
+#' @param singlesnp_results from [`mr_singlesnp`].
 #'
 #' @export
 #' @return List of plots

@@ -7,11 +7,11 @@
 dat_to_RadialMR(dat)
 }
 \arguments{
-\item{dat}{Output from \code{harmonise_data}}
+\item{dat}{Output from \code{\link{harmonise_data}}.}
 }
 \value{
 List of RadialMR format datasets
 }
 \description{
-Creates a list of RadialMR format datasets for each exposure - outcome pair
+Creates a list of RadialMR format datasets for each exposure - outcome pair.
 }

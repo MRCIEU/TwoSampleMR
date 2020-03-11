@@ -29,41 +29,41 @@ read_outcome_data(
 \arguments{
 \item{filename}{Filename. Must have header with at least SNP column present.}
 
-\item{snps=NULL}{SNPs to extract. If NULL then doesn't extract any and keeps all.}
+\item{snps}{SNPs to extract. If \code{NULL}, which the default, then doesn't extract any and keeps all.}
 
-\item{sep="}{" Specify delimeter in file}
+\item{sep}{Specify delimeter in file. The default is space, i.e. \code{sep=" "}.}
 
-\item{phenotype_col="Phenotype"}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"}
+\item{phenotype_col}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value \code{"Outcome"}. Default is \code{"Phenotype"}.}
 
-\item{snp_col="SNP"}{Required name of column with SNP rs IDs}
+\item{snp_col}{Required name of column with SNP rs IDs. The default is \code{"SNP"}.}
 
-\item{beta_col="beta"}{Required for MR. Name of column with effect sizes}
+\item{beta_col}{Required for MR. Name of column with effect sizes. THe default is \code{"beta"}.}
 
-\item{se_col="se"}{Required for MR. Name of column with standard errors}
+\item{se_col}{Required for MR. Name of column with standard errors. The default is \code{"se"}.}
 
-\item{eaf_col="eaf"}{Required for MR. Name of column with effect allele frequency}
+\item{eaf_col}{Required for MR. Name of column with effect allele frequency. The default is \code{"eaf"}.}
 
-\item{effect_allele_col="effect_allele"}{Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"}
+\item{effect_allele_col}{Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G". The default is \code{"effect_allele"}.}
 
-\item{other_allele_col="other_allele"}{Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"}
+\item{other_allele_col}{Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G". The default is \code{"other_allele"}.}
 
-\item{pval_col="pval"}{Required for enrichment tests. Name of column with p-value.}
+\item{pval_col}{Required for enrichment tests. Name of column with p-value. The default is \code{"pval"}.}
 
-\item{units_col="units"}{Optional column name for units.}
+\item{units_col}{Optional column name for units. The default is \code{"units"}.}
 
-\item{ncase_col="ncase"}{Optional column name for number of cases.}
+\item{ncase_col}{Optional column name for number of cases. The default is \code{"ncase"}.}
 
-\item{ncontrol_col="ncontrol"}{Optional column name for number of controls.}
+\item{ncontrol_col}{Optional column name for number of controls. The default is \code{"ncontrol"}.}
 
-\item{samplesize_col="samplesize"}{Optional column name for sample size.}
+\item{samplesize_col}{Optional column name for sample size. The default is \code{"samplesize"}.}
 
-\item{gene_col="gene"}{Optional column name for gene name.}
+\item{gene_col}{Optional column name for gene name. The default is \code{"gene"}.}
 
-\item{id_col="id"}{Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination}
+\item{id_col}{Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is \code{"id"}.}
 
-\item{min_pval=1e-200}{Minimum allowed pval}
+\item{min_pval}{Minimum allowed p-value. The default is \code{1e-200}.}
 
-\item{log_pval=FALSE}{The pval is -log10(P)}
+\item{log_pval}{The pval is -log10(P). The default is \code{FALSE}.}
 }
 \value{
 data frame

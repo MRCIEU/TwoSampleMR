@@ -11,15 +11,15 @@ subset_on_method(
 )
 }
 \arguments{
-\item{mr_res}{Results from mr()}
+\item{mr_res}{Results from \code{\link[=mr]{mr()}}.}
 
-\item{single_snp_method}{Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"}
+\item{single_snp_method}{Which of the single SNP methods to use when only 1 SNP was used to estimate the causal effect? The default is \code{"Wald ratio"}.}
 
-\item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"}
+\item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is \code{"Inverse variance weighted"}.}
 }
 \value{
 data frame.
 }
 \description{
-This function takes MR results from mr() and restricts to a single method per exposure x disease combination
+This function takes MR results from \code{\link[=mr]{mr()}} and restricts to a single method per exposure x disease combination.
 }

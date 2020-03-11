@@ -14,23 +14,26 @@ mv_subset(
 )
 }
 \arguments{
-\item{mvdat}{Output from \code{mv_harmonise_data}}
+\item{mvdat}{Output from \code{\link{mv_harmonise_data}}.}
 
-\item{features}{Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. By default = mvdat_lasso_feature_selection(mvdat)}
+\item{features}{Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. The default is \code{mvdat_lasso_feature_selection(mvdat)}.}
 
-\item{intercept}{Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)}
+\item{intercept}{Should the intercept by estimated (\code{TRUE}) or force line through the origin (\code{FALSE}, the default).}
 
-\item{instrument_specific}{Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)}
+\item{instrument_specific}{Should the estimate for each exposure be obtained by using all instruments from all exposures (\code{FALSE}, default) or by using only the instruments specific to each exposure (\code{TRUE}).}
 
-\item{plots}{Create plots? FALSE by default}
+\item{pval_threshold}{P-value threshold to include instruments. The default is \code{5e-8}.}
 
-\item{pval_threshold=5e-8}{P-value threshold to include instruments}
+\item{plots}{Create plots? The default is \code{FALSE}.}
 }
 \value{
 List of results
 }
 \description{
-Step 1: Select features (by default this is done using LASSO feature selection)
-Step 2: Subset the mvdat to only retain relevant features and instruments
-Step 3: Perform MVMR on remaining data
+The function proceeds as follows:
+\enumerate{
+\item Select features (by default this is done using LASSO feature selection).
+\item Subset the mvdat to only retain relevant features and instruments.
+\item Perform MVMR on remaining data.
+}
 }

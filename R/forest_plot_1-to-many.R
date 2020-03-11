@@ -1,15 +1,24 @@
 #' Format MR results for a 1-to-many forest plot
 #'
-#' This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
+#' This function formats user-supplied results for the \code{\link{forest_plot_1_to_many}} function. 
+#' The user supplies their results in the form of a data frame. 
+#' The data frame is assumed to contain at least three columns of data: 
+#' \enumerate{
+#' \item effect estimates, from an analysis of the effect of an exposure on an outcome; 
+#' \item standard errors for the effect estimates; and 
+#' \item a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
+#' }
 #' 
-#' @param mr_res Data frame of results supplied by the user
-#' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
-#' @param se Name of the column specifying the standard error for b. Default = "se"
-#' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param addcols Name of any additional columns to add to the plot. Character vector
-#' @param by Name of the column indicating a grouping variable to stratify results on. Default=NULL
-#' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
-#' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
+#' @md
+#' @param mr_res Data frame of results supplied by the user.
+#' @param b Name of the column specifying the effect of the exposure on the outcome. Default = `"b"`.
+#' @param se Name of the column specifying the standard error for b. Default = `"se"`.
+#' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default=`"outcome"`.
+#' @param addcols Name of any additional columns to add to the plot. Character vector. The default is `NULL`.
+#' @param by Name of the column indicating a grouping variable to stratify results on. Default=`NULL`.
+#' @param exponentiate Convert log odds ratios to odds ratios? Default=`FALSE`.
+#' @param ao_slc Logical; retrieve trait subcategory information using [`available_outcomes()`]. Default=`FALSE`.
+#' @param weight The default is `NULL`.
 #'
 #' @export
 #' @return data frame.
@@ -130,20 +139,27 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,
 
 #' Sort results for 1-to-many forest plot
 #'
-#' This function sorts user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame.    
+#' This function sorts user-supplied results for the [`forest_plot_1_to_many()`] function. The user supplies their results in the form of a data frame.    
 #' 
-#' @param mr_res Data frame of results supplied by the user
-#' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
-#' @param trait_m The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param group Name of grouping variable in mr_res. 
-#' @param priority If sort_action=3, choose which value of the trait_m variable should be given priority and go above the other trait_m values. The trait with the largest effect size for the prioritised group will go to the top of the plot. 
-#' @param sort_action Choose how to sort results. 1 =sort results by effect size within groups. Use the group order supplied by the user. 2=sort results by effect size and group. Overides the group ordering supplied by the user. 3=group results for the same trait together (e.g. multiple results for the same trait from different MR methods); 4= sort by decreasing effect size (largest effect size at top and smallest at bottom). 5= sort by increasing effect size (smallest effect size at top and largest at bottom) 
+#' @param mr_res Data frame of results supplied by the user.
+#' @param b Name of the column specifying the effect of the exposure on the outcome. The default is `"b"`.
+#' @param trait_m The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. The default is `"outcome"`.
+#' @param group Name of grouping variable in `mr_res`. 
+#' @param priority If `sort_action = 3`, choose which value of the `trait_m` variable should be given priority and go above the other `trait_m` values. 
+#' The trait with the largest effect size for the prioritised group will go to the top of the plot. 
+#' @param sort_action Choose how to sort results. 
+#' \itemize{
+#' \item `sort_action = 1`: sort results by effect size within groups. Use the group order supplied by the user. 
+#' \item `sort_action = 2`: sort results by effect size and group. Overides the group ordering supplied by the user. 
+#' \item `sort_action = 3`: group results for the same trait together (e.g. multiple results for the same trait from different MR methods).
+#' \item `sort_action = 4`: sort by decreasing effect size (largest effect size at top and smallest at bottom). 
+#' \item `sort_action = 5`: sort by increasing effect size (smallest effect size at top and largest at bottom).
+#' }
 #'
 #' @export
 #' @return data frame.
-# 
-
-sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,priority=NULL){
+#' 
+sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,priority=NULL){
 
 	mr_res[,trait_m]<-as.character(mr_res[,trait_m])
 	mr_res[,group]<-as.character(mr_res[,group])
@@ -215,20 +231,22 @@ sort_1_to_many<-function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL
 #' A basic forest plot
 #'
 #' This function is used to create a basic forest plot.
-#' It requires the output from format_1_to_many().
+#' It requires the output from \code{\link{format_1_to_many}}.
 #'
-#' @param dat Output from format_1_to_many()
-#' @param section Which category in dat to plot. If NULL then prints everything
-#' @param colour_group Which exposure to plot. If NULL then prints everything grouping by colour.
-#' @param xlab x-axis label. Default=NULL
-#' @param bottom Show x-axis? Default=FALSE
-#' @param trans x-axis scale
-#' @param xlim x-axis limits
-#' @param lo Lower limit of x axis 
-#' @param up Upper limit of x axis 
-#' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument
-#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points black. 
-#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).
+#' @md
+#' @param dat Output from [`format_1_to_many()`]
+#' @param section Which category in dat to plot. If `NULL` then prints everything.
+#' @param colour_group Which exposure to plot. If `NULL` then prints everything grouping by colour.
+#' @param colour_group_first The default is `TRUE`.
+#' @param xlab x-axis label. Default=`NULL`.
+#' @param bottom Show x-axis? Default=`FALSE`.
+#' @param trans x-axis scale.
+#' @param xlim x-axis limits.
+#' @param lo Lower limit of x axis.
+#' @param up Upper limit of x axis.
+#' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument.
+#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points `"black"`.
+#' @param shape_points the shape of the data points to pass to `ggplot2::geom_points()`. Default is set to `15` (filled square).
 #'
 #' @return ggplot object
 forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
@@ -525,27 +543,32 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #'
 #' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
 #' 
-#' @param mr_res Data frame of results supplied by the user
-#' @param b Name of the column specifying the effect of the exposure on the outcome. Default = "b"
-#' @param se Name of the column specifying the standard error for b. Default = "se"
-#' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"
-#' @param col1_title Title for the column specified by the TraitM argument. Default=""
-#' @param col1_width Width of Y axis label for the column specified by the TraitM argument. Default=1
-#' @param addcols Name of additional columns to plot. Character vector. Default = NULL 
-#' @param addcol_titles Titles of additional columns specified by the addcols argument. Character vector. Default = NULL 
-#' @param addcol_widths Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. Default = NULL 
-#' @param by Name of the grouping variable to stratify results on. Default=NULL
-#' @param subheading_size text size for the subheadings specified in by argument.
-#' @param exponentiate Convert log odds ratios to odds ratios? Default=FALSE
-#' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE
-#' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".
+#' @md
+#' @param mr_res Data frame of results supplied by the user. The default is `"mr_res"`.
+#' @param b Name of the column specifying the effect of the exposure on the outcome. The default is `"b"`.
+#' @param se Name of the column specifying the standard error for b. The default is `"se"`.
+#' @param TraitM The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. The default is `"outcome"`.
+#' @param col1_title Title for the column specified by the TraitM argument. The default is `""`.
+#' @param col1_width Width of Y axis label for the column specified by the TraitM argument. The default is `1`.
+#' @param addcols Name of additional columns to plot. Character vector. The default is `NULL`.
+#' @param addcol_titles Titles of additional columns specified by the addcols argument. Character vector. The default is `NULL`.
+#' @param addcol_widths Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. The default is `NULL`.
+#' @param xlab X-axis label, default is `"Effect (95\% confidence interval)"`.
+#' @param by Name of the grouping variable to stratify results on. Default is `NULL`.
+#' @param subheading_size text size for the subheadings specified in by argument. The default is `6`.
+#' @param exponentiate Convert log odds ratios to odds ratios? Default is `FALSE`.
+#' @param ao_slc Logical; retrieve trait subcategory information using available_outcomes(). Default is `FALSE`.
+#' @param trans Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default is `"identity"`.
 #' @param lo Lower limit of X axis to plot. 
 #' @param up upper limit of X axis to plot. 
-#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points black. 
-#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).
+#' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points `"black"`. 
+#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to `15` (filled square).
+#' @param col_text_size The default is `5`.
+#' @param weight The default is `NULL`.
 #'
 #' @export
 #' @return grid plot object
+#' 
 forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)

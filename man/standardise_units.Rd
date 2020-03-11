@@ -7,11 +7,11 @@
 standardise_units(dat)
 }
 \arguments{
-\item{dat}{Output from \code{harmonise_data}}
+\item{dat}{Output from \code{\link{harmonise_data}}.}
 }
 \value{
 Data frame
 }
 \description{
-Uses \code{estimate_trait_sd}
+Uses \code{\link{estimate_trait_sd}}.
 }

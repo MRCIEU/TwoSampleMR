@@ -7,13 +7,15 @@
 mr_mode(dat, parameters = default_parameters(), mode_method = "all")
 }
 \arguments{
-\item{dat}{Output from harmonise_data()}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 
-\item{parameters}{default_parameters()}
+\item{parameters}{List of parameters. The default is \code{default_parameters()}.}
+
+\item{mode_method}{The default is \code{"all"}. The other choices are \code{'Simple mode'}, \code{'Weighted mode'}, \code{'Penalised mode'}, \code{'Simple mode (NOME)'}, \code{'Weighted mode (NOME)'}.}
 }
 \value{
 data frame
 }
 \description{
-Perform simple, weighted, penalised modes, as well as version that use NOME assumption
+Perform simple, weighted, penalised modes, as well as versions that use the NOME assumption.
 }

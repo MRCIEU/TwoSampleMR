@@ -7,15 +7,15 @@
 dat_to_MRInput(dat, get_correlations = FALSE)
 }
 \arguments{
-\item{dat}{Output from the \code{harmonise_data} function}
+\item{dat}{Output from the \code{\link{harmonise_data}} function.}
 
-\item{get_correlations}{Default FALSE. If TRUE then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server}
+\item{get_correlations}{Default \code{FALSE}. If \code{TRUE} then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.}
 }
 \value{
 List of MRInput objects for each exposure/outcome combination
 }
 \description{
-The MendelianRandomization package offers MR methods that can 
+The MendelianRandomization package offers MR methods that can
 be used with the same data used in the TwoSampleMR package. This
 function converts from the TwoSampleMR format to the MRInput class.
 }

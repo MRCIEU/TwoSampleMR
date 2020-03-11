@@ -1,0 +1,65 @@
+c(
+bibentry(
+  header = "If using MR-Base, the IEU GWAS database, or the TwoSampleMR R package please cite:",
+  bibtype = "Article",
+  author = c(
+    person("G.", "Hemani", role = c("aut", "cre")),
+    person("J.", "Zheng", role = "aut"),
+    person("B.", "Elsworth", role = "aut"),
+    person("K.", "Wade", role = "aut"),
+    person("D.", "Baird", role = "aut"),
+    person("V.", "Haberland", role = "aut"),
+    person("C.", "Laurin", role = "aut"),
+    person("S.", "Burgess", role = "aut"),
+    person("J.", "Bowden", role = "aut"),
+    person("R.", "Langdon", role = "aut"),
+    person("V.Y.", "Tan", role = "aut"),
+    person("J.", "Yarmolinsky", role = "aut"),
+    person("H.A.", "Shibab", role = "aut"),
+    person("N.J.", "Timpson", role = "aut"),
+    person("D.M.", "Evans", role = "aut"),
+    person("C.", "Relton", role = "aut"),
+    person("R.M.", "Martin", role = "aut"),
+    person("G.", "Davey Smith", role = "aut"),
+    person("T.R.", "Gaunt", role = "aut"),
+    person("P.C.", "Haycock", role = "aut"),
+    person("", "The MR-Base Collaboration", role = "aut")
+  ),
+  title = "The MR-Base platform supports systematic causal inference across the human phenome",
+  year = "2018",
+  volume = "7",
+  journal = "eLife",
+  pages = "e34408",
+  url = "https://elifesciences.org/articles/34408",
+  doi = "10.7554/eLife.34408",
+  key = "twosamplemr",
+  textVersion = paste(
+    "Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C,",
+    "Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA,",
+    "Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC,",
+    "The MR-Base Collaboration.",
+    "The MR-Base platform supports systematic causal inference across the human phenome.",
+    "eLife 2018;7:e34408. doi: 10.7554/eLife.34408")
+),
+bibentry(
+  header = "If also using the MR-Steiger test please cite:",
+  bibtype = "Article",
+  author = c(
+    person("G.", "Hemani", role = c("aut", "cre")),
+    person("K.", "Tilling", role = "aut"),
+    person("G.", "Davey Smith", role = "aut")
+  ),
+  title = "Orienting the causal relationship between imprecisely measured traits using GWAS summary data",
+  journal = "PLoS Genetics",
+  year = "2017",
+  volume = "13",
+  number = "11",
+  pages = "e1007081",
+  doi = "10.1371/journal.pgen.1007081",
+  url = "https://doi.org/10.1371/journal.pgen.1007081",
+  key = "mrsteiger",
+  textVersion = paste("Hemani G, Tilling K, Davey Smith G (2017)",
+    "Orienting the causal relationship between imprecisely measured traits using GWAS summary data.",
+    "PLOS Genetics 13(11): e1007081. https://doi.org/10.1371/journal.pgen.1007081")
+)
+)

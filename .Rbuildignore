@@ -5,3 +5,11 @@
 ^codecov\.yml$
 ^doc$
 ^Meta$
+^.*\.Rproj$
+^\.Rproj\.user$
+^.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+figure$
+cache$

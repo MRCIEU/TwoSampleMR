@@ -7,10 +7,11 @@
 #'
 #' @export
 #' @return P-value
+#' @importFrom stats pf df
 get_p_from_r2n <- function(r2, n)
 {
 	fval <- r2 * (n-2) / (1 - r2)
-	pval <- pf(fval, 1, n-1, low=FALSE)
+	pval <- pf(fval, 1, n-1, lower.tail=FALSE)
 	return(pval)
 }
 
@@ -22,6 +23,7 @@ get_p_from_r2n <- function(r2, n)
 #'
 #' @export
 #' @return r value
+#' @importFrom stats optim qf
 get_r_from_pn <- function(p, n)
 {
 	message("Estimating correlation for quantitative trait.")
@@ -39,7 +41,7 @@ get_r_from_pn <- function(p, n)
 		n <- rep(n, length(p))
 	}
 
-	Fval <- suppressWarnings(qf(p, 1, n-1, low=FALSE))
+	Fval <- suppressWarnings(qf(p, 1, n-1, lower.tail=FALSE))
 	R2 <- Fval / (n - 2 + Fval)
 	index <- !is.finite(Fval)
 	if(any(index))
@@ -67,12 +69,16 @@ get_r_from_pn <- function(p, n)
 #' @param ... Further arguments to be passed to wireframe
 #'
 #' @export
-#' @return List
-#' - vz: Total volume of the error parameter space
-#' - vz0: Volume of the parameter space that gives the incorrect answer
-#' - vz1: Volume of the paramtere space that gives the correct answer
-#' - sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
-#' - pl: plot of parameter sapce
+#' @return List with the following elements:
+#' \describe{
+#' \item{vz}{Total volume of the error parameter space}
+#' \item{vz0}{Volume of the parameter space that gives the incorrect answer}
+#' \item{vz1}{Volume of the paramtere space that gives the correct answer}
+#' \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
+#' \item{pl}{plot of parameter space}
+#' }
+#' @importFrom grDevices rgb
+#' @importFrom lattice wireframe
 steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 {
 	requireNamespace("lattice", quietly=TRUE)
@@ -141,20 +147,23 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' @param ... Further arguments to be passed to wireframe
 #'
 #' @export
-#' @return List
-#' - r2_exp: Estimated variance explained in x
-#' - r2_out: Estimated variance explained in y
-#' - r2_exp_adj: Predicted variance explained in x accounting for estimated measurement error
-#' - r2_out_adj: Predicted variance explained in y accounting for estimated measurement error
-#' - correct_causal_direction: TRUE/FALSE
-#' - steiger_test: p-value for inference of direction
-#' - correct_causal_direction_adj: TRUE/FALSE, direction of causality for given measurement error parameters
-#' - steiger_test_adj: p-value for inference of direction of causality for given measurement error parameters
-#' - vz: Total volume of the error parameter space
-#' - vz0: Volume of the parameter space that gives the incorrect answer
-#' - vz1: Volume of the paramtere space that gives the correct answer
-#' - sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
-#' - sensitivity_plot: Plot of parameter space of causal directions and measurement error
+#' @return List with the following elements:
+#' \describe{
+#' \item{r2_exp}{Estimated variance explained in x}
+#' \item{r2_out}{Estimated variance explained in y}
+#' \item{r2_exp_adj}{Predicted variance explained in x accounting for estimated measurement error}
+#' \item{r2_out_adj}{Predicted variance explained in y accounting for estimated measurement error}
+#' \item{correct_causal_direction}{TRUE/FALSE}
+#' \item{steiger_test}{p-value for inference of direction}
+#' \item{correct_causal_direction_adj}{TRUE/FALSE, direction of causality for given measurement error parameters}
+#' \item{steiger_test_adj}{p-value for inference of direction of causality for given measurement error parameters}
+#' \item{vz}{Total volume of the error parameter space}
+#' \item{vz0}{Volume of the parameter space that gives the incorrect answer}
+#' \item{vz1}{Volume of the paramtere space that gives the correct answer}
+#' \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
+#' \item{sensitivity_plot}{Plot of parameter space of causal directions and measurement error}
+#' }
+#' @importFrom stats pnorm
 mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
@@ -211,13 +220,13 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yy
 
 #' Perform MR Steiger test of directionality
 #'
-#' A statistical test for whether the assumption that exposure causes outcome is valid
+#' A statistical test for whether the assumption that exposure causes outcome is valid.
 #'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
+#' @param dat Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.
 #'
 #' @export
 #' @return List
-#' - 
+#' 
 directionality_test <- function(dat)
 {
 	if(! all(c("r.exposure", "r.outcome") %in% names(dat)))
@@ -258,13 +267,13 @@ directionality_test <- function(dat)
 	return(dtest)
 }
 
-
+#' @importFrom stats qchisq
 get_r_from_pn_less_accurate <- function(p, n)
 {
 	# qval <- qf(p, 1, n-2, low=FALSE)
 	p[p == 1] <- 0.999
 	p[p == 0] <- 1e-200
-	qval <- qchisq(p, 1, low=F) / (qchisq(p, n-2, low=F)/(n-2))
+	qval <- qchisq(p, 1, lower.tail=F) / (qchisq(p, n-2, lower.tail=F)/(n-2))
 	r <- sqrt(sum(qval / (n - qval)))
 
 	if(r >= 1)
@@ -274,11 +283,11 @@ get_r_from_pn_less_accurate <- function(p, n)
 	return(r)
 }
 
-
+#' @importFrom stats coefficients cor lm rnorm
 test_r_from_pn <- function()
 {
-	require(ggplot2)
-	require(tidyr)
+	requireNamespace("ggplot2", quietly = TRUE)
+	# requireNamespace("tidyr", quietly = TRUE) # not used
 
 	param <- expand.grid(
 		n = c(10, 100, 1000, 10000, 100000),
@@ -298,12 +307,12 @@ test_r_from_pn <- function()
 
 	param <- gather(param, key=out, value=value, rsq1, rsq2)
 
-	p <- ggplot(param, aes(x=rsq_emp, value)) +
-	geom_abline(slope=1, linetype="dotted") +
-	geom_line(aes(colour=out)) +
-	facet_grid(. ~ n) +
-	scale_x_log10() +
-	scale_y_log10()
+	p <- ggplot2::ggplot(param, ggplot2::aes(x=rsq_emp, value)) +
+	  ggplot2::geom_abline(slope=1, linetype="dotted") +
+	  ggplot2::geom_line(aes(colour=out)) +
+	  ggplot2::facet_grid(. ~ n) +
+	  ggplot2::scale_x_log10() +
+	  ggplot2::scale_y_log10()
 	return(list(dat=param, p=p))
 }
 
@@ -323,20 +332,23 @@ test_r_from_pn <- function()
 #' @param ... Further arguments to be passed to wireframe
 #'
 #' @export
-#' @return List
-#' - r2_exp: Estimated variance explained in x
-#' - r2_out: Estimated variance explained in y
-#' - r2_exp_adj: Predicted variance explained in x accounting for estimated measurement error
-#' - r2_out_adj: Predicted variance explained in y accounting for estimated measurement error
-#' - correct_causal_direction: TRUE/FALSE
-#' - steiger_test: p-value for inference of direction
-#' - correct_causal_direction_adj: TRUE/FALSE, direction of causality for given measurement error parameters
-#' - steiger_test_adj: p-value for inference of direction of causality for given measurement error parameters
-#' - vz: Total volume of the error parameter space
-#' - vz0: Volume of the parameter space that gives the incorrect answer
-#' - vz1: Volume of the paramtere space that gives the correct answer
-#' - sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
-#' - sensitivity_plot: Plot of parameter space of causal directions and measurement error
+#' @return List with the following elements:
+#' \describe{
+#' \item{r2_exp}{Estimated variance explained in x}
+#' \item{r2_out}{Estimated variance explained in y}
+#' \item{r2_exp_adj}{Predicted variance explained in x accounting for estimated measurement error}
+#' \item{r2_out_adj}{Predicted variance explained in y accounting for estimated measurement error}
+#' \item{correct_causal_direction}{TRUE/FALSE}
+#' \item{steiger_test}{p-value for inference of direction}
+#' \item{correct_causal_direction_adj}{TRUE/FALSE, direction of causality for given measurement error parameters}
+#' \item{steiger_test_adj}{p-value for inference of direction of causality for given measurement error parameters}
+#' \item{vz}{Total volume of the error parameter space}
+#' \item{vz0}{Volume of the parameter space that gives the incorrect answer}
+#' \item{vz1}{Volume of the paramtere space that gives the correct answer}
+#' \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
+#' \item{sensitivity_plot}{Plot of parameter space of causal directions and measurement error}
+#' }
+#' @importFrom stats pnorm rnorm
 mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
@@ -378,13 +390,13 @@ mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 
 #' Obtain 2x2 contingency table from marginal parameters and odds ratio
 #'
-#' Columns are the case and control frequencies
-#' Rows are the frequencies for allele 1 and allele 2
+#' Columns are the case and control frequencies.
+#' Rows are the frequencies for allele 1 and allele 2.
 #'
-#' @param af Allele frequency of effect allele 
-#' @param prop Proportion of cases
-#' @param odds_ratio Odds ratio
-#' @param eps=1e-15 tolerance
+#' @param af Allele frequency of effect allele.
+#' @param prop Proportion of cases.
+#' @param odds_ratio Odds ratio.
+#' @param eps tolerance, default is `1e-15`.
 #'
 #' @export
 #' @return 2x2 contingency table as matrix
@@ -445,15 +457,16 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 
 #' Estimate proportion of variance of liability explained by SNP in general population
 #'
-#' This uses equation 10 in Genetic Epidemiology 36 : 214–224 (2012)
+#' This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis. 
+#' Genetic Epidemiology 36: 214–224 (2012) <https://doi.org/10.1002/gepi.21614>.
 #'
-#' @param lor Vector of Log odds ratio
-#' @param af Vector of allele frequencies 
-#' @param ncase Vector of Number of cases
-#' @param ncontrol Vector of Number of controls
-#' @param prevalence Vector of Disease prevalence in the population
-#' @param model Is the effect size estiamted in "logit" (default) or "probit" model
-#' @param correction Scale the estimated r by correction value. Default = FALSE
+#' @param lor Vector of Log odds ratio.
+#' @param af Vector of allele frequencies.
+#' @param ncase Vector of Number of cases.
+#' @param ncontrol Vector of Number of controls.
+#' @param prevalence Vector of Disease prevalence in the population.
+#' @param model Is the effect size estimated from the `"logit"` (default) or `"probit"` model.
+#' @param correction Scale the estimated r by correction value. The default is `FALSE`.
 #'
 #' @export
 #' @return Vector of r values

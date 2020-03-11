@@ -7,12 +7,11 @@
 directionality_test(dat)
 }
 \arguments{
-\item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.}
 }
 \value{
 List
--
 }
 \description{
-A statistical test for whether the assumption that exposure causes outcome is valid
+A statistical test for whether the assumption that exposure causes outcome is valid.
 }

@@ -1,18 +1,20 @@
 Package: TwoSampleMR
 Title: Two Sample MR functions and interface to MR Base database
-Version: 0.5.1
+Version: 0.5.2
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0920-1055")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
-                  role = c("aut")),
+                  role = c("aut"), comment = c(ORCID = "0000-0001-5001-3350")),
              person("Jie", "Zheng", email = "Jie.Zheng@bristol.ac.uk",
-                  role = c("aut")),
+                  role = c("aut"), comment = c(ORCID = "0000-0002-6623-6839")),
              person("Tom", "Gaunt", email = "Tom.Gaunt@bristol.ac.uk",
-                  role = c("aut")),
+                  role = c("aut"), comment = c(ORCID = "0000-0003-0924-3247")),
              person("Ben", "Elsworth", email = "Ben.Elsworth@bristol.ac.uk",
-                  role = c("aut"))
+                  role = c("aut"), comment = c(ORCID = "0000-0001-7328-4233")),
+             person("Tom", "Palmer", email = "tom.palmer@bristol.ac.uk",
+                  role = c("ctb"), comment = c(ORCID = "0000-0003-4655-4511"))
 			 )
-Description: See title
+Description: Please see the title.
 Depends:
     R (>= 3.6.0)
 Imports:
@@ -40,14 +42,17 @@ Imports:
     MRPRESSO,
     MRInstruments,
     RadialMR,
-    MRMix
+    MRMix,
+    glmnet,
+    lattice
 Remotes:
     rondolab/MR-PRESSO,
     mrcieu/MRInstruments,
     mrcieu/ieugwasr,
     mrcieu/MRInstruments,
     WSpiller/RadialMR,
-    gqi/MRMix
+    gqi/MRMix,
+    qingyuanzhao/mr.raps
 License: MIT + file LICENSE
 LazyData: true
 VignetteBuilder: knitr
@@ -55,3 +60,4 @@ RoxygenNote: 7.0.2
 Encoding: UTF-8
 Suggests: 
     covr
+Roxygen: list(markdown = TRUE)

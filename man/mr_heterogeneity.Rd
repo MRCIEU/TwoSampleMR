@@ -2,7 +2,7 @@
 % Please edit documentation in R/heterogeneity.R
 \name{mr_heterogeneity}
 \alias{mr_heterogeneity}
-\title{Get heterogeneity stats}
+\title{Get heterogeneity statistics}
 \usage{
 mr_heterogeneity(
   dat,
@@ -11,15 +11,15 @@ mr_heterogeneity(
 )
 }
 \arguments{
-\item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.}
 
-\item{parameters}{Parameters to be used for various MR methods. Default is output from \code{dafault_param}.}
+\item{parameters}{Parameters to be used for various MR methods. Default is output from \code{\link{default_parameters}}.}
 
-\item{method_list}{List of methods to use in analysis. See \code{mr_method_list()} for details.}
+\item{method_list}{List of methods to use in analysis. See \code{\link[=mr_method_list]{mr_method_list()}} for details.}
 }
 \value{
 Data frame
 }
 \description{
-Get heterogeneity stats
+Get heterogeneity statistics.
 }

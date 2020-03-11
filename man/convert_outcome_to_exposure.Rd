@@ -7,11 +7,11 @@
 convert_outcome_to_exposure(outcome_dat)
 }
 \arguments{
-\item{outcome_dat}{Output from \code{extract_outcome_data}}
+\item{outcome_dat}{Output from \code{\link{extract_outcome_data}}.}
 }
 \value{
 data frame
 }
 \description{
-Helper function to convert results from extract_outcome_data to exposure_dat format
+Helper function to convert results from \code{\link{extract_outcome_data}} to \code{exposure_dat} format.
 }

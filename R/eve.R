@@ -1,3 +1,4 @@
+#' @importFrom stats coefficients lm pchisq pnorm pt
 mr_mean_ivw <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -90,6 +91,7 @@ mr_mean_ivw <- function(d)
 	return(ret)
 }
 
+#' @importFrom stats coefficients lm pchisq pnorm pt
 mr_mean_egger <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -167,6 +169,7 @@ mr_mean_egger <- function(d)
 	return(ret)
 }
 
+#' @importFrom stats pchisq
 mr_mean <- function(dat)
 {
 	m1 <- try(mr_mean_ivw(dat))
@@ -210,7 +213,7 @@ mr_all <- function(dat)
 	}
 	m1$info <- c(list(
 			id.exposure = dat$id.exposure[1], id.outcome = dat$id.outcome[1]),		
-			TwoSampleMR:::system_metrics(dat)
+			system_metrics(dat)
 		) %>% dplyr::as_data_frame()
 	return(m1)
 }
@@ -317,7 +320,7 @@ mr_wrapper_single <- function(dat)
 #' Perform full set of MR analyses
 #'
 #'
-#' @param dat Output from harmonise_data()
+#' @param dat Output from [`harmonise_data()`].
 #'
 #' @export
 #' @return list

@@ -7,13 +7,13 @@
 format_proteomic_qtls(proteomic_qtls_subset, type = "exposure")
 }
 \arguments{
-\item{proteomic_qtls_subset}{Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package}
+\item{proteomic_qtls_subset}{Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package.}
 
-\item{type}{Are these data used as "exposure" or "outcome"? Default is "exposure"}
+\item{type}{Are these data used as \code{"exposure"} or \code{"outcome"}? Default is \code{"exposure"}.}
 }
 \value{
 Data frame
 }
 \description{
-See \code{format_data}
+See \code{\link{format_data}}.
 }

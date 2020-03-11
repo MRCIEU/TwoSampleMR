@@ -7,13 +7,13 @@
 format_gtex_eqtl(gtex_eqtl_subset, type = "exposure")
 }
 \arguments{
-\item{gtex_eqtl_subset}{Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package}
+\item{gtex_eqtl_subset}{Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package.}
 
-\item{type}{Are these data used as "exposure" or "outcome"? Default is "exposure"}
+\item{type}{Are these data used as \code{"exposure"} or \code{"outcome"}? Default is \code{"exposure"}.}
 }
 \value{
 Data frame
 }
 \description{
-See \code{format_data}
+See \code{\link{format_data}}.
 }

@@ -12,9 +12,13 @@ mr_singlesnp(
 )
 }
 \arguments{
-\item{dat}{Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Output from \code{\link{harmonise_data}}.}
 
-\item{method=mr_two_sample_ml}{Function to use for MR analysis}
+\item{parameters}{List of parameters. The default is \code{default_parameters()}.}
+
+\item{single_method}{Function to use for MR analysis. The default is \code{"mr_wald_ratio"}.}
+
+\item{all_method}{Functions to use for MR analysis. The default is \code{c("mr_ivw", "mr_egger_regression")}.}
 }
 \value{
 List of data frames
