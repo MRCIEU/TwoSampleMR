@@ -1005,7 +1005,7 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #'
 #' @export
 #' @importFrom stats pnorm
-#' @importFrom mr.raps mr.raps.shrinkage
+#' @importFrom mr.raps mr.raps
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
     cpg <- requireNamespace("mr.raps", quietly = TRUE)
@@ -1013,7 +1013,7 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
     {
         stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
     }
-    out <- suppressMessages(mr.raps::mr.raps.shrinkage(b_exp, b_out, se_exp, se_out,
+    out <- suppressMessages(mr.raps::mr.raps(b_exp, b_out, se_exp, se_out,
                             parameters$over.dispersion,
                             parameters$loss.function))
     list(b = out$beta.hat,
