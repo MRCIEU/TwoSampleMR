@@ -77,6 +77,7 @@ harmonise_ld_dat <- function(x, ld)
 	# Set1 x and ld alleles match
 	snpnames <- data.frame(snpnames, stringsAsFactors=FALSE)
 	snpnames <- merge(subset(x, select=c(SNP, effect_allele.exposure, other_allele.exposure)), snpnames, by.x="SNP", by.y="X1")
+	snpnames <- snpnames[match(x$SNP, snpnames$SNP),]
 	snpnames$keep <- (snpnames$X2 == snpnames$effect_allele.exposure & snpnames$X3 == snpnames$other_allele.exposure) |
 		(snpnames$X3 == snpnames$effect_allele.exposure & snpnames$X2 == snpnames$other_allele.exposure)
 

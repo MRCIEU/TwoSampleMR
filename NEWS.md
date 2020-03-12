@@ -1,8 +1,9 @@
-TwoSampleMR v0.5.2 (Release candidate)
+TwoSampleMR v0.5.3 (Release candidate)
 ==============
 
 Changes:
 
+* When converting to MRInput format and supplying an LD matrix, the LD matrix SNP order was not matching the summary data order. Credit goes to Mona Almramhi for spotting and fixing this issue.
 * Reinstating all datasets that were previously disabled (ukb-a, ukb-d, ubm-a)
 
 
