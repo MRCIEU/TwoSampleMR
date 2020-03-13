@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="Get data selected from GWAS catalog into correct format — format_gwas_catalog" />
-<meta property="og:description" content="DEPRECATED. Please use format_data instead" />
+<meta property="og:description" content="DEPRECATED. Please use format_data instead." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -108,11 +108,23 @@
     </div>
 
     <div class="ref-description">
-    <p>DEPRECATED. Please use <code>format_data</code> instead</p>
+    <p>DEPRECATED. Please use <code><a href='format_data.html'>format_data</a></code> instead.</p>
     </div>
 
     <pre class="usage"><span class='fu'>format_gwas_catalog</span>(<span class='no'>gwas_catalog_subset</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"exposure"</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>gwas_catalog_subset</th>
+      <td><p>The GWAS catalog subset.</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>The default is <code>"exposure"</code>.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -129,6 +141,7 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
@@ -139,7 +152,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

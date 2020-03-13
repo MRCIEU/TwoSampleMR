@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -83,32 +83,32 @@
 <p><a href="https://gwas.mrcieu.ac.uk/" class="uri">https://gwas.mrcieu.ac.uk/</a></p>
 <p>To obtain details about the available GWASs programmatically do the following:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>ao &lt;-<span class="st"> </span><span class="kw"><a href="../reference/available_outcomes.html">available_outcomes</a></span>()</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; API: public: https://gwas-api.mrcieu.ac.uk/</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; API: public: http://gwas-api.mrcieu.ac.uk/</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(ao)</span>
 <span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; # A tibble: 6 x 20</span></span>
 <span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt;   id    trait sample_size   nsnp  year consortium author note  access    mr</span></span>
 <span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; 1 prot… Hete…        3301 1.05e7  2018 NA         Sun BB NA    public     1</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; 2 ukb-… Diag…      337199 1.09e7  2017 Neale Lab  Neale  NA    public     1</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; 3 ubm-… NET1…        7916 1.17e7  2018 NA         Ellio… NA    public     1</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt; 4 prot… Tumo…        3301 1.05e7  2018 NA         Sun BB NA    public     1</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt; 5 prot… Ribo…        3301 1.05e7  2018 NA         Sun BB NA    public     1</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt; 6 prot… Mito…        3301 1.05e7  2018 NA         Sun BB NA    public     1</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt; # … with 10 more variables: sex &lt;chr&gt;, pmid &lt;int&gt;, priority &lt;int&gt;,</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; #   population &lt;chr&gt;, unit &lt;chr&gt;, category &lt;chr&gt;, subcategory &lt;chr&gt;,</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; #   ncase &lt;int&gt;, ncontrol &lt;int&gt;, sd &lt;dbl&gt;</span></span></code></pre></div>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; 1 eqtl~ ENSG~       31684 1.80e4  2018 NA         Vosa U NA    public     1</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; 2 ukb-~ Diag~      361194 1.09e7  2018 NA         Neale~ NA    public     1</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; 3 ubm-~ NET1~        7916 1.17e7  2018 NA         Ellio~ NA    public     1</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt; 4 prot~ Cyst~        3301 1.05e7  2018 NA         Sun BB NA    public     1</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt; 5 eqtl~ ENSG~       31684 1.61e4  2018 NA         Vosa U NA    public     1</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt; 6 ubm-~ IDP ~        7532 1.17e7  2018 NA         Ellio~ NA    public     1</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt; # ... with 10 more variables: sex &lt;chr&gt;, priority &lt;int&gt;, population &lt;chr&gt;,</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; #   unit &lt;chr&gt;, subcategory &lt;chr&gt;, category &lt;chr&gt;, ncase &lt;int&gt;, ncontrol &lt;int&gt;,</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; #   pmid &lt;int&gt;, sd &lt;dbl&gt;</span></span></code></pre></div>
 <p>For information about authentication see <a href="https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication">https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication</a>.</p>
 <p>The <code>available_outcomes</code> function returns a table of all the available studies in the database. Each study has a unique ID. e.g.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/subset.html">subset</a></span>(ao, <span class="dt">select=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(trait, id)))</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; # A tibble: 6 x 2</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt;   trait                                                         id         </span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt;   &lt;chr&gt;                                                         &lt;chr&gt;      </span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; 1 Heterogeneous nuclear ribonucleoprotein A/B                   prot-a-1363</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt; 2 Diagnoses - main ICD10: M24 Other specific joint derangements ukb-a-567  </span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; 3 NET100 0411                                                   ubm-a-1567 </span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; 4 Tumor necrosis factor alpha-induced protein 3                 prot-a-3030</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; 5 Ribosyldihydronicotinamide dehydrogenase [quinone]            prot-a-2084</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; 6 Mitochondrial ubiquitin ligase activator of NFKB 1            prot-a-1970</span></span></code></pre></div>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt;   trait                                                   id                    </span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt;   &lt;chr&gt;                                                   &lt;chr&gt;                 </span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; 1 ENSG00000121749                                         eqtl-a-ENSG00000121749</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt; 2 Diagnoses - main ICD10: R00 Abnormalities of heart beat ukb-d-R00             </span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; 3 NET100 0767                                             ubm-a-1923            </span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; 4 Cysteine-rich motor neuron 1 protein                    prot-a-660            </span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; 5 ENSG00000175592                                         eqtl-a-ENSG00000175592</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; 6 IDP dMRI TBSS ISOVF Middle cerebellar peduncle          ubm-a-580</span></span></code></pre></div>
 </div>
 <div id="extracting-particular-snps-from-particular-studies" class="section level2">
 <h2 class="hasAnchor">
@@ -117,27 +117,27 @@
 <p>Let’s get the Locke et al 2014 instruments for BMI as an example:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>bmi_exp_dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_instruments.html">extract_instruments</a></span>(<span class="dt">outcomes=</span><span class="st">'ieu-a-2'</span>)</span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(bmi_exp_dat)</span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt;   beta.exposure pos.exposure se.exposure samplesize.exposure chr.exposure</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; 1        0.0331     72837239      0.0030              338123            1</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; 2        0.0201     78048331      0.0031              339065            1</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; 3        0.0221     96924097      0.0030              337797            1</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; 4        0.0659    110082886      0.0087              313621            1</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; 5        0.0211    208255518      0.0038              333383            2</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; 6        0.0183     25106437      0.0030              338525            3</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt;   pval.exposure id.exposure        SNP effect_allele.exposure</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; 1   1.88018e-28     ieu-a-2  rs7531118                      C</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; 2   4.56773e-11     ieu-a-2 rs17381664                      C</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; 3   1.43384e-13     ieu-a-2 rs11165643                      T</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; 4   5.05941e-14     ieu-a-2  rs7550711                      T</span></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; 5   3.40596e-08     ieu-a-2 rs17203016                      G</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; 6   8.01604e-10     ieu-a-2  rs6804842                      G</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt;   pval.exposure samplesize.exposure chr.exposure se.exposure beta.exposure</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; 1   2.18198e-08              339152            1      0.0030       -0.0168</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; 2   4.56773e-11              339065            1      0.0031        0.0201</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; 3   5.05941e-14              313621            1      0.0087        0.0659</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; 4   1.93299e-08              294030            3      0.0033        0.0183</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; 5   2.53501e-10              337750            6      0.0033        0.0209</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; 6   4.52376e-31              339197            6      0.0038        0.0444</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt;   pos.exposure id.exposure        SNP effect_allele.exposure</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; 1     47684677     ieu-a-2   rs977747                      G</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; 2     78048331     ieu-a-2 rs17381664                      C</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; 3    110082886     ieu-a-2  rs7550711                      T</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; 4     81792112     ieu-a-2  rs3849570                      A</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; 5     34828553     ieu-a-2  rs6457796                      C</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; 6     50865820     ieu-a-2   rs943005                      T</span></span>
 <span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt;   other_allele.exposure eaf.exposure                      exposure</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; 1                     T       0.6083 Body mass index || id:ieu-a-2</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; 1                     T       0.5333 Body mass index || id:ieu-a-2</span></span>
 <span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; 2                     T       0.4250 Body mass index || id:ieu-a-2</span></span>
-<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt; 3                     C       0.5750 Body mass index || id:ieu-a-2</span></span>
-<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; 4                     C       0.0339 Body mass index || id:ieu-a-2</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; 5                     A       0.2000 Body mass index || id:ieu-a-2</span></span>
-<span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; 6                     A       0.5750 Body mass index || id:ieu-a-2</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt; 3                     C       0.0339 Body mass index || id:ieu-a-2</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; 4                     C       0.3667 Body mass index || id:ieu-a-2</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; 5                     T       0.2583 Body mass index || id:ieu-a-2</span></span>
+<span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; 6                     C       0.1000 Body mass index || id:ieu-a-2</span></span>
 <span id="cb3-24"><a href="#cb3-24"></a><span class="co">#&gt;   mr_keep.exposure pval_origin.exposure data_source.exposure</span></span>
 <span id="cb3-25"><a href="#cb3-25"></a><span class="co">#&gt; 1             TRUE             reported                  igd</span></span>
 <span id="cb3-26"><a href="#cb3-26"></a><span class="co">#&gt; 2             TRUE             reported                  igd</span></span>
@@ -147,24 +147,26 @@
 <span id="cb3-30"><a href="#cb3-30"></a><span class="co">#&gt; 6             TRUE             reported                  igd</span></span></code></pre></div>
 <p>We now need to find a suitable GWAS for coronary heart disease. We can search the available studies:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>ao[<span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"heart disease"</span>, ao<span class="op">$</span>trait), ]</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; # A tibble: 12 x 20</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt;    id    trait sample_size   nsnp  year consortium author note  access</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;       &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; </span></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt;  1 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt;  2 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt;  3 ieu-… Coro…       86995 2.42e6  2011 CARDIoGRAM Schun… &lt;NA&gt;  public</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt;  4 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt;  5 ebi-… Coro…       86995 2.42e6  2011 NA         Schun… NA    public</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt;  6 ieu-… Coro…       30482 5.40e5  2011 C4D        Peden  &lt;NA&gt;  public</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt;  7 ukb-… Diag…      337199 1.09e7  2017 Neale Lab  Neale  NA    public</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt;  8 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt;  9 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; 10 ieu-… Coro…      184305 9.46e6  2015 CARDIoGRA… Nikpay &lt;NA&gt;  public</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; 11 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; 12 ieu-… Coro…      194427 7.91e4  2013 CARDIoGRA… Delou… &lt;NA&gt;  public</span></span>
-<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; # … with 11 more variables: mr &lt;int&gt;, sex &lt;chr&gt;, pmid &lt;int&gt;,</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; #   priority &lt;int&gt;, population &lt;chr&gt;, unit &lt;chr&gt;, category &lt;chr&gt;,</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; #   subcategory &lt;chr&gt;, ncase &lt;int&gt;, ncontrol &lt;int&gt;, sd &lt;dbl&gt;</span></span></code></pre></div>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; # A tibble: 14 x 20</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt;    id    trait sample_size   nsnp  year consortium author note  access    mr</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;       &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt;  1 ukb-~ Majo~      361194 1.33e7  2018 NA         Neale~ NA    public     1</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt;  2 ebi-~ Coro~       86995 2.42e6  2011 NA         Schun~ NA    public     1</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt;  3 ieu-~ Coro~      194427 7.91e4  2013 NA         Delou~ &lt;NA&gt;  public     1</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt;  4 ukb-~ Diag~      463010 9.85e6  2018 MRC-IEU    Ben E~ 4120~ public     1</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt;  5 ieu-~ Coro~       86995 2.42e6  2011 NA         Schun~ &lt;NA&gt;  public     1</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt;  6 ukb-~ Diag~      463010 9.85e6  2018 MRC-IEU    Ben E~ 4120~ public     1</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt;  7 ieu-~ Coro~      184305 9.46e6  2015 NA         Nikpay &lt;NA&gt;  public     1</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt;  8 ukb-~ Isch~      361194 1.36e7  2018 NA         Neale~ NA    public     1</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt;  9 ukb-~ Diag~      463010 9.85e6  2018 MRC-IEU    Ben E~ 4120~ public     1</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; 10 ukb-~ Majo~      361194 1.33e7  2018 NA         Neale~ NA    public     1</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; 11 ukb-~ Diag~      463010 9.85e6  2018 MRC-IEU    Ben E~ 4120~ public     1</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; 12 ieu-~ Coro~       30482 5.40e5  2011 NA         Peden  &lt;NA&gt;  public     1</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; 13 ukb-~ Diag~      463010 9.85e6  2018 MRC-IEU    Ben E~ 4120~ public     1</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; 14 ukb-~ Diag~      463010 9.85e6  2018 MRC-IEU    Ben E~ 4120~ public     1</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; # ... with 10 more variables: sex &lt;chr&gt;, priority &lt;int&gt;, population &lt;chr&gt;,</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; #   unit &lt;chr&gt;, subcategory &lt;chr&gt;, category &lt;chr&gt;, ncase &lt;int&gt;, ncontrol &lt;int&gt;,</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; #   pmid &lt;int&gt;, sd &lt;dbl&gt;</span></span></code></pre></div>
 <p>The most recent CARDIOGRAM GWAS is ID number <code>ieu-a-7</code>. We can extract the BMI SNPs from this GWAS as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>chd_out_dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span>(</span>
 <span id="cb5-2"><a href="#cb5-2"></a>    <span class="dt">snps =</span> bmi_exp_dat<span class="op">$</span>SNP,</span>
@@ -283,7 +285,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

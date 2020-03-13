@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="Extract exposure variables for multivariable MR — mv_extract_exposures" />
-<meta property="og:description" content="Requires a list of IDs from available_outcomes(). For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand." />
+<meta property="og:description" content="Requires a list of IDs from available_outcomes. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Requires a list of IDs from <code><a href='available_outcomes.html'>available_outcomes()</a></code>. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.</p>
+    <p>Requires a list of IDs from <code><a href='available_outcomes.html'>available_outcomes</a></code>. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.</p>
     </div>
 
     <pre class="usage"><span class='fu'>mv_extract_exposures</span>(
@@ -129,30 +129,34 @@
       <td><p>Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)</p></td>
     </tr>
     <tr>
+      <th>clump_r2</th>
+      <td><p>The default is <code>0.01</code>.</p></td>
+    </tr>
+    <tr>
+      <th>clump_kb</th>
+      <td><p>The default is <code>10000</code>.</p></td>
+    </tr>
+    <tr>
+      <th>harmonise_strictness</th>
+      <td><p>See the <code>action</code> option of <code><a href='harmonise_data.html'>harmonise_data</a></code>. The default is <code>2</code>.</p></td>
+    </tr>
+    <tr>
       <th>access_token</th>
-      <td><p>Google OAuth2 access token. Used to authenticate level of access to data</p></td>
+      <td><p>Google OAuth2 access token. Used to authenticate level of access to data.</p></td>
     </tr>
     <tr>
       <th>find_proxies</th>
-      <td><p>Look for proxies? This slows everything down but is more accurate. Default TRUE</p></td>
+      <td><p>Look for proxies? This slows everything down but is more accurate. The default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
-      <th>clump_r2=0.01</th>
-      <td><p>Once a full list of</p></td>
-    </tr>
-    <tr>
-      <th>clump_kb=10000</th>
-      <td><p>&lt;what param does&gt;</p></td>
-    </tr>
-    <tr>
-      <th>force_server=FALSE</th>
-      <td><p>Whether to search through pre-clumped dataset or to re-extract and clump directly from the server</p></td>
+      <th>force_server</th>
+      <td><p>Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame in exposure_dat format</p>
+    <p>data frame in <code>exposure_dat</code> format</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -168,7 +172,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

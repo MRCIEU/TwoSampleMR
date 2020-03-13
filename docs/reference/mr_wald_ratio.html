@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform 2 sample IV using Wald ratio — mr_wald_ratio • TwoSampleMR</title>
+<title>Perform 2 sample IV using Wald ratio. — mr_wald_ratio • TwoSampleMR</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Perform 2 sample IV using Wald ratio — mr_wald_ratio" />
-<meta property="og:description" content="Perform 2 sample IV using Wald ratio" />
+<meta property="og:title" content="Perform 2 sample IV using Wald ratio. — mr_wald_ratio" />
+<meta property="og:description" content="Perform 2 sample IV using Wald ratio." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -102,13 +102,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform 2 sample IV using Wald ratio</h1>
+    <h1>Perform 2 sample IV using Wald ratio.</h1>
     
     <div class="hidden name"><code>mr_wald_ratio.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform 2 sample IV using Wald ratio</p>
+    <p>Perform 2 sample IV using Wald ratio.</p>
     </div>
 
     <pre class="usage"><span class='fu'>mr_wald_ratio</span>(<span class='no'>b_exp</span>, <span class='no'>b_out</span>, <span class='no'>se_exp</span>, <span class='no'>se_out</span>, <span class='no'>parameters</span>)</pre>
@@ -118,28 +118,36 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>b_exp</th>
-      <td><p>Vector of genetic effects on exposure</p></td>
+      <td><p>Vector of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>b_out</th>
-      <td><p>Vector of genetic effects on outcome</p></td>
+      <td><p>Vector of genetic effects on outcome.</p></td>
     </tr>
     <tr>
       <th>se_exp</th>
-      <td><p>Standard errors of genetic effects on exposure</p></td>
+      <td><p>Standard errors of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>se_out</th>
-      <td><p>Standard errors of genetic effects on outcome</p></td>
+      <td><p>Standard errors of genetic effects on outcome.</p></td>
+    </tr>
+    <tr>
+      <th>parameters</th>
+      <td><p>List of parameters.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List with the following elements:
-        b: causal effect estimate
-        se: standard error
-        pval: p-value</p>
+    <p>List with the following elements:</p><dl class='dl-horizontal'>
+<dt>b</dt><dd><p>causal effect estimate</p></dd>
+<dt>se</dt><dd><p>standard error</p></dd>
+<dt>pval</dt><dd><p>p-value</p></dd>
+<dt>nsnp</dt><dd><p>1</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -155,7 +163,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

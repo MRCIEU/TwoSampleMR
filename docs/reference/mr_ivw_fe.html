@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -118,29 +118,36 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>b_exp</th>
-      <td><p>Vector of genetic effects on exposure</p></td>
+      <td><p>Vector of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>b_out</th>
-      <td><p>Vector of genetic effects on outcome</p></td>
+      <td><p>Vector of genetic effects on outcome.</p></td>
     </tr>
     <tr>
       <th>se_exp</th>
-      <td><p>Standard errors of genetic effects on exposure</p></td>
+      <td><p>Standard errors of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>se_out</th>
-      <td><p>Standard errors of genetic effects on outcome</p></td>
+      <td><p>Standard errors of genetic effects on outcome.</p></td>
+    </tr>
+    <tr>
+      <th>parameters</th>
+      <td><p>List of parameters.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List with the following elements:
-        b: MR estimate
-        se: Standard error
-        pval: p-value
-        Q, Q_df, Q_pval: Heterogeneity stats</p>
+    <p>List with the following elements:</p><dl class='dl-horizontal'>
+<dt>b</dt><dd><p>MR estimate</p></dd>
+<dt>se</dt><dd><p>Standard error</p></dd>
+<dt>pval</dt><dd><p>p-value</p></dd>
+<dt>Q, Q_df, Q_pval</dt><dd><p>Heterogeneity stats</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -156,7 +163,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

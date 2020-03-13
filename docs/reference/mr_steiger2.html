@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -148,20 +148,23 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List
-- r2_exp: Estimated variance explained in x
-- r2_out: Estimated variance explained in y
-- r2_exp_adj: Predicted variance explained in x accounting for estimated measurement error
-- r2_out_adj: Predicted variance explained in y accounting for estimated measurement error
-- correct_causal_direction: TRUE/FALSE
-- steiger_test: p-value for inference of direction
-- correct_causal_direction_adj: TRUE/FALSE, direction of causality for given measurement error parameters
-- steiger_test_adj: p-value for inference of direction of causality for given measurement error parameters
-- vz: Total volume of the error parameter space
-- vz0: Volume of the parameter space that gives the incorrect answer
-- vz1: Volume of the paramtere space that gives the correct answer
-- sensitivity_ratio: Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error
-- sensitivity_plot: Plot of parameter space of causal directions and measurement error</p>
+    <p>List with the following elements:</p><dl class='dl-horizontal'>
+<dt>r2_exp</dt><dd><p>Estimated variance explained in x</p></dd>
+<dt>r2_out</dt><dd><p>Estimated variance explained in y</p></dd>
+<dt>r2_exp_adj</dt><dd><p>Predicted variance explained in x accounting for estimated measurement error</p></dd>
+<dt>r2_out_adj</dt><dd><p>Predicted variance explained in y accounting for estimated measurement error</p></dd>
+<dt>correct_causal_direction</dt><dd><p>TRUE/FALSE</p></dd>
+<dt>steiger_test</dt><dd><p>p-value for inference of direction</p></dd>
+<dt>correct_causal_direction_adj</dt><dd><p>TRUE/FALSE, direction of causality for given measurement error parameters</p></dd>
+<dt>steiger_test_adj</dt><dd><p>p-value for inference of direction of causality for given measurement error parameters</p></dd>
+<dt>vz</dt><dd><p>Total volume of the error parameter space</p></dd>
+<dt>vz0</dt><dd><p>Volume of the parameter space that gives the incorrect answer</p></dd>
+<dt>vz1</dt><dd><p>Volume of the paramtere space that gives the correct answer</p></dd>
+<dt>sensitivity_ratio</dt><dd><p>Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error</p></dd>
+<dt>sensitivity_plot</dt><dd><p>Plot of parameter space of causal directions and measurement error</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -177,7 +180,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

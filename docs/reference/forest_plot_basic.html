@@ -37,8 +37,7 @@
 
 <meta property="og:title" content="A basic forest plot — forest_plot_basic" />
 <meta property="og:description" content="This function is used to create a basic forest plot.
-It requires the output from format_mr_results().
-It is" />
+It requires the output from format_mr_results." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -71,7 +70,7 @@ It is" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -111,8 +110,7 @@ It is" />
 
     <div class="ref-description">
     <p>This function is used to create a basic forest plot.
-It requires the output from format_mr_results().
-It is</p>
+It requires the output from <code><a href='format_mr_results.html'>format_mr_results</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>forest_plot_basic</span>(
@@ -132,35 +130,39 @@ It is</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dat</th>
-      <td><p>Output from format_mr_results()</p></td>
+      <td><p>Output from <code><a href='format_mr_results.html'>format_mr_results()</a></code>.</p></td>
     </tr>
     <tr>
       <th>section</th>
-      <td><p>Which category in dat to plot. If NULL then prints everything</p></td>
+      <td><p>Which category in dat to plot. If <code>NULL</code> then prints everything.</p></td>
     </tr>
     <tr>
       <th>colour_group</th>
-      <td><p>Which exposure to plot. If NULL then prints everything grouping by colour.</p></td>
+      <td><p>Which exposure to plot. If <code>NULL</code> then prints everything grouping by colour.</p></td>
+    </tr>
+    <tr>
+      <th>colour_group_first</th>
+      <td><p>The default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>xlab</th>
-      <td><p>x-axis label. Default=NULL</p></td>
+      <td><p>x-axis label. Default=<code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>bottom</th>
-      <td><p>Show x-axis? Default=FALSE</p></td>
+      <td><p>Show x-axis? Default=<code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>trans</th>
-      <td><p>Transformation of x axis</p></td>
+      <td><p>Transformation of x axis.</p></td>
     </tr>
     <tr>
       <th>xlim</th>
-      <td><p>x-axis limits</p></td>
+      <td><p>x-axis limits.</p></td>
     </tr>
     <tr>
       <th>threshold</th>
-      <td><p>p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied</p></td>
+      <td><p>p-value threshold to use for colouring points by significance level. If <code>NULL</code> (default) then colour layer won't be applied.</p></td>
     </tr>
     </table>
 
@@ -182,7 +184,7 @@ It is</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

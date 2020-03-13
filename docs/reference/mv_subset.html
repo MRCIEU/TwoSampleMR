@@ -36,9 +36,12 @@
 
 
 <meta property="og:title" content="Perform multivariable MR on subset of features — mv_subset" />
-<meta property="og:description" content="Step 1: Select features (by default this is done using LASSO feature selection)
-Step 2: Subset the mvdat to only retain relevant features and instruments
-Step 3: Perform MVMR on remaining data" />
+<meta property="og:description" content="The function proceeds as follows:
+Select features (by default this is done using LASSO feature selection).
+Subset the mvdat to only retain relevant features and instruments.
+Perform MVMR on remaining data.
+
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -71,7 +74,7 @@ Step 3: Perform MVMR on remaining data" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -110,9 +113,12 @@ Step 3: Perform MVMR on remaining data" />
     </div>
 
     <div class="ref-description">
-    <p>Step 1: Select features (by default this is done using LASSO feature selection)
-Step 2: Subset the mvdat to only retain relevant features and instruments
-Step 3: Perform MVMR on remaining data</p>
+    <p>The function proceeds as follows:</p><ol>
+<li><p>Select features (by default this is done using LASSO feature selection).</p></li>
+<li><p>Subset the mvdat to only retain relevant features and instruments.</p></li>
+<li><p>Perform MVMR on remaining data.</p></li>
+</ol>
+
     </div>
 
     <pre class="usage"><span class='fu'>mv_subset</span>(
@@ -129,27 +135,27 @@ Step 3: Perform MVMR on remaining data</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mvdat</th>
-      <td><p>Output from <code>mv_harmonise_data</code></p></td>
+      <td><p>Output from <code><a href='mv_harmonise_data.html'>mv_harmonise_data</a></code>.</p></td>
     </tr>
     <tr>
       <th>features</th>
-      <td><p>Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. By default = mvdat_lasso_feature_selection(mvdat)</p></td>
+      <td><p>Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. The default is <code>mvdat_lasso_feature_selection(mvdat)</code>.</p></td>
     </tr>
     <tr>
       <th>intercept</th>
-      <td><p>Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)</p></td>
+      <td><p>Should the intercept by estimated (<code>TRUE</code>) or force line through the origin (<code>FALSE</code>, the default).</p></td>
     </tr>
     <tr>
       <th>instrument_specific</th>
-      <td><p>Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)</p></td>
+      <td><p>Should the estimate for each exposure be obtained by using all instruments from all exposures (<code>FALSE</code>, default) or by using only the instruments specific to each exposure (<code>TRUE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>pval_threshold</th>
+      <td><p>P-value threshold to include instruments. The default is <code>5e-8</code>.</p></td>
     </tr>
     <tr>
       <th>plots</th>
-      <td><p>Create plots? FALSE by default</p></td>
-    </tr>
-    <tr>
-      <th>pval_threshold=5e-8</th>
-      <td><p>P-value threshold to include instruments</p></td>
+      <td><p>Create plots? The default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
@@ -171,7 +177,7 @@ Step 3: Perform MVMR on remaining data</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

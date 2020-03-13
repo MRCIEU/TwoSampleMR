@@ -11,7 +11,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Two Sample MR functions and interface to MR Base database">
-<meta property="og:description" content="See title">
+<meta property="og:description" content="A package for performing Mendelian randomization
+    using GWAS summary data. It uses the IEU GWAS database to
+    obtain data automatically, and a wide range of methods to
+    run the analysis. You can use the MR-Base web app to try out
+    a limited range of the functionality in this package, but
+    for any serious work we strongly recommend using this R
+    package.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -31,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -79,12 +85,12 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>To install the latest version of TwoSampleMR, perform as normal:</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR")</a></code></pre>
+<pre><code>install.packages("devtools")
+devtools::install_github("MRCIEU/TwoSampleMR")</code></pre>
 <p>To update the package just run the <code>install_github("MRCIEU/TwoSampleMR")</code> command again.</p>
 <p>We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")</a></code></pre>
+<pre><code>install.packages("devtools")
+devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")</code></pre>
 </div>
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
@@ -110,20 +116,28 @@ devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")</a></code></pre>
 <li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing TwoSampleMR</a></li>
+</ul>
+</div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
 <li>Gibran Hemani <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-0920-1055" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
-<li>Philip Haycock <br><small class="roles"> Author </small>  </li>
-<li>Jie Zheng <br><small class="roles"> Author </small>  </li>
-<li>Tom Gaunt <br><small class="roles"> Author </small>  </li>
-<li>Ben Elsworth <br><small class="roles"> Author </small>  </li>
+<li>Philip Haycock <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-5001-3350" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Jie Zheng <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-6623-6839" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Tom Gaunt <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-0924-3247" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Ben Elsworth <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-7328-4233" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Tom Palmer <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-4655-4511" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
 </ul>
 </div>
 
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://github.com/MRCIEU/TwoSampleMR/actions?workflow=R-CMD-check"><img src="https://github.com/MRCIEU/TwoSampleMR/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
 <li><a href="https://travis-ci.org/MRCIEU/TwoSampleMR"><img src="https://travis-ci.org/MRCIEU/TwoSampleMR.svg?branch=ieugwasr" alt="Travis build status"></a></li>
 <li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/49515156"><img src="https://zenodo.org/badge/49515156.svg" alt="DOI"></a></li>
@@ -135,7 +149,7 @@ devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")</a></code></pre>
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

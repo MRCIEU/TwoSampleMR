@@ -36,7 +36,11 @@
 
 
 <meta property="og:title" content="Combine all mr results — combine_all_mrresults" />
-<meta property="og:description" content="This function combines results of mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single data frame. It also merges the results with outcome study level characteristics in available_outcomes(). If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). The exposure and outcome columns from the output from mr() contain both the trait names and trait ids. The combine_all_mrresults() function splits these into separate columns by default." />
+<meta property="og:description" content="This function combines results of mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single data frame.
+It also merges the results with outcome study level characteristics in available_outcomes().
+If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals).
+The exposure and outcome columns from the output from mr() contain both the trait names and trait ids.
+The combine_all_mrresults() function splits these into separate columns by default." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -108,7 +112,11 @@
     </div>
 
     <div class="ref-description">
-    <p>This function combines results of mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single data frame. It also merges the results with outcome study level characteristics in available_outcomes(). If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). The exposure and outcome columns from the output from mr() contain both the trait names and trait ids. The combine_all_mrresults() function splits these into separate columns by default.</p>
+    <p>This function combines results of <code><a href='mr.html'>mr()</a></code>, <code><a href='mr_heterogeneity.html'>mr_heterogeneity()</a></code>, <code><a href='mr_pleiotropy_test.html'>mr_pleiotropy_test()</a></code> and <code><a href='mr_singlesnp.html'>mr_singlesnp()</a></code> into a single data frame.
+It also merges the results with outcome study level characteristics in <code><a href='available_outcomes.html'>available_outcomes()</a></code>.
+If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals).
+The exposure and outcome columns from the output from <code><a href='mr.html'>mr()</a></code> contain both the trait names and trait ids.
+The <code>combine_all_mrresults()</code> function splits these into separate columns by default.</p>
     </div>
 
     <pre class="usage"><span class='fu'>combine_all_mrresults</span>(
@@ -127,35 +135,35 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>res</th>
-      <td><p>Results from mr()</p></td>
+      <td><p>Results from <code><a href='mr.html'>mr()</a></code>.</p></td>
     </tr>
     <tr>
       <th>het</th>
-      <td><p>Results from mr_heterogeneity()</p></td>
+      <td><p>Results from <code><a href='mr_heterogeneity.html'>mr_heterogeneity()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>plt</th>
+      <td><p>Results from <code><a href='mr_pleiotropy_test.html'>mr_pleiotropy_test()</a></code>.</p></td>
     </tr>
     <tr>
       <th>sin</th>
-      <td><p>Results from mr_singlesnp()</p></td>
+      <td><p>Results from <code><a href='mr_singlesnp.html'>mr_singlesnp()</a></code>.</p></td>
     </tr>
     <tr>
       <th>ao_slc</th>
-      <td><p>Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE.</p></td>
+      <td><p>Logical; if set to <code>TRUE</code> then outcome study level characteristics are retrieved from <code><a href='available_outcomes.html'>available_outcomes()</a></code>. Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>Exp</th>
-      <td><p>Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE.</p></td>
+      <td><p>Logical; if set to <code>TRUE</code> results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>split.exposure</th>
-      <td><p>Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is FALSE.</p></td>
+      <td><p>Logical; if set to <code>TRUE</code> the exposure column is split into separate columns for the exposure name and exposure ID. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>split.outcome</th>
-      <td><p>Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is FALSE.</p></td>
-    </tr>
-    <tr>
-      <th>pleiotropy</th>
-      <td><p>Results from mr_pleiotropy_test()</p></td>
+      <td><p>Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
@@ -177,7 +185,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

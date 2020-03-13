@@ -36,7 +36,12 @@
 
 
 <meta property="og:title" content="Calculate index of suspicion — ios" />
-<meta property="og:description" content="If a SNP influences multiple other traits then it could be 'suspicious', and more likely to be pleiotropic. This function implements two basic approaches to estimate IOS" />
+<meta property="og:description" content="If a SNP influences multiple other traits then it could be 'suspicious', and more likely to be pleiotropic.
+This function implements two basic approaches to estimate IOS
+ios1: A summary of the SNP r2 with the other traits (r2_gu).
+ios2: A summary of the ratio of r2_gu / r2_gx, where r2_gx is the variance explained by the SNP on the exposure. Estimates the index of suspicion, whereupon SNPs which have a larger effect on a set of traits given their effect on the exposure are deemed more suspicious.
+
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -108,7 +113,12 @@
     </div>
 
     <div class="ref-description">
-    <p>If a SNP influences multiple other traits then it could be 'suspicious', and more likely to be pleiotropic. This function implements two basic approaches to estimate IOS</p>
+    <p>If a SNP influences multiple other traits then it could be 'suspicious', and more likely to be pleiotropic.
+This function implements two basic approaches to estimate IOS</p><ul>
+<li><p>ios1: A summary of the SNP r2 with the other traits (r2_gu).</p></li>
+<li><p>ios2: A summary of the ratio of r2_gu / r2_gx, where r2_gx is the variance explained by the SNP on the exposure. Estimates the index of suspicion, whereupon SNPs which have a larger effect on a set of traits given their effect on the exposure are deemed more suspicious.</p></li>
+</ul>
+
     </div>
 
     <pre class="usage"><span class='fu'>ios</span>(<span class='no'>exposure_dat</span>, <span class='no'>background_dat</span>)</pre>
@@ -118,11 +128,11 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>exposure_dat</th>
-      <td><p>Instruments for the exposure, obtained using <code>extract_instruments</code></p></td>
+      <td><p>Instruments for the exposure, obtained using <code><a href='extract_instruments.html'>extract_instruments</a></code>.</p></td>
     </tr>
     <tr>
       <th>background_dat</th>
-      <td><p>Effects for the instruments on a set of variables, used to calculate index of suspicion</p></td>
+      <td><p>Effects for the instruments on a set of variables, used to calculate index of suspicion.</p></td>
     </tr>
     </table>
 
@@ -131,9 +141,7 @@
     <p>Data.frame</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>- ios1: A summary of the SNP r2 with the other traits (r2_gu)
-- ios2: A summary of the ratio of r2_gu / r2_gx, where r2_gx is the variance explained by the SNP on the exposure. Estimates the index of suspicion, whereupon SNPs which have a larger effect on a set of traits given their effect on the exposure are deemed more suspicious</p>
-<p>Summarising across multiple traits can be dune using mean, sd, iqr, median, 95<!-- % value, maximum value --></p>
+    <p>Summarising across multiple traits can be dune using mean, sd, iqr, median, 95% value, maximum value.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -150,7 +158,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

@@ -70,7 +70,7 @@ Updated based on Burgess 2016 &quot;Robust instrumental variable methods using m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -142,16 +142,19 @@ Updated based on Burgess 2016 "Robust instrumental variable methods using multip
     </tr>
     <tr>
       <th>parameters</th>
-      <td><p>List containing "penk" - Constant term in penalisation, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=20 and nboot=1000</p></td>
+      <td><p>List containing <code>penk</code> - Constant term in penalisation, and <code>nboot</code> - number of bootstrap replications to calculate SE. <code><a href='default_parameters.html'>default_parameters()</a></code> sets <code>parameters=list(penk=20, nboot=1000)</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List with the following elements:
-        b: MR estimate
-        se: Standard error
-        pval: p-value</p>
+    <p>List with the following elements:</p><dl class='dl-horizontal'>
+<dt>b</dt><dd><p>MR estimate</p></dd>
+<dt>se</dt><dd><p>Standard error</p></dd>
+<dt>pval</dt><dd><p>p-value</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -167,7 +170,7 @@ Updated based on Burgess 2016 "Robust instrumental variable methods using multip
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

@@ -37,11 +37,13 @@
 
 <meta property="og:title" content="Format MR results for forest plot — format_mr_results" />
 <meta property="og:description" content="This function takes the results from mr() and is particularly useful
-if the MR has been applied using multiple exposures and multiple outcomes. 
+if the MR has been applied using multiple exposures and multiple outcomes.
 It creates a new data frame with the following:
-- exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
-- only one estimate for each exposure-outcome
-- exponentiated effects if required" />
+Variables: exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
+only one estimate for each exposure-outcome
+exponentiated effects if required
+
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -74,7 +76,7 @@ It creates a new data frame with the following:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -113,12 +115,14 @@ It creates a new data frame with the following:
     </div>
 
     <div class="ref-description">
-    <p>This function takes the results from mr() and is particularly useful
-if the MR has been applied using multiple exposures and multiple outcomes. 
-It creates a new data frame with the following:
-- exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
-- only one estimate for each exposure-outcome
-- exponentiated effects if required</p>
+    <p>This function takes the results from <code><a href='mr.html'>mr()</a></code> and is particularly useful
+if the MR has been applied using multiple exposures and multiple outcomes.
+It creates a new data frame with the following:</p><ul>
+<li><p>Variables: exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp</p></li>
+<li><p>only one estimate for each exposure-outcome</p></li>
+<li><p>exponentiated effects if required</p></li>
+</ul>
+
     </div>
 
     <pre class="usage"><span class='fu'>format_mr_results</span>(
@@ -135,31 +139,27 @@ It creates a new data frame with the following:
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mr_res</th>
-      <td><p>Results from mr()</p></td>
+      <td><p>Results from <code><a href='mr.html'>mr()</a></code>.</p></td>
     </tr>
     <tr>
       <th>exponentiate</th>
-      <td><p>Convert effects to OR? Default=FALSE</p></td>
+      <td><p>Convert effects to OR? The default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>single_snp_method</th>
-      <td><p>Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"</p></td>
+      <td><p>Which of the single SNP methods to use when only 1 SNP was used to estimate the causal effect? The default is <code>"Wald ratio"</code>.</p></td>
     </tr>
     <tr>
       <th>multi_snp_method</th>
-      <td><p>Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"</p></td>
+      <td><p>Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is <code>"Inverse variance weighted"</code>.</p></td>
     </tr>
     <tr>
       <th>ao_slc</th>
-      <td><p>Logical; retrieve sample size and subcategory using available_outcomes(). If set to FALSE mr_res must contain the following additional columns: subcategory and sample_size.</p></td>
+      <td><p>Logical; retrieve sample size and subcategory using <code><a href='available_outcomes.html'>available_outcomes()</a></code>. If set to <code>FALSE</code> <code>mr_res</code> must contain the following additional columns: <code>subcategory</code> and <code>sample_size</code>.</p></td>
     </tr>
     <tr>
       <th>priority</th>
-      <td><p>Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"</p></td>
-    </tr>
-    <tr>
-      <th>group_single_categories</th>
-      <td><p>If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE</p></td>
+      <td><p>Name of category to prioritise at the top of the forest plot. The default is <code>"Cardiometabolic"</code>.</p></td>
     </tr>
     </table>
 
@@ -168,7 +168,11 @@ It creates a new data frame with the following:
     <p>data frame.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>By default it uses the available_outcomes() function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If ao_slc set to TRUE then the user must supply their own study level characteris. This is useful when the user has supplied their own outcome GWAS results (ie they are not in MR-Base).</p>
+    <p>By default it uses the <code><a href='available_outcomes.html'>available_outcomes()</a></code> function to retrieve the study level characteristics for the outcome trait,
+including sample size and outcome category.
+This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base.</p>
+<p>If <code>ao_slc</code> is set to <code>TRUE</code> then the user must supply their own study level characteristics.
+This is useful when the user has supplied their own outcome GWAS results (i.e. they are not in MR-Base).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -185,7 +189,7 @@ It creates a new data frame with the following:
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">
