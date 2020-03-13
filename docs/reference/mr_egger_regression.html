@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -118,38 +118,41 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>b_exp</th>
-      <td><p>Vector of genetic effects on exposure</p></td>
+      <td><p>Vector of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>b_out</th>
-      <td><p>Vector of genetic effects on outcome</p></td>
+      <td><p>Vector of genetic effects on outcome.</p></td>
     </tr>
     <tr>
       <th>se_exp</th>
-      <td><p>Standard errors of genetic effects on exposure</p></td>
+      <td><p>Standard errors of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>se_out</th>
-      <td><p>Standard errors of genetic effects on outcome</p></td>
+      <td><p>Standard errors of genetic effects on outcome.</p></td>
     </tr>
     <tr>
-      <th>bootstrap</th>
-      <td><p>Number of bootstraps to estimate standard error. If NULL then don't use bootstrap</p></td>
+      <th>parameters</th>
+      <td><p>List of parameters.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List of with the following elements:
-        b: MR estimate
-        se: Standard error of MR estimate
-        pval: p-value of MR estimate
-        b_i: Estimate of horizontal pleiotropy (intercept)
-        se_i: Standard error of intercept
-        pval_i: p-value of intercept
-        Q, Q_df, Q_pval: Heterogeneity stats
-        mod: Summary of regression
-        dat: Original data used for MR Egger regression</p>
+    <p>List of with the following elements:</p><dl class='dl-horizontal'>
+<dt>b</dt><dd><p>MR estimate</p></dd>
+<dt>se</dt><dd><p>Standard error of MR estimate</p></dd>
+<dt>pval</dt><dd><p>p-value of MR estimate</p></dd>
+<dt>b_i</dt><dd><p>Estimate of horizontal pleiotropy (intercept)</p></dd>
+<dt>se_i</dt><dd><p>Standard error of intercept</p></dd>
+<dt>pval_i</dt><dd><p>p-value of intercept</p></dd>
+<dt>Q, Q_df, Q_pval</dt><dd><p>Heterogeneity stats</p></dd>
+<dt>mod</dt><dd><p>Summary of regression</p></dd>
+<dt>dat</dt><dd><p>Original data used for MR Egger regression</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -165,7 +168,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

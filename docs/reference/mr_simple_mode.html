@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -134,16 +134,19 @@
     </tr>
     <tr>
       <th>parameters</th>
-      <td><p>List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000</p></td>
+      <td><p>List containing <code>phi</code> - Bandwidth parameter, and <code>nboot</code> - number of bootstraps to calculate SE. <code><a href='default_parameters.html'>default_parameters()</a></code> sets <code><a href='https://rdrr.io/r/base/list.html'>list(phi=1, nboot=1000)</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List with the following elements:
-        b: MR estimate
-        se: Standard error
-        pval: p-value</p>
+    <p>List with the following elements:</p><dl class='dl-horizontal'>
+<dt>b</dt><dd><p>MR estimate</p></dd>
+<dt>se</dt><dd><p>Standard error</p></dd>
+<dt>pval</dt><dd><p>p-value</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -159,7 +162,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

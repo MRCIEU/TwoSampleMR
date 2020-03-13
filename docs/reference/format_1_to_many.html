@@ -36,7 +36,14 @@
 
 
 <meta property="og:title" content="Format MR results for a 1-to-many forest plot — format_1_to_many" />
-<meta property="og:description" content="This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot." />
+<meta property="og:description" content="This function formats user-supplied results for the forest_plot_1_to_many function.
+The user supplies their results in the form of a data frame.
+The data frame is assumed to contain at least three columns of data:
+effect estimates, from an analysis of the effect of an exposure on an outcome;
+standard errors for the effect estimates; and
+a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
+
+" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -108,7 +115,14 @@
     </div>
 
     <div class="ref-description">
-    <p>This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.</p>
+    <p>This function formats user-supplied results for the <code><a href='forest_plot_1_to_many.html'>forest_plot_1_to_many</a></code> function.
+The user supplies their results in the form of a data frame.
+The data frame is assumed to contain at least three columns of data:</p><ol>
+<li><p>effect estimates, from an analysis of the effect of an exposure on an outcome;</p></li>
+<li><p>standard errors for the effect estimates; and</p></li>
+<li><p>a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.</p></li>
+</ol>
+
     </div>
 
     <pre class="usage"><span class='fu'>format_1_to_many</span>(
@@ -128,35 +142,39 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mr_res</th>
-      <td><p>Data frame of results supplied by the user</p></td>
+      <td><p>Data frame of results supplied by the user.</p></td>
     </tr>
     <tr>
       <th>b</th>
-      <td><p>Name of the column specifying the effect of the exposure on the outcome. Default = "b"</p></td>
+      <td><p>Name of the column specifying the effect of the exposure on the outcome. Default = <code>"b"</code>.</p></td>
     </tr>
     <tr>
       <th>se</th>
-      <td><p>Name of the column specifying the standard error for b. Default = "se"</p></td>
+      <td><p>Name of the column specifying the standard error for b. Default = <code>"se"</code>.</p></td>
     </tr>
     <tr>
       <th>exponentiate</th>
-      <td><p>Convert log odds ratios to odds ratios? Default=FALSE</p></td>
+      <td><p>Convert log odds ratios to odds ratios? Default=<code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>ao_slc</th>
-      <td><p>Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE</p></td>
+      <td><p>Logical; retrieve trait subcategory information using <code><a href='available_outcomes.html'>available_outcomes()</a></code>. Default=<code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>by</th>
-      <td><p>Name of the column indicating a grouping variable to stratify results on. Default=NULL</p></td>
+      <td><p>Name of the column indicating a grouping variable to stratify results on. Default=<code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>TraitM</th>
-      <td><p>The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"</p></td>
+      <td><p>The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default=<code>"outcome"</code>.</p></td>
     </tr>
     <tr>
       <th>addcols</th>
-      <td><p>Name of any additional columns to add to the plot. Character vector</p></td>
+      <td><p>Name of any additional columns to add to the plot. Character vector. The default is <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>weight</th>
+      <td><p>The default is <code>NULL</code>.</p></td>
     </tr>
     </table>
 
@@ -178,7 +196,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

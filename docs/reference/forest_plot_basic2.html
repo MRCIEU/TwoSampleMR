@@ -37,7 +37,7 @@
 
 <meta property="og:title" content="A basic forest plot — forest_plot_basic2" />
 <meta property="og:description" content="This function is used to create a basic forest plot.
-It requires the output from format_1_to_many()." />
+It requires the output from format_1_to_many." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -70,7 +70,7 @@ It requires the output from format_1_to_many()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -110,7 +110,7 @@ It requires the output from format_1_to_many()." />
 
     <div class="ref-description">
     <p>This function is used to create a basic forest plot.
-It requires the output from format_1_to_many().</p>
+It requires the output from <code><a href='format_1_to_many.html'>format_1_to_many</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>forest_plot_basic2</span>(
@@ -134,51 +134,55 @@ It requires the output from format_1_to_many().</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dat</th>
-      <td><p>Output from format_1_to_many()</p></td>
+      <td><p>Output from <code><a href='format_1_to_many.html'>format_1_to_many()</a></code></p></td>
     </tr>
     <tr>
       <th>section</th>
-      <td><p>Which category in dat to plot. If NULL then prints everything</p></td>
+      <td><p>Which category in dat to plot. If <code>NULL</code> then prints everything.</p></td>
     </tr>
     <tr>
       <th>colour_group</th>
-      <td><p>Which exposure to plot. If NULL then prints everything grouping by colour.</p></td>
+      <td><p>Which exposure to plot. If <code>NULL</code> then prints everything grouping by colour.</p></td>
+    </tr>
+    <tr>
+      <th>colour_group_first</th>
+      <td><p>The default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>xlab</th>
-      <td><p>x-axis label. Default=NULL</p></td>
+      <td><p>x-axis label. Default=<code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>bottom</th>
-      <td><p>Show x-axis? Default=FALSE</p></td>
+      <td><p>Show x-axis? Default=<code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>trans</th>
-      <td><p>x-axis scale</p></td>
+      <td><p>x-axis scale.</p></td>
     </tr>
     <tr>
       <th>xlim</th>
-      <td><p>x-axis limits</p></td>
+      <td><p>x-axis limits.</p></td>
     </tr>
     <tr>
       <th>lo</th>
-      <td><p>Lower limit of x axis</p></td>
+      <td><p>Lower limit of x axis.</p></td>
     </tr>
     <tr>
       <th>up</th>
-      <td><p>Upper limit of x axis</p></td>
+      <td><p>Upper limit of x axis.</p></td>
     </tr>
     <tr>
       <th>subheading_size</th>
-      <td><p>text size for the subheadings. The subheadings correspond to the values of the section argument</p></td>
+      <td><p>text size for the subheadings. The subheadings correspond to the values of the section argument.</p></td>
     </tr>
     <tr>
       <th>colour_scheme</th>
-      <td><p>the general colour scheme for the plot. Default is to make all text and data points black.</p></td>
+      <td><p>the general colour scheme for the plot. Default is to make all text and data points <code>"black"</code>.</p></td>
     </tr>
     <tr>
       <th>shape_points</th>
-      <td><p>the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).</p></td>
+      <td><p>the shape of the data points to pass to <code>ggplot2::geom_points()</code>. Default is set to <code>15</code> (filled square).</p></td>
     </tr>
     </table>
 
@@ -200,7 +204,7 @@ It requires the output from format_1_to_many().</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

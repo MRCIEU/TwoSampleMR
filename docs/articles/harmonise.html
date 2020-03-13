@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>The exposure data and outcome data are now obtained, e.g.:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>ao &lt;-<span class="st"> </span><span class="kw"><a href="../reference/available_outcomes.html">available_outcomes</a></span>()</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; API: public: https://gwas-api.mrcieu.ac.uk/</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; API: public: http://gwas-api.mrcieu.ac.uk/</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a>bmi_exp_dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_instruments.html">extract_instruments</a></span>(<span class="dt">outcomes=</span><span class="st">'ieu-a-2'</span>)</span>
 <span id="cb1-4"><a href="#cb1-4"></a>chd_out_dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span>(<span class="dt">snps =</span> bmi_exp_dat<span class="op">$</span>SNP, <span class="dt">outcomes =</span> <span class="st">'ieu-a-7'</span>)</span>
 <span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt; Extracting data for 79 SNP(s) from 1 GWAS(s)</span></span></code></pre></div>
@@ -91,9 +91,7 @@
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="dt">exposure_dat =</span> bmi_exp_dat, </span>
 <span id="cb2-3"><a href="#cb2-3"></a>    <span class="dt">outcome_dat =</span> chd_out_dat</span>
 <span id="cb2-4"><a href="#cb2-4"></a>)</span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt; Removing the following SNPs for being palindromic with intermediate allele frequencies:</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; rs4740619</span></span></code></pre></div>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span></code></pre></div>
 <p>This creates a new data frame that has the exposure data and outcome data combined.</p>
 <p>If there were 3 exposure traits and 3 outcome traits then there will be 9 sets of harmonisations being performed - harmonising the SNP effects of exposure trait 1 against outcome trait 1; exposure trait 1 against outcome trait 2; and so on.</p>
 </div>
@@ -184,26 +182,26 @@ effect allele frequency = 0.50</code></pre>
 <p>After data harmonisation, users may find that their dataset contains duplicate exposure-outcome summary sets. This can arise, for example, when a GWAS consortium has released multiple results from separate GWAS analyses for the same trait. For example, there are multiple GWAS summary datasets for body mass index and coronary heart disease:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>ao[ao<span class="op">$</span>trait<span class="op">==</span><span class="st">"Body mass index"</span>,<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"trait"</span>,<span class="st">"id"</span>,<span class="st">"pmid"</span>,<span class="st">"author"</span>,<span class="st">"sample_size"</span>,<span class="st">"nsnp"</span>)]</span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="co">#&gt; # A tibble: 9 x 6</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt;   trait           id                   pmid author      sample_size    nsnp</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;               &lt;int&gt; &lt;chr&gt;             &lt;int&gt;   &lt;int&gt;</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; 1 Body mass index ieu-a-835        25673413 Locke AE         322154  2.55e6</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; 2 Body mass index ebi-a-GCST004904 28892062 Akiyama M        158284  5.95e6</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt; 3 Body mass index ebi-a-GCST006368 30108127 Hoffmann TJ      315347  2.79e7</span></span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; 4 Body mass index ieu-a-95         23754948 Randall JC        73137  2.74e6</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; 5 Body mass index ieu-a-974        25673413 Locke AE         171977  2.49e6</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; 6 Body mass index ieu-a-785        25673413 Locke AE         152893  2.48e6</span></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; 7 Body mass index ieu-a-1089       26961502 Wood             120286  8.65e6</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; 8 Body mass index ieu-a-2          25673413 Locke AE         339224  2.56e6</span></span>
-<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; 9 Body mass index ieu-a-94         23754948 Randall JC        60586  2.74e6</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt;   trait           id                   pmid author      sample_size     nsnp</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;               &lt;int&gt; &lt;chr&gt;             &lt;int&gt;    &lt;int&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; 1 Body mass index ieu-a-2          25673413 Locke AE         339224  2555511</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; 2 Body mass index ieu-a-835        25673413 Locke AE         322154  2554668</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt; 3 Body mass index ebi-a-GCST006368 30108127 Hoffmann TJ      315347 27854527</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; 4 Body mass index ieu-a-785        25673413 Locke AE         152893  2477659</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; 5 Body mass index ieu-a-94         23754948 Randall JC        60586  2736876</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; 6 Body mass index ieu-a-974        25673413 Locke AE         171977  2494613</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; 7 Body mass index ieu-a-1089       26961502 Wood             120286  8654252</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; 8 Body mass index ieu-a-95         23754948 Randall JC        73137  2736876</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; 9 Body mass index ebi-a-GCST004904 28892062 Akiyama M        158284  5952516</span></span>
 <span id="cb8-14"><a href="#cb8-14"></a>ao[ao<span class="op">$</span>trait<span class="op">==</span><span class="st">"Coronary heart disease"</span>,<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"trait"</span>,<span class="st">"id"</span>,<span class="st">"pmid"</span>,<span class="st">"author"</span>,<span class="st">"ncase"</span>,<span class="st">"ncontrol"</span>,<span class="st">"nsnp"</span>)]</span>
 <span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; # A tibble: 5 x 7</span></span>
-<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt;   trait              id                pmid author    ncase ncontrol   nsnp</span></span>
-<span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;            &lt;int&gt; &lt;chr&gt;     &lt;int&gt;    &lt;int&gt;  &lt;int&gt;</span></span>
-<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; 1 Coronary heart di… ieu-a-8       21378990 Schunker… 22233    64762 2.42e6</span></span>
-<span id="cb8-19"><a href="#cb8-19"></a><span class="co">#&gt; 2 Coronary heart di… ebi-a-GCST00… 21378990 Schunker… 22233    64762 2.42e6</span></span>
-<span id="cb8-20"><a href="#cb8-20"></a><span class="co">#&gt; 3 Coronary heart di… ieu-a-6       21378988 Peden     15420    15062 5.40e5</span></span>
-<span id="cb8-21"><a href="#cb8-21"></a><span class="co">#&gt; 4 Coronary heart di… ieu-a-7       26343387 Nikpay    60801   123504 9.46e6</span></span>
-<span id="cb8-22"><a href="#cb8-22"></a><span class="co">#&gt; 5 Coronary heart di… ieu-a-9       23202125 Deloukas  63746   130681 7.91e4</span></span></code></pre></div>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt;   trait                id                  pmid author     ncase ncontrol   nsnp</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt;   &lt;chr&gt;                &lt;chr&gt;              &lt;int&gt; &lt;chr&gt;      &lt;int&gt;    &lt;int&gt;  &lt;int&gt;</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; 1 Coronary heart dise~ ebi-a-GCST0009~ 21378990 Schunkert~ 22233    64762 2.42e6</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="co">#&gt; 2 Coronary heart dise~ ieu-a-9         23202125 Deloukas   63746   130681 7.91e4</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="co">#&gt; 3 Coronary heart dise~ ieu-a-8         21378990 Schunkert~ 22233    64762 2.42e6</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="co">#&gt; 4 Coronary heart dise~ ieu-a-7         26343387 Nikpay     60801   123504 9.46e6</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a><span class="co">#&gt; 5 Coronary heart dise~ ieu-a-6         21378988 Peden      15420    15062 5.40e5</span></span></code></pre></div>
 <p>There are therefore multiple potential combinations of body mass index and coronary heart disease, which would likely lead to duplicate MR analyses. We recommend that users prune their datasets so that only the exposure-outcome combination with the highested expected power is retained. This can be done by selecting the exposure-outcome summary set with the largest sample size for the outcome, using the power_prune function:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>dat&lt;-<span class="kw"><a href="../reference/power_prune.html">power_prune</a></span>(dat,<span class="dt">method=</span><span class="dv">1</span>,<span class="dt">dist.outcome=</span><span class="st">"binary"</span>)</span></code></pre></div>
 <p>This drops the duplicate exposure-outcome sets with the smaller outcome sample size (number of cases for binary outcomes). Remaining duplicates are then dropped on the basis of the exposure sample size. However, if there are a large number of SNPs available to instrument an exposure, the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. This can occur, for example, if the larger outcome GWAS has used a targeted genotyping array. In such instances, it may be better to prune studies on the basis of instrument strength (i.e. variation in exposure explained by the instrumental SNPs) as well as sample size. This can be done by setting the method argument to 2:</p>
@@ -230,7 +228,7 @@ effect allele frequency = 0.50</code></pre>
 
 
       <footer><div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -141,76 +141,76 @@
       <td><p>Filename. Must have header with at least SNP column present.</p></td>
     </tr>
     <tr>
-      <th>snps=NULL</th>
-      <td><p>SNPs to extract. If NULL then doesn't extract any and keeps all.</p></td>
+      <th>snps</th>
+      <td><p>SNPs to extract. If <code>NULL</code>, which the default, then doesn't extract any and keeps all.</p></td>
     </tr>
     <tr>
-      <th>sep="</th>
-      <td><p>" Specify delimeter in file</p></td>
+      <th>sep</th>
+      <td><p>Specify delimeter in file. The default is space, i.e. <code>sep=" "</code>.</p></td>
     </tr>
     <tr>
-      <th>phenotype_col="Phenotype"</th>
-      <td><p>Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"</p></td>
+      <th>phenotype_col</th>
+      <td><p>Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value <code>"Outcome"</code>. Default is <code>"Phenotype"</code>.</p></td>
     </tr>
     <tr>
-      <th>snp_col="SNP"</th>
-      <td><p>Required name of column with SNP rs IDs</p></td>
+      <th>snp_col</th>
+      <td><p>Required name of column with SNP rs IDs. The default is <code>"SNP"</code>.</p></td>
     </tr>
     <tr>
-      <th>beta_col="beta"</th>
-      <td><p>Required for MR. Name of column with effect sizes</p></td>
+      <th>beta_col</th>
+      <td><p>Required for MR. Name of column with effect sizes. THe default is <code>"beta"</code>.</p></td>
     </tr>
     <tr>
-      <th>se_col="se"</th>
-      <td><p>Required for MR. Name of column with standard errors</p></td>
+      <th>se_col</th>
+      <td><p>Required for MR. Name of column with standard errors. The default is <code>"se"</code>.</p></td>
     </tr>
     <tr>
-      <th>eaf_col="eaf"</th>
-      <td><p>Required for MR. Name of column with effect allele frequency</p></td>
+      <th>eaf_col</th>
+      <td><p>Required for MR. Name of column with effect allele frequency. The default is <code>"eaf"</code>.</p></td>
     </tr>
     <tr>
-      <th>effect_allele_col="effect_allele"</th>
-      <td><p>Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"</p></td>
+      <th>effect_allele_col</th>
+      <td><p>Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G". The default is <code>"effect_allele"</code>.</p></td>
     </tr>
     <tr>
-      <th>other_allele_col="other_allele"</th>
-      <td><p>Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"</p></td>
+      <th>other_allele_col</th>
+      <td><p>Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G". The default is <code>"other_allele"</code>.</p></td>
     </tr>
     <tr>
-      <th>pval_col="pval"</th>
-      <td><p>Required for enrichment tests. Name of column with p-value.</p></td>
+      <th>pval_col</th>
+      <td><p>Required for enrichment tests. Name of column with p-value. The default is <code>"pval"</code>.</p></td>
     </tr>
     <tr>
-      <th>units_col="units"</th>
-      <td><p>Optional column name for units.</p></td>
+      <th>units_col</th>
+      <td><p>Optional column name for units. The default is <code>"units"</code>.</p></td>
     </tr>
     <tr>
-      <th>ncase_col="ncase"</th>
-      <td><p>Optional column name for number of cases.</p></td>
+      <th>ncase_col</th>
+      <td><p>Optional column name for number of cases. The default is <code>"ncase"</code>.</p></td>
     </tr>
     <tr>
-      <th>ncontrol_col="ncontrol"</th>
-      <td><p>Optional column name for number of controls.</p></td>
+      <th>ncontrol_col</th>
+      <td><p>Optional column name for number of controls. The default is <code>"ncontrol"</code>.</p></td>
     </tr>
     <tr>
-      <th>samplesize_col="samplesize"</th>
-      <td><p>Optional column name for sample size.</p></td>
+      <th>samplesize_col</th>
+      <td><p>Optional column name for sample size. The default is <code>"samplesize"</code>.</p></td>
     </tr>
     <tr>
-      <th>gene_col="gene"</th>
-      <td><p>Optional column name for gene name.</p></td>
+      <th>gene_col</th>
+      <td><p>Optional column name for gene name. The default is <code>"gene"</code>.</p></td>
     </tr>
     <tr>
-      <th>id_col="id"</th>
-      <td><p>Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination</p></td>
+      <th>id_col</th>
+      <td><p>Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is <code>"id"</code>.</p></td>
     </tr>
     <tr>
-      <th>min_pval=1e-200</th>
-      <td><p>Minimum allowed pval</p></td>
+      <th>min_pval</th>
+      <td><p>Minimum allowed p-value. The default is <code>1e-200</code>.</p></td>
     </tr>
     <tr>
-      <th>log_pval=FALSE</th>
-      <td><p>The pval is -log10(P)</p></td>
+      <th>log_pval</th>
+      <td><p>The pval is -log10(P). The default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
@@ -232,7 +232,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="Forest plot for multiple exposures and multiple outcomes — forest_plot" />
-<meta property="og:description" content="Perform MR of multiple exposures and multiple outcomes. This plots the results" />
+<meta property="og:description" content="Perform MR of multiple exposures and multiple outcomes. This plots the results." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Perform MR of multiple exposures and multiple outcomes. This plots the results</p>
+    <p>Perform MR of multiple exposures and multiple outcomes. This plots the results.</p>
     </div>
 
     <pre class="usage"><span class='fu'>forest_plot</span>(
@@ -132,55 +132,55 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mr_res</th>
-      <td><p>Results from mr()</p></td>
+      <td><p>Results from <code><a href='mr.html'>mr()</a></code>.</p></td>
     </tr>
     <tr>
       <th>exponentiate</th>
-      <td><p>Convert effects to OR? Default=FALSE</p></td>
+      <td><p>Convert effects to OR? Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>single_snp_method</th>
-      <td><p>Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"</p></td>
+      <td><p>Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? The default is <code>"Wald ratio"</code>.</p></td>
     </tr>
     <tr>
       <th>multi_snp_method</th>
-      <td><p>Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"</p></td>
+      <td><p>Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is <code>"Inverse variance weighted"</code>.</p></td>
     </tr>
     <tr>
       <th>group_single_categories</th>
-      <td><p>If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE</p></td>
+      <td><p>If there are categories with only one outcome, group them together into an "Other" group. The default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>by_category</th>
-      <td><p>Separate the results into sections by category? Default=TRUE</p></td>
+      <td><p>Separate the results into sections by category? The default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>in_columns</th>
-      <td><p>Separate the exposures into different columns. Default=FALSE</p></td>
+      <td><p>Separate the exposures into different columns. The default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>threshold</th>
-      <td><p>p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied</p></td>
+      <td><p>p-value threshold to use for colouring points by significance level. If <code>NULL</code> (default) then colour layer won't be applied.</p></td>
     </tr>
     <tr>
       <th>xlab</th>
-      <td><p>x-axis label. If in_columns=TRUE then the exposure values are appended to the end of xlab. e.g. if xlab="Effect of" then x-labels will read "Effect of exposure1", "Effect of exposure2" etc. Otherwise will be printed as is.</p></td>
+      <td><p>x-axis label. If <code>in_columns=TRUE</code> then the exposure values are appended to the end of <code>xlab</code>. e.g. if <code>xlab="Effect of"</code> then x-labels will read <code>"Effect of exposure1"</code>, <code>"Effect of exposure2"</code> etc. Otherwise will be printed as is.</p></td>
     </tr>
     <tr>
       <th>xlim</th>
-      <td><p>limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL</p></td>
+      <td><p>limit x-axis range. Provide vector of length 2, with lower and upper bounds. The default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>trans</th>
-      <td><p>Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"</p></td>
+      <td><p>Transformation to apply to x-axis. e.g. <code>"identity"</code>, <code>"log2"</code>, etc. The default is <code>"identity"</code>.</p></td>
     </tr>
     <tr>
       <th>ao_slc</th>
-      <td><p>retrive sample size and subcategory from available_outcomes(). If set to FALSE then mr_res must contain the following additional columns: sample_size and subcategory. The default behaviour is to use available_outcomes() to retrieve sample size and subcategory</p></td>
+      <td><p>retrive sample size and subcategory from <code><a href='available_outcomes.html'>available_outcomes()</a></code>. If set to <code>FALSE</code> then <code>mr_res</code> must contain the following additional columns: <code>sample_size</code> and <code>subcategory</code>. The default behaviour is to use <code><a href='available_outcomes.html'>available_outcomes()</a></code> to retrieve sample size and subcategory.</p></td>
     </tr>
     <tr>
       <th>priority</th>
-      <td><p>Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"</p></td>
+      <td><p>Name of category to prioritise at the top of the forest plot. The default is <code>"Cardiometabolic"</code>.</p></td>
     </tr>
     </table>
 
@@ -202,7 +202,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -118,23 +118,23 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dat</th>
-      <td><p>Output from <code>format_data</code>. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated</p></td>
+      <td><p>Output from <code><a href='format_data.html'>format_data</a></code>. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated.</p></td>
     </tr>
     <tr>
-      <th>clump_kb=10000</th>
-      <td><p>Clumping window</p></td>
+      <th>clump_kb</th>
+      <td><p>Clumping window, default is <code>10000</code>.</p></td>
     </tr>
     <tr>
-      <th>clump_r2=0.001</th>
-      <td><p>Clumping r2 cutoff. Note that this default value has recently changed from 0.01.</p></td>
+      <th>clump_r2</th>
+      <td><p>Clumping r2 cutoff. Note that this default value has recently changed from <code>0.01</code> to <code>0.001</code>.</p></td>
     </tr>
     <tr>
-      <th>clump_p1=1</th>
-      <td><p>Clumping sig level for index SNPs</p></td>
+      <th>clump_p1</th>
+      <td><p>Clumping sig level for index SNPs, default is <code>1</code>.</p></td>
     </tr>
     <tr>
-      <th>clump_p2=1</th>
-      <td><p>Clumping sig level for secondary SNPs</p></td>
+      <th>clump_p2</th>
+      <td><p>Clumping sig level for secondary SNPs, default is <code>1</code>.</p></td>
     </tr>
     </table>
 
@@ -156,7 +156,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

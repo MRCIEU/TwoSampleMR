@@ -37,7 +37,13 @@
 
 <meta property="og:title" content="Steiger filtering function — steiger_filtering" />
 <meta property="og:description" content="This function takes an object from harmonise_data and does the following:
-If there is no rsq.exposure or rsq.outcome column it will try to estimate it. This is done differently for traits that have &quot;log odds&quot; units. To estimate rsq for quantitative traits there must be either p-values and sample sizes for each SNP, or effect sizes and standard errors AND the units are in SD units (the column must contain &quot;SD&quot;). To estimate rsq for binary traits the units must be called &quot;log odds&quot; and there must be beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure, prevalence.exposure. Same principles apply for calculating the rsq for the outcome trait, except column names are beta.outcome etc. If prevalence isn't supplied then it uses 0.1 by default." />
+If there is no rsq.exposure or rsq.outcome column it will try to estimate it. This is done differently for traits that have &quot;log odds&quot; units.
+To estimate rsq for quantitative traits there must be either p-values and sample sizes for each SNP,
+or effect sizes and standard errors AND the units are in SD units (the column must contain &quot;SD&quot;).
+To estimate rsq for binary traits the units must be called &quot;log odds&quot; and there must be beta.exposure,
+eaf.exposure, ncase.exposure, ncontrol.exposure, prevalence.exposure.
+The same principles apply for calculating the rsq for the outcome trait, except column names are beta.outcome etc.
+If prevalence isn't supplied then it uses 0.1 by default." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -70,7 +76,7 @@ If there is no rsq.exposure or rsq.outcome column it will try to estimate it. Th
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -109,8 +115,14 @@ If there is no rsq.exposure or rsq.outcome column it will try to estimate it. Th
     </div>
 
     <div class="ref-description">
-    <p>This function takes an object from <code>harmonise_data</code> and does the following:
-If there is no rsq.exposure or rsq.outcome column it will try to estimate it. This is done differently for traits that have "log odds" units. To estimate rsq for quantitative traits there must be either p-values and sample sizes for each SNP, or effect sizes and standard errors AND the units are in SD units (the column must contain "SD"). To estimate rsq for binary traits the units must be called "log odds" and there must be beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure, prevalence.exposure. Same principles apply for calculating the rsq for the outcome trait, except column names are beta.outcome etc. If prevalence isn't supplied then it uses 0.1 by default.</p>
+    <p>This function takes an object from <code><a href='harmonise_data.html'>harmonise_data</a></code> and does the following:
+If there is no rsq.exposure or rsq.outcome column it will try to estimate it. This is done differently for traits that have "log odds" units.
+To estimate rsq for quantitative traits there must be either p-values and sample sizes for each SNP,
+or effect sizes and standard errors AND the units are in SD units (the column must contain "SD").
+To estimate rsq for binary traits the units must be called "log odds" and there must be beta.exposure,
+eaf.exposure, ncase.exposure, ncontrol.exposure, prevalence.exposure.
+The same principles apply for calculating the rsq for the outcome trait, except column names are beta.outcome etc.
+If prevalence isn't supplied then it uses 0.1 by default.</p>
     </div>
 
     <pre class="usage"><span class='fu'>steiger_filtering</span>(<span class='no'>dat</span>)</pre>
@@ -120,17 +132,19 @@ If there is no rsq.exposure or rsq.outcome column it will try to estimate it. Th
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dat</th>
-      <td><p>Output from <code>harmonise_data</code></p></td>
+      <td><p>Output from <code><a href='harmonise_data.html'>harmonise_data</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>harmonise_data</code> style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is TRUE if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome</p>
+    <p><code><a href='harmonise_data.html'>harmonise_data</a></code> style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is <code>TRUE</code> if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Once rsq is calculated for the exposure and outcome, it will then perform the Steiger test for each SNP to see if the rsq of the exposure is larger than the rsq of the outcome.</p>
-<p>Note that Steiger filtering, while useful, does have its own pitfalls. Try to use replication effect estimates for the exposure (which are not biased by winner's curse), and note that if there is strong antagonistic confounding or differential measurement error between the exposure and outcome then the causal directions could be inferred incorrectly.</p>
+<p>Note that Steiger filtering, while useful, does have its own pitfalls.
+Try to use replication effect estimates for the exposure (which are not biased by winner's curse),
+and note that if there is strong antagonistic confounding or differential measurement error between the exposure and outcome then the causal directions could be inferred incorrectly.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -147,7 +161,7 @@ If there is no rsq.exposure or rsq.outcome column it will try to estimate it. Th
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

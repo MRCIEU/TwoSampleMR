@@ -70,7 +70,7 @@ It then performs LD based clumping to return only independent significant associ
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -129,39 +129,35 @@ It then performs LD based clumping to return only independent significant associ
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>outcomes</th>
-      <td><p>Array of outcome IDs (see <code>available_outcomes</code>)</p></td>
+      <td><p>Array of outcome IDs (see <code><a href='available_outcomes.html'>available_outcomes</a></code>).</p></td>
     </tr>
     <tr>
       <th>p1</th>
-      <td><p>= 5e-8 Significance threshold</p></td>
+      <td><p>Significance threshold. The default is <code>5e-8</code>.</p></td>
     </tr>
     <tr>
       <th>clump</th>
-      <td><p>= TRUE Whether to clump results</p></td>
+      <td><p>Logical; whether to clump results. The default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>p2</th>
-      <td><p>= 5e-8 Secondary clumping threshold</p></td>
+      <td><p>Secondary clumping threshold. The default is <code>5e-8</code>.</p></td>
     </tr>
     <tr>
       <th>r2</th>
-      <td><p>= 0.001 Clumping r2 cut off</p></td>
+      <td><p>Clumping r2 cut off. The default is <code>0.001</code>.</p></td>
     </tr>
     <tr>
       <th>kb</th>
-      <td><p>= 10000 Clumping distance cutoff</p></td>
+      <td><p>Clumping distance cutoff. The default is <code>10000</code>.</p></td>
     </tr>
     <tr>
       <th>access_token</th>
-      <td><p>= ieugwasr::check_access_token() Google OAuth2 access token. Used to authenticate level of access to data</p></td>
+      <td><p>Google OAuth2 access token. Used to authenticate level of access to data. The default is <code><a href='https://rdrr.io/pkg/ieugwasr/man/check_access_token.html'>ieugwasr::check_access_token()</a></code>.</p></td>
     </tr>
     <tr>
       <th>force_server</th>
-      <td><p>Force the analysis to extract results from the server rather than the MRInstruments package</p></td>
-    </tr>
-    <tr>
-      <th>force_server_if_empty</th>
-      <td><p>Some of the newly added MR-Base datasets don't have pre-calculated clumped results yet. This option is soon to be deprecated but temporarily we are forcing the search for instruments when an outcome doesn't have any precalculated results. Default = TRUE.</p></td>
+      <td><p>Force the analysis to extract results from the server rather than the MRInstruments package.</p></td>
     </tr>
     </table>
 
@@ -183,7 +179,7 @@ It then performs LD based clumping to return only independent significant associ
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

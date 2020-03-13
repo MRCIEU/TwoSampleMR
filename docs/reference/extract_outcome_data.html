@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Supply the output from <code>read_exposure_data</code> and all the SNPs therein will be queried against the requested outcomes in remote database using API. — extract_outcome_data • TwoSampleMR</title>
+<title>Supply the output from <code><a href='read_exposure_data.html'>read_exposure_data</a></code> and all the SNPs therein will be queried against the requested outcomes in remote database using API. — extract_outcome_data • TwoSampleMR</title>
 
 
 <!-- jquery -->
@@ -35,7 +35,7 @@
 
 
 
-<meta property="og:title" content="Supply the output from <code>read_exposure_data</code> and all the SNPs therein will be queried against the requested outcomes in remote database using API. — extract_outcome_data" />
+<meta property="og:title" content="Supply the output from <code><a href='read_exposure_data.html'>read_exposure_data</a></code> and all the SNPs therein will be queried against the requested outcomes in remote database using API. — extract_outcome_data" />
 <meta property="og:description" content="Supply the output from read_exposure_data and all the SNPs therein will be queried against the requested outcomes in remote database using API." />
 <meta name="twitter:card" content="summary" />
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -102,13 +102,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Supply the output from <code>read_exposure_data</code> and all the SNPs therein will be queried against the requested outcomes in remote database using API.</h1>
+    <h1>Supply the output from <code><a href='read_exposure_data.html'>read_exposure_data</a></code> and all the SNPs therein will be queried against the requested outcomes in remote database using API.</h1>
     
     <div class="hidden name"><code>extract_outcome_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Supply the output from <code>read_exposure_data</code> and all the SNPs therein will be queried against the requested outcomes in remote database using API.</p>
+    <p>Supply the output from <code><a href='read_exposure_data.html'>read_exposure_data</a></code> and all the SNPs therein will be queried against the requested outcomes in remote database using API.</p>
     </div>
 
     <pre class="usage"><span class='fu'>extract_outcome_data</span>(
@@ -129,39 +129,43 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>snps</th>
-      <td><p>Array of SNP rs IDs</p></td>
+      <td><p>Array of SNP rs IDs.</p></td>
     </tr>
     <tr>
       <th>outcomes</th>
-      <td><p>Array of IDs (see <code>id</code> column in output from <code>available_outcomes</code>)</p></td>
+      <td><p>Array of IDs (see <code>id</code> column in output from <code><a href='available_outcomes.html'>available_outcomes</a></code>).</p></td>
     </tr>
     <tr>
       <th>proxies</th>
-      <td><p>Look for LD tags? Default is TRUE.</p></td>
+      <td><p>Look for LD tags? Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>rsq</th>
-      <td><p>Minimum LD rsq value (if proxies = 1). Default = 0.8.</p></td>
+      <td><p>Minimum LD rsq value (if proxies = 1). Default = <code>0.8</code>.</p></td>
     </tr>
     <tr>
       <th>align_alleles</th>
-      <td><p>= 1 Try to align tag alleles to target alleles (if proxies = 1). 1 = yes, 0 = no</p></td>
+      <td><p>Try to align tag alleles to target alleles (if proxies = 1). <code>1</code> = yes, <code>0</code> = no. The default is <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>palindromes</th>
-      <td><p>= 1 Allow palindromic SNPs (if proxies = 1). 1 = yes, 0 = no</p></td>
+      <td><p>Allow palindromic SNPs (if proxies = 1). <code>1</code> = yes, <code>0</code> = no. The default is <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>maf_threshold</th>
-      <td><p>= 0.3 MAF threshold to try to infer palindromic SNPs.</p></td>
+      <td><p>MAF threshold to try to infer palindromic SNPs. The default is <code>0.3</code>.</p></td>
     </tr>
     <tr>
       <th>access_token</th>
-      <td><p>Google OAuth2 access token. Used to authenticate level of access to data</p></td>
+      <td><p>Google OAuth2 access token. Used to authenticate level of access to data.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Other options to pass to internal extraction function</p></td>
+      <th>splitsize</th>
+      <td><p>The default is <code>10000</code>.</p></td>
+    </tr>
+    <tr>
+      <th>proxy_splitsize</th>
+      <td><p>The default is <code>500</code>.</p></td>
     </tr>
     </table>
 
@@ -183,7 +187,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

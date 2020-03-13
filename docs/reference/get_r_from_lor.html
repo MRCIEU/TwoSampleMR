@@ -36,7 +36,8 @@
 
 
 <meta property="og:title" content="Estimate proportion of variance of liability explained by SNP in general population — get_r_from_lor" />
-<meta property="og:description" content="This uses equation 10 in Genetic Epidemiology 36 : 214–224 (2012)" />
+<meta property="og:description" content="This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis.
+Genetic Epidemiology 36: 214–224 (2012) https://doi.org/10.1002/gepi.21614." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +70,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -108,7 +109,8 @@
     </div>
 
     <div class="ref-description">
-    <p>This uses equation 10 in Genetic Epidemiology 36 : 214–224 (2012)</p>
+    <p>This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis.
+Genetic Epidemiology 36: 214–224 (2012) <a href='https://doi.org/10.1002/gepi.21614'>https://doi.org/10.1002/gepi.21614</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_r_from_lor</span>(
@@ -126,31 +128,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>lor</th>
-      <td><p>Vector of Log odds ratio</p></td>
+      <td><p>Vector of Log odds ratio.</p></td>
     </tr>
     <tr>
       <th>af</th>
-      <td><p>Vector of allele frequencies</p></td>
+      <td><p>Vector of allele frequencies.</p></td>
     </tr>
     <tr>
       <th>ncase</th>
-      <td><p>Vector of Number of cases</p></td>
+      <td><p>Vector of Number of cases.</p></td>
     </tr>
     <tr>
       <th>ncontrol</th>
-      <td><p>Vector of Number of controls</p></td>
+      <td><p>Vector of Number of controls.</p></td>
     </tr>
     <tr>
       <th>prevalence</th>
-      <td><p>Vector of Disease prevalence in the population</p></td>
+      <td><p>Vector of Disease prevalence in the population.</p></td>
     </tr>
     <tr>
       <th>model</th>
-      <td><p>Is the effect size estiamted in "logit" (default) or "probit" model</p></td>
+      <td><p>Is the effect size estimated from the <code>"logit"</code> (default) or <code>"probit"</code> model.</p></td>
     </tr>
     <tr>
       <th>correction</th>
-      <td><p>Scale the estimated r by correction value. Default = FALSE</p></td>
+      <td><p>Scale the estimated r by correction value. The default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
@@ -172,7 +174,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

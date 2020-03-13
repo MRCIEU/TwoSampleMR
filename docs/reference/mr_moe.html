@@ -36,7 +36,7 @@
 
 
 <meta property="og:title" content="Mixture of experts — mr_moe" />
-<meta property="og:description" content="Based on the method described here https://www.biorxiv.org/content/early/2017/08/23/173682
+<meta property="og:description" content="Based on the method described here https://www.biorxiv.org/content/early/2017/08/23/173682.
 Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate." />
 <meta name="twitter:card" content="summary" />
 
@@ -70,7 +70,7 @@ Once all MR methods have been applied to a summary set, you can then use the mix
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@ Once all MR methods have been applied to a summary set, you can then use the mix
     </div>
 
     <div class="ref-description">
-    <p>Based on the method described here https://www.biorxiv.org/content/early/2017/08/23/173682
+    <p>Based on the method described here <a href='https://www.biorxiv.org/content/early/2017/08/23/173682'>https://www.biorxiv.org/content/early/2017/08/23/173682</a>.
 Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.</p>
     </div>
 
@@ -119,12 +119,12 @@ Once all MR methods have been applied to a summary set, you can then use the mix
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>rf</th>
-      <td><p>The trained random forest for the methods. This is available to download at https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0</p></td>
+      <th>res</th>
+      <td><p>Output from <code><a href='mr_wrapper.html'>mr_wrapper</a></code>.</p></td>
     </tr>
     <tr>
-      <th>dat</th>
-      <td><p>Output from <code>mr_wrapper</code>.</p></td>
+      <th>rf</th>
+      <td><p>The trained random forest for the methods. This is available to download at <a href='https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0'>https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0</a>.</p></td>
     </tr>
     </table>
 
@@ -133,8 +133,13 @@ Once all MR methods have been applied to a summary set, you can then use the mix
     <p>List</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The mr_moe function modified the `estimates` item in the list of results from the mr_wrapper function. It does three things: 1) Adds the MOE column, which is a predictor for each method for how well it performs in terms of high power and low type 1 error (scaled 0-1, where 1 is best performance). 2) It renames the methods to be the estimating method + the instrument selection method. There are 4 instrument selection methods: Tophits (i.e. no filtering), directional filtering (DF, an unthresholded version of Steiger filtering), heterogeneity filtering (HF, removing instruments that make substantial (p &lt; 0.05) contributions to Cochran's Q statistic), and DF + HF which is where DF is applied and the HF applied on top of that. 3) It orders the table to be in order of best performing method.
-Note that the mixture of experts has only been trained on datasets with at least 5 SNPs. If your dataset has fewer than 5 SNPs this function might return errors</p>
+    <p>The <code>mr_moe</code> function modifies the <code>estimates</code> item in the list of results from the <code><a href='mr_wrapper.html'>mr_wrapper</a></code> function. It does three things:</p><ol>
+<li><p>Adds the MOE column, which is a predictor for each method for how well it performs in terms of high power and low type 1 error (scaled 0-1, where 1 is best performance).</p></li>
+<li><p>It renames the methods to be the estimating method + the instrument selection method. There are 4 instrument selection methods: Tophits (i.e. no filtering), directional filtering (DF, an unthresholded version of Steiger filtering), heterogeneity filtering (HF, removing instruments that make substantial (p &lt; 0.05) contributions to Cochran's Q statistic), and DF + HF which is where DF is applied and the HF applied on top of that.</p></li>
+<li><p>It orders the table to be in order of best performing method.</p></li>
+</ol>
+
+<p>Note that the mixture of experts has only been trained on datasets with at least 5 SNPs. If your dataset has fewer than 5 SNPs this function might return errors.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -178,7 +183,7 @@ Note that the mixture of experts has only been trained on datasets with at least
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

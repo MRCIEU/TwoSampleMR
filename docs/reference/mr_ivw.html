@@ -36,9 +36,9 @@
 
 
 <meta property="og:title" content="Inverse variance weighted regression — mr_ivw" />
-<meta property="og:description" content="The default multiplicative random effects IVW estimate. 
+<meta property="og:description" content="The default multiplicative random effects IVW estimate.
 The standard error is corrected for under dispersion
-Use the mr_ivw_mre function for estimates that don't correct for under dispersion" />
+Use the mr_ivw_mre function for estimates that don't correct for under dispersion." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -71,7 +71,7 @@ Use the mr_ivw_mre function for estimates that don't correct for under dispersio
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -110,9 +110,9 @@ Use the mr_ivw_mre function for estimates that don't correct for under dispersio
     </div>
 
     <div class="ref-description">
-    <p>The default multiplicative random effects IVW estimate. 
+    <p>The default multiplicative random effects IVW estimate.
 The standard error is corrected for under dispersion
-Use the <code>mr_ivw_mre</code> function for estimates that don't correct for under dispersion</p>
+Use the <code><a href='mr_ivw_mre.html'>mr_ivw_mre</a></code> function for estimates that don't correct for under dispersion.</p>
     </div>
 
     <pre class="usage"><span class='fu'>mr_ivw</span>(<span class='no'>b_exp</span>, <span class='no'>b_out</span>, <span class='no'>se_exp</span>, <span class='no'>se_out</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='fu'><a href='default_parameters.html'>default_parameters</a></span>())</pre>
@@ -122,29 +122,36 @@ Use the <code>mr_ivw_mre</code> function for estimates that don't correct for un
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>b_exp</th>
-      <td><p>Vector of genetic effects on exposure</p></td>
+      <td><p>Vector of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>b_out</th>
-      <td><p>Vector of genetic effects on outcome</p></td>
+      <td><p>Vector of genetic effects on outcome.</p></td>
     </tr>
     <tr>
       <th>se_exp</th>
-      <td><p>Standard errors of genetic effects on exposure</p></td>
+      <td><p>Standard errors of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>se_out</th>
-      <td><p>Standard errors of genetic effects on outcome</p></td>
+      <td><p>Standard errors of genetic effects on outcome.</p></td>
+    </tr>
+    <tr>
+      <th>parameters</th>
+      <td><p>List of parameters.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List with the following elements:
-        b: MR estimate
-        se: Standard error
-        pval: p-value
-        Q, Q_df, Q_pval: Heterogeneity stats</p>
+    <p>List with the following elements:</p><dl class='dl-horizontal'>
+<dt>b</dt><dd><p>MR estimate</p></dd>
+<dt>se</dt><dd><p>Standard error</p></dd>
+<dt>pval</dt><dd><p>p-value</p></dd>
+<dt>Q, Q_df, Q_pval</dt><dd><p>Heterogeneity stats</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -160,7 +167,7 @@ Use the <code>mr_ivw_mre</code> function for estimates that don't correct for un
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

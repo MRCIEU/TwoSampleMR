@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -118,27 +118,26 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>b_exp</th>
-      <td><p>Vector of genetic effects on exposure</p></td>
+      <td><p>Vector of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>b_out</th>
-      <td><p>Vector of genetic effects on outcome</p></td>
+      <td><p>Vector of genetic effects on outcome.</p></td>
     </tr>
     <tr>
       <th>se_exp</th>
-      <td><p>Standard errors of genetic effects on exposure</p></td>
+      <td><p>Standard errors of genetic effects on exposure.</p></td>
     </tr>
     <tr>
       <th>se_out</th>
-      <td><p>Standard errors of genetic effects on outcome</p></td>
+      <td><p>Standard errors of genetic effects on outcome.</p></td>
     </tr>
     <tr>
-      <th>over.dispersion</th>
-      <td><p>Should the model consider overdispersion (systematic pleiotropy)? Default is TRUE.</p></td>
-    </tr>
-    <tr>
-      <th>loss.function</th>
-      <td><p>Either the squared error loss ("l2") or robust loss functions/scores ("huber" or "tukey"). Default is "tukey"".</p></td>
+      <th>parameters</th>
+      <td><p>A list of parameters. Specifically, <code>over.dispersion</code> and <code>loss.function</code>.
+<code>over.dispersion</code> is a logical concerning should the model consider overdispersion (systematic pleiotropy).
+And <code>loss.function</code> allows using either the squared error loss (<code>"l2"</code>) or robust loss functions/scores (<code>"huber"</code> or <code>"tukey"</code>).
+The default is <code>parameters=list(overdispersion = TRUE, loss.function = "tukey")</code>.</p></td>
     </tr>
     </table>
 
@@ -175,7 +174,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

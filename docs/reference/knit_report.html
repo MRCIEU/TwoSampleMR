@@ -36,12 +36,12 @@
 
 
 <meta property="og:title" content="Knit report using working environment — knit_report" />
-<meta property="og:description" content="Warning: It is quite likely that this will be called within an RMD file
+<meta property="og:description" content="Warning: It is quite likely that this will be called within an Rmd file
 implying a recursive call to knit(). This will generate &quot;duplicate label&quot;
 errors for unlabelled chunks. To avoid this, all code chunks
-in rmd.filename should be named.
+in your Rmd file should be named.
 Supposedly this error can also be avoided by setting the following option:
-     options(knitr.duplicate.label='allow')
+options(knitr.duplicate.label = 'allow').
 I tried this but it didn't seem to help." />
 <meta name="twitter:card" content="summary" />
 
@@ -75,7 +75,7 @@ I tried this but it didn't seem to help." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -114,12 +114,12 @@ I tried this but it didn't seem to help." />
     </div>
 
     <div class="ref-description">
-    <p>Warning: It is quite likely that this will be called within an RMD file
-implying a recursive call to knit(). This will generate "duplicate label"
+    <p>Warning: It is quite likely that this will be called within an Rmd file
+implying a recursive call to <code>knit()</code>. This will generate "duplicate label"
 errors for unlabelled chunks. To avoid this, all code chunks
-in <code>rmd.filename</code> should be named.
+in your Rmd file should be named.
 Supposedly this error can also be avoided by setting the following option:
-     options(knitr.duplicate.label='allow')
+<code><a href='https://rdrr.io/r/base/options.html'>options(knitr.duplicate.label = 'allow')</a></code>.
 I tried this but it didn't seem to help.</p>
     </div>
 
@@ -161,7 +161,7 @@ same folder as <code>output_filename</code>.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

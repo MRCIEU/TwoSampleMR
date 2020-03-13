@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -120,7 +120,8 @@
   <span class='kw'>outfile_Name</span> <span class='kw'>=</span> <span class='st'>"annot_FP.pdf"</span>,
   <span class='kw'>left_Col_Names</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Exposure"</span>, <span class='st'>"Outcome"</span>),
   <span class='kw'>left_Col_Titles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>right_Col_Names</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"p"</span>, <span class='st'>"Outcome.n.case"</span>, <span class='st'>"Outcome.n.control"</span>, <span class='st'>"Outcome.sample.size"</span>),
+  <span class='kw'>right_Col_Names</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"p"</span>, <span class='st'>"Outcome.n.case"</span>, <span class='st'>"Outcome.n.control"</span>,
+    <span class='st'>"Outcome.sample.size"</span>),
   <span class='kw'>right_Col_Titles</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>log_ES</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -134,69 +135,69 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>name</th>
-      <td><p>= (character) name of the delimited file containing all of the results on the first sheet (needs to have headers), or of the r object</p></td>
+      <td><p>(character) name of the delimited file containing all of the results on the first sheet (needs to have headers), or of the r object.</p></td>
     </tr>
     <tr>
       <th>eff_Col</th>
-      <td><p>= (character) name of the column in the delimited file that contains the effect sizes</p></td>
+      <td><p>(character) name of the column in the delimited file that contains the effect sizes.</p></td>
     </tr>
     <tr>
       <th>exposure_Name</th>
-      <td><p>= (character) name of the column in the delimited file containing the *types* of studies</p></td>
+      <td><p>(character) name of the column in the delimited file containing the <em>types</em> of studies.</p></td>
     </tr>
     <tr>
       <th>outcome_Name</th>
-      <td><p>= (character) name of the column in the delimited file containing the names of each study</p></td>
+      <td><p>(character) name of the column in the delimited file containing the names of each study.</p></td>
     </tr>
     <tr>
       <th>forest_Title</th>
-      <td><p>= (character) the title to be used for a forest plot</p></td>
+      <td><p>(character) the title to be used for a forest plot.</p></td>
     </tr>
     <tr>
       <th>outfile_Name</th>
-      <td><p>= (character) name to be used for output file (*.pdf) or (*.wmf)</p></td>
+      <td><p>(character) name to be used for output file (<em>.pdf) or (</em>.wmf).</p></td>
     </tr>
     <tr>
       <th>left_Col_Names</th>
-      <td><p>= (character vector) vector containing the names of the left-hand-side annotation columns in the delimited file</p></td>
+      <td><p>(character vector) vector containing the names of the left-hand-side annotation columns in the delimited file.</p></td>
     </tr>
     <tr>
       <th>left_Col_Titles</th>
-      <td><p>= (character vector) vector containing the titles for each left-hand-side annotation column</p></td>
+      <td><p>(character vector) vector containing the titles for each left-hand-side annotation column.</p></td>
     </tr>
     <tr>
       <th>right_Col_Names</th>
-      <td><p>= (character vector) vector containing the names of the right-hand-side annotation columns in the delimited file</p></td>
+      <td><p>(character vector) vector containing the names of the right-hand-side annotation columns in the delimited file.</p></td>
     </tr>
     <tr>
       <th>right_Col_Titles</th>
-      <td><p>= (character vector) vector containing the titles for each right-hand-side annotation column</p></td>
+      <td><p>(character vector) vector containing the titles for each right-hand-side annotation column.</p></td>
     </tr>
     <tr>
       <th>debug</th>
-      <td><p>= (logical) show warnings y/n?</p></td>
+      <td><p>(logical) show warnings <code>TRUE</code>/<code>FALSE</code>?</p></td>
     </tr>
     <tr>
       <th>log_ES</th>
-      <td><p>= (logical) perform natural log transform of effect sizes and confidence bounds y/n?</p></td>
+      <td><p>(logical) perform natural log transform of effect sizes and confidence bounds <code>TRUE</code>/<code>FALSE</code>?</p></td>
     </tr>
     <tr>
       <th>decrease</th>
-      <td><p>= (logical) sort the studies by decreasing effect sizes y/n?</p></td>
+      <td><p>(logical) sort the studies by decreasing effect sizes <code>TRUE</code>/<code>FALSE</code>?</p></td>
     </tr>
     <tr>
       <th>returnRobj</th>
-      <td><p>= (logical) return the graph as an internal R object y/n?</p></td>
+      <td><p>(logical) return the graph as an internal R object <code>TRUE</code>/<code>FALSE</code>?</p></td>
     </tr>
     <tr>
       <th>se_Col</th>
-      <td><p>= (character) name of the column giving the standard error of the effect sizes</p></td>
+      <td><p>(character) name of the column giving the standard error of the effect sizes.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>grid object giving the forest plot (or plot as pdf, and )</p>
+    <p>grid object giving the forest plot (or plot as pdf)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -212,7 +213,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

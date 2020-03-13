@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -118,17 +118,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>exposure_dat</th>
-      <td><p>Output from <code>mv_extract_exposures</code></p></td>
+      <td><p>Output from <code><a href='mv_extract_exposures.html'>mv_extract_exposures</a></code>.</p></td>
     </tr>
     <tr>
       <th>outcome_dat</th>
-      <td><p>Output from <code><a href='extract_outcome_data.html'>extract_outcome_data(exposure_dat$SNP, id_output)</a></code></p></td>
+      <td><p>Output from <code><a href='extract_outcome_data.html'>extract_outcome_data(exposure_dat$SNP, id_output)</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>harmonise_strictness</th>
+      <td><p>See the <code>action</code> option of <code><a href='harmonise_data.html'>harmonise_data</a></code>. The default is <code>2</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List of vectors and matrices required for mv analysis. exposure_beta is a matrix of beta coefficients, rows correspond to SNPs and columns correspond to exposures. exposure_pval is the same as exposure_beta, but for p-values. exposure_se is the same as exposure_beta, but for standard errors. outcome_beta is an array of effects for the outcome, corresponding to the SNPs in exposure_beta. outcome_se and outcome_pval are as in outcome_beta.</p>
+    <p>List of vectors and matrices required for mv analysis.</p><dl class='dl-horizontal'>
+<dt>exposure_beta</dt><dd><p>a matrix of beta coefficients</p></dd>
+<dt>rows</dt><dd><p>correspond to SNPs and columns correspond to exposures.</p></dd>
+<dt>exposure_pval</dt><dd><p>the same as exposure_beta, but for p-values.</p></dd>
+<dt>exposure_se</dt><dd><p>is the same as exposure_beta, but for standard errors.</p></dd>
+<dt>outcome_beta</dt><dd><p>an array of effects for the outcome, corresponding to the SNPs in exposure_beta.</p></dd>
+<dt>outcome_se</dt><dd><p>an array of standard errors for the outcome.</p></dd>
+<dt>outcome_pval</dt><dd><p>an array of p-values for the outcome.</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -144,7 +158,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

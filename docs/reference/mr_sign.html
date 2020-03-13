@@ -38,7 +38,7 @@
 <meta property="og:title" content="MR sign test — mr_sign" />
 <meta property="og:description" content="Tests how often the SNP-exposure and SNP-outcome signs are concordant
 This is to avoid the problem of averaging over all SNPs, which can suffer bias due to outliers with strong effects; and to avoid excluding SNPs which is implicit in median and mode based estimators
-The effect estimate here is not to be interpreted as the effect size - it is the proportion of SNP-exposure and SNP-outcome effects that have concordant signs. 
+The effect estimate here is not to be interpreted as the effect size - it is the proportion of SNP-exposure and SNP-outcome effects that have concordant signs.
 e.g. +1 means all have the same sign, -1 means all have opposite signs, and 0 means that there is an equal number of concordant and discordant signs.
 Restricted to only work if there are 6 or more valud SNPs" />
 <meta name="twitter:card" content="summary" />
@@ -73,7 +73,7 @@ Restricted to only work if there are 6 or more valud SNPs" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -114,7 +114,7 @@ Restricted to only work if there are 6 or more valud SNPs" />
     <div class="ref-description">
     <p>Tests how often the SNP-exposure and SNP-outcome signs are concordant
 This is to avoid the problem of averaging over all SNPs, which can suffer bias due to outliers with strong effects; and to avoid excluding SNPs which is implicit in median and mode based estimators
-The effect estimate here is not to be interpreted as the effect size - it is the proportion of SNP-exposure and SNP-outcome effects that have concordant signs. 
+The effect estimate here is not to be interpreted as the effect size - it is the proportion of SNP-exposure and SNP-outcome effects that have concordant signs.
 e.g. +1 means all have the same sign, -1 means all have opposite signs, and 0 means that there is an equal number of concordant and discordant signs.
 Restricted to only work if there are 6 or more valud SNPs</p>
     </div>
@@ -148,11 +148,14 @@ Restricted to only work if there are 6 or more valud SNPs</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>List with the following elements:
-        b: Concordance (see description)
-        se: NA
-        pval: p-value
-        nsnp: Number of SNPs (excludes NAs and effect estimates that are 0)</p>
+    <p>List with the following elements:</p><dl class='dl-horizontal'>
+<dt>b</dt><dd><p>Concordance (see description)</p></dd>
+<dt>se</dt><dd><p>NA</p></dd>
+<dt>pval</dt><dd><p>p-value</p></dd>
+<dt>nsnp</dt><dd><p>Number of SNPs (excludes NAs and effect estimates that are 0)</p></dd>
+
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -168,7 +171,7 @@ Restricted to only work if there are 6 or more valud SNPs</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

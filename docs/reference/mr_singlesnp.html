@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -123,11 +123,19 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dat</th>
-      <td><p>Output from <code>harmonise_exposure_outcome</code></p></td>
+      <td><p>Output from <code><a href='harmonise_data.html'>harmonise_data</a></code>.</p></td>
     </tr>
     <tr>
-      <th>method=mr_two_sample_ml</th>
-      <td><p>Function to use for MR analysis</p></td>
+      <th>parameters</th>
+      <td><p>List of parameters. The default is <code><a href='default_parameters.html'>default_parameters()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>single_method</th>
+      <td><p>Function to use for MR analysis. The default is <code>"mr_wald_ratio"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>all_method</th>
+      <td><p>Functions to use for MR analysis. The default is <code><a href='https://rdrr.io/r/base/c.html'>c("mr_ivw", "mr_egger_regression")</a></code>.</p></td>
     </tr>
     </table>
 
@@ -149,7 +157,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">

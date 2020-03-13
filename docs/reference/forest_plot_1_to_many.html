@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
       </span>
     </div>
 
@@ -140,39 +140,39 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mr_res</th>
-      <td><p>Data frame of results supplied by the user</p></td>
+      <td><p>Data frame of results supplied by the user. The default is <code>"mr_res"</code>.</p></td>
     </tr>
     <tr>
       <th>b</th>
-      <td><p>Name of the column specifying the effect of the exposure on the outcome. Default = "b"</p></td>
+      <td><p>Name of the column specifying the effect of the exposure on the outcome. The default is <code>"b"</code>.</p></td>
     </tr>
     <tr>
       <th>se</th>
-      <td><p>Name of the column specifying the standard error for b. Default = "se"</p></td>
+      <td><p>Name of the column specifying the standard error for b. The default is <code>"se"</code>.</p></td>
     </tr>
     <tr>
       <th>TraitM</th>
-      <td><p>The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"</p></td>
+      <td><p>The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. The default is <code>"outcome"</code>.</p></td>
     </tr>
     <tr>
       <th>col1_width</th>
-      <td><p>Width of Y axis label for the column specified by the TraitM argument. Default=1</p></td>
+      <td><p>Width of Y axis label for the column specified by the TraitM argument. The default is <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>col1_title</th>
-      <td><p>Title for the column specified by the TraitM argument. Default=""</p></td>
+      <td><p>Title for the column specified by the TraitM argument. The default is <code>""</code>.</p></td>
     </tr>
     <tr>
       <th>exponentiate</th>
-      <td><p>Convert log odds ratios to odds ratios? Default=FALSE</p></td>
+      <td><p>Convert log odds ratios to odds ratios? Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>trans</th>
-      <td><p>Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default = "identity".</p></td>
+      <td><p>Specify x-axis scale. e.g. "identity", "log2", etc. If set to "identity" an additive scale is used. If set to log2 the x-axis is plotted on a multiplicative / doubling scale (preferable when plotting odds ratios). Default is <code>"identity"</code>.</p></td>
     </tr>
     <tr>
       <th>ao_slc</th>
-      <td><p>Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE</p></td>
+      <td><p>Logical; retrieve trait subcategory information using available_outcomes(). Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>lo</th>
@@ -184,31 +184,43 @@
     </tr>
     <tr>
       <th>by</th>
-      <td><p>Name of the grouping variable to stratify results on. Default=NULL</p></td>
+      <td><p>Name of the grouping variable to stratify results on. Default is <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>xlab</th>
+      <td><p>X-axis label, default is <code>"Effect (95\% confidence interval)"</code>.</p></td>
     </tr>
     <tr>
       <th>addcols</th>
-      <td><p>Name of additional columns to plot. Character vector. Default = NULL</p></td>
+      <td><p>Name of additional columns to plot. Character vector. The default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>addcol_widths</th>
-      <td><p>Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. Default = NULL</p></td>
+      <td><p>Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. The default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>addcol_titles</th>
-      <td><p>Titles of additional columns specified by the addcols argument. Character vector. Default = NULL</p></td>
+      <td><p>Titles of additional columns specified by the addcols argument. Character vector. The default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>subheading_size</th>
-      <td><p>text size for the subheadings specified in by argument.</p></td>
+      <td><p>text size for the subheadings specified in by argument. The default is <code>6</code>.</p></td>
     </tr>
     <tr>
       <th>shape_points</th>
-      <td><p>the shape of the data points to pass to geom_points(). Default is set to 15 (filled square).</p></td>
+      <td><p>the shape of the data points to pass to geom_points(). Default is set to <code>15</code> (filled square).</p></td>
     </tr>
     <tr>
       <th>colour_scheme</th>
-      <td><p>the general colour scheme for the plot. Default is to make all text and data points black.</p></td>
+      <td><p>the general colour scheme for the plot. Default is to make all text and data points <code>"black"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>col_text_size</th>
+      <td><p>The default is <code>5</code>.</p></td>
+    </tr>
+    <tr>
+      <th>weight</th>
+      <td><p>The default is <code>NULL</code>.</p></td>
     </tr>
     </table>
 
@@ -230,7 +242,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth.</p>
+  <p>Developed by Gibran Hemani, Philip Haycock, Jie Zheng, Tom Gaunt, Ben Elsworth, Tom Palmer.</p>
 </div>
 
 <div class="pkgdown">
