@@ -201,7 +201,8 @@
 </li>
 <li>pygwasvcf package, python interface to GWAS VCF files: <a href="https://github.com/mrcieu/pygwasvcf" class="uri">https://github.com/mrcieu/pygwasvcf</a> (Under construction)</li>
 <li>gwasglue package, linking GWAS data to various analytical methods: <a href="https://mrcieu.github.io/gwasglue/" class="uri">https://mrcieu.github.io/gwasglue/</a> (Functional, under construction)</li>
-<li>gwas2vcf online tool, allowing users to create GWAS VCF files from summary data: <a href="http://ieu-db-interface.epi.bris.ac.uk:8400/" class="uri">http://ieu-db-interface.epi.bris.ac.uk:8400/</a> (Functional, under construction?)</li>
+<li>gwas2vcf online tool, allowing users to create GWAS VCF files from summary data: <a href="https://github.com/MRCIEU/gwas2vcf" class="uri">https://github.com/MRCIEU/gwas2vcf</a>
+</li>
 </ul>
 </div>
 <div id="how-to-request-new-data" class="section level2">
@@ -214,12 +215,12 @@
 <h2 class="hasAnchor">
 <a href="#backwards-compatibility" class="anchor"></a>Backwards compatibility</h2>
 <p>To install the new version of TwoSampleMR, perform as normal:</p>
-<pre><code>install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR")</code></pre>
-<p>To update the package just run the <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("MRCIEU/TwoSampleMR")</a></code> command again.</p>
+<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
+devtools::install_github("MRCIEU/TwoSampleMR")</a></code></pre>
+<p>To update the package just run the <code><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">devtools::install_github("MRCIEU/TwoSampleMR")</a></code> command again.</p>
 <p>We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:</p>
-<pre><code>install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")</code></pre>
+<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
+devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")</a></code></pre>
 </div>
   </div>
 

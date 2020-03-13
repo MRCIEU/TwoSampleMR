@@ -114,7 +114,7 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 - gwasvcf package, R interface to GWAS VCF files: https://mrcieu.github.io/gwasvcf/
 - pygwasvcf package, python interface to GWAS VCF files: https://github.com/mrcieu/pygwasvcf (Under construction)
 - gwasglue package, linking GWAS data to various analytical methods: https://mrcieu.github.io/gwasglue/ (Functional, under construction)
-- gwas2vcf online tool, allowing users to create GWAS VCF files from summary data: http://ieu-db-interface.epi.bris.ac.uk:8400/ (Functional, under construction?)
+- gwas2vcf online tool, allowing users to create GWAS VCF files from summary data: https://github.com/MRCIEU/gwas2vcf
 
 ## How to request new data
 

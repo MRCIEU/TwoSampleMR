@@ -80,11 +80,13 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Let’s continue with the example of BMI on CHD:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>bmi_exp_dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_instruments.html">extract_instruments</a></span>(<span class="dt">outcomes=</span><span class="st">'ieu-a-2'</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; API: public: http://gwas-api.mrcieu.ac.uk/</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; API: public: https://gwas-api.mrcieu.ac.uk/</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a>chd_out_dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span>(<span class="dt">snps =</span> bmi_exp_dat<span class="op">$</span>SNP, <span class="dt">outcomes =</span> <span class="st">'ieu-a-7'</span>)</span>
 <span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; Extracting data for 79 SNP(s) from 1 GWAS(s)</span></span>
 <span id="cb1-5"><a href="#cb1-5"></a>dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/harmonise_data.html">harmonise_data</a></span>(bmi_exp_dat, chd_out_dat)</span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span></code></pre></div>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; Removing the following SNPs for being palindromic with intermediate allele frequencies:</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt; rs4740619</span></span></code></pre></div>
 <p>Once the exposure and outcome data are harmonised, we have effects and standard errors for each instrument SNP available for the exposure and outcome traits. We can use this information to perform Mendelian randomisation. To do this, simply run:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mr.html">mr</a></span>(dat)</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
@@ -96,17 +98,17 @@
 <span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; 4     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt;                        exposure                    method nsnp         b</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   79 0.5024935</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2           Weighted median   79 0.3870065</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; 4 Body mass index || id:ieu-a-2               Simple mode   79 0.3401554</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   78 0.4949930</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2           Weighted median   78 0.3918940</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   78 0.4486747</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; 4 Body mass index || id:ieu-a-2               Simple mode   78 0.3630239</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   78 0.3927767</span></span>
 <span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt;           se         pval</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; 1 0.14396056 8.012590e-04</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; 2 0.07378603 1.562965e-07</span></span>
-<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; 3 0.05898302 4.032020e-14</span></span>
-<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; 4 0.15339111 2.949474e-02</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt; 5 0.10439574 3.681566e-04</span></span></code></pre></div>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; 1 0.14504282 1.033826e-03</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; 2 0.07542357 2.037217e-07</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; 3 0.05932029 3.920738e-14</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; 4 0.15783899 2.415991e-02</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt; 5 0.09796155 1.396315e-04</span></span></code></pre></div>
 <p>This returns a data frame of estimates of the causal effect of the exposure on the outcome for a range of different MR methods.</p>
 <p>If there were multiple exposures against multiple outcomes in <code>dat</code>, the <code><a href="../reference/mr.html">mr()</a></code> function will perform each MR method for each combination of exposure-outcome traits.</p>
 </div>
@@ -153,44 +155,44 @@
 <span id="cb3-37"><a href="#cb3-37"></a><span class="co">#&gt; 16                      Robust adjusted profile score (RAPS)         </span></span>
 <span id="cb3-38"><a href="#cb3-38"></a><span class="co">#&gt; 17                                     Sign concordance test         </span></span>
 <span id="cb3-39"><a href="#cb3-39"></a><span class="co">#&gt; 18                                     Unweighted regression         </span></span>
-<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt;                                                    Description use_by_default</span></span>
-<span id="cb3-41"><a href="#cb3-41"></a><span class="co">#&gt; 1                                                                        TRUE</span></span>
-<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; 2                                                                       FALSE</span></span>
-<span id="cb3-43"><a href="#cb3-43"></a><span class="co">#&gt; 3                                                                        TRUE</span></span>
-<span id="cb3-44"><a href="#cb3-44"></a><span class="co">#&gt; 4                                                                       FALSE</span></span>
-<span id="cb3-45"><a href="#cb3-45"></a><span class="co">#&gt; 5                                                                       FALSE</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a><span class="co">#&gt; 6                                                                        TRUE</span></span>
-<span id="cb3-47"><a href="#cb3-47"></a><span class="co">#&gt; 7                                                                       FALSE</span></span>
-<span id="cb3-48"><a href="#cb3-48"></a><span class="co">#&gt; 8                                                                        TRUE</span></span>
-<span id="cb3-49"><a href="#cb3-49"></a><span class="co">#&gt; 9                                                                       FALSE</span></span>
-<span id="cb3-50"><a href="#cb3-50"></a><span class="co">#&gt; 10                                                                      FALSE</span></span>
-<span id="cb3-51"><a href="#cb3-51"></a><span class="co">#&gt; 11                                                                      FALSE</span></span>
-<span id="cb3-52"><a href="#cb3-52"></a><span class="co">#&gt; 12                                                                       TRUE</span></span>
-<span id="cb3-53"><a href="#cb3-53"></a><span class="co">#&gt; 13                                                                       TRUE</span></span>
-<span id="cb3-54"><a href="#cb3-54"></a><span class="co">#&gt; 14                                                                      FALSE</span></span>
-<span id="cb3-55"><a href="#cb3-55"></a><span class="co">#&gt; 15                                                                      FALSE</span></span>
-<span id="cb3-56"><a href="#cb3-56"></a><span class="co">#&gt; 16                                                                      FALSE</span></span>
-<span id="cb3-57"><a href="#cb3-57"></a><span class="co">#&gt; 17 Tests for concordance of signs between exposure and outcome          FALSE</span></span>
-<span id="cb3-58"><a href="#cb3-58"></a><span class="co">#&gt; 18                                     Doesn't use any weights          FALSE</span></span>
-<span id="cb3-59"><a href="#cb3-59"></a><span class="co">#&gt;    heterogeneity_test</span></span>
-<span id="cb3-60"><a href="#cb3-60"></a><span class="co">#&gt; 1               FALSE</span></span>
-<span id="cb3-61"><a href="#cb3-61"></a><span class="co">#&gt; 2                TRUE</span></span>
-<span id="cb3-62"><a href="#cb3-62"></a><span class="co">#&gt; 3                TRUE</span></span>
-<span id="cb3-63"><a href="#cb3-63"></a><span class="co">#&gt; 4               FALSE</span></span>
-<span id="cb3-64"><a href="#cb3-64"></a><span class="co">#&gt; 5               FALSE</span></span>
-<span id="cb3-65"><a href="#cb3-65"></a><span class="co">#&gt; 6               FALSE</span></span>
-<span id="cb3-66"><a href="#cb3-66"></a><span class="co">#&gt; 7               FALSE</span></span>
-<span id="cb3-67"><a href="#cb3-67"></a><span class="co">#&gt; 8                TRUE</span></span>
-<span id="cb3-68"><a href="#cb3-68"></a><span class="co">#&gt; 9                TRUE</span></span>
-<span id="cb3-69"><a href="#cb3-69"></a><span class="co">#&gt; 10              FALSE</span></span>
-<span id="cb3-70"><a href="#cb3-70"></a><span class="co">#&gt; 11              FALSE</span></span>
-<span id="cb3-71"><a href="#cb3-71"></a><span class="co">#&gt; 12              FALSE</span></span>
-<span id="cb3-72"><a href="#cb3-72"></a><span class="co">#&gt; 13              FALSE</span></span>
-<span id="cb3-73"><a href="#cb3-73"></a><span class="co">#&gt; 14              FALSE</span></span>
-<span id="cb3-74"><a href="#cb3-74"></a><span class="co">#&gt; 15              FALSE</span></span>
-<span id="cb3-75"><a href="#cb3-75"></a><span class="co">#&gt; 16              FALSE</span></span>
-<span id="cb3-76"><a href="#cb3-76"></a><span class="co">#&gt; 17              FALSE</span></span>
-<span id="cb3-77"><a href="#cb3-77"></a><span class="co">#&gt; 18               TRUE</span></span></code></pre></div>
+<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt;                                                    Description</span></span>
+<span id="cb3-41"><a href="#cb3-41"></a><span class="co">#&gt; 1                                                             </span></span>
+<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; 2                                                             </span></span>
+<span id="cb3-43"><a href="#cb3-43"></a><span class="co">#&gt; 3                                                             </span></span>
+<span id="cb3-44"><a href="#cb3-44"></a><span class="co">#&gt; 4                                                             </span></span>
+<span id="cb3-45"><a href="#cb3-45"></a><span class="co">#&gt; 5                                                             </span></span>
+<span id="cb3-46"><a href="#cb3-46"></a><span class="co">#&gt; 6                                                             </span></span>
+<span id="cb3-47"><a href="#cb3-47"></a><span class="co">#&gt; 7                                                             </span></span>
+<span id="cb3-48"><a href="#cb3-48"></a><span class="co">#&gt; 8                                                             </span></span>
+<span id="cb3-49"><a href="#cb3-49"></a><span class="co">#&gt; 9                                                             </span></span>
+<span id="cb3-50"><a href="#cb3-50"></a><span class="co">#&gt; 10                                                            </span></span>
+<span id="cb3-51"><a href="#cb3-51"></a><span class="co">#&gt; 11                                                            </span></span>
+<span id="cb3-52"><a href="#cb3-52"></a><span class="co">#&gt; 12                                                            </span></span>
+<span id="cb3-53"><a href="#cb3-53"></a><span class="co">#&gt; 13                                                            </span></span>
+<span id="cb3-54"><a href="#cb3-54"></a><span class="co">#&gt; 14                                                            </span></span>
+<span id="cb3-55"><a href="#cb3-55"></a><span class="co">#&gt; 15                                                            </span></span>
+<span id="cb3-56"><a href="#cb3-56"></a><span class="co">#&gt; 16                                                            </span></span>
+<span id="cb3-57"><a href="#cb3-57"></a><span class="co">#&gt; 17 Tests for concordance of signs between exposure and outcome</span></span>
+<span id="cb3-58"><a href="#cb3-58"></a><span class="co">#&gt; 18                                     Doesn't use any weights</span></span>
+<span id="cb3-59"><a href="#cb3-59"></a><span class="co">#&gt;    use_by_default heterogeneity_test</span></span>
+<span id="cb3-60"><a href="#cb3-60"></a><span class="co">#&gt; 1            TRUE              FALSE</span></span>
+<span id="cb3-61"><a href="#cb3-61"></a><span class="co">#&gt; 2           FALSE               TRUE</span></span>
+<span id="cb3-62"><a href="#cb3-62"></a><span class="co">#&gt; 3            TRUE               TRUE</span></span>
+<span id="cb3-63"><a href="#cb3-63"></a><span class="co">#&gt; 4           FALSE              FALSE</span></span>
+<span id="cb3-64"><a href="#cb3-64"></a><span class="co">#&gt; 5           FALSE              FALSE</span></span>
+<span id="cb3-65"><a href="#cb3-65"></a><span class="co">#&gt; 6            TRUE              FALSE</span></span>
+<span id="cb3-66"><a href="#cb3-66"></a><span class="co">#&gt; 7           FALSE              FALSE</span></span>
+<span id="cb3-67"><a href="#cb3-67"></a><span class="co">#&gt; 8            TRUE               TRUE</span></span>
+<span id="cb3-68"><a href="#cb3-68"></a><span class="co">#&gt; 9           FALSE               TRUE</span></span>
+<span id="cb3-69"><a href="#cb3-69"></a><span class="co">#&gt; 10          FALSE              FALSE</span></span>
+<span id="cb3-70"><a href="#cb3-70"></a><span class="co">#&gt; 11          FALSE              FALSE</span></span>
+<span id="cb3-71"><a href="#cb3-71"></a><span class="co">#&gt; 12           TRUE              FALSE</span></span>
+<span id="cb3-72"><a href="#cb3-72"></a><span class="co">#&gt; 13           TRUE              FALSE</span></span>
+<span id="cb3-73"><a href="#cb3-73"></a><span class="co">#&gt; 14          FALSE              FALSE</span></span>
+<span id="cb3-74"><a href="#cb3-74"></a><span class="co">#&gt; 15          FALSE              FALSE</span></span>
+<span id="cb3-75"><a href="#cb3-75"></a><span class="co">#&gt; 16          FALSE              FALSE</span></span>
+<span id="cb3-76"><a href="#cb3-76"></a><span class="co">#&gt; 17          FALSE              FALSE</span></span>
+<span id="cb3-77"><a href="#cb3-77"></a><span class="co">#&gt; 18          FALSE               TRUE</span></span></code></pre></div>
 <p>To perform them, they can be specified in the <code><a href="../reference/mr.html">mr()</a></code> function, e.g. to only perform MR Egger regression and Inverse variance weighted methods,</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw"><a href="../reference/mr.html">mr</a></span>(dat, <span class="dt">method_list=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"mr_egger_regression"</span>, <span class="st">"mr_ivw"</span>))</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
@@ -198,11 +200,11 @@
 <span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; 2     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt;                        exposure                    method nsnp         b</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   79 0.5024935</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt;           se        pval</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; 1 0.14396056 8.01259e-04</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; 2 0.05898302 4.03202e-14</span></span></code></pre></div>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   78 0.4949930</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2 Inverse variance weighted   78 0.4486747</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt;           se         pval</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; 1 0.14504282 1.033826e-03</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; 2 0.05932029 3.920738e-14</span></span></code></pre></div>
 <p>By default, all the methods that are labelled <code>TRUE</code> in the <code>use_by_default</code> column are used by the <code><a href="../reference/mr.html">mr()</a></code> function.</p>
 <hr>
 </div>
@@ -218,22 +220,22 @@
 <span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; 2     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;                        exposure                    method        Q Q_df</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger 143.3046   77</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2 Inverse variance weighted 143.6508   78</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger 142.2905   76</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2 Inverse variance weighted 142.5203   77</span></span>
 <span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt;         Q_pval</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; 1 6.841585e-06</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; 2 8.728420e-06</span></span></code></pre></div>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; 1 6.298742e-06</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; 2 8.288064e-06</span></span></code></pre></div>
 <p>As with the <code><a href="../reference/mr.html">mr()</a></code> function, the <code><a href="../reference/mr_heterogeneity.html">mr_heterogeneity()</a></code> function can take an argument to only perform heterogeneity tests using specified methods, e.g.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw"><a href="../reference/mr_heterogeneity.html">mr_heterogeneity</a></span>(dat, <span class="dt">method_list=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"mr_egger_regression"</span>, <span class="st">"mr_ivw"</span>))</span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; 2     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt;                        exposure                    method        Q Q_df</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger 143.3046   77</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2 Inverse variance weighted 143.6508   78</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger 142.2905   76</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2 Inverse variance weighted 142.5203   77</span></span>
 <span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt;         Q_pval</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; 1 6.841585e-06</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; 2 8.728420e-06</span></span></code></pre></div>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; 1 6.298742e-06</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; 2 8.288064e-06</span></span></code></pre></div>
 </div>
 <div id="horizontal-pleiotropy" class="section level3">
 <h3 class="hasAnchor">
@@ -242,8 +244,8 @@
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw"><a href="../reference/mr_pleiotropy_test.html">mr_pleiotropy_test</a></span>(dat)</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt;                        exposure egger_intercept          se      pval</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2    -0.001719304 0.003985962 0.6674266</span></span></code></pre></div>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt;                        exposure egger_intercept         se      pval</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2    -0.001414522 0.00403741 0.7270424</span></span></code></pre></div>
 </div>
 <div id="single-snp-analysis" class="section level3">
 <h3 class="hasAnchor">
@@ -677,27 +679,33 @@
 <span id="cb46-3"><a href="#cb46-3"></a><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb46-4"><a href="#cb46-4"></a><span class="co">#&gt; 2     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb46-5"><a href="#cb46-5"></a><span class="co">#&gt;                        exposure                    method nsnp         b</span></span>
-<span id="cb46-6"><a href="#cb46-6"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   79 0.5024935</span></span>
-<span id="cb46-7"><a href="#cb46-7"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091</span></span>
-<span id="cb46-8"><a href="#cb46-8"></a><span class="co">#&gt;           se        pval</span></span>
-<span id="cb46-9"><a href="#cb46-9"></a><span class="co">#&gt; 1 0.14396056 8.01259e-04</span></span>
-<span id="cb46-10"><a href="#cb46-10"></a><span class="co">#&gt; 2 0.05898302 4.03202e-14</span></span></code></pre></div>
+<span id="cb46-6"><a href="#cb46-6"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   78 0.4949930</span></span>
+<span id="cb46-7"><a href="#cb46-7"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2 Inverse variance weighted   78 0.4486747</span></span>
+<span id="cb46-8"><a href="#cb46-8"></a><span class="co">#&gt;           se         pval</span></span>
+<span id="cb46-9"><a href="#cb46-9"></a><span class="co">#&gt; 1 0.14504282 1.033826e-03</span></span>
+<span id="cb46-10"><a href="#cb46-10"></a><span class="co">#&gt; 2 0.05932029 3.920738e-14</span></span></code></pre></div>
 <p>The outcome column can be split into separate columns for the id and outcome name using the split_outcome function:</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>res&lt;-<span class="kw"><a href="../reference/mr.html">mr</a></span>(dat)</span>
 <span id="cb47-2"><a href="#cb47-2"></a><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
 <span id="cb47-3"><a href="#cb47-3"></a><span class="kw"><a href="../reference/split_outcome.html">split_outcome</a></span>(res)</span>
-<span id="cb47-4"><a href="#cb47-4"></a><span class="co">#&gt;   id.exposure id.outcome                outcome                      exposure</span></span>
-<span id="cb47-5"><a href="#cb47-5"></a><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
-<span id="cb47-6"><a href="#cb47-6"></a><span class="co">#&gt; 2     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
-<span id="cb47-7"><a href="#cb47-7"></a><span class="co">#&gt; 3     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
-<span id="cb47-8"><a href="#cb47-8"></a><span class="co">#&gt; 4     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
-<span id="cb47-9"><a href="#cb47-9"></a><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
-<span id="cb47-10"><a href="#cb47-10"></a><span class="co">#&gt;                      method nsnp         b         se         pval</span></span>
-<span id="cb47-11"><a href="#cb47-11"></a><span class="co">#&gt; 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04</span></span>
-<span id="cb47-12"><a href="#cb47-12"></a><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07317106 1.229432e-07</span></span>
-<span id="cb47-13"><a href="#cb47-13"></a><span class="co">#&gt; 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14</span></span>
-<span id="cb47-14"><a href="#cb47-14"></a><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.13995182 1.737352e-02</span></span>
-<span id="cb47-15"><a href="#cb47-15"></a><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.09642562 1.276372e-04</span></span></code></pre></div>
+<span id="cb47-4"><a href="#cb47-4"></a><span class="co">#&gt;   id.exposure id.outcome                outcome</span></span>
+<span id="cb47-5"><a href="#cb47-5"></a><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease</span></span>
+<span id="cb47-6"><a href="#cb47-6"></a><span class="co">#&gt; 2     ieu-a-2    ieu-a-7 Coronary heart disease</span></span>
+<span id="cb47-7"><a href="#cb47-7"></a><span class="co">#&gt; 3     ieu-a-2    ieu-a-7 Coronary heart disease</span></span>
+<span id="cb47-8"><a href="#cb47-8"></a><span class="co">#&gt; 4     ieu-a-2    ieu-a-7 Coronary heart disease</span></span>
+<span id="cb47-9"><a href="#cb47-9"></a><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease</span></span>
+<span id="cb47-10"><a href="#cb47-10"></a><span class="co">#&gt;                        exposure                    method nsnp         b</span></span>
+<span id="cb47-11"><a href="#cb47-11"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   78 0.4949930</span></span>
+<span id="cb47-12"><a href="#cb47-12"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2           Weighted median   78 0.3918940</span></span>
+<span id="cb47-13"><a href="#cb47-13"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   78 0.4486747</span></span>
+<span id="cb47-14"><a href="#cb47-14"></a><span class="co">#&gt; 4 Body mass index || id:ieu-a-2               Simple mode   78 0.3630239</span></span>
+<span id="cb47-15"><a href="#cb47-15"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   78 0.3927767</span></span>
+<span id="cb47-16"><a href="#cb47-16"></a><span class="co">#&gt;           se         pval</span></span>
+<span id="cb47-17"><a href="#cb47-17"></a><span class="co">#&gt; 1 0.14504282 1.033826e-03</span></span>
+<span id="cb47-18"><a href="#cb47-18"></a><span class="co">#&gt; 2 0.07717491 3.814337e-07</span></span>
+<span id="cb47-19"><a href="#cb47-19"></a><span class="co">#&gt; 3 0.05932029 3.920738e-14</span></span>
+<span id="cb47-20"><a href="#cb47-20"></a><span class="co">#&gt; 4 0.15678035 2.325000e-02</span></span>
+<span id="cb47-21"><a href="#cb47-21"></a><span class="co">#&gt; 5 0.09921402 1.665850e-04</span></span></code></pre></div>
 </div>
 <div id="split-exposure-names" class="section level3">
 <h3 class="hasAnchor">
@@ -716,17 +724,17 @@
 <span id="cb48-6"><a href="#cb48-6"></a><span class="co">#&gt; 4     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb48-7"><a href="#cb48-7"></a><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb48-8"><a href="#cb48-8"></a><span class="co">#&gt;                        exposure                    method nsnp         b</span></span>
-<span id="cb48-9"><a href="#cb48-9"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   79 0.5024935</span></span>
-<span id="cb48-10"><a href="#cb48-10"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2           Weighted median   79 0.3870065</span></span>
-<span id="cb48-11"><a href="#cb48-11"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091</span></span>
-<span id="cb48-12"><a href="#cb48-12"></a><span class="co">#&gt; 4 Body mass index || id:ieu-a-2               Simple mode   79 0.3401554</span></span>
-<span id="cb48-13"><a href="#cb48-13"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
+<span id="cb48-9"><a href="#cb48-9"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2                  MR Egger   78 0.4949930</span></span>
+<span id="cb48-10"><a href="#cb48-10"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2           Weighted median   78 0.3918940</span></span>
+<span id="cb48-11"><a href="#cb48-11"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   78 0.4486747</span></span>
+<span id="cb48-12"><a href="#cb48-12"></a><span class="co">#&gt; 4 Body mass index || id:ieu-a-2               Simple mode   78 0.3630239</span></span>
+<span id="cb48-13"><a href="#cb48-13"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   78 0.3927767</span></span>
 <span id="cb48-14"><a href="#cb48-14"></a><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
-<span id="cb48-15"><a href="#cb48-15"></a><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653</span></span>
-<span id="cb48-16"><a href="#cb48-16"></a><span class="co">#&gt; 2 0.07317106 1.229432e-07 0.24359121 0.5304218 1.472566 1.275823 1.699649</span></span>
-<span id="cb48-17"><a href="#cb48-17"></a><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328</span></span>
-<span id="cb48-18"><a href="#cb48-18"></a><span class="co">#&gt; 4 0.13995182 1.737352e-02 0.06584987 0.6144610 1.405166 1.068066 1.848660</span></span>
-<span id="cb48-19"><a href="#cb48-19"></a><span class="co">#&gt; 5 0.09642562 1.276372e-04 0.19983068 0.5778191 1.475246 1.221196 1.782147</span></span></code></pre></div>
+<span id="cb48-15"><a href="#cb48-15"></a><span class="co">#&gt; 1 0.14504282 1.033826e-03 0.21070907 0.7792769 1.640487 1.234553 2.179895</span></span>
+<span id="cb48-16"><a href="#cb48-16"></a><span class="co">#&gt; 2 0.07717491 3.814337e-07 0.24063118 0.5431568 1.479781 1.272052 1.721433</span></span>
+<span id="cb48-17"><a href="#cb48-17"></a><span class="co">#&gt; 3 0.05932029 3.920738e-14 0.33240696 0.5649425 1.566235 1.394320 1.759347</span></span>
+<span id="cb48-18"><a href="#cb48-18"></a><span class="co">#&gt; 4 0.15678035 2.325000e-02 0.05573445 0.6703134 1.437670 1.057317 1.954850</span></span>
+<span id="cb48-19"><a href="#cb48-19"></a><span class="co">#&gt; 5 0.09921402 1.665850e-04 0.19831723 0.5872362 1.481088 1.219349 1.799009</span></span></code></pre></div>
 </div>
 <div id="subset-on-method" class="section level3">
 <h3 class="hasAnchor">
@@ -736,9 +744,9 @@
 <span id="cb49-2"><a href="#cb49-2"></a><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
 <span id="cb49-3"><a href="#cb49-3"></a><span class="co">#&gt; 3     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
 <span id="cb49-4"><a href="#cb49-4"></a><span class="co">#&gt;                        exposure                    method nsnp         b</span></span>
-<span id="cb49-5"><a href="#cb49-5"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091</span></span>
-<span id="cb49-6"><a href="#cb49-6"></a><span class="co">#&gt;           se        pval</span></span>
-<span id="cb49-7"><a href="#cb49-7"></a><span class="co">#&gt; 3 0.05898302 4.03202e-14</span></span></code></pre></div>
+<span id="cb49-5"><a href="#cb49-5"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   78 0.4486747</span></span>
+<span id="cb49-6"><a href="#cb49-6"></a><span class="co">#&gt;           se         pval</span></span>
+<span id="cb49-7"><a href="#cb49-7"></a><span class="co">#&gt; 3 0.05932029 3.920738e-14</span></span></code></pre></div>
 <p>The default is to subset on the IVW method when &gt;1 SNP is available and to use the Wald ratio method when a single SNP is available. Users can specify which multi-SNP method to subset on.</p>
 </div>
 <div id="combine-all-results" class="section level3">
@@ -760,26 +768,26 @@
 <span id="cb50-13"><a href="#cb50-13"></a><span class="co">#&gt; 5                Wald ratio Coronary heart disease</span></span>
 <span id="cb50-14"><a href="#cb50-14"></a><span class="co">#&gt; 6                Wald ratio Coronary heart disease</span></span>
 <span id="cb50-15"><a href="#cb50-15"></a><span class="co">#&gt;                        exposure nsnp          b         se         pval</span></span>
-<span id="cb50-16"><a href="#cb50-16"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2   79  0.4459091 0.05898302 4.032020e-14</span></span>
-<span id="cb50-17"><a href="#cb50-17"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2   79  0.5024935 0.14396056 8.012590e-04</span></span>
-<span id="cb50-18"><a href="#cb50-18"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2   79  0.3401554 0.15090279 2.699396e-02</span></span>
+<span id="cb50-16"><a href="#cb50-16"></a><span class="co">#&gt; 1 Body mass index || id:ieu-a-2   78  0.4486747 0.05932029 3.920738e-14</span></span>
+<span id="cb50-17"><a href="#cb50-17"></a><span class="co">#&gt; 2 Body mass index || id:ieu-a-2   78  0.4949930 0.14504282 1.033826e-03</span></span>
+<span id="cb50-18"><a href="#cb50-18"></a><span class="co">#&gt; 3 Body mass index || id:ieu-a-2   78  0.3630239 0.16110547 2.708398e-02</span></span>
 <span id="cb50-19"><a href="#cb50-19"></a><span class="co">#&gt; 4 Body mass index || id:ieu-a-2    1  1.1494985 0.37045723 1.916225e-03</span></span>
 <span id="cb50-20"><a href="#cb50-20"></a><span class="co">#&gt; 5 Body mass index || id:ieu-a-2    1 -0.7901087 0.53475543 1.395379e-01</span></span>
 <span id="cb50-21"><a href="#cb50-21"></a><span class="co">#&gt; 6 Body mass index || id:ieu-a-2    1  0.5506335 0.48253394 2.538162e-01</span></span>
 <span id="cb50-22"><a href="#cb50-22"></a><span class="co">#&gt;      intercept intercept_se intercept_pval        Q Q_df       Q_pval</span></span>
-<span id="cb50-23"><a href="#cb50-23"></a><span class="co">#&gt; 1           NA           NA             NA 143.6508   78 8.728420e-06</span></span>
-<span id="cb50-24"><a href="#cb50-24"></a><span class="co">#&gt; 2 -0.001719304  0.003985962      0.6674266 143.3046   77 6.841585e-06</span></span>
+<span id="cb50-23"><a href="#cb50-23"></a><span class="co">#&gt; 1           NA           NA             NA 142.5203   77 8.288064e-06</span></span>
+<span id="cb50-24"><a href="#cb50-24"></a><span class="co">#&gt; 2 -0.001414522   0.00403741      0.7270424 142.2905   76 6.298742e-06</span></span>
 <span id="cb50-25"><a href="#cb50-25"></a><span class="co">#&gt; 3           NA           NA             NA       NA   NA           NA</span></span>
 <span id="cb50-26"><a href="#cb50-26"></a><span class="co">#&gt; 4           NA           NA             NA       NA   NA           NA</span></span>
 <span id="cb50-27"><a href="#cb50-27"></a><span class="co">#&gt; 5           NA           NA             NA       NA   NA           NA</span></span>
 <span id="cb50-28"><a href="#cb50-28"></a><span class="co">#&gt; 6           NA           NA             NA       NA   NA           NA</span></span>
-<span id="cb50-29"><a href="#cb50-29"></a><span class="co">#&gt;   consortium ncase ncontrol     pmid population</span></span>
-<span id="cb50-30"><a href="#cb50-30"></a><span class="co">#&gt; 1         NA 60801   123504 26343387      Mixed</span></span>
-<span id="cb50-31"><a href="#cb50-31"></a><span class="co">#&gt; 2         NA 60801   123504 26343387      Mixed</span></span>
-<span id="cb50-32"><a href="#cb50-32"></a><span class="co">#&gt; 3         NA 60801   123504 26343387      Mixed</span></span>
-<span id="cb50-33"><a href="#cb50-33"></a><span class="co">#&gt; 4         NA 60801   123504 26343387      Mixed</span></span>
-<span id="cb50-34"><a href="#cb50-34"></a><span class="co">#&gt; 5         NA 60801   123504 26343387      Mixed</span></span>
-<span id="cb50-35"><a href="#cb50-35"></a><span class="co">#&gt; 6         NA 60801   123504 26343387      Mixed</span></span></code></pre></div>
+<span id="cb50-29"><a href="#cb50-29"></a><span class="co">#&gt;          consortium ncase ncontrol     pmid population</span></span>
+<span id="cb50-30"><a href="#cb50-30"></a><span class="co">#&gt; 1 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span></span>
+<span id="cb50-31"><a href="#cb50-31"></a><span class="co">#&gt; 2 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span></span>
+<span id="cb50-32"><a href="#cb50-32"></a><span class="co">#&gt; 3 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span></span>
+<span id="cb50-33"><a href="#cb50-33"></a><span class="co">#&gt; 4 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span></span>
+<span id="cb50-34"><a href="#cb50-34"></a><span class="co">#&gt; 5 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span></span>
+<span id="cb50-35"><a href="#cb50-35"></a><span class="co">#&gt; 6 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span></span></code></pre></div>
 <p>This combines all results from mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single dataframe. It also merges the results with outcome study level characteristics from the available_outcomes() function, including sample size characteristics. If requested, it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals).</p>
 </div>
 </div>

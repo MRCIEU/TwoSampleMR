@@ -32,20 +32,3 @@ install.packages("devtools")
 devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")
 ```
 
-## Citation
-
-If using MR-Base, the IEU GWAS database or the TwoSampleMR R package:
-
-[Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration.</br>
-**The MR-Base platform supports systematic causal inference across the human phenome.** <br/>
-eLife 2018;7:e34408. doi: 10.7554/eLife.34408](https://elifesciences.org/articles/34408)
-
-If also using the MR-Steiger test:
-
-[Hemani G, Tilling K, Davey Smith G.<br/>
-**Orienting the causal relationship between imprecisely measured traits using GWAS summary data.**<br/>
-PLoS Genetics. 2017. 13(11).](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
-
-## License
-
-This project is made available under the open source MIT license.
