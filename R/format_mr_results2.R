@@ -246,6 +246,9 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 			id.subset.unique<-unique(id.subset)
 			dat1$id.subset<-as.numeric(factor(id.subset))
 			ncase<-dat1$ncase.outcome
+			if(is.null(ncase)){
+				ncase<-NA
+			}
 			if(any(is.na(ncase))){
 				ncase<-dat1$samplesize.outcome
 				if(dist.outcome=="binary") warning(paste("dist.outcome set to binary but case sample size is missing. Will use total sample size instead but power pruning may be less accurate"))
