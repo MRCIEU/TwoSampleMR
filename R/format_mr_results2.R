@@ -105,7 +105,7 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 #' @export
 #' @return data frame
 
-
+# 
 # library(TwoSampleMR)
 # library(MRInstruments)
 
