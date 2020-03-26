@@ -40,18 +40,18 @@ knit_report <- function(input_filename, output_filename, ...)
     is.md <- tolower(suffix) %in% c("md", "markdown")
 
     if (is.html)
-        return(knit2html(input_filename, output=paste0(name, ".html"), envir=parent.frame(), ...))
+        return(knitr::knit2html(input_filename, output=paste0(name, ".html"), envir=parent.frame(), ...))
     else if (is.md)
-        return(knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
+        return(knitr::knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
     else if (is.pdf)
     {        
         requireNamespace("rmarkdown", quietly = TRUE)
-        return(render(input_filename, pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
+        return(rmarkdown::render(input_filename, rmarkdown::pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
     {        
         requireNamespace("rmarkdown", quietly = TRUE)
-        return(render(input_filename, word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
+        return(rmarkdown::render(input_filename, rmarkdown::word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else
         stop("Please choose a filename with pdf, html, docx or md suffix")
