@@ -20,6 +20,11 @@ Isq <- function(y,s)
 #' @importFrom stats influence.measures ks.test median pnorm residuals shapiro.test var
 system_metrics <- function(dat)
 {
+	p <- require(car)
+	if(!p)
+	{
+		stop("Please install the 'car' library")
+	}
 	# Number of SNPs
 	# Sample size outcome
 	# Sample size exposure
@@ -77,6 +82,9 @@ system_metrics <- function(dat)
 		metrics$cooks_egger <- sum(inf2[,4] > cooksthresh2) / nrow(dat)
 
 		# Homoscedasticity
+		metrics$homosc_ivw <- car::ncvTest(ruck$lmod_ivw)$ChiSquare
+		metrics$homosc_egg <- car::ncvTest(ruck$lmod_egger)$ChiSquare
+
 		# Normality of residuals
 		metrics$shap_ivw <- shapiro.test(residuals(ruck$lmod_ivw))$statistic
 		metrics$shap_egger <- shapiro.test(residuals(ruck$lmod_egger))$statistic
