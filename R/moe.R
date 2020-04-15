@@ -239,7 +239,7 @@ mr_moe_single <- function(res, rf)
 	methodlist <- names(rf)
 	pred <- lapply(methodlist, function(m)
 	{
-		d <- tibble(
+		d <- dplyr::tibble(
 			method = m,
 			MOE = predict(rf[[m]], metric, type="prob")[,2]
 		)
@@ -255,6 +255,6 @@ mr_moe_single <- function(res, rf)
 	res$estimates$selection[res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "HF"
 	res$estimates$selection[!res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "Tophits"
 	res$estimates$method2 <- paste(res$estimates$method, "-", res$estimates$selection)
-	res$estimates <- left_join(res$estimates, pred, by=c("method2"="method")) %>% arrange(desc(MOE))
+	res$estimates <- dplyr::left_join(res$estimates, pred, by=c("method2"="method")) %>% dplyr::arrange(dplyr::desc(MOE))
 	return(res)
 }
