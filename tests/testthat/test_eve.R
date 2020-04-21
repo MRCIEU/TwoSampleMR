@@ -1,7 +1,7 @@
 context("eve")
 library(TwoSampleMR)
 
-dat <- make_dat(2, 7)
+dat <- make_dat("ieu-a-2", "ieu-a-7") %>% add_metadata()
 
 test_that("wrapper", {
 	w <- mr_wrapper(dat)
