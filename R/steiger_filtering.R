@@ -24,6 +24,8 @@ steiger_filtering <- function(dat)
 	plyr::ddply(dat, c("id.exposure", "id.outcome"), steiger_filtering_internal)
 }
 
+
+
 #' @importFrom stats pnorm
 steiger_filtering_internal <- function(dat)
 {
@@ -40,92 +42,8 @@ steiger_filtering_internal <- function(dat)
 	stopifnot(length(unique(dat$units.exposure)) == 1)
 	stopifnot(length(unique(dat$units.outcome)) == 1)
 
+	dat <- add_rsq(dat)
 
-	if(!"rsq.exposure" %in% names(dat))
-	{
-		dat$pval.exposure[dat$pval.exposure < 1e-300] <- 1e-300
-		if(compareNA(dat$units.exposure[1], "log odds"))
-		{
-			# message("Estimating rsq.exposure for binary trait")
-			# message("Ensure that beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure are all specified with no missing values")
-			if(! "prevalence.exposure" %in% names(dat))
-			{
-				dat$prevalence.exposure <- 0.1
-				warning("Assuming exposure prevalence of 0.1. Alternatively, add prevalence.exposure column and re-run.")
-			}
-			ind1 <- !is.na(dat$beta.exposure) &
-				!is.na(dat$eaf.exposure) &
-				!is.na(dat$ncase.exposure) &
-				!is.na(dat$ncontrol.exposure) &
-				!is.na(dat$prevalence.exposure)
-			dat$rsq.exposure <- NA
-			if(sum(ind1) > 0)
-			{
-				dat$rsq.exposure[ind1] <- get_r_from_lor(
-					dat$beta.exposure[ind1],
-					dat$eaf.exposure[ind1],
-					dat$ncase.exposure[ind1],
-					dat$ncontrol.exposure[ind1],
-					dat$prevalence.exposure
-				)^2
-			}
-		} else if(all(grepl("SD", dat$units.exposure)) & all(!is.na(dat$eaf.exposure))) {
-			dat$rsq.exposure <- NA
-			dat$rsq.exposure <- 2 * dat$beta.exposure^2 * dat$eaf.exposure * (1-dat$eaf.exposure)
-		} else {
-			ind1 <- !is.na(dat$pval.exposure) & !is.na(dat$samplesize.exposure)
-			dat$rsq.exposure <- NA
-			if(sum(ind1) > 0)
-			{		
-				dat$rsq.exposure[ind1] <- get_r_from_pn(
-					dat$pval.exposure[ind1],
-					dat$samplesize.exposure[ind1]
-				)^2
-			}
-		}
-	}
-
-	if(!"rsq.outcome" %in% names(dat))
-	{
-		dat$pval.outcome[dat$pval.outcome < 1e-300] <- 1e-300
-		if(compareNA(dat$units.outcome[1], "log odds"))
-		{
-			if(! "prevalence.outcome" %in% names(dat))
-			{
-				dat$prevalence.outcome <- 0.1
-				warning("Assuming outcome prevalence of 0.1. Alternatively, add prevalence.outcome column and re-run.")
-			}
-			ind1 <- !is.na(dat$beta.outcome) &
-				!is.na(dat$eaf.outcome) &
-				!is.na(dat$ncase.outcome) &
-				!is.na(dat$ncontrol.outcome) &
-				!is.na(dat$prevalence.outcome)
-			dat$rsq.outcome <- NA
-			if(sum(ind1) > 0)
-			{
-				dat$rsq.outcome[ind1] <- get_r_from_lor(
-					dat$beta.outcome[ind1],
-					dat$eaf.outcome[ind1],
-					dat$ncase.outcome[ind1],
-					dat$ncontrol.outcome[ind1],
-					dat$prevalence.outcome
-				)^2
-			}
-		} else if(all(grepl("SD", dat$units.outcome)) & all(!is.na(dat$eaf.outcome))) {
-			dat$rsq.outcome <- NA
-			dat$rsq.outcome <- 2 * dat$beta.outcome^2 * dat$eaf.outcome * (1-dat$eaf.outcome)
-		} else {
-			ind1 <- !is.na(dat$pval.outcome) & !is.na(dat$samplesize.outcome)
-			dat$rsq.outcome <- NA
-			if(sum(ind1) > 0)
-			{		
-				dat$rsq.outcome[ind1] <- get_r_from_pn(
-					dat$pval.outcome[ind1],
-					dat$samplesize.outcome[ind1]
-				)^2
-			}
-		}
-	}
 	st <- psych::r.test(
 		n = dat$samplesize.exposure, 
 		n2 = dat$samplesize.outcome, 
@@ -143,4 +61,81 @@ compareNA <- function(v1,v2) {
     same <- (v1 == v2) | (is.na(v1) & is.na(v2))
     same[is.na(same)] <- FALSE
     return(same)
+}
+
+
+#' Estimate r-square of each association
+#'
+#' Can be applied to exposure_dat, outcome_dat or harmonised_data. Note that it will be beneficial in some circumstances to add the meta data to the data object using \code{add_metadata()} before running this function.
+#'
+#' @param dat exposure_dat, outcome_dat or harmonised_data
+#'
+#' @export
+#' @return data frame
+add_rsq <- function(dat)
+{
+	if("id.exposure" %in% names(dat))
+	{
+		dat <- add_rsq_one(dat, "exposure")
+	}
+	if("id.outcome" %in% names(dat))
+	{
+		dat <- add_rsq_one(dat, "outcome")
+	}
+	return(dat)
+}
+
+add_rsq_one <- function(dat, what="exposure")
+{
+	if(! paste0("units.", what) %in% names(dat))
+	{
+		dat[[paste0("units.", what)]] <- NA
+	}
+	stopifnot(length(unique(dat[[what]])) == 1)
+	stopifnot(length(unique(dat[[paste0("units.", what)]])) == 1)
+
+	if(! paste0("rsq.", what) %in% names(dat))
+	{
+		dat[[paste0("pval.", what)]][dat[[paste0("pval.", what)]] < 1e-300] <- 1e-300
+		if(compareNA(dat[[paste0("units.", what)]][1], "log odds"))
+		{
+			# message("Estimating rsq.exposure for binary trait")
+			# message("Ensure that beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure are all specified with no missing values")
+			if(! paste0("prevalence.", what) %in% names(dat))
+			{
+				dat[[paste0("prevalence.", what)]] <- 0.1
+				warning(paste0("Assuming ", what, " prevalence of 0.1. Alternatively, add prevalence.", what, " column and re-run."))
+			}
+			ind1 <- !is.na(dat[[paste0("beta.", what)]]) &
+				!is.na(dat[[paste0("eaf.", what)]]) &
+				!is.na(dat[[paste0("ncase.", what)]]) &
+				!is.na(dat[[paste0("ncontrol.", what)]]) &
+				!is.na(dat[[paste0("prevalence.", what)]])
+			dat[[paste0("rsq.", what)]] <- NA
+			if(sum(ind1) > 0)
+			{
+				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_lor(
+					dat[[paste0("beta.", what)]][ind1],
+					dat[[paste0("eaf.", what)]][ind1],
+					dat[[paste0("ncase.", what)]][ind1],
+					dat[[paste0("ncontrol.", what)]][ind1],
+					dat[[paste0("prevalence.", what)]]
+				)^2
+			}
+		} else if(all(grepl("SD", dat[[paste0("units.", what)]])) & all(!is.na(dat[[paste0("eaf.", what)]]))) {
+			dat[[paste0("rsq.", what)]] <- NA
+			dat[[paste0("rsq.", what)]] <- 2 * dat[[paste0("beta.", what)]]^2 * dat[[paste0("eaf.", what)]] * (1-dat[[paste0("eaf.", what)]])
+		} else {
+			ind1 <- !is.na(dat[[paste0("pval.", what)]]) & !is.na(dat[[paste0("samplesize.", what)]])
+			dat[[paste0("rsq.", what)]] <- NA
+			if(sum(ind1) > 0)
+			{		
+				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_pn(
+					dat[[paste0("pval.", what)]][ind1],
+					dat[[paste0("samplesize.", what)]][ind1]
+				)^2
+			}
+		}
+	}
+	return(dat)
 }

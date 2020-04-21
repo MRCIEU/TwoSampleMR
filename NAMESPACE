@@ -3,6 +3,7 @@
 export("%>%")
 export(Isq)
 export(add_metadata)
+export(add_rsq)
 export(allele_frequency)
 export(available_outcomes)
 export(clump_data)
