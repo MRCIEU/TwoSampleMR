@@ -16,7 +16,7 @@ mr_mean_ivw <- function(d)
 	if(nrow(d) == 1)
 	{
 		res <- mr_wald_ratio(b_exp, b_out, se_exp, se_out)
-		out <- dplyr::data_frame(
+		out <- dplyr::tibble(
 			id.exposure = id.exposure,
 			id.outcome = id.outcome,
 			method = "Wald ratio",
@@ -31,7 +31,7 @@ mr_mean_ivw <- function(d)
 	}
 
 	unw <- summary(lm(b_out ~ -1 + b_exp))
-	unw_out <- dplyr::data_frame(
+	unw_out <- dplyr::tibble(
 		id.exposure = id.exposure,
 		id.outcome = id.outcome,
 		method = "Simple mean",
@@ -52,13 +52,13 @@ mr_mean_ivw <- function(d)
 	y2 <- ratios * weights2
 	ivw2 <- summary(lm(y2 ~ -1 + weights2))
 
-	ivwoutliers <- dplyr::data_frame(id.exposure = id.exposure, id.outcome = id.outcome, SNP=d$SNP, Qj=weights2^2 * (ratios - coefficients(ivw2)[1])^2, Qpval=pchisq(Qj,1,lower.tail=FALSE))
+	ivwoutliers <- dplyr::tibble(id.exposure = id.exposure, id.outcome = id.outcome, SNP=d$SNP, Qj=weights2^2 * (ratios - coefficients(ivw2)[1])^2, Qpval=pchisq(Qj,1,lower.tail=FALSE))
 
 	Qivw2 <- sum(ivwoutliers$Qj)
 	Qivw2pval <- pchisq(Qivw2, nrow(d)-1, lower.tail=FALSE)
 
 	# Collate
-	re_out <- dplyr::data_frame(
+	re_out <- dplyr::tibble(
 		id.exposure = id.exposure,
 		id.outcome = id.outcome,
 		method = c("RE IVW"),
@@ -78,7 +78,7 @@ mr_mean_ivw <- function(d)
 	out <- dplyr::bind_rows(unw_out, fe_out, re_out)
 
 	# Pleiotropy
-	heterogeneity <- dplyr::data_frame(
+	heterogeneity <- dplyr::tibble(
 		id.exposure = id.exposure,
 		id.outcome = id.outcome,
 		method = c("IVW"),
@@ -115,7 +115,7 @@ mr_mean_egger <- function(d)
 
 	y2 <- ratios * weights2
 	egger2 <- summary(lm(y2 ~ weights2))
-	eggeroutliers <- dplyr::data_frame(
+	eggeroutliers <- dplyr::tibble(
 		SNP=d$SNP, 
 		Qj = weights2^2 * (ratios - coefficients(egger2)[1,1] / weights2 - coefficients(egger2)[2,1])^2, 
 		Qpval=pchisq(Qj,1,lower.tail=FALSE)
@@ -126,7 +126,7 @@ mr_mean_egger <- function(d)
 
 
 	# Collate
-	re_out <- dplyr::data_frame(
+	re_out <- dplyr::tibble(
 		id.exposure = id.exposure,
 		id.outcome = id.outcome,
 		method = c("RE Egger"),
@@ -146,7 +146,7 @@ mr_mean_egger <- function(d)
 	out <- dplyr::bind_rows(fe_out, re_out)
 
 	# Pleiotropy
-	heterogeneity <- dplyr::data_frame(
+	heterogeneity <- dplyr::tibble(
 		id.exposure = id.exposure,
 		id.outcome = id.outcome,
 		method = c("Egger"),
@@ -155,7 +155,7 @@ mr_mean_egger <- function(d)
 		pval = pchisq(Q, df, lower.tail=FALSE)
 	)
 
-	directional_pleiotropy <- dplyr::data_frame(
+	directional_pleiotropy <- dplyr::tibble(
 		id.exposure = id.exposure,
 		id.outcome = id.outcome,
 		method = c("FE Egger intercept", "RE Egger intercept"),
@@ -188,7 +188,7 @@ mr_mean <- function(dat)
 				directional_pleiotropy = m2$directional_pleiotropy,
 				outliers = m1$outliers
 			)
-			temp <- dplyr::data_frame(
+			temp <- dplyr::tibble(
 				id.exposure = dat$id.exposure[1],
 				id.outcome = dat$id.outcome[1],
 				method = "Rucker",
@@ -214,7 +214,7 @@ mr_all <- function(dat)
 	m1$info <- c(list(
 			id.exposure = dat$id.exposure[1], id.outcome = dat$id.outcome[1]),		
 			system_metrics(dat)
-		) %>% dplyr::as_data_frame()
+		) %>% dplyr::as_tibble()
 	return(m1)
 }
 
@@ -222,7 +222,7 @@ mr_wrapper_single <- function(dat)
 {
 	dat <- steiger_filtering(dat)
 	m <- list()
-	snps_retained <- dplyr::data_frame(
+	snps_retained <- dplyr::tibble(
 		SNP = dat$SNP,
 		outlier = FALSE, steiger = FALSE, both = FALSE
 	)
@@ -244,7 +244,7 @@ mr_wrapper_single <- function(dat)
 		if(nrow(dat_st) == 0)
 		{
 			m[[3]] <- m[[4]] <- list(
-				estimates=dplyr::data_frame(method="Steiger null", nsnp = 0, b=0, se=NA, ci_low=NA, ci_upp=NA, pval=1)
+				estimates=dplyr::tibble(method="Steiger null", nsnp = 0, b=0, se=NA, ci_low=NA, ci_upp=NA, pval=1)
 			)
 		} else {
 			m[[3]] <- mr_all(dat_st)
