@@ -1,8 +1,6 @@
 context("add rsq")
 library(TwoSampleMR)
 
-load_all()
-
 test_that("exposure data 1", {
 	d <- extract_instruments('ieu-a-2') %>% add_rsq()
 	expect_true("rsq.exposure" %in% names(d))

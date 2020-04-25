@@ -4,10 +4,12 @@
 \alias{mr_wrapper}
 \title{Perform full set of MR analyses}
 \usage{
-mr_wrapper(dat)
+mr_wrapper(dat, parameters = default_parameters())
 }
 \arguments{
 \item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
+
+\item{parameters}{Parameters to pass to MR functions. Output from default_parameters() used as default.}
 }
 \value{
 list

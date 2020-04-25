@@ -29,7 +29,7 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 			}
 		}
 
-		info <- dplyr::select(info, id, sample_size, ncase, ncontrol, unit, sd)
+		info <- dplyr::select(info, "id", "sample_size", "ncase", "ncontrol", "unit", "sd")
 		names(info) <- paste0(names(info), ".", what)		
 		return(info)
 	}

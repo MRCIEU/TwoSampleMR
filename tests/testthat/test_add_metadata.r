@@ -1,8 +1,6 @@
 context("add metadata")
 library(TwoSampleMR)
 
-load_all()
-
 test_that("exposure data 1", {
 	d <- extract_instruments('ieu-a-2') %>% add_metadata()
 	expect_true("units.exposure" %in% names(d))

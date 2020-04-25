@@ -20,11 +20,6 @@ Isq <- function(y,s)
 #' @importFrom stats influence.measures ks.test median pnorm residuals shapiro.test var
 system_metrics <- function(dat)
 {
-	p <- require(car)
-	if(!p)
-	{
-		stop("Please install the 'car' library")
-	}
 	# Number of SNPs
 	# Sample size outcome
 	# Sample size exposure
