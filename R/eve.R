@@ -170,7 +170,7 @@ mr_mean_egger <- function(d)
 }
 
 #' @importFrom stats pchisq
-mr_mean <- function(dat)
+mr_mean <- function(dat, parameters=default_parameters())
 {
 	m1 <- try(mr_mean_ivw(dat))
 	m2 <- try(mr_mean_egger(dat))
@@ -202,13 +202,13 @@ mr_mean <- function(dat)
 	}
 }
 
-mr_all <- function(dat)
+mr_all <- function(dat, parameters=default_parameters())
 {
 	m1 <- mr_mean(dat)
 	if(sum(dat$mr_keep) > 3)
 	{
-		m2 <- try(mr_median(dat))
-		m3 <- try(mr_mode(dat)[1:3,])
+		m2 <- try(mr_median(dat, parameters=parameters))
+		m3 <- try(mr_mode(dat, parameters=parameters)[1:3,])
 		m1$estimates <- dplyr::bind_rows(m1$estimates, m2, m3)
 	}
 	m1$info <- c(list(
@@ -218,7 +218,7 @@ mr_all <- function(dat)
 	return(m1)
 }
 
-mr_wrapper_single <- function(dat)
+mr_wrapper_single <- function(dat, parameters=default_parameters())
 {
 	dat <- steiger_filtering(dat)
 	m <- list()
@@ -226,13 +226,13 @@ mr_wrapper_single <- function(dat)
 		SNP = dat$SNP,
 		outlier = FALSE, steiger = FALSE, both = FALSE
 	)
-	m[[1]] <- mr_all(dat)
+	m[[1]] <- mr_all(dat, parameters=parameters)
 	if(!is.null(m[[1]]))
 	{
 		if("outliers" %in% names(m[[1]]))
 		{
 			temp <- subset(dat, ! SNP %in% subset(m[[1]]$outliers, Qpval < 0.05)$SNP)
-			m[[2]] <- mr_all(temp)
+			m[[2]] <- mr_all(temp, parameters=parameters)
 			snps_retained$outlier[snps_retained$SNP %in% temp$SNP] <- TRUE
 		} else {
 			m[[2]] <- m[[1]]
@@ -247,11 +247,11 @@ mr_wrapper_single <- function(dat)
 				estimates=dplyr::tibble(method="Steiger null", nsnp = 0, b=0, se=NA, ci_low=NA, ci_upp=NA, pval=1)
 			)
 		} else {
-			m[[3]] <- mr_all(dat_st)
+			m[[3]] <- mr_all(dat_st, parameters=parameters)
 			if("outliers" %in% names(m[[3]]))
 			{
 				temp <- subset(dat_st, ! SNP %in% subset(m[[3]]$outliers, Qpval < 0.05)$SNP)
-				m[[4]] <- mr_all(temp)
+				m[[4]] <- mr_all(temp, parameters=parameters)
 				snps_retained$both[snps_retained$SNP %in% temp$SNP] <- TRUE
 			} else {
 				m[[4]] <- m[[3]]
@@ -324,13 +324,13 @@ mr_wrapper_single <- function(dat)
 #'
 #' @export
 #' @return list
-mr_wrapper <- function(dat)
+mr_wrapper <- function(dat, parameters=default_parameters())
 {
 	plyr::dlply(dat, c("id.exposure", "id.outcome"), function(x)
 	{
 		message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
 		d <- subset(x, mr_keep)
-		o <- mr_wrapper_single(d)
+		o <- mr_wrapper_single(d, parameters=parameters)
 		o
 	})
 }
