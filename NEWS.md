@@ -1,3 +1,11 @@
+TwoSampleMR v0.5.4 (Release candidate)
+==============
+
+Changes:
+
+* All datasets now re-instated
+* Added options for different populations in LD operations
+
 TwoSampleMR v0.5.3 (Release date: 2020-04-02)
 ==============
 

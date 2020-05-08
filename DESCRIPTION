@@ -24,7 +24,7 @@ Description: A package for performing Mendelian randomization
 Depends:
     R (>= 3.6.0)
 Imports:
-    ieugwasr (>= 0.1.4),
+    ieugwasr (>= 0.1.5),
     ggplot2,
     gridExtra,
     cowplot,

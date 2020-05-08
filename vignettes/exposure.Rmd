@@ -316,7 +316,7 @@ By changing changing the `p1` parameter it is possible to obtain SNP effects for
 
 For standard two sample MR it is important to ensure that the instruments for the exposure are independent. Once instruments have been identified for an exposure variable, the IEU GWAS database can be used to perform clumping.
 
-The European samples from the 1000 genomes project are used to estimate LD between SNPs. You can provide a list of SNP IDs, the SNPs will be extracted from 1000 genomes data, LD calculated between them, and amongst those SNPs that have LD R-square above the specified threshold only the SNP with the lowest P-value will be retained. To do this, use the following command:
+You can provide a list of SNP IDs, the SNPs will be extracted from 1000 genomes data, LD calculated between them, and amongst those SNPs that have LD R-square above the specified threshold only the SNP with the lowest P-value will be retained. To do this, use the following command:
 
 ```{r }
 bmi_exp_dat <- clump_data(bmi_exp_dat)
@@ -324,5 +324,7 @@ bmi_exp_dat <- clump_data(bmi_exp_dat)
 
 The `clump_data` command takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the R/MRInstruments package the SNPs are already LD clumped.
 
-**Note:** The LD reference panel only includes SNPs (no INDELs), with MAF > 0.01 in 1000 genomes European samples. Therefore, if a variant is dropped from your unclumped data it could be because it is absent from the reference panel. For more flexibility, including using your own LD reference data, see here: https://mrcieu.github.io/ieugwasr/
+**Note:** The LD reference panel only includes SNPs (no INDELs). There are five super-populations from which LD can be calculated, by default European samples are used. Only SNPs with MAF > 0.01 within-population are available.
+
+**NOTE:** If a variant is dropped from your unclumped data it could be because it is absent from the reference panel. For more flexibility, including using your own LD reference data, see here: https://mrcieu.github.io/ieugwasr/
 

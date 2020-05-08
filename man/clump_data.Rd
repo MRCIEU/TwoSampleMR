@@ -4,7 +4,14 @@
 \alias{clump_data}
 \title{Perform LD clumping on SNP data}
 \usage{
-clump_data(dat, clump_kb = 10000, clump_r2 = 0.001, clump_p1 = 1, clump_p2 = 1)
+clump_data(
+  dat,
+  clump_kb = 10000,
+  clump_r2 = 0.001,
+  clump_p1 = 1,
+  clump_p2 = 1,
+  pop = "EUR"
+)
 }
 \arguments{
 \item{dat}{Output from \code{\link{format_data}}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated.}
@@ -16,6 +23,8 @@ clump_data(dat, clump_kb = 10000, clump_r2 = 0.001, clump_p1 = 1, clump_p2 = 1)
 \item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}.}
 
 \item{clump_p2}{Clumping sig level for secondary SNPs, default is \code{1}.}
+
+\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR}
 }
 \value{
 Data frame

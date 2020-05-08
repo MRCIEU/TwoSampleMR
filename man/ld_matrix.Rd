@@ -4,12 +4,14 @@
 \alias{ld_matrix}
 \title{Get LD matrix for list of SNPs}
 \usage{
-ld_matrix(snps, with_alleles = TRUE)
+ld_matrix(snps, with_alleles = TRUE, pop = "EUR")
 }
 \arguments{
 \item{snps}{List of SNPs.}
 
 \item{with_alleles}{Whether to append the allele names to the SNP names. The default is \code{TRUE}.}
+
+\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR}
 }
 \value{
 Matrix of LD r values

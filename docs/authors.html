@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/united/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/united/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="pkgdown.css" rel="stylesheet">
@@ -53,7 +57,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-citation-authors">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -67,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.3</span>
       </span>
     </div>
 
@@ -104,11 +108,7 @@
       
     </div>
 
-    <p>Hemani G, Zheng J, Elsworth B, Wade K, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan V, Yarmolinsky J, Shibab H, Timpson N, Evans D, Relton C, Martin R, Davey Smith G, Gaunt T, Haycock P, The MR-Base Collaboration (2018).
-&ldquo;The MR-Base platform supports systematic causal inference across the human phenome.&rdquo;
-<em>eLife</em>, <b>7</b>, e34408.
-doi: <a href="https://doi.org/10.7554/eLife.34408">10.7554/eLife.34408</a>, <a href="https://elifesciences.org/articles/34408">https://elifesciences.org/articles/34408</a>. 
-</p>
+    <p>Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration. The MR-Base platform supports systematic causal inference across the human phenome. eLife 2018;7:e34408. doi: 10.7554/eLife.34408</p>
     <pre>@Article{twosamplemr,
   author = {G. Hemani and J. Zheng and B. Elsworth and K. Wade and D. Baird and V. Haberland and C. Laurin and S. Burgess and J. Bowden and R. Langdon and V.Y. Tan and J. Yarmolinsky and H.A. Shibab and N.J. Timpson and D.M. Evans and C. Relton and R.M. Martin and G. {Davey Smith} and T.R. Gaunt and P.C. Haycock and {The MR-Base Collaboration}},
   title = {The MR-Base platform supports systematic causal inference across the human phenome},
@@ -119,11 +119,7 @@ doi: <a href="https://doi.org/10.7554/eLife.34408">10.7554/eLife.34408</a>, <a h
   url = {https://elifesciences.org/articles/34408},
   doi = {10.7554/eLife.34408},
 }</pre>
-    <p>Hemani G, Tilling K, Davey Smith G (2017).
-&ldquo;Orienting the causal relationship between imprecisely measured traits using GWAS summary data.&rdquo;
-<em>PLoS Genetics</em>, <b>13</b>(11), e1007081.
-doi: <a href="https://doi.org/10.1371/journal.pgen.1007081">10.1371/journal.pgen.1007081</a>, <a href="https://doi.org/10.1371/journal.pgen.1007081">https://doi.org/10.1371/journal.pgen.1007081</a>. 
-</p>
+    <p>Hemani G, Tilling K, Davey Smith G (2017) Orienting the causal relationship between imprecisely measured traits using GWAS summary data. PLOS Genetics 13(11): e1007081. https://doi.org/10.1371/journal.pgen.1007081</p>
     <pre>@Article{mrsteiger,
   author = {G. Hemani and K. Tilling and G. {Davey Smith}},
   title = {Orienting the causal relationship between imprecisely measured traits using GWAS summary data},
@@ -142,27 +138,27 @@ doi: <a href="https://doi.org/10.1371/journal.pgen.1007081">10.1371/journal.pgen
 
     <ul class="list-unstyled">
       <li>
-        <p><strong>Gibran Hemani</strong>. Author, maintainer. <a href='https://orcid.org/0000-0003-0920-1055' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
+        <p><strong>Gibran Hemani</strong>. Author, maintainer. <a href='https://orcid.org/0000-0003-0920-1055' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
         </p>
       </li>
       <li>
-        <p><strong>Philip Haycock</strong>. Author. <a href='https://orcid.org/0000-0001-5001-3350' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
+        <p><strong>Philip Haycock</strong>. Author. <a href='https://orcid.org/0000-0001-5001-3350' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
         </p>
       </li>
       <li>
-        <p><strong>Jie Zheng</strong>. Author. <a href='https://orcid.org/0000-0002-6623-6839' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
+        <p><strong>Jie Zheng</strong>. Author. <a href='https://orcid.org/0000-0002-6623-6839' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
         </p>
       </li>
       <li>
-        <p><strong>Tom Gaunt</strong>. Author. <a href='https://orcid.org/0000-0003-0924-3247' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
+        <p><strong>Tom Gaunt</strong>. Author. <a href='https://orcid.org/0000-0003-0924-3247' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
         </p>
       </li>
       <li>
-        <p><strong>Ben Elsworth</strong>. Author. <a href='https://orcid.org/0000-0001-7328-4233' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
+        <p><strong>Ben Elsworth</strong>. Author. <a href='https://orcid.org/0000-0001-7328-4233' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
         </p>
       </li>
       <li>
-        <p><strong>Tom Palmer</strong>. Author. <a href='https://orcid.org/0000-0003-4655-4511' target='orcid.widget'><img src='https://members.orcid.org/sites/default/files/vector_iD_icon.svg' class='orcid' alt='ORCID'></a>
+        <p><strong>Tom Palmer</strong>. Author. <a href='https://orcid.org/0000-0003-4655-4511' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
         </p>
       </li>
     </ul>
@@ -179,7 +175,7 @@ doi: <a href="https://doi.org/10.1371/journal.pgen.1007081">10.1371/journal.pgen
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
