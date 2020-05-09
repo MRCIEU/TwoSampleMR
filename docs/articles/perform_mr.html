@@ -628,7 +628,7 @@
 <p><strong>Caution: this is a large file (approx 167Mb)</strong></p>
 <p>Once downloaded, read in the object and use the <code>mr_moe</code> function to perform the analysis. An example is shown here, estimating the causal effect of BMI on coronary heart disease:</p>
 <div class="sourceCode" id="cb45"><html><body><pre class="r"><span class="co"># Extact instruments for BMI</span>
-<span class="no">expsure_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span>(<span class="st">"ieu-a-2"</span>)
+<span class="no">exposure_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span>(<span class="st">"ieu-a-2"</span>)
 
 <span class="co"># Get corresponding effects for CHD</span>
 <span class="no">outcome_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span>(<span class="no">exposure_dat</span>$<span class="no">SNP</span>, <span class="st">"ieu-a-7"</span>)
@@ -754,40 +754,11 @@
 <a href="#combine-all-results" class="anchor"></a>Combine all results</h3>
 <p>It is often useful to combine all results and study level characterists into a single dataframe or table, e.g. for sharing results with collaborators or when the user wishes to present all results in a single table or figure. This can be done using the combine_all_mrresults() function:</p>
 <div class="sourceCode" id="cb50"><html><body><pre class="r"><span class="no">res</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/mr.html">mr</a></span>(<span class="no">dat</span>)
-<span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span>
 <span class="no">het</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/mr_heterogeneity.html">mr_heterogeneity</a></span>(<span class="no">dat</span>)
 <span class="no">plt</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/mr_pleiotropy_test.html">mr_pleiotropy_test</a></span>(<span class="no">dat</span>)
 <span class="no">sin</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span>(<span class="no">dat</span>)
 <span class="no">all_res</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/combine_all_mrresults.html">combine_all_mrresults</a></span>(<span class="no">res</span>,<span class="no">het</span>,<span class="no">plt</span>,<span class="no">sin</span>,<span class="kw">ao_slc</span><span class="kw">=</span><span class="no">T</span>,<span class="kw">Exp</span><span class="kw">=</span><span class="no">T</span>,<span class="kw">split.exposure</span><span class="kw">=</span><span class="no">F</span>,<span class="kw">split.outcome</span><span class="kw">=</span><span class="no">T</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">all_res</span>[,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Method"</span>,<span class="st">"outcome"</span>,<span class="st">"exposure"</span>,<span class="st">"nsnp"</span>,<span class="st">"b"</span>,<span class="st">"se"</span>,<span class="st">"pval"</span>,<span class="st">"intercept"</span>,<span class="st">"intercept_se"</span>,<span class="st">"intercept_pval"</span>,<span class="st">"Q"</span>,<span class="st">"Q_df"</span>,<span class="st">"Q_pval"</span>,<span class="st">"consortium"</span>,<span class="st">"ncase"</span>,<span class="st">"ncontrol"</span>,<span class="st">"pmid"</span>,<span class="st">"population"</span>)])
-<span class="co">#&gt;                      Method                outcome</span>
-<span class="co">#&gt; 1 Inverse variance weighted Coronary heart disease</span>
-<span class="co">#&gt; 2                  MR Egger Coronary heart disease</span>
-<span class="co">#&gt; 3               Simple mode Coronary heart disease</span>
-<span class="co">#&gt; 4                Wald ratio Coronary heart disease</span>
-<span class="co">#&gt; 5                Wald ratio Coronary heart disease</span>
-<span class="co">#&gt; 6                Wald ratio Coronary heart disease</span>
-<span class="co">#&gt;                        exposure nsnp          b         se         pval</span>
-<span class="co">#&gt; 1 Body mass index || id:ieu-a-2   78  0.4486747 0.05932029 3.920738e-14</span>
-<span class="co">#&gt; 2 Body mass index || id:ieu-a-2   78  0.4949930 0.14504282 1.033826e-03</span>
-<span class="co">#&gt; 3 Body mass index || id:ieu-a-2   78  0.3630239 0.16110547 2.708398e-02</span>
-<span class="co">#&gt; 4 Body mass index || id:ieu-a-2    1  1.1494985 0.37045723 1.916225e-03</span>
-<span class="co">#&gt; 5 Body mass index || id:ieu-a-2    1 -0.7901087 0.53475543 1.395379e-01</span>
-<span class="co">#&gt; 6 Body mass index || id:ieu-a-2    1  0.5506335 0.48253394 2.538162e-01</span>
-<span class="co">#&gt;      intercept intercept_se intercept_pval        Q Q_df       Q_pval</span>
-<span class="co">#&gt; 1           NA           NA             NA 142.5203   77 8.288064e-06</span>
-<span class="co">#&gt; 2 -0.001414522   0.00403741      0.7270424 142.2905   76 6.298742e-06</span>
-<span class="co">#&gt; 3           NA           NA             NA       NA   NA           NA</span>
-<span class="co">#&gt; 4           NA           NA             NA       NA   NA           NA</span>
-<span class="co">#&gt; 5           NA           NA             NA       NA   NA           NA</span>
-<span class="co">#&gt; 6           NA           NA             NA       NA   NA           NA</span>
-<span class="co">#&gt;          consortium ncase ncontrol     pmid population</span>
-<span class="co">#&gt; 1 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span>
-<span class="co">#&gt; 2 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span>
-<span class="co">#&gt; 3 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span>
-<span class="co">#&gt; 4 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span>
-<span class="co">#&gt; 5 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span>
-<span class="co">#&gt; 6 CARDIoGRAMplusC4D 60801   123504 26343387      Mixed</span></pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">all_res</span>[,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Method"</span>,<span class="st">"outcome"</span>,<span class="st">"exposure"</span>,<span class="st">"nsnp"</span>,<span class="st">"b"</span>,<span class="st">"se"</span>,<span class="st">"pval"</span>,<span class="st">"intercept"</span>,<span class="st">"intercept_se"</span>,<span class="st">"intercept_pval"</span>,<span class="st">"Q"</span>,<span class="st">"Q_df"</span>,<span class="st">"Q_pval"</span>,<span class="st">"consortium"</span>,<span class="st">"ncase"</span>,<span class="st">"ncontrol"</span>,<span class="st">"pmid"</span>,<span class="st">"population"</span>)])</pre></body></html></div>
 <p>This combines all results from mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single dataframe. It also merges the results with outcome study level characteristics from the available_outcomes() function, including sample size characteristics. If requested, it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals).</p>
 </div>
 </div>
