@@ -584,7 +584,7 @@ Once downloaded, read in the object and use the `mr_moe` function to perform the
 
 ```{r eval=FALSE}
 # Extact instruments for BMI
-expsure_dat <- extract_instruments("ieu-a-2")
+exposure_dat <- extract_instruments("ieu-a-2")
 
 # Get corresponding effects for CHD
 outcome_dat <- extract_outcome_data(exposure_dat$SNP, "ieu-a-7")
