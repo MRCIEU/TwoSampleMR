@@ -90,7 +90,7 @@ harmonise_ld_dat <- function(x, ld)
 
 	if(any(!snpnames$keep))
 	{
-		message(" - the following SNPs could not be aligned to the LD reference panel: \n", paste(subset(snpnames, keep)$SNP, collapse="\n - "))
+		message(" - the following SNPs could not be aligned to the LD reference panel: \n- ", paste(subset(snpnames, !keep)$SNP, collapse="\n - "))
 	}
 
 
@@ -106,6 +106,13 @@ harmonise_ld_dat <- function(x, ld)
 	rownames(ld) <- snpnames$SNP
 	colnames(ld) <- snpnames$SNP
 
+	if(any(!snpnames$keep))
+	{
+		message("Removing ", sum(!snpnames$keep), " variants due to harmonisation issues")
+		ld <- ld[snpnames$keep, snpnames$keep]
+		x <- x[snpnames$keep, ]
+
+	}
 	return(list(x=x, ld=ld))
 }
 
