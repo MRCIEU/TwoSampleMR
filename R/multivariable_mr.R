@@ -24,6 +24,8 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 	exposure_dat <- extract_instruments(id_exposure, r2 = clump_r2, kb=clump_kb, access_token = access_token, force_server=force_server)
 	temp <- exposure_dat
 	temp$id.exposure <- 1
+	temp <- temp[order(temp$pval.exposure, decreasing=FALSE), ]
+	temp <- subset(temp, !duplicated(SNP))
 	temp <- clump_data(temp, clump_r2=clump_r2, clump_kb=clump_kb)
 	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
