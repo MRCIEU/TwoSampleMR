@@ -1,4 +1,4 @@
-TwoSampleMR v0.5.4 (Release candidate)
+TwoSampleMR v0.5.4 (Release date: 2020-05-10)
 ==============
 
 Changes:
