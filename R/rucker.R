@@ -270,6 +270,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @return List
+#' @export
 #' @importFrom stats median pt qchisq qnorm quantile rnorm sd
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
@@ -492,6 +493,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 #' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @return List
+#' @export
 mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 {
 
