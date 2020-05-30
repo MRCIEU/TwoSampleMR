@@ -11,23 +11,24 @@
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
+#' @param pval_threshold Instrument detection p-value threshold. Default = 5e-8
 #'
 #' @export
 #' @md
 #' @return data frame in `exposure_dat` format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE)
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8)
 {
 	requireNamespace("reshape2", quietly = TRUE)
 	stopifnot(length(id_exposure) > 1)
 	id_exposure <- ieugwasr::legacy_ids(id_exposure)
 
 	# Get best instruments for each exposure
-	exposure_dat <- extract_instruments(id_exposure, r2 = clump_r2, kb=clump_kb, access_token = access_token, force_server=force_server)
+	exposure_dat <- extract_instruments(id_exposure, p1 = pval_threshold, r2 = clump_r2, kb=clump_kb, access_token = access_token, force_server=force_server)
 	temp <- exposure_dat
 	temp$id.exposure <- 1
 	temp <- temp[order(temp$pval.exposure, decreasing=FALSE), ]
 	temp <- subset(temp, !duplicated(SNP))
-	temp <- clump_data(temp, clump_r2=clump_r2, clump_kb=clump_kb)
+	temp <- clump_data(temp, clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb)
 	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
 
@@ -53,6 +54,103 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 	dh <- rbind(dh1, dh2)
 	return(dh)
 }
+
+
+
+#' <brief desc>
+#'
+#' <full description>
+#'
+#' @param filenames_exposure Filenames for each exposure dataset. Must have header with at least SNP column present. Following arguments are used for determining how to read the filename and clumping etc.
+#' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`.
+#' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. Default is `"Phenotype"`.
+#' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
+#' @param beta_col Required for MR. Name of column with effect sizes. THe default is `"beta"`.
+#' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
+#' @param eaf_col Required for MR. Name of column with effect allele frequency. The default is `"eaf"`.
+#' @param effect_allele_col Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G". The default is `"effect_allele"`.
+#' @param other_allele_col Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G". The default is `"other_allele"`.
+#' @param pval_col Required for enrichment tests. Name of column with p-value. The default is `"pval"`.
+#' @param units_col Optional column name for units. The default is `"units"`.
+#' @param ncase_col Optional column name for number of cases. The default is `"ncase"`.
+#' @param ncontrol_col Optional column name for number of controls. The default is `"ncontrol"`.
+#' @param samplesize_col Optional column name for sample size. The default is `"samplesize"`.
+#' @param gene_col Optional column name for gene name. The default is `"gene"`.
+#' @param id_col Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is `"id"`.
+#' @param min_pval Minimum allowed p-value. The default is `1e-200`.
+#' @param log_pval The pval is -log10(P). The default is `FALSE`.
+#' @param pval_threshold=5e-8 <what param does>
+#' @param clump_r2=0.001 <what param does>
+#' @param clump_kb=10000 <what param does>
+#' @param harmonise_strictness=2 <what param does>
+#'
+#' @export
+#' @return
+mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_col = "Phenotype", snp_col = "SNP", beta_col = "beta", se_col = "se", eaf_col = "eaf", effect_allele_col = "effect_allele", other_allele_col = "other_allele", pval_col = "pval", units_col = "units", ncase_col = "ncase", ncontrol_col = "ncontrol", samplesize_col = "samplesize", gene_col = "gene", id_col = "id", min_pval = 1e-200, log_pval = FALSE, pval_threshold=5e-8, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2)
+{
+	message("WARNING: Experimental function")
+	l_full <- list()
+	l_inst <- list()
+	for(i in 1:length(filenames_exposure))
+	{
+		l_full[[i]] <- read_outcome_data(filenames_exposure[i], 
+			sep = sep,
+			phenotype_col = phenotype_col,
+			snp_col = snp_col,
+			beta_col = beta_col,
+			se_col = se_col,
+			eaf_col = eaf_col,
+			effect_allele_col = effect_allele_col,
+			other_allele_col = other_allele_col,
+			pval_col = pval_col,
+			units_col = units_col,
+			ncase_col = ncase_col,
+			ncontrol_col = ncontrol_col,
+			samplesize_col = samplesize_col,
+			gene_col = gene_col,
+			id_col = id_col,
+			min_pval = min_pval,
+			log_pval = log_pval
+		)
+		l_inst[[i]] <- subset(l_full[[i]], pval.exposure < pval_threshold)
+		l_inst[[i]] <- convert_outcome_to_exposure(l_inst[[i]])
+		l_inst[[i]] <- clump_data(l_inst[[i]], clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb)
+	}
+
+	exposure_dat <- dplyr::bind_rows(l_inst)
+	id_exposure <- unique(exposure_dat$id.exposure)
+	temp <- exposure_dat
+	temp$id.exposure <- 1
+	temp <- temp[order(temp$pval.exposure, decreasing=FALSE), ]
+	temp <- subset(temp, !duplicated(SNP))
+	temp <- clump_data(temp, clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb)
+	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
+
+	d1 <- lapply(l_full, function(x) {
+		subset(x, SNP %in% exposure_dat$SNP)
+		}) %>% dplyr::bind_rows()
+
+	stopifnot(length(unique(d1$id)) == length(unique(id_exposure)))
+	d1 <- subset(d1, mr_keep.outcome)
+	d2 <- subset(d1, id.outcome != id_exposure[1])
+	d1 <- convert_outcome_to_exposure(subset(d1, id.outcome == id_exposure[1]))
+
+	# Harmonise against the first id
+	d <- harmonise_data(d1, d2, action=harmonise_strictness)
+
+	# Only keep SNPs that are present in all
+	tab <- table(d$SNP)
+	keepsnps <- names(tab)[tab == length(id_exposure)-1]
+	d <- subset(d, SNP %in% keepsnps)
+	
+	# Reshape exposures
+	dh1 <- subset(d, id.outcome == id.outcome[1], select=c(SNP, exposure, id.exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, beta.exposure, se.exposure, pval.exposure))
+	dh2 <- subset(d, select=c(SNP, outcome, id.outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, beta.outcome, se.outcome, pval.outcome))
+	names(dh2) <- gsub("outcome", "exposure", names(dh2))
+	dh <- rbind(dh1, dh2)
+	return(dh)
+}
+
 
 
 #' Harmonise exposure and outcome for multivariable MR

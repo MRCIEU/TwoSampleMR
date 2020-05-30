@@ -11,7 +11,8 @@ mv_extract_exposures(
   harmonise_strictness = 2,
   access_token = ieugwasr::check_access_token(),
   find_proxies = TRUE,
-  force_server = FALSE
+  force_server = FALSE,
+  pval_threshold = 5e-08
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ mv_extract_exposures(
 \item{find_proxies}{Look for proxies? This slows everything down but is more accurate. The default is \code{TRUE}.}
 
 \item{force_server}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is \code{FALSE}.}
+
+\item{pval_threshold}{Instrument detection p-value threshold. Default = 5e-8}
 }
 \value{
 data frame in \code{exposure_dat} format
