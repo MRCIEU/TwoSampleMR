@@ -19,6 +19,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 {
 	requireNamespace("reshape2", quietly = TRUE)
 	stopifnot(length(id_exposure) > 1)
+	id_exposure <- ieugwasr::legacy_ids(id_exposure)
 
 	# Get best instruments for each exposure
 	exposure_dat <- extract_instruments(id_exposure, r2 = clump_r2, kb=clump_kb, access_token = access_token, force_server=force_server)
