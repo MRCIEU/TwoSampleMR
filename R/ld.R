@@ -16,26 +16,35 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 {
 	# .Deprecated("ieugwasr::ld_clump()")
 
-	if(missing(clump_r2))
-	{
-		message("Warning: since v0.4.2 the default r2 value for clumping has changed from 0.01 to 0.001")
-	}
+	pval_column <- "pval.exposure"
+
 	if(!is.data.frame(dat))
 	{
 		stop("Expecting data frame returned from format_data")
 	}
 
-	if(! "pval.exposure" %in% names(dat))
+	if("pval.exposure" %in% names(dat) & "pval.outcome" %in% names(dat))
 	{
+		message("pval.exposure and pval.outcome columns present. Using pval.exposure for clumping.")
+	} else if(!"pval.exposure" %in% names(dat) & "pval.outcome" %in% names(dat))
+	{
+		message("pval.exposure column not present, using pval.outcome column for clumping.")
+		pval_column <- "pval.outcome"
+	} else if(! "pval.exposure" %in% names(dat))
+	{
+		message("pval.exposure not present, setting clumping p-value to 0.99 for all variants")
+		dat$pval.exposure <- 0.99
+	} else {
+		message("pval.exposure not present, setting clumping p-value to 0.99 for all variants")
 		dat$pval.exposure <- 0.99
 	}
-
+	
 	if(! "id.exposure" %in% names(dat))
 	{
 		dat$id.exposure <- random_string(1)
 	}
 
-	d <- data.frame(rsid=dat$SNP, pval=dat$pval.exposure, id=dat$id.exposure)
+	d <- data.frame(rsid=dat$SNP, pval=dat[[pval_column]], id=dat$id.exposure)
 	out <- ieugwasr::ld_clump(d, clump_kb=clump_kb, clump_r2=clump_r2, clump_p=clump_p1, pop=pop)
 	keep <- paste(dat$SNP, dat$id.exposure) %in% paste(out$rsid, out$id)
 	return(dat[keep, ])

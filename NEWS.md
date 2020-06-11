@@ -1,3 +1,10 @@
+TwoSampleMR v0.5.5 (Candidate relase)
+==============
+
+Changes:
+
+* Updating `clump_data` function to operate on outcome datasets in the same way as it operates on exposure datasets. Credit goes to Marina Vabistsevits for spotting this and suggesting a solution.
+
 TwoSampleMR v0.5.4 (Release date: 2020-05-10)
 ==============
 
