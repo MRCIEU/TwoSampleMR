@@ -1,9 +1,7 @@
-
 #' Extract exposure variables for multivariable MR
 #'
-#' Requires a list of IDs from \code{\link{available_outcomes}}. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand. 
+#' Requires a list of IDs from available_outcomes. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand. 
 #'
-#' @md
 #' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
 #' @param clump_r2 The default is `0.01`.
 #' @param clump_kb The default is `10000`.
@@ -14,7 +12,6 @@
 #' @param pval_threshold Instrument detection p-value threshold. Default = 5e-8
 #'
 #' @export
-#' @md
 #' @return data frame in `exposure_dat` format
 mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8)
 {
@@ -57,9 +54,9 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 
 
-#' <brief desc>
+#' Attempt to perform MVMR using local data
 #'
-#' <full description>
+#' Under construction
 #'
 #' @param filenames_exposure Filenames for each exposure dataset. Must have header with at least SNP column present. Following arguments are used for determining how to read the filename and clumping etc.
 #' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`.
@@ -79,13 +76,13 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #' @param id_col Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is `"id"`.
 #' @param min_pval Minimum allowed p-value. The default is `1e-200`.
 #' @param log_pval The pval is -log10(P). The default is `FALSE`.
-#' @param pval_threshold=5e-8 <what param does>
-#' @param clump_r2=0.001 <what param does>
-#' @param clump_kb=10000 <what param does>
-#' @param harmonise_strictness=2 <what param does>
+#' @param pval_threshold Default=5e-8 for clumping
+#' @param clump_r2 Default=0.001 for clumping
+#' @param clump_kb Default=10000 for clumping
+#' @param harmonise_strictness See action argument in harmonise_data. Default=2
 #'
 #' @export
-#' @return
+#' @return List
 mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_col = "Phenotype", snp_col = "SNP", beta_col = "beta", se_col = "se", eaf_col = "eaf", effect_allele_col = "effect_allele", other_allele_col = "other_allele", pval_col = "pval", units_col = "units", ncase_col = "ncase", ncontrol_col = "ncontrol", samplesize_col = "samplesize", gene_col = "gene", id_col = "id", min_pval = 1e-200, log_pval = FALSE, pval_threshold=5e-8, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2)
 {
 	message("WARNING: Experimental function")

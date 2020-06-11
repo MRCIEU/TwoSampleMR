@@ -35,8 +35,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 		message("pval.exposure not present, setting clumping p-value to 0.99 for all variants")
 		dat$pval.exposure <- 0.99
 	} else {
-		message("pval.exposure not present, setting clumping p-value to 0.99 for all variants")
-		dat$pval.exposure <- 0.99
+		pval_column <- "pval.exposure"
 	}
 	
 	if(! "id.exposure" %in% names(dat))

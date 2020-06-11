@@ -2,7 +2,7 @@
 % Please edit documentation in R/multivariable_mr.R
 \name{mv_extract_exposures_local}
 \alias{mv_extract_exposures_local}
-\title{<brief desc>}
+\title{Attempt to perform MVMR using local data}
 \usage{
 mv_extract_exposures_local(
   filenames_exposure,
@@ -66,17 +66,17 @@ mv_extract_exposures_local(
 
 \item{log_pval}{The pval is -log10(P). The default is \code{FALSE}.}
 
-\item{pval_threshold=5e-8}{<what param does>}
+\item{pval_threshold}{Default=5e-8 for clumping}
 
-\item{clump_r2=0.001}{<what param does>}
+\item{clump_r2}{Default=0.001 for clumping}
 
-\item{clump_kb=10000}{<what param does>}
+\item{clump_kb}{Default=10000 for clumping}
 
-\item{harmonise_strictness=2}{<what param does>}
+\item{harmonise_strictness}{See action argument in harmonise_data. Default=2}
 }
 \value{
-
+List
 }
 \description{
-<full description>
+Under construction
 }
