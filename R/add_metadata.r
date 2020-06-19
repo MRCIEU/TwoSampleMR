@@ -20,7 +20,6 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 			message(what, ": none of the IDs found in database")
 			return(NULL)
 		}
-
 		for(col in cols)
 		{
 			if(!col %in% names(info))
@@ -28,9 +27,10 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 				info[[col]] <- NA
 			}
 		}
-
-		info <- dplyr::select(info, "id", "sample_size", "ncase", "ncontrol", "unit", "sd")
-		names(info) <- paste0(names(info), ".", what)		
+		info <- subset(info, select=c("id", cols))
+		names(info) <- paste0(names(info), ".", what)
+		index <- grepl("ukb-d", info$id) & is.na(info$sample_size)
+		info$sample_size[index] <- 300000
 		return(info)
 	}
 
@@ -61,5 +61,6 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 
 	dat <- dat[dat[[order_col]], ]
 	dat <- dat[, !names(dat) %in% order_col]
+	# dat <- fix_ukb_d(dat)
 	return(dat)
 }

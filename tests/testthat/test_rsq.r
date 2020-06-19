@@ -28,3 +28,8 @@ test_that("dat 2", {
 	expect_true("rsq.outcome" %in% names(d) & "rsq.exposure" %in% names(d))
 })
 
+test_that("dat ukb-d", {
+	d <- make_dat(exposure="ukb-d-30710_irnt", proxies=FALSE) %>% add_rsq()
+	expect_true("rsq.outcome" %in% names(d) & "rsq.exposure" %in% names(d))
+})
+
