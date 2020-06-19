@@ -4,6 +4,7 @@ TwoSampleMR v0.5.5 (Candidate relase)
 Changes:
 
 * Updating `clump_data` function to operate on outcome datasets in the same way as it operates on exposure datasets. Credit goes to Marina Vabistsevits for spotting this and suggesting a solution.
+* Removing ios function, this has now moved to mr.ios package here: https://github.com/universe77/mr.ios
 
 TwoSampleMR v0.5.4 (Release date: 2020-05-10)
 ==============
