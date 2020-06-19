@@ -46,4 +46,4 @@ test_that("ukb-d", {
 	d <- extract_outcome_data(exposure$SNP, 'ukb-d-30710_irnt')
 	d <- add_metadata(d)
 	expect_true("units.outcome" %in% names(d))
-}
+})
