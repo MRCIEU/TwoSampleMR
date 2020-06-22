@@ -39,7 +39,6 @@ Imports:
     dplyr,
     mr.raps,
     psych,
-    testthat,
     magrittr,
     car,
     randomForest,
@@ -63,5 +62,6 @@ VignetteBuilder: knitr
 RoxygenNote: 7.1.0
 Encoding: UTF-8
 Suggests: 
-    covr
+    covr,
+    testthat
 Roxygen: list(markdown = TRUE)
