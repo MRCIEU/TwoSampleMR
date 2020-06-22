@@ -161,8 +161,8 @@ mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_
 #' @return List of vectors and matrices required for mv analysis. 
 #' \describe{
 #' \item{exposure_beta}{a matrix of beta coefficients, in which rows correspond to SNPs and columns correspond to exposures.}
-#' \item{exposure_pval}{the same as exposure_beta, but for p-values.}
-#' \item{exposure_se}{is the same as exposure_beta, but for standard errors.}
+#' \item{exposure_se}{is the same as `exposure_beta`, but for standard errors.}
+#' \item{exposure_pval}{the same as `exposure_beta`, but for p-values.}
 #' \item{outcome_beta}{an array of effects for the outcome, corresponding to the SNPs in exposure_beta.}
 #' \item{outcome_se}{an array of standard errors for the outcome.}
 #' \item{outcome_pval}{an array of p-values for the outcome.}
