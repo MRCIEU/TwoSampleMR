@@ -11,7 +11,7 @@ ld_matrix(snps, with_alleles = TRUE, pop = "EUR")
 
 \item{with_alleles}{Whether to append the allele names to the SNP names. The default is \code{TRUE}.}
 
-\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR}
+\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a slightly different set of markers}
 }
 \value{
 Matrix of LD r values

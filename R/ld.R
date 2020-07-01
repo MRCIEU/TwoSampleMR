@@ -8,7 +8,7 @@
 #' @param clump_r2 Clumping r2 cutoff. Note that this default value has recently changed from `0.01` to `0.001`.
 #' @param clump_p1 Clumping sig level for index SNPs, default is `1`.
 #' @param clump_p2 Clumping sig level for secondary SNPs, default is `1`.
-#' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR
+#' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a slightly different set of markers
 #'
 #' @export
 #' @return Data frame
@@ -58,7 +58,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 #'
 #' @param snps List of SNPs.
 #' @param with_alleles Whether to append the allele names to the SNP names. The default is `TRUE`.
-#' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR
+#' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a slightly different set of markers
 #'
 #' @export
 #' @return Matrix of LD r values

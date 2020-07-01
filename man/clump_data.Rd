@@ -24,7 +24,7 @@ clump_data(
 
 \item{clump_p2}{Clumping sig level for secondary SNPs, default is \code{1}.}
 
-\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR}
+\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a slightly different set of markers}
 }
 \value{
 Data frame
