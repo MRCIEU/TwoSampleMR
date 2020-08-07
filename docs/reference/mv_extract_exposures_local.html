@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read exposure data — read_exposure_data • TwoSampleMR</title>
+<title>Attempt to perform MVMR using local data — mv_extract_exposures_local • TwoSampleMR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Read exposure data — read_exposure_data" />
-<meta property="og:description" content="Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info." />
+<meta property="og:title" content="Attempt to perform MVMR using local data — mv_extract_exposures_local" />
+<meta property="og:description" content="Under construction" />
 
 
 
@@ -105,18 +105,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read exposure data</h1>
+    <h1>Attempt to perform MVMR using local data</h1>
     
-    <div class="hidden name"><code>read_exposure_data.Rd</code></div>
+    <div class="hidden name"><code>mv_extract_exposures_local.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.</p>
+    <p>Under construction</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read_exposure_data</span>(
-  <span class='no'>filename</span>,
-  <span class='kw'>clump</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+    <pre class="usage"><span class='fu'>mv_extract_exposures_local</span>(
+  <span class='no'>filenames_exposure</span>,
   <span class='kw'>sep</span> <span class='kw'>=</span> <span class='st'>" "</span>,
   <span class='kw'>phenotype_col</span> <span class='kw'>=</span> <span class='st'>"Phenotype"</span>,
   <span class='kw'>snp_col</span> <span class='kw'>=</span> <span class='st'>"SNP"</span>,
@@ -133,27 +132,27 @@
   <span class='kw'>gene_col</span> <span class='kw'>=</span> <span class='st'>"gene"</span>,
   <span class='kw'>id_col</span> <span class='kw'>=</span> <span class='st'>"id"</span>,
   <span class='kw'>min_pval</span> <span class='kw'>=</span> <span class='fl'>1e-200</span>,
-  <span class='kw'>log_pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>log_pval</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>pval_threshold</span> <span class='kw'>=</span> <span class='fl'>5e-08</span>,
+  <span class='kw'>clump_r2</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
+  <span class='kw'>clump_kb</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
+  <span class='kw'>harmonise_strictness</span> <span class='kw'>=</span> <span class='fl'>2</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>filename</th>
-      <td><p>Filename. Must have header with at least SNP column present.</p></td>
-    </tr>
-    <tr>
-      <th>clump</th>
-      <td><p>Whether to perform LD clumping with <code><a href='clump_data.html'>clump_data</a></code> on the exposure data. The default is <code>FALSE</code>.</p></td>
+      <th>filenames_exposure</th>
+      <td><p>Filenames for each exposure dataset. Must have header with at least SNP column present. Following arguments are used for determining how to read the filename and clumping etc.</p></td>
     </tr>
     <tr>
       <th>sep</th>
-      <td><p>Specify delimeter in file. The default is a space, i.e. <code>" "</code>.</p></td>
+      <td><p>Specify delimeter in file. The default is space, i.e. <code>sep=" "</code>.</p></td>
     </tr>
     <tr>
       <th>phenotype_col</th>
-      <td><p>Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome". The default is <code>"Phenotype"</code>.</p></td>
+      <td><p>Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value <code>"Outcome"</code>. Default is <code>"Phenotype"</code>.</p></td>
     </tr>
     <tr>
       <th>snp_col</th>
@@ -161,7 +160,7 @@
     </tr>
     <tr>
       <th>beta_col</th>
-      <td><p>Required for MR. Name of column with effect sizes. The default is <code>"beta"</code>.</p></td>
+      <td><p>Required for MR. Name of column with effect sizes. THe default is <code>"beta"</code>.</p></td>
     </tr>
     <tr>
       <th>se_col</th>
@@ -213,13 +212,29 @@
     </tr>
     <tr>
       <th>log_pval</th>
-      <td><p>The p-value is -log10(P). The default is <code>FALSE</code>.</p></td>
+      <td><p>The pval is -log10(P). The default is <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>pval_threshold</th>
+      <td><p>Default=5e-8 for clumping</p></td>
+    </tr>
+    <tr>
+      <th>clump_r2</th>
+      <td><p>Default=0.001 for clumping</p></td>
+    </tr>
+    <tr>
+      <th>clump_kb</th>
+      <td><p>Default=10000 for clumping</p></td>
+    </tr>
+    <tr>
+      <th>harmonise_strictness</th>
+      <td><p>See action argument in harmonise_data. Default=2</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame</p>
+    <p>List</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Test for horizontal pleiotropy in MR analysis — mr_pleiotropy_test • TwoSampleMR</title>
+<title>Add meta data to extracted data — add_metadata • TwoSampleMR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Test for horizontal pleiotropy in MR analysis — mr_pleiotropy_test" />
-<meta property="og:description" content="Performs MR Egger and returns intercept values." />
+<meta property="og:title" content="Add meta data to extracted data — add_metadata" />
+<meta property="og:description" content="Previously the meta data was returned alongside association information. This is mostly unnecessary as it is needlessly repeating information. This is a convenience function that reinstates that information.
+Can be applied to either exposure data, outcome data, or harmonised data" />
 
 
 
@@ -105,29 +106,34 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Test for horizontal pleiotropy in MR analysis</h1>
+    <h1>Add meta data to extracted data</h1>
     
-    <div class="hidden name"><code>mr_pleiotropy_test.Rd</code></div>
+    <div class="hidden name"><code>add_metadata.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Performs MR Egger and returns intercept values.</p>
+    <p>Previously the meta data was returned alongside association information. This is mostly unnecessary as it is needlessly repeating information. This is a convenience function that reinstates that information.
+Can be applied to either exposure data, outcome data, or harmonised data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mr_pleiotropy_test</span>(<span class='no'>dat</span>)</pre>
+    <pre class="usage"><span class='fu'>add_metadata</span>(<span class='no'>dat</span>, <span class='kw'>cols</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"sample_size"</span>, <span class='st'>"ncase"</span>, <span class='st'>"ncontrol"</span>, <span class='st'>"unit"</span>, <span class='st'>"sd"</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>dat</th>
-      <td><p>Harmonised exposure and outcome data. Output from <code><a href='harmonise_data.html'>harmonise_data</a></code>.</p></td>
+      <td><p>Either exposure data, outcome data or harmonised data</p></td>
+    </tr>
+    <tr>
+      <th>cols</th>
+      <td><p>Which metadata fields to add. Default = c("sample_size", "ncase", "ncontrol", "unit", "sd")</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data frame</p>
+    <p>Data frame</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
       </span>
     </div>
 
@@ -108,13 +108,24 @@
       
     </div>
 
-    <div id="twosamplemr-v054-release-candidate" class="section level1">
+    <div id="twosamplemr-v055-candidate-relase" class="section level1">
+<h1 class="page-header" data-toc-text="0.5.5">
+<a href="#twosamplemr-v055-candidate-relase" class="anchor"></a>TwoSampleMR v0.5.5 (Candidate relase)</h1>
+<p>Changes:</p>
+<ul>
+<li>Updating <code>clump_data</code> function to operate on outcome datasets in the same way as it operates on exposure datasets. Credit goes to Marina Vabistsevits for spotting this and suggesting a solution.</li>
+<li>Removing ios function, this has now moved to mr.ios package here: <a href="https://github.com/universe77/mr.ios" class="uri">https://github.com/universe77/mr.ios</a>
+</li>
+</ul>
+</div>
+    <div id="twosamplemr-v054-release-date-2020-05-10" class="section level1">
 <h1 class="page-header" data-toc-text="0.5.4">
-<a href="#twosamplemr-v054-release-candidate" class="anchor"></a>TwoSampleMR v0.5.4 (Release candidate)</h1>
+<a href="#twosamplemr-v054-release-date-2020-05-10" class="anchor"></a>TwoSampleMR v0.5.4 (Release date: 2020-05-10)</h1>
 <p>Changes:</p>
 <ul>
 <li>All datasets now re-instated</li>
 <li>Added options for different populations in LD operations</li>
+<li>When converting to MRInput format and supplying an LD matrix, it is possible that multi-allelic variants will be represented differently on in the GWAS and the LD reference panel. Ambiguous alignments were not being removed, now fixed. Credit goes to Mona Almramhi for spotting and fixing this issue.</li>
 </ul>
 </div>
     <div id="twosamplemr-v053-release-date-2020-04-02" class="section level1">

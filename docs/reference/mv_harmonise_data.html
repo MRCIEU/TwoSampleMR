@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
       </span>
     </div>
 
@@ -136,13 +136,14 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>List of vectors and matrices required for mv analysis.</p><dl'>
-<dt>exposure_beta</dt><dd><p>a matrix of beta coefficients</p></dd>
-<dt>rows</dt><dd><p>correspond to SNPs and columns correspond to exposures.</p></dd>
-<dt>exposure_pval</dt><dd><p>the same as exposure_beta, but for p-values.</p></dd>
-<dt>exposure_se</dt><dd><p>is the same as exposure_beta, but for standard errors.</p></dd>
+<dt>exposure_beta</dt><dd><p>a matrix of beta coefficients, in which rows correspond to SNPs and columns correspond to exposures.</p></dd>
+<dt>exposure_se</dt><dd><p>is the same as <code>exposure_beta</code>, but for standard errors.</p></dd>
+<dt>exposure_pval</dt><dd><p>the same as <code>exposure_beta</code>, but for p-values.</p></dd>
+<dt>expname</dt><dd><p>A data frame with two variables, <code>id.exposure</code> and <code>exposure</code> which are character strings.</p></dd>
 <dt>outcome_beta</dt><dd><p>an array of effects for the outcome, corresponding to the SNPs in exposure_beta.</p></dd>
 <dt>outcome_se</dt><dd><p>an array of standard errors for the outcome.</p></dd>
 <dt>outcome_pval</dt><dd><p>an array of p-values for the outcome.</p></dd>
+<dt>outname</dt><dd><p>A data frame with two variables, <code>id.outcome</code> and <code>outcome</code> which are character strings.</p></dd>
 
 </dl>
 
