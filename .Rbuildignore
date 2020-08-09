@@ -13,3 +13,4 @@
 ^pkgdown$
 figure$
 cache$
+^index.md$
