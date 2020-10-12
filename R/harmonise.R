@@ -36,9 +36,9 @@
 #' @param exposure_dat Output from \code{read_exposure_data}.
 #' @param outcome_dat Output from \code{extract_outcome_data}.
 #' @param action Level of strictness in dealing with SNPs. 
-#' * `action = 1`: Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended);
-#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes; 
-#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis. 
+#' * `action = 1`: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+#' * `action = 2`: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative); 
+#' * `action = 3`: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative). 
 #' If a single value is passed then this action is applied to all outcomes. 
 #' But multiple values can be supplied as a vector, each element relating to a different outcome.
 #'

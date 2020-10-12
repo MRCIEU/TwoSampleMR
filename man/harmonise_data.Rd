@@ -13,9 +13,9 @@ harmonise_data(exposure_dat, outcome_dat, action = 2)
 
 \item{action}{Level of strictness in dealing with SNPs.
 \itemize{
-\item \code{action = 1}: Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended);
-\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes;
-\item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis.
+\item \code{action = 1}: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles
+\item \code{action = 2}: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);
+\item \code{action = 3}: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 If a single value is passed then this action is applied to all outcomes.
 But multiple values can be supplied as a vector, each element relating to a different outcome.
 }}
