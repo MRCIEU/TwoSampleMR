@@ -1,4 +1,4 @@
-# Mendelian randomization with GWAS summary data
+# Mendelian randomization with GWAS summary data - Conor's Edits
 
 <!-- badges: start -->
 [![Build Status](https://github.com/MRCIEU/TwoSampleMR/workflows/R-CMD-check/badge.svg)](https://github.com/MRCIEU/TwoSampleMR/actions?workflow=R-CMD-check)
