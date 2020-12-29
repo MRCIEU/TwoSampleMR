@@ -55,7 +55,7 @@ mr_scatter_plot <- function(mr_results, dat)
 blank_plot <- function(message)
 {
 	requireNamespace("ggplot2", quietly=TRUE)
-	ggplot2::ggplot(data.frame(a=0,b=0,n=message)) + ggplot2::geom_text(ggplot2::aes(x=a,y=b,label=n)) + ggplot2::labs(x=NULL,y=NULL) + ggplot2::theme(axis.text=ggplot2::element_blank(), axis.ticks=ggplot2::element_blank())
+	ggplot2::ggplot(data.frame(a=0,b=0,n=message)) + ggplot2::geom_text(ggplot2::aes(x=a,y=b,label=n)) + ggplot2::labs(x=NULL,y=NULL) + ggplot2::theme(axis.text=ggplot2::element_text(colour = "#3D3D49"), axis.ticks=ggplot2::element_blank(), axis.title = ggplot2::element_text(colour = "#3D3D49"), legend.title = ggplot2::element_text(colour = "#3D3D49"), legend.text = ggplot2::element_text(colour = "#3D3D49"), panel.background = ggplot2::element_rect(fill = "transparent", colour = "#3D3D49"), ggplot2::plot.background = element_rect(fill = "transparent",colour = NA), ggplot2::legend.background = element_rect(fill = "transparent", color = NA), ggplot2::panel.grid.major =  element_line(color = "#3D3D49"), ggplot2::panel.grid.minor = element_line(color = "#3D3D49"), ggplot2::legend.key = element_blank())
 }
 
 
