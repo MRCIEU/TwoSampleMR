@@ -4,19 +4,24 @@
 \alias{mv_multiple}
 \title{Perform IVW multivariable MR}
 \usage{
-mv_multiple(mvdat, intercept = FALSE, instrument_specific = FALSE,
-  pval_threshold = 5e-08, plots = FALSE)
+mv_multiple(
+  mvdat,
+  intercept = FALSE,
+  instrument_specific = FALSE,
+  pval_threshold = 5e-08,
+  plots = FALSE
+)
 }
 \arguments{
-\item{mvdat}{Output from \code{mv_harmonise_data}}
+\item{mvdat}{Output from \code{\link{mv_harmonise_data}}.}
 
-\item{intercept}{Should the intercept by estimated (TRUE) or force line through the origin (FALSE, dafault)}
+\item{intercept}{Should the intercept by estimated (\code{TRUE}) or force line through the origin (\code{FALSE}, default).}
 
-\item{instrument_specific}{Should the estimate for each exposure be obtained by using all instruments from all exposures (FALSE, default) or by using only the instruments specific to each exposure (TRUE)}
+\item{instrument_specific}{Should the estimate for each exposure be obtained by using all instruments from all exposures (\code{FALSE}, default) or by using only the instruments specific to each exposure (\code{TRUE}).}
 
-\item{plots}{Create plots? FALSE by default}
+\item{pval_threshold}{P-value threshold to include instruments. The default is \code{5e-8}.}
 
-\item{pval_threshold=5e-8}{P-value threshold to include instruments}
+\item{plots}{Create plots? The default is \code{FALSE}.}
 }
 \value{
 List of results

@@ -4,29 +4,41 @@
 \alias{combine_all_mrresults}
 \title{Combine all mr results}
 \usage{
-combine_all_mrresults(res, het, plt, sin, ao_slc = T, Exp = F,
-  split.exposure = F, split.outcome = F)
+combine_all_mrresults(
+  res,
+  het,
+  plt,
+  sin,
+  ao_slc = T,
+  Exp = F,
+  split.exposure = F,
+  split.outcome = F
+)
 }
 \arguments{
-\item{res}{Results from mr()}
+\item{res}{Results from \code{\link[=mr]{mr()}}.}
 
-\item{het}{Results from mr_heterogeneity()}
+\item{het}{Results from \code{\link[=mr_heterogeneity]{mr_heterogeneity()}}.}
 
-\item{sin}{Results from mr_singlesnp()}
+\item{plt}{Results from \code{\link[=mr_pleiotropy_test]{mr_pleiotropy_test()}}.}
 
-\item{ao_slc}{Logical; if set to TRUE then outcome study level characteristics are retrieved from available_outcomes(). Default is TRUE.}
+\item{sin}{Results from \code{\link[=mr_singlesnp]{mr_singlesnp()}}.}
 
-\item{Exp}{Logical; if set to TRUE results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is FALSE.}
+\item{ao_slc}{Logical; if set to \code{TRUE} then outcome study level characteristics are retrieved from \code{\link[=available_outcomes]{available_outcomes()}}. Default is \code{TRUE}.}
 
-\item{split.exposure}{Logical; if set to TRUE the exposure column is split into separate columns for the exposure name and exposure ID. Default is FALSE.}
+\item{Exp}{Logical; if set to \code{TRUE} results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is \code{FALSE}.}
 
-\item{split.outcome}{Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is FALSE.}
+\item{split.exposure}{Logical; if set to \code{TRUE} the exposure column is split into separate columns for the exposure name and exposure ID. Default is \code{FALSE}.}
 
-\item{pleiotropy}{Results from mr_pleiotropy_test()}
+\item{split.outcome}{Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is \code{FALSE}.}
 }
 \value{
 data frame
 }
 \description{
-This function combines results of mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single data frame. It also merges the results with outcome study level characteristics in available_outcomes(). If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). The exposure and outcome columns from the output from mr() contain both the trait names and trait ids. The combine_all_mrresults() function splits these into separate columns by default.
+This function combines results of \code{\link[=mr]{mr()}}, \code{\link[=mr_heterogeneity]{mr_heterogeneity()}}, \code{\link[=mr_pleiotropy_test]{mr_pleiotropy_test()}} and \code{\link[=mr_singlesnp]{mr_singlesnp()}} into a single data frame.
+It also merges the results with outcome study level characteristics in \code{\link[=available_outcomes]{available_outcomes()}}.
+If desired it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals).
+The exposure and outcome columns from the output from \code{\link[=mr]{mr()}} contain both the trait names and trait ids.
+The \code{combine_all_mrresults()} function splits these into separate columns by default.
 }

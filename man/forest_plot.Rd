@@ -4,42 +4,52 @@
 \alias{forest_plot}
 \title{Forest plot for multiple exposures and multiple outcomes}
 \usage{
-forest_plot(mr_res, exponentiate = FALSE, single_snp_method = "Wald ratio",
+forest_plot(
+  mr_res,
+  exponentiate = FALSE,
+  single_snp_method = "Wald ratio",
   multi_snp_method = "Inverse variance weighted",
-  group_single_categories = TRUE, by_category = TRUE, in_columns = FALSE,
-  threshold = NULL, xlab = "", xlim = NULL, trans = "identity",
-  ao_slc = T, priority = "Cardiometabolic")
+  group_single_categories = TRUE,
+  by_category = TRUE,
+  in_columns = FALSE,
+  threshold = NULL,
+  xlab = "",
+  xlim = NULL,
+  trans = "identity",
+  ao_slc = T,
+  priority = "Cardiometabolic"
+)
 }
 \arguments{
-\item{mr_res}{Results from mr()}
+\item{mr_res}{Results from \code{\link[=mr]{mr()}}.}
 
-\item{exponentiate}{Convert effects to OR? Default=FALSE}
+\item{exponentiate}{Convert effects to OR? Default is \code{FALSE}.}
 
-\item{single_snp_method}{Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"}
+\item{single_snp_method}{Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? The default is \code{"Wald ratio"}.}
 
-\item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"}
+\item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is \code{"Inverse variance weighted"}.}
 
-\item{group_single_categories}{If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE}
+\item{group_single_categories}{If there are categories with only one outcome, group them together into an "Other" group. The default is \code{TRUE}.}
 
-\item{by_category}{Separate the results into sections by category? Default=TRUE}
+\item{by_category}{Separate the results into sections by category? The default is \code{TRUE}.}
 
-\item{in_columns}{Separate the exposures into different columns. Default=FALSE}
+\item{in_columns}{Separate the exposures into different columns. The default is \code{FALSE}.}
 
-\item{threshold}{p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied}
+\item{threshold}{p-value threshold to use for colouring points by significance level. If \code{NULL} (default) then colour layer won't be applied.}
 
-\item{xlab}{x-axis label. If in_columns=TRUE then the exposure values are appended to the end of xlab. e.g. if xlab="Effect of" then x-labels will read "Effect of exposure1", "Effect of exposure2" etc. Otherwise will be printed as is.}
+\item{xlab}{x-axis label. If \code{in_columns=TRUE} then the exposure values are appended to the end of \code{xlab}. e.g. if \code{xlab="Effect of"} then x-labels will read \code{"Effect of exposure1"}, \code{"Effect of exposure2"} etc. Otherwise will be printed as is.}
 
-\item{xlim}{limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL}
+\item{xlim}{limit x-axis range. Provide vector of length 2, with lower and upper bounds. The default is \code{NULL}.}
 
-\item{trans}{Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"}
+\item{trans}{Transformation to apply to x-axis. e.g. \code{"identity"}, \code{"log2"}, etc. The default is \code{"identity"}.}
 
-\item{ao_slc}{retrive sample size and subcategory from available_outcomes(). If set to FALSE then mr_res must contain the following additional columns: sample_size and subcategory. The default behaviour is to use available_outcomes() to retrieve sample size and subcategory}
+\item{ao_slc}{retrive sample size and subcategory from \code{\link[=available_outcomes]{available_outcomes()}}. If set to \code{FALSE} then \code{mr_res} must contain the following additional columns: \code{sample_size} and \code{subcategory}. The default behaviour is to use \code{\link[=available_outcomes]{available_outcomes()}} to retrieve sample size and subcategory.}
 
-\item{priority}{Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"}
+\item{priority}{Name of category to prioritise at the top of the forest plot. The default is \code{"Cardiometabolic"}.}
 }
 \value{
 grid plot object
 }
 \description{
-Perform MR of multiple exposures and multiple outcomes. This plots the results
+Perform MR of multiple exposures and multiple outcomes. This plots the results.
 }

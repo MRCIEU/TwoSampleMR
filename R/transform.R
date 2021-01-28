@@ -1,8 +1,8 @@
 #' Try to standardise continuous traits to be in standard deviation units
 #'
-#' Uses \code{estimate_trait_sd}
+#' Uses [`estimate_trait_sd`].
 #'
-#' @param dat Output from \code{harmonise_data}
+#' @param dat Output from [`harmonise_data`].
 #'
 #' @export
 #' @return Data frame
@@ -41,15 +41,15 @@ standardise_units <- function(dat)
 
 #' Estimate trait SD by obtaining beta estimates from z-scores and finding the ratio with original beta values
 #'
-#' Assumes that sample size and allele frequency is correct for each SNP, and that allele frequency gives a reasonable estimate of the variance of the SNP
+#' Assumes that sample size and allele frequency is correct for each SNP, and that allele frequency gives a reasonable estimate of the variance of the SNP.
 #'
-#' @param b vector of effect sizes
-#' @param se vector of standard errors
-#' @param n vector of sample sizes
-#' @param p vector of allele frequencies
+#' @param b vector of effect sizes.
+#' @param se vector of standard errors.
+#' @param n vector of sample sizes.
+#' @param p vector of allele frequencies.
 #'
 #' @export
-#' @return vector of sd estimates for each association
+#' @return Vector of sd estimates for each association.
 estimate_trait_sd <- function(b, se, n, p)
 {
 	z <- b / se

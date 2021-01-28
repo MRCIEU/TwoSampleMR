@@ -7,13 +7,13 @@
 mr_rucker_jackknife(dat, parameters = default_parameters())
 }
 \arguments{
-\item{dat}{Output from harmonise_data}
+\item{dat}{Output from harmonise_data.}
 
-\item{parameters=default_parameters()}{}
+\item{parameters}{List of parameters. The default is \code{default_parameters()}.}
 }
 \value{
 List
 }
 \description{
-Run rucker with jackknife estimates
+Run rucker with jackknife estimates.
 }

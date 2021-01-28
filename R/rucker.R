@@ -1,3 +1,12 @@
+#' I-square calculation
+#'
+#' This function calculates the I-squared_GX statistic.
+#' 
+#' @param y Vector of effects.
+#' @param s Vector of standard errors.
+#'
+#' @export
+#' @return Isq value
 Isq <- function(y,s)
 {
 	k <- length(y)
@@ -10,25 +19,7 @@ Isq <- function(y,s)
 	return(Isq)
 }
 
-# mr_ivw_fe <- function (b_exp, b_out, se_exp, se_out)
-# {
-# 	lapply(x, function(x){
-# 		wj <- x$wj
-# 		bj <- x$bj
-# 		b <- sum(wj * bj) / sum(wj)
-# 		se <- sqrt(1 / sum(wj))
-# 		pval <- 2 * pnorm(abs(b/se), low = FALSE)
-# 		Q <- sum(wj * (bj - b)^2)
-# 		Q_df <- length(b_exp) - 1
-# 		Q_pval <- pchisq(Q, Q_df, low = FALSE)
-# 		data.frame(
-# 			b1=b, se1=se, pval1=pval,
-# 		)
-# 		return(list(b = b, se = se, pval = pval, nsnp = length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
-# 	})
-# }
-
-
+#' @importFrom stats qchisq qnorm
 PM <- function(y = y, s = s, Alpha = 0.1)
 {
 	k = length(y)
@@ -77,10 +68,11 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 
 #' MR Rucker framework
 #'
-#' <full description>
+#' MR Rucker framework.
 #'
-#' @param dat <what param does>
-#' @param parameters List of Qthresh for determing transition between models, and alpha values for calculating confidence intervals. Defaults to 0.05 for both in default_parameters() 
+#' @md
+#' @param dat Output from [`harmonise_data()`].
+#' @param parameters List of Qthresh for determing transition between models, and alpha values for calculating confidence intervals. Defaults to 0.05 for both in `default_parameters()`.
 #'
 #' @export
 #' @return list
@@ -92,7 +84,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	attributes(res)$id.exposure <- d$id.exposure
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
-	attributes(res)$outcome <- d$id.exposure
+	attributes(res)$outcome <- d$outcome
 	for(j in 1:nrow(d))
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
@@ -102,11 +94,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-
-
-
-
-
+#' @importFrom stats coefficients cooks.distance lm mad pchisq pnorm pt qnorm
 mr_rucker_internal <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
@@ -147,7 +135,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	# Q_ivw <- sum((y - x*b_ivw_fe)^2)
 	Q_ivw <- mod_ivw$sigma^2 * (nsnp - 1)
 	Q_df_ivw <- length(b_exp) - 1
-	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, low = FALSE)
+	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, lower.tail = FALSE)
 	phi_ivw <- Q_ivw / (nsnp - 1)
 
 	se_ivw_fe <- coefficients(mod_ivw)[1,2] / max(mod_ivw$sigma, 1)
@@ -185,7 +173,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	# )
 	Q_egger <- mod_egger$sigma^2 * (nsnp - 2)
 	Q_df_egger <- nsnp - 2
-	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, low=FALSE)
+	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, lower.tail=FALSE)
 	phi_egger <- Q_egger / (nsnp - 2)
 
 	se1_egger_fe <- coefficients(mod_egger)[2,2] / max(mod_egger$sigma, 1)
@@ -275,12 +263,15 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 
 #' Run rucker with bootstrap estimates
 #'
-#' <full description>
+#' Run Rucker with bootstrap estimates.
 #'
-#' @param dat <what param does>
-#' @param parameters=default_parameters() <what param does>
+#' @md
+#' @param dat Output from [`harmonise_data`].
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @return List
+#' @export
+#' @importFrom stats median pt qchisq qnorm quantile rnorm sd
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -348,7 +339,7 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 		ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 		ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 		ggplot2::geom_abline(slope=1, colour="grey") +
-		ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, low=FALSE), linetype="dotted") +
+		ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, lower.tail=FALSE), linetype="dotted") +
 		ggplot2::geom_hline(yintercept = qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
 		ggplot2::geom_vline(xintercept = qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
 		ggplot2::labs(x="Q", y="Q'")
@@ -369,8 +360,11 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 
 #' Run rucker with jackknife estimates
 #'
-#' @param dat Output from harmonise_data
-#' @param parameters=default_parameters()
+#' Run rucker with jackknife estimates.
+#'
+#' @md
+#' @param dat Output from harmonise_data.
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @export
 #' @return List
@@ -382,7 +376,7 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	attributes(res)$id.exposure <- d$id.exposure
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
-	attributes(res)$outcome <- d$id.exposure
+	attributes(res)$outcome <- d$outcome
 	for(j in 1:nrow(d))
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
@@ -392,7 +386,7 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-
+#' @importFrom stats mad median pt qchisq qnorm quantile sd
 mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -469,7 +463,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 			ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 			ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 			ggplot2::geom_abline(slope=1, colour="grey") +
-			ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, low=FALSE), linetype="dotted") +
+			ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, lower.tail=FALSE), linetype="dotted") +
 			ggplot2::geom_hline(yintercept = qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
 			ggplot2::geom_vline(xintercept = qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
 			ggplot2::labs(x="Q", y="Q'")
@@ -492,12 +486,14 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 
 #' MR Rucker with outliers automatically detected and removed
 #'
-#' Uses Cook's distance D > 4/nsnp to iteratively remove outliers
+#' Uses Cook's distance D > 4/nsnp to iteratively remove outliers.
 #'
-#' @param dat <what param does>
-#' @param parameters=default_parameters() <what param does>
+#' @md
+#' @param dat Output from [`harmonise_data`].
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
-#' @return list
+#' @return List
+#' @export
 mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 {
 

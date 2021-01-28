@@ -2,10 +2,15 @@
 % Please edit documentation in R/mr_mode.R
 \name{mr_simple_mode_nome}
 \alias{mr_simple_mode_nome}
-\title{MR weighted mode estimator (NOME)}
+\title{MR simple mode estimator (NOME)}
 \usage{
-mr_simple_mode_nome(b_exp, b_out, se_exp, se_out,
-  parameters = default_parameters())
+mr_simple_mode_nome(
+  b_exp,
+  b_out,
+  se_exp,
+  se_out,
+  parameters = default_parameters()
+)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}
@@ -16,14 +21,16 @@ mr_simple_mode_nome(b_exp, b_out, se_exp, se_out,
 
 \item{se_out}{Standard errors of genetic effects on outcome}
 
-\item{parameters}{List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000}
+\item{parameters}{List containing \code{phi} - Bandwidth parameter, and \code{nboot} - number of bootstraps to calculate SE. \code{default_parameters()} sets \code{list(phi=1, nboot=1000)}.}
 }
 \value{
 List with the following elements:
-        b: MR estimate
-        se: Standard error
-        pval: p-value
+\describe{
+\item{b}{MR estimate}
+\item{se}{Standard error}
+\item{pval}{p-value}
+}
 }
 \description{
-MR weighted mode estimator (NOME)
+MR simple mode estimator (NOME).
 }

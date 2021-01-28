@@ -4,18 +4,20 @@
 \alias{ld_matrix}
 \title{Get LD matrix for list of SNPs}
 \usage{
-ld_matrix(snps, with_alleles = TRUE)
+ld_matrix(snps, with_alleles = TRUE, pop = "EUR")
 }
 \arguments{
-\item{snps}{List of SNPs}
+\item{snps}{List of SNPs.}
 
-\item{with_alleles}{Whether to append the allele names to the SNP names. Default: TRUE}
+\item{with_alleles}{Whether to append the allele names to the SNP names. The default is \code{TRUE}.}
+
+\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a slightly different set of markers}
 }
 \value{
 Matrix of LD r values
 }
 \description{
-This function takes a list of SNPs and searches for them in 502 European samples from 1000 Genomes phase 3 data
-It then creates an LD matrix of r values (signed, and not squared)
-All LD values are with respect to the major alleles in the 1000G dataset. You can specify whether the allele names are displayed
+This function takes a list of SNPs and searches for them in 502 European samples from 1000 Genomes phase 3 data.
+It then creates an LD matrix of r values (signed, and not squared).
+All LD values are with respect to the major alleles in the 1000G dataset. You can specify whether the allele names are displayed.
 }

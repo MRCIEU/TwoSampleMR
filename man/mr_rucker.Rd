@@ -7,13 +7,13 @@
 mr_rucker(dat, parameters = default_parameters())
 }
 \arguments{
-\item{dat}{<what param does>}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 
-\item{parameters}{List of Qthresh for determing transition between models, and alpha values for calculating confidence intervals. Defaults to 0.05 for both in default_parameters()}
+\item{parameters}{List of Qthresh for determing transition between models, and alpha values for calculating confidence intervals. Defaults to 0.05 for both in \code{default_parameters()}.}
 }
 \value{
 list
 }
 \description{
-<full description>
+MR Rucker framework.
 }

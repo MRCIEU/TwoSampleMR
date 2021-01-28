@@ -17,10 +17,9 @@ Isq <- function(y,s)
 	return(Isq)
 }
 
+#' @importFrom stats influence.measures ks.test median pnorm residuals shapiro.test var
 system_metrics <- function(dat)
 {
-	library(car)
-
 	# Number of SNPs
 	# Sample size outcome
 	# Sample size exposure
@@ -166,21 +165,26 @@ get_rsq <- function(dat)
 
 #' Mixture of experts
 #'
-#' Based on the method described here https://www.biorxiv.org/content/early/2017/08/23/173682
+#' Based on the method described here \url{https://www.biorxiv.org/content/early/2017/08/23/173682}.
 #' Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.
 #'
-#' @param dat Output from \code{mr_wrapper}. 
-#' @param rf The trained random forest for the methods. This is available to download at https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0
-#'
+#' @md
+#' @param res Output from [`mr_wrapper`]. 
+#' @param rf The trained random forest for the methods. This is available to download at <https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0>.
+#' 
+#' @md
 #' @details
-#' The mr_moe function modified the `estimates` item in the list of results from the mr_wrapper function. It does three things: 1) Adds the MOE column, which is a predictor for each method for how well it performs in terms of high power and low type 1 error (scaled 0-1, where 1 is best performance). 2) It renames the methods to be the estimating method + the instrument selection method. There are 4 instrument selection methods: Tophits (i.e. no filtering), directional filtering (DF, an unthresholded version of Steiger filtering), heterogeneity filtering (HF, removing instruments that make substantial (p < 0.05) contributions to Cochran's Q statistic), and DF + HF which is where DF is applied and the HF applied on top of that. 3) It orders the table to be in order of best performing method.
-
-#' Note that the mixture of experts has only been trained on datasets with at least 5 SNPs. If your dataset has fewer than 5 SNPs this function might return errors
-
+#' The `mr_moe` function modifies the `estimates` item in the list of results from the [`mr_wrapper`] function. It does three things:
+#' 1. Adds the MOE column, which is a predictor for each method for how well it performs in terms of high power and low type 1 error (scaled 0-1, where 1 is best performance). 
+#' 2. It renames the methods to be the estimating method + the instrument selection method. There are 4 instrument selection methods: Tophits (i.e. no filtering), directional filtering (DF, an unthresholded version of Steiger filtering), heterogeneity filtering (HF, removing instruments that make substantial (p < 0.05) contributions to Cochran's Q statistic), and DF + HF which is where DF is applied and the HF applied on top of that. 
+#' 3. It orders the table to be in order of best performing method.
+#' 
+#' Note that the mixture of experts has only been trained on datasets with at least 5 SNPs. If your dataset has fewer than 5 SNPs this function might return errors.
+#' 
 #' @export
 #' @return List
 #' @examples
-#' 
+#' \dontrun{
 #' # Load libraries
 #' library(dplyr)
 #' library(randomForest)
@@ -204,10 +208,11 @@ get_rsq <- function(dat)
 #' # been sorted in order from most likely to least likely to 
 #' # be accurate, based on MOE prediction
 #' r[[1]]$estimates
+#'}
 mr_moe <- function(res, rf)
 {
-	require(dplyr)
-	require(randomForest)
+	requireNamespace("dplyr", quietly = TRUE)
+	requireNamespace("randomForest", quietly = TRUE)
 	lapply(res, function(x)
 	{
 		o <- try(mr_moe_single(x, rf))
@@ -220,17 +225,16 @@ mr_moe <- function(res, rf)
 	})
 }
 
-
 mr_moe_single <- function(res, rf)
 {
-	require(dplyr)
-	require(randomForest)
+  requireNamespace("dplyr", quietly = TRUE)
+  requireNamespace("randomForest", quietly = TRUE)
 	metric <- res$info[1,] %>% dplyr::select(-c(id.exposure, id.outcome, steiger_filtered, outlier_filtered, nsnp_removed))
 
 	methodlist <- names(rf)
 	pred <- lapply(methodlist, function(m)
 	{
-		d <- tibble(
+		d <- dplyr::tibble(
 			method = m,
 			MOE = predict(rf[[m]], metric, type="prob")[,2]
 		)
@@ -246,6 +250,6 @@ mr_moe_single <- function(res, rf)
 	res$estimates$selection[res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "HF"
 	res$estimates$selection[!res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "Tophits"
 	res$estimates$method2 <- paste(res$estimates$method, "-", res$estimates$selection)
-	res$estimates <- left_join(res$estimates, pred, by=c("method2"="method")) %>% arrange(desc(MOE))
+	res$estimates <- dplyr::left_join(res$estimates, pred, by=c("method2"="method")) %>% dplyr::arrange(dplyr::desc(MOE))
 	return(res)
 }

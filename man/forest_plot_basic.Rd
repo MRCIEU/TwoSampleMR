@@ -4,32 +4,41 @@
 \alias{forest_plot_basic}
 \title{A basic forest plot}
 \usage{
-forest_plot_basic(dat, section = NULL, colour_group = NULL,
-  colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
-  trans = "identity", xlim = NULL, threshold = NULL)
+forest_plot_basic(
+  dat,
+  section = NULL,
+  colour_group = NULL,
+  colour_group_first = TRUE,
+  xlab = NULL,
+  bottom = TRUE,
+  trans = "identity",
+  xlim = NULL,
+  threshold = NULL
+)
 }
 \arguments{
-\item{dat}{Output from format_mr_results()}
+\item{dat}{Output from \code{\link[=format_mr_results]{format_mr_results()}}.}
 
-\item{section}{Which category in dat to plot. If NULL then prints everything}
+\item{section}{Which category in dat to plot. If \code{NULL} then prints everything.}
 
-\item{colour_group}{Which exposure to plot. If NULL then prints everything grouping by colour.}
+\item{colour_group}{Which exposure to plot. If \code{NULL} then prints everything grouping by colour.}
 
-\item{xlab}{x-axis label. Default=NULL}
+\item{colour_group_first}{The default is \code{TRUE}.}
 
-\item{bottom}{Show x-axis? Default=FALSE}
+\item{xlab}{x-axis label. Default=\code{NULL}.}
 
-\item{trans}{Transformation of x axis}
+\item{bottom}{Show x-axis? Default=\code{FALSE}.}
 
-\item{xlim}{x-axis limits}
+\item{trans}{Transformation of x axis.}
 
-\item{threshold}{p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied}
+\item{xlim}{x-axis limits.}
+
+\item{threshold}{p-value threshold to use for colouring points by significance level. If \code{NULL} (default) then colour layer won't be applied.}
 }
 \value{
 ggplot object
 }
 \description{
 This function is used to create a basic forest plot.
-It requires the output from format_mr_results().
-It is
+It requires the output from \code{\link{format_mr_results}}.
 }

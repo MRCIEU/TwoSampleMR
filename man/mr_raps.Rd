@@ -7,17 +7,18 @@
 mr_raps(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
 }
 \arguments{
-\item{b_exp}{Vector of genetic effects on exposure}
+\item{b_exp}{Vector of genetic effects on exposure.}
 
-\item{b_out}{Vector of genetic effects on outcome}
+\item{b_out}{Vector of genetic effects on outcome.}
 
-\item{se_exp}{Standard errors of genetic effects on exposure}
+\item{se_exp}{Standard errors of genetic effects on exposure.}
 
-\item{se_out}{Standard errors of genetic effects on outcome}
+\item{se_out}{Standard errors of genetic effects on outcome.}
 
-\item{over.dispersion}{Should the model consider overdispersion (systematic pleiotropy)? Default is TRUE.}
-
-\item{loss.function}{Either the squared error loss ("l2") or robust loss functions/scores ("huber" or "tukey"). Default is "tukey"".}
+\item{parameters}{A list of parameters. Specifically, \code{over.dispersion} and \code{loss.function}.
+\code{over.dispersion} is a logical concerning should the model consider overdispersion (systematic pleiotropy).
+And \code{loss.function} allows using either the squared error loss (\code{"l2"}) or robust loss functions/scores (\code{"huber"} or \code{"tukey"}).
+The default is \code{parameters=list(overdispersion = TRUE, loss.function = "tukey")}.}
 }
 \value{
 List with the following elements:

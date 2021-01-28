@@ -4,28 +4,30 @@
 #'
 #' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se.
 #'
+#' @md
 #' @param filename Filename. Must have header with at least SNP column present.
-#' @param snps=NULL SNPs to extract. If NULL then doesn't extract any and keeps all.
-#' @param sep=" " Specify delimeter in file
-#' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
-#' @param snp_col="SNP" Required name of column with SNP rs IDs
-#' @param beta_col="beta" Required for MR. Name of column with effect sizes
-#' @param se_col="se" Required for MR. Name of column with standard errors
-#' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
-#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
-#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
-#' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
-#' @param units_col="units" Optional column name for units.
-#' @param ncase_col="ncase" Optional column name for number of cases.
-#' @param ncontrol_col="ncontrol" Optional column name for number of controls.
-#' @param samplesize_col="samplesize" Optional column name for sample size.
-#' @param gene_col="gene" Optional column name for gene name.
-#' @param id_col="id" Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination
-#' @param min_pval=1e-200 Minimum allowed pval
+#' @param snps SNPs to extract. If `NULL`, which the default, then doesn't extract any and keeps all.
+#' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`.
+#' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. Default is `"Phenotype"`.
+#' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
+#' @param beta_col Required for MR. Name of column with effect sizes. THe default is `"beta"`.
+#' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
+#' @param eaf_col Required for MR. Name of column with effect allele frequency. The default is `"eaf"`.
+#' @param effect_allele_col Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G". The default is `"effect_allele"`.
+#' @param other_allele_col Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G". The default is `"other_allele"`.
+#' @param pval_col Required for enrichment tests. Name of column with p-value. The default is `"pval"`.
+#' @param units_col Optional column name for units. The default is `"units"`.
+#' @param ncase_col Optional column name for number of cases. The default is `"ncase"`.
+#' @param ncontrol_col Optional column name for number of controls. The default is `"ncontrol"`.
+#' @param samplesize_col Optional column name for sample size. The default is `"samplesize"`.
+#' @param gene_col Optional column name for gene name. The default is `"gene"`.
+#' @param id_col Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is `"id"`.
+#' @param min_pval Minimum allowed p-value. The default is `1e-200`.
+#' @param log_pval The pval is -log10(P). The default is `FALSE`.
 #'
 #' @export
 #' @return data frame
-read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
+read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE)
 {
 	outcome_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	outcome_dat <- format_data(
@@ -46,7 +48,8 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 		samplesize_col=samplesize_col,
 		gene_col=gene_col,
 		id_col=id_col,
-		min_pval=min_pval
+		min_pval=min_pval,
+		log_pval=log_pval
 	)
 	outcome_dat$data_source.outcome <- "textfile"
 	return(outcome_dat)
@@ -56,27 +59,30 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #'
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
 #'
+#' @md
 #' @param filename Filename. Must have header with at least SNP column present.
-#' @param sep=" " Specify delimeter in file
-#' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
-#' @param snp_col="SNP" Required name of column with SNP rs IDs
-#' @param beta_col="beta" Required for MR. Name of column with effect sizes
-#' @param se_col="se" Required for MR. Name of column with standard errors
-#' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
-#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G"
-#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G"
-#' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
-#' @param units_col="units" Optional column name for units.
-#' @param ncase_col="ncase" Optional column name for number of cases.
-#' @param ncontrol_col="ncontrol" Optional column name for number of controls.
-#' @param samplesize_col="samplesize" Optional column name for sample size.
-#' @param gene_col="gene" Optional column name for gene name.
-#' @param id_col="id" Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination
-#' @param min_pval=1e-200 Minimum allowed pval
+#' @param clump Whether to perform LD clumping with [`clump_data`] on the exposure data. The default is `FALSE`.
+#' @param sep Specify delimeter in file. The default is a space, i.e. `" "`.
+#' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome". The default is `"Phenotype"`.
+#' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
+#' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.
+#' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
+#' @param eaf_col Required for MR. Name of column with effect allele frequency. The default is `"eaf"`.
+#' @param effect_allele_col Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G". The default is `"effect_allele"`.
+#' @param other_allele_col Required for MR. Name of column with non effect allele. Must be "A", "C", "T" or "G". The default is `"other_allele"`.
+#' @param pval_col Required for enrichment tests. Name of column with p-value. The default is `"pval"`.
+#' @param units_col Optional column name for units. The default is `"units"`.
+#' @param ncase_col Optional column name for number of cases. The default is `"ncase"`.
+#' @param ncontrol_col Optional column name for number of controls. The default is `"ncontrol"`.
+#' @param samplesize_col Optional column name for sample size. The default is `"samplesize"`.
+#' @param gene_col Optional column name for gene name. The default is `"gene"`.
+#' @param id_col Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is `"id"`.
+#' @param min_pval Minimum allowed p-value. The default is `1e-200`.
+#' @param log_pval The p-value is -log10(P). The default is `FALSE`.
 #'
 #' @export
 #' @return data frame
-read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200)
+read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE)
 {
 	exposure_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
@@ -97,7 +103,8 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 		samplesize_col=samplesize_col,
 		gene_col=gene_col,
 		id_col=id_col,
-		min_pval=min_pval
+		min_pval=min_pval,
+		log_pval=log_pval
 	)
 	exposure_dat$data_source.exposure <- "textfile"
 	if(clump)
@@ -109,29 +116,49 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 
 #' Read exposure or outcome data
 #'
-#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. If it is the exposure then looks up SNPs in biomaRt to get basic info.
+#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. 
+#' Infers p-values when possible from beta and se. 
+#' If it is the exposure then looks up SNPs in biomaRt to get basic info.
 #'
+#' @md
 #' @param dat Data frame. Must have header with at least SNP column present.
-#' @param type="exposure". Is this the exposure or the outcome data that is being read in?
-#' @param snps=NULL SNPs to extract. If NULL then doesn't extract any and keeps all.
-#' @param phenotype_col="Phenotype" Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome"
-#' @param snp_col="SNP" Required name of column with SNP rs IDs
-#' @param beta_col="beta" Required for MR. Name of column with effect sizes
-#' @param se_col="se" Required for MR. Name of column with standard errors
-#' @param eaf_col="eaf" Required for MR. Name of column with effect allele frequency
-#' @param effect_allele_col="effect_allele" Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G"
-#' @param other_allele_col="other_allele" Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G"
-#' @param pval_col="pval" Required for enrichment tests. Name of column with p-value.
-#' @param units_col="units" Optional column name for units.
-#' @param ncase_col="ncase" Optional column name for number of cases.
-#' @param ncontrol_col="ncontrol" Optional column name for number of controls.
-#' @param samplesize_col="samplesize" Optional column name for sample size.
-#' @param gene_col="gene" Optional column name for gene name.
-#' @param min_pval=1e-200 Minimum allowed pval
+#' @param type Is this the exposure or the outcome data that is being read in? The default is `"exposure"`.
+#' @param snps SNPs to extract. If NULL then doesn't extract any and keeps all. The default is `NULL`.
+#' @param header The default is `TRUE`.
+#' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. The default is `"Phenotype"`.
+#' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
+#' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.
+#' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
+#' @param eaf_col Required for MR. Name of column with effect allele frequency. The default is `"eaf"`.
+#' @param effect_allele_col Required for MR. Name of column with effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"effect_allele"`.
+#' @param other_allele_col Required for MR. Name of column with non effect allele. Must contain only the characters "A", "C", "T" or "G". The default is `"other_allele"`.
+#' @param pval_col Required for enrichment tests. Name of column with p-value. The default is `"pval"`.
+#' @param units_col Optional column name for units. The default is `"units"`.
+#' @param ncase_col Optional column name for number of cases. The default is `"ncase"`.
+#' @param ncontrol_col Optional column name for number of controls. The default is `"ncontrol"`.
+#' @param samplesize_col Optional column name for sample size. The default is `"samplesize"`.
+#' @param gene_col Optional column name for gene name. The default is `"gene"`.
+#' @param id_col The default is `"id"`.
+#' @param min_pval Minimum allowed p-value. The default is `1e-200`.
+#' @param z_col The default is `"z"`.
+#' @param info_col The default is `"info_col"`.
+#' @param chr_col The default is `"chr_col"`.
+#' @param pos_col The default is `"pos"`.
+#' @param log_pval The pval is -log10(P). The default is `FALSE`.
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, z_col="z", info_col="info", chr_col="chr", pos_col="pos")
+#' @importFrom stats pnorm
+format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, 
+                        phenotype_col="Phenotype", snp_col="SNP", 
+                        beta_col="beta", se_col="se", eaf_col="eaf", 
+                        effect_allele_col="effect_allele", 
+                        other_allele_col="other_allele", pval_col="pval", 
+                        units_col="units", ncase_col="ncase", 
+                        ncontrol_col="ncontrol", samplesize_col="samplesize", 
+                        gene_col="gene", id_col="id", min_pval=1e-200, 
+                        z_col="z", info_col="info", chr_col="chr", 
+                        pos_col="pos", log_pval=FALSE)
 {
 	all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col, z_col, info_col, chr_col, pos_col)
 
@@ -168,6 +195,11 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 		{
 			dat <- dat[,-which(names(dat)==phenotype_col)]
 		}
+	}
+
+	if ( log_pval )
+	{
+		dat$pval <- 10^-dat$pval
 	}
 
 	# Remove duplicated SNPs
@@ -322,7 +354,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 			if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat))
 			{
 				index <- is.na(dat$pval.outcome)
-				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower=FALSE)
+				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
 				dat$pval_origin.outcome[index] <- "inferred"
 			}
 		}
@@ -332,7 +364,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, phenotype_
 	if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat) & ! "pval.outcome" %in% names(dat))
 	{
 		message("Inferring p-values")
-		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower=FALSE)
+		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE)
 		dat$pval_origin.outcome <- "inferred"
 	}
 	
@@ -475,14 +507,18 @@ check_units <- function(x, id, col)
 
 #' Get data selected from GWAS catalog into correct format
 #'
-#' DEPRECATED. Please use \code{format_data} instead
+#' DEPRECATED. Please use \code{\link{format_data}} instead.
+#'
+#' @md
+#' @param gwas_catalog_subset The GWAS catalog subset.
+#' @param type The default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
 #' @examples \dontrun{
-#' data(gwas_catalog)
 #' require(MRInstruments)
-#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
+#' data(gwas_catalog)
+#' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units))
 #' bmi <- format_data(bmi)
 #'}
 format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
@@ -494,10 +530,11 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 
 #' Get data from eQTL catalog into correct format
 #'
-#' See \code{format_data}
+#' See \code{\link{format_data}}.
 #'
-#' @param gtex_eqtl_subset Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' @md
+#' @param gtex_eqtl_subset Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package.
+#' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -521,10 +558,11 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 
 #' Get data from metabolomic QTL results
 #'
-#' See \code{format_data}
-#'
-#' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' See \code{\link{format_data}}.
+#' 
+#' @md
+#' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package.
+#' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -548,10 +586,11 @@ format_metab_qtls <- function(metab_qtls_subset, type="exposure")
 
 #' Get data from proteomic QTL results
 #'
-#' See \code{format_data}
+#' See \code{\link{format_data}}.
 #'
-#' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' @md
+#' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package.
+#' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -575,10 +614,11 @@ format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 
 #' Get data from methylation QTL results
 #'
-#' See \code{format_data}
+#' See \code{\link{format_data}}.
 #'
-#' @param aries_mqtl_subset Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package
-#' @param type Are these data used as "exposure" or "outcome"? Default is "exposure"
+#' @md
+#' @param aries_mqtl_subset Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package.
+#' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
 #' @export
 #' @return Data frame
@@ -597,76 +637,6 @@ format_aries_mqtl <- function(aries_mqtl_subset, type="exposure")
 	dat[[paste0("data_source.", type)]] <- "aries_mqtl"
 
 	return(dat)
-}
-
-
-
-
-
-
-ucsc_get_position <- function(snp)
-{
-	snp <- paste(snp, collapse="', '")
-	require(RMySQL)
-	message("Connecting to UCSC MySQL database")
-	mydb <- dbConnect(MySQL(), user="genome", dbname="hg19", host="genome-mysql.cse.ucsc.edu")
-
-	query <- paste0(
-		"SELECT * from snp144 where name in ('", snp, "');"
-	)
-	message(query)
-	out <- dbSendQuery(mydb, query)
-	d <- fetch(out, n=-1)
-	# dbClearResult(dbListResults(mydb)[[1]])
-	dbDisconnect(mydb)
-	return(d)
-
-}
-
-
-ensembl_get_position <- function(snp)
-{
-	require(biomaRt)
-	require(stringr)
-	Mart <- useMart(host="grch37.ensembl.org", biomart="ENSEMBL_MART_SNP",dataset="hsapiens_snp")
-	Attr <- listAttributes(Mart)
-	ensembl <- getBM(attributes=c("refsnp_id","chr_name","chrom_start","allele","minor_allele","minor_allele_freq"),filters="snp_filter",values=snp,mart=Mart)
-
-	# Sort out chromosome name
-	ensembl$chr_name <- str_match(ensembl$chr_name, "(HSCHR)?([0-9X]*)")[,3]
-	ensembl$chr_name[ensembl$chr_name == "X"] <- 23
-	ensembl$chr_name[! ensembl$chr_name %in% 1:23] <- NA
-	ensembl$chr_name <- as.numeric(ensembl$chr_name)
-
-	# Remove SNPs that are problematic:
-	# - No chromosome name
-	# - No position
-	# - Not normal alleles
-	# - Not biallelic
-	# - No MAF
-	# - Duplicate SNPs
-	# - minor allele doesn't match the alleles
-	# Add major allele
-	remove <- is.na(ensembl$chr_name) |
-		is.na(ensembl$chrom_start) |
-		nchar(ensembl$allele) != 3 |
-		! ensembl$minor_allele %in% c("A", "C", "T", "G") |
-		is.na(ensembl$minor_allele_freq)
-	ensembl <- ensembl[!remove, , drop=FALSE]
-	ensembl <- subset(ensembl, !duplicated(refsnp_id))
-	al <- do.call(rbind, strsplit(ensembl$allele, split="/"))
-	i1 <- al[,1] == ensembl$minor_allele
-	i2 <- al[,2] == ensembl$minor_allele
-	i <- (i1 | i2)
-	ensembl <- ensembl[i, ]
-	al <- al[i, , drop=FALSE]
-	i1 <- i1[i]
-	i2 <- i2[i]
-	ensembl <- subset(ensembl, select=-c(allele))
-	ensembl$major_allele[!i1] <- al[!i1, 1]
-	ensembl$major_allele[!i2] <- al[!i2, 2]
-
-	return(ensembl)
 }
 
 
@@ -693,12 +663,12 @@ create_ids <- function(x)
 
 #' Combine data
 #'
-#' Taking exposure or outcome data (returned from \code{format_data})
+#' Taking exposure or outcome data (returned from \code{\link{format_data}})
 #' combine multiple datasets together so they can be analysed in one
 #' batch. Removes duplicate SNPs, preferentially keeping those usable
-#' in MR analysis
+#' in MR analysis.
 #'
-#' @param x List of data frames returned from \code{format_data}
+#' @param x List of data frames returned from \code{\link{format_data}}.
 #'
 #' @export
 #' @return data frame
@@ -736,9 +706,9 @@ combine_data <- function(x)
 
 #' Convert outcome data to exposure data
 #'
-#' Helper function to convert results from extract_outcome_data to exposure_dat format
+#' Helper function to convert results from \code{\link{extract_outcome_data}} to \code{exposure_dat} format.
 #'
-#' @param outcome_dat Output from \code{extract_outcome_data}
+#' @param outcome_dat Output from \code{\link{extract_outcome_data}}.
 #'
 #' @export
 #' @return data frame
@@ -746,16 +716,16 @@ convert_outcome_to_exposure <- function(outcome_dat)
 {
 	id <- subset(outcome_dat, !duplicated(outcome), select=c(outcome, id.outcome))
 	exposure_dat <- format_data(
-			outcome_dat,
-			beta_col = "beta.outcome",
-			se_col="se.outcome",
-			pval_col="pval.outcome",
-			phenotype_col="outcome",
-			effect_allele_col="effect_allele.outcome",
-			other_allele_col="other_allele.outcome",
-			eaf_col="eaf.outcome",
-			units_col="units.outcome"
-		)
+		outcome_dat,
+		beta_col = "beta.outcome",
+		se_col="se.outcome",
+		pval_col="pval.outcome",
+		phenotype_col="outcome",
+		effect_allele_col="effect_allele.outcome",
+		other_allele_col="other_allele.outcome",
+		eaf_col="eaf.outcome",
+		units_col="units.outcome"
+	)
 	exposure_dat <- merge(exposure_dat, id, by.x="exposure", by.y="outcome")
 	exposure_dat <- subset(exposure_dat, select=-c(id.exposure))
 	names(exposure_dat)[names(exposure_dat) == "id.outcome"] <- "id.exposure"

@@ -7,9 +7,9 @@
 enrichment(dat, method_list = enrichment_method_list()$obj)
 }
 \arguments{
-\item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.}
 
-\item{method_list=enrichment_method_list()$obj}{List of methods to use in analysis. See \code{enrichment_method_list()} for details.}
+\item{method_list}{List of methods to use in analysis. Default is \code{enrichment_method_list()$obj}. See \code{\link[=enrichment_method_list]{enrichment_method_list()}} for details.}
 }
 \value{
 data frame

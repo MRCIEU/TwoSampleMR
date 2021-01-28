@@ -7,11 +7,11 @@
 generate_odds_ratios(mr_res)
 }
 \arguments{
-\item{mr_res}{Results from mr()}
+\item{mr_res}{Results from \code{\link[=mr]{mr()}}.}
 }
 \value{
 data frame
 }
 \description{
-This function takes b and se from mr() and generates odds ratios and 95 percent confidence intervals
+This function takes b and se from \code{\link[=mr]{mr()}} and generates odds ratios and 95 percent confidence intervals.
 }

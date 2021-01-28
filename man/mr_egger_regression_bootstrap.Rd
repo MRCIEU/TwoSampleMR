@@ -7,26 +7,28 @@
 mr_egger_regression_bootstrap(b_exp, b_out, se_exp, se_out, parameters)
 }
 \arguments{
-\item{b_exp}{Vector of genetic effects on exposure}
+\item{b_exp}{Vector of genetic effects on exposure.}
 
-\item{b_out}{Vector of genetic effects on outcome}
+\item{b_out}{Vector of genetic effects on outcome.}
 
-\item{se_exp}{Standard errors of genetic effects on exposure}
+\item{se_exp}{Standard errors of genetic effects on exposure.}
 
-\item{se_out}{Standard errors of genetic effects on outcome}
+\item{se_out}{Standard errors of genetic effects on outcome.}
 
-\item{nboot}{Number of bootstraps. Default 1000}
+\item{parameters}{List of parameters. Specifically, the \code{nboot} parameter can be specified for the number of bootstrap replications. The default is \code{parameters=list(nboot=1000)}.}
 }
 \value{
 List of with the following elements:
-        b: MR estimate
-        se: Standard error of MR estimate
-        pval: p-value of MR estimate
-        b_i: Estimate of horizontal pleiotropy (intercept)
-        se_i: Standard error of intercept
-        pval_i: p-value of intercept
-        mod: Summary of regression
-        dat: Original data used for MR Egger regression
+\describe{
+\item{b}{MR estimate}
+\item{se}{Standard error of MR estimate}
+\item{pval}{p-value of MR estimate}
+\item{b_i}{Estimate of horizontal pleiotropy (intercept)}
+\item{se_i}{Standard error of intercept}
+\item{pval_i}{p-value of intercept}
+\item{mod}{Summary of regression}
+\item{dat}{Original data used for MR Egger regression}
+}
 }
 \description{
 Run bootstrap to generate standard errors for MR

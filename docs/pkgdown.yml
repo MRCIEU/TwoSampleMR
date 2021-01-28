@@ -1,0 +1,12 @@
+pandoc: 2.7.3
+pkgdown: 1.5.1
+pkgdown_sha: ~
+articles:
+  exposure: exposure.html
+  gwas2020: gwas2020.html
+  harmonise: harmonise.html
+  introduction: introduction.html
+  outcome: outcome.html
+  perform_mr: perform_mr.html
+last_built: 2020-08-07T19:15Z
+

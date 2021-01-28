@@ -1,12 +1,10 @@
-.onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
 
         packageStartupMessage(
-                "Welcome to TwoSampleMR.\n",
-                "[>] Full documentation: https://mrcieu.github.io/TwoSampleMR\n",
-                "[>] Check news(package='TwoSampleMR') for bug fixes and updates\n",
-                "[>] By generating access tokens to retrieve data from the MR-Base\n",
-                "    database you consent to having your email address logged on\n",
-                "    our servers. For info on how this is used see logging_info()\n"
+                paste("TwoSampleMR version", utils::packageVersion("TwoSampleMR"), "\n"),
+                "[>] New: Option to use non-European LD reference panels for clumping etc\n",
+                "[>] Some studies temporarily quarantined to verify effect allele\n",
+                "[>] See news(package='TwoSampleMR') and https://gwas.mrcieu.ac.uk for further details\n"
         )
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
@@ -25,37 +23,4 @@
 				"Please consider updating using devtools::install_github('MRCIEU/TwoSampleMR')")
 		}
 	}
-
-
-	op <- options()
-	op.googleAuthR <- list(
-		googleAuthR.httr_oauth_cache = "mrbase.oauth",
-		googleAuthR.verbose = 3,
-		# googleAuthR.client_id = "906514199468-1jpkqgngur8emoqfg9j460s47fdo2euo.apps.googleusercontent.com",
-		# googleAuthR.client_secret = "I7Gqp83Ku4KJxL9zHWYxG_gD",
-		googleAuthR.webapp.client_id = "906514199468-1jpkqgngur8emoqfg9j460s47fdo2euo.apps.googleusercontent.com",
-		googleAuthR.webapp.client_secret = "I7Gqp83Ku4KJxL9zHWYxG_gD",
-
-		googleAuthR.client_id = "906514199468-m9thhcept50gu26ng494376iipt125d6.apps.googleusercontent.com",
-		googleAuthR.client_secret = "zkihPnJnNRlHTinpzI0NUs4R",
-
-
-		googleAuthR.webapp.port = 4018,
-		googleAuthR.jsonlite.simplifyVector = TRUE,
-		googleAuthR.scopes.selected = c("https://www.googleapis.com/auth/userinfo.profile",
-										"https://www.googleapis.com/auth/userinfo.email"),
-		googleAuthR.ok_content_types=c("application/json; charset=UTF-8", ("text/html; charset=UTF-8")),
-		googleAuthR.securitycode = 
-			paste0(sample(c(1:9, LETTERS, letters), 20, replace = T), collapse=''),
-		googleAuthR.tryAttempts = 5
-	)
-	# toset <- !(names(op.googleAuthR) %in% names(op))
-	# if(any(toset)) options(op.googleAuthR[toset])
-	options(op.googleAuthR)
-
-	# options(mrbaseapi="http://scmv-webapps.epi.bris.ac.uk:5000/")
-	options(mrbaseapi="http://api.mrbase.org/v1/")
-
-	invisible()
-
 }

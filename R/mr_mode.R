@@ -1,12 +1,15 @@
 #' MR mode estimators
 #'
-#' <full description>
+#' Perform simple, weighted, penalised modes, as well as versions that use the NOME assumption.
 #'
-#' @param dat Output from harmonise_data()
-#' @param parameters=default_parameters() <what param does>
+#' @md
+#' @param dat Output from [`harmonise_data()`].
+#' @param parameters List of parameters. The default is `default_parameters()`.
+#' @param mode_method The default is `"all"`. The other choices are `'Simple mode'`, `'Weighted mode'`, `'Penalised mode'`, `'Simple mode (NOME)'`, `'Weighted mode (NOME)'`.
 #'
 #' @export
 #' @return data frame
+#' @importFrom stats pchisq pt qnorm
 mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
@@ -27,6 +30,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	#--------------------------------------#
 	#BetaIV.in: ratio estimates
 	#seBetaIV.in: standard errors of ratio estimates
+	#' @importFrom stats mad sd
 	beta <- function(BetaIV.in, seBetaIV.in, phi)
 	{
 		#Bandwidth rule - modified Silverman's rule proposed by Bickel (2002)
@@ -55,6 +59,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	#BetaIV.in: ratio estimates
 	#seBetaIV.in: standard errors of ratio estimates
 	#beta_Mode.in: point causal effect estimates
+	#' @importFrom stats density pchisq rnorm
 	boot <- function(BetaIV.in, seBetaIV.in, beta_Mode.in, nboot)
 	{
 		#Set up a matrix to store the results from each bootstrap iteration
@@ -164,13 +169,15 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
+#' @param parameters List containing `phi` - Bandwidth parameter, and `nboot` - number of bootstraps to calculate SE. `default_parameters()` sets `list(phi=1, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
 mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
@@ -192,13 +199,15 @@ mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_pa
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
+#' @param parameters List containing `phi` - Bandwidth parameter, and `nboot` - number of bootstraps to calculate SE. `default_parameters()` sets `list(phi=1, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
 mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
@@ -222,13 +231,15 @@ mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_para
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
+#' @param parameters List containing `phi` - Bandwidth parameter, and `nboot` - number of bootstraps to calculate SE. `default_parameters()` sets `list(phi=1, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
 mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
@@ -244,20 +255,23 @@ mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=defau
 }
 
 
-#' MR weighted mode estimator (NOME)
-#'
+#' MR simple mode estimator (NOME)
+#' 
+#' MR simple mode estimator (NOME).
 #'
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "phi" - Bandwidth parameter, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=1 and nboot=1000
+#' @param parameters List containing `phi` - Bandwidth parameter, and `nboot` - number of bootstraps to calculate SE. `default_parameters()` sets `list(phi=1, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
 mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
@@ -271,3 +285,17 @@ mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default
 
 	return(mr_mode(data.frame(beta.exposure=b_exp, beta.outcome=b_out, se.exposure=se_exp, se.outcome=se_out), parameters=parameters, mode_method="Simple mode (NOME)"))
 }
+
+
+mr_mode_broken <- function(dat, parameters=default_parameters(), mode_method="all")
+{
+	res <- plyr::ddply(dat, c("id.exposure", "exposure", "id.outcome", "outcome"), function(x) mr_mode_internal(x, parameters, mode_method="all"))
+	if(mode_method != "all")
+	{
+		return(subset(res, method %in% mode_method))
+	} else {
+		return(res)
+	}
+}
+
+
