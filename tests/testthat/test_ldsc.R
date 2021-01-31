@@ -1,4 +1,4 @@
-contect("LDSC")
+context("LDSC")
 library(TwoSampleMR)
 
 

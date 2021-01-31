@@ -172,7 +172,7 @@ mr_density_plot <- function(singlesnp_results, mr_results, exponentiate=FALSE, b
 		ggplot2::ggplot(d2, ggplot2::aes(x=b)) +
 		ggplot2::geom_vline(xintercept=xint, linetype="dotted") +
 			ggplot2::geom_density(ggplot2::aes(weight=1/se), bw=bandwidth) +
-			ggplot2::geom_point(y=0, colour="red", ggplot2::aes(size=1/se, text=paste("SNP:", SNP))) +
+			ggplot2::geom_point(y=0, colour="red", ggplot2::aes(size=1/se)) +
 			ggplot2::geom_vline(data=mr_results, ggplot2::aes(xintercept=b, colour=method)) +
 			ggplot2::scale_colour_brewer(type="qual") +
 			ggplot2::labs(x="Per SNP MR estiamte")

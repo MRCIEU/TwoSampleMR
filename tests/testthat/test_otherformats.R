@@ -11,13 +11,13 @@ test_that("MRInput", {
 })
 
 test_that("MRInput with cor", {
-	w <- dat_to_MRInput(dat, get_correlations=TRUE)[[1]]
+	expect_warning(w <- dat_to_MRInput(dat, get_correlations=TRUE)[[1]])
 	expect_true(nrow(w@correlation) == length(w@betaX))
 })
 
 
 test_that("mrpresso", {
-	w <- run_mr_presso(dat)
+	expect_warning(w <- run_mr_presso(dat))
 	expect_true(length(w) == 1)	
 	expect_true(class(w) == "list")
 	expect_true(class(w[[1]]) == "list")
@@ -34,7 +34,7 @@ test_that("radial MR dat", {
 
 test_that("radial MR", {
 	w <- dat_to_RadialMR(dat)
-	o <- RadialMR::ivw_radial(w[[1]])
+	expect_warning(o <- RadialMR::ivw_radial(w[[1]]))
 	expect_true(class(o) == "IVW")
 })
 

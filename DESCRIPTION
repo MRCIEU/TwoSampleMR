@@ -50,7 +50,8 @@ Imports:
     MRMix,
     glmnet,
     lattice,
-    pbapply
+    pbapply,
+    MASS
 Remotes:
     mrcieu/ieugwasr,
     rondolab/MR-PRESSO,

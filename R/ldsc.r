@@ -1,4 +1,3 @@
-# Huber loss function
 Ghuber <- function (u, k = 30, deriv = 0)
 {
     if (!deriv)
@@ -19,7 +18,7 @@ Ghuber <- function (u, k = 30, deriv = 0)
 #' @param W variant weight
 #'
 #' @export
-#' @return
+#' @return model fit
 ldsc_h2_internal <- function(Z, r2, N, W=NULL)
 {
     if (is.null(W))
@@ -103,17 +102,25 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 }
 
 
-#' <brief desc>
+#' Univariate LDSC
 #'
-#' <full description>
+#' Imported here to help estimate sample overlap between studies
 #'
 #' @param id ID to analyse
 #' @param ancestry ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies
 #' @param snpinfo Output from ieugwasr::afl2_list("hapmap3"), or NULL for it to be done automatically
-#' @param nsplit How many chunks to split the snplist into when extracting associations. Default=100
+#' @param splitsize How many SNPs to extract at one time. Default=20000
 #'
 #' @export
-#' @return 
+#' @return model fit
+#' @references
+#' Bulik-Sullivan,B.K. et al. (2015) An atlas of genetic correlations across human diseases and traits. Nat. Genet. 47, 1236–1241.
+#'
+#' Guo,B. and Wu,B. (2018) Principal component based adaptive association test of multiple traits using GWAS summary statistics. bioRxiv 269597; doi: 10.1101/269597
+#'
+#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961. 
+#'
+#' https://github.com/baolinwu/MTAR 
 ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
 {
     if(is.null(snpinfo))
@@ -142,9 +149,21 @@ ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
         dplyr::inner_join(., d, by="rsid") %>%
         dplyr::filter(complete.cases(.))
 
-    o <- ldsc_h2_internal(d$z, d$l2, d$n)
+    return(ldsc_h2_internal(d$z, d$l2, d$n))
 }
 
+#' Bivariate LDSC
+#'
+#' Imported here to help estimate sample overlap between studies
+#'
+#' @param id1 ID 1 to analyse
+#' @param id2 ID 2 to analyse
+#' @param ancestry ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies
+#' @param snpinfo Output from ieugwasr::afl2_list("hapmap3"), or NULL for it to be done automatically
+#' @param splitsize How many SNPs to extract at one time. Default=20000
+#'
+#' @export
+#' @return model fit
 ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
 {
     if(is.null(snpinfo))
@@ -188,8 +207,8 @@ ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
         dplyr::select(rsid, l2=paste0("L2.", ancestry)) %>%
         dplyr::inner_join(., d2, by="rsid")
 
-    h1 <- ldsc_h2_internal(d1$z1, d1$l2, d1$n1)
-    h2 <- ldsc_h2_internal(d2$z2, d2$l2, d2$n2)
+    h1 <- ldsc_h2_internal(d1$z1, d1$l2, d1$n1, d1$l2)
+    h2 <- ldsc_h2_internal(d2$z2, d2$l2, d2$n2, d1$l2)
 
     dat <- dplyr::inner_join(d1, d2, by="rsid") %>%
         dplyr::mutate(
@@ -207,7 +226,8 @@ ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
                 h1 = h1$coefficients[2,1] * nrow(d1),
                 h2 = h2$coefficients[2,1] * nrow(d2),
                 N1 = .$n1,
-                N2 = .$n2
+                N2 = .$n2,
+                W = .$l2
             )
         }
     return(list(
