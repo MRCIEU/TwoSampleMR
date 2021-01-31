@@ -6,10 +6,11 @@
 #'
 #' @param dat Output from the [`harmonise_data`] function.
 #' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.
+#' @param pop If get_correlations is TRUE then use the following 
 #'
 #' @export
 #' @return List of MRInput objects for each exposure/outcome combination
-dat_to_MRInput <- function(dat, get_correlations=FALSE)
+dat_to_MRInput <- function(dat, get_correlations=FALSE, pop="EUR")
 {
 	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
 	{
@@ -20,7 +21,7 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE)
 		if(get_correlations)
 		{
 			message(" - obtaining LD matrix")
-			ld <- ld_matrix(unique(x$SNP))
+			ld <- ld_matrix(unique(x$SNP), pop=pop)
 			out <- harmonise_ld_dat(x, ld)
 			if(is.null(out))
 			{
