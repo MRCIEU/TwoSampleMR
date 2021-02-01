@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Supply the output from <code><a href='read_exposure_data.html'>read_exposure_data</a></code> and all the SNPs therein will be queried against the requested outcomes in remote database using API. — extract_outcome_data • TwoSampleMR</title>
+<title>Supply the output from read_exposure_data and all the SNPs therein will be queried against the requested outcomes in remote database using API. — extract_outcome_data • TwoSampleMR</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Supply the output from <code><a href='read_exposure_data.html'>read_exposure_data</a></code> and all the SNPs therein will be queried against the requested outcomes in remote database using API. — extract_outcome_data" />
+<meta property="og:title" content="Supply the output from read_exposure_data and all the SNPs therein will be queried against the requested outcomes in remote database using API. — extract_outcome_data" />
 <meta property="og:description" content="Supply the output from read_exposure_data and all the SNPs therein will be queried against the requested outcomes in remote database using API." />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.5</span>
       </span>
     </div>
 
@@ -114,18 +114,18 @@
     <p>Supply the output from <code><a href='read_exposure_data.html'>read_exposure_data</a></code> and all the SNPs therein will be queried against the requested outcomes in remote database using API.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>extract_outcome_data</span>(
-  <span class='no'>snps</span>,
-  <span class='no'>outcomes</span>,
-  <span class='kw'>proxies</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>rsq</span> <span class='kw'>=</span> <span class='fl'>0.8</span>,
-  <span class='kw'>align_alleles</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>palindromes</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>maf_threshold</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
-  <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw pkg'>ieugwasr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ieugwasr/man/check_access_token.html'>check_access_token</a></span>(),
-  <span class='kw'>splitsize</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
-  <span class='kw'>proxy_splitsize</span> <span class='kw'>=</span> <span class='fl'>500</span>
-)</pre>
+    <pre class="usage"><span class='fu'>extract_outcome_data</span><span class='op'>(</span>
+  <span class='va'>snps</span>,
+  <span class='va'>outcomes</span>,
+  proxies <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  rsq <span class='op'>=</span> <span class='fl'>0.8</span>,
+  align_alleles <span class='op'>=</span> <span class='fl'>1</span>,
+  palindromes <span class='op'>=</span> <span class='fl'>1</span>,
+  maf_threshold <span class='op'>=</span> <span class='fl'>0.3</span>,
+  access_token <span class='op'>=</span> <span class='fu'>ieugwasr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ieugwasr/man/check_access_token.html'>check_access_token</a></span><span class='op'>(</span><span class='op'>)</span>,
+  splitsize <span class='op'>=</span> <span class='fl'>10000</span>,
+  proxy_splitsize <span class='op'>=</span> <span class='fl'>500</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -191,7 +191,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

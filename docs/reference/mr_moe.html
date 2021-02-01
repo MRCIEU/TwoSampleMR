@@ -73,7 +73,7 @@ Once all MR methods have been applied to a summary set, you can then use the mix
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.5</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@ Once all MR methods have been applied to a summary set, you can then use the mix
 Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mr_moe</span>(<span class='no'>res</span>, <span class='no'>rf</span>)</pre>
+    <pre class="usage"><span class='fu'>mr_moe</span><span class='op'>(</span><span class='va'>res</span>, <span class='va'>rf</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,31 +145,32 @@ Once all MR methods have been applied to a summary set, you can then use the mix
 <p>Note that the mixture of experts has only been trained on datasets with at least 5 SNPs. If your dataset has fewer than 5 SNPs this function might return errors.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># Load libraries</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>randomForest</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>car</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://www.stat.berkeley.edu/~breiman/RandomForests/'>randomForest</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-forge.r-project.org/projects/car/'>car</a></span><span class='op'>)</span>
 
 <span class='co'># Example of body mass index on coronary heart disease</span>
 <span class='co'># Extract and harmonise data</span>
-<span class='no'>a</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='extract_instruments.html'>extract_instruments</a></span>(<span class='fl'>2</span>)
-<span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='extract_outcome_data.html'>extract_outcome_data</a></span>(<span class='no'>a</span>$<span class='no'>SNP</span>, <span class='fl'>7</span>)
-<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='harmonise_data.html'>harmonise_data</a></span>(<span class='no'>a</span>,<span class='no'>b</span>)
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_instruments.html'>extract_instruments</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_outcome_data.html'>extract_outcome_data</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>$</span><span class='va'>SNP</span>, <span class='fl'>7</span><span class='op'>)</span>
+<span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='harmonise_data.html'>harmonise_data</a></span><span class='op'>(</span><span class='va'>a</span>,<span class='va'>b</span><span class='op'>)</span>
 
 <span class='co'># Apply all MR methods</span>
-<span class='no'>r</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mr_wrapper.html'>mr_wrapper</a></span>(<span class='no'>dat</span>)
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mr_wrapper.html'>mr_wrapper</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>)</span>
 
 <span class='co'># Load the rf object containing the trained models</span>
-<span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span>(<span class='st'>"rf.rdata"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/load.html'>load</a></span><span class='op'>(</span><span class='st'>"rf.rdata"</span><span class='op'>)</span>
 <span class='co'># Update the results with mixture of experts</span>
-<span class='no'>r</span> <span class='kw'>&lt;-</span> <span class='fu'>mr_moe</span>(<span class='no'>r</span>, <span class='no'>rf</span>)
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'>mr_moe</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>rf</span><span class='op'>)</span>
 
 <span class='co'># Now you can view the estimates, and see that they have </span>
 <span class='co'># been sorted in order from most likely to least likely to </span>
 <span class='co'># be accurate, based on MOE prediction</span>
-<span class='no'>r</span><span class='kw'>[[</span><span class='fl'>1</span>]]$<span class='no'>estimates</span>
-}</div></pre>
+<span class='va'>r</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>$</span><span class='va'>estimates</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -185,7 +186,7 @@ Once all MR methods have been applied to a summary set, you can then use the mix
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -471,9 +471,17 @@ mr_steiger(
 
 ## Multivariable MR
 
-When SNPs instrument multiple potential exposures, for example in the case of different lipid fractions, one method for overcoming this problem is to estimate the influence of each lipid conditioning on the effects of the SNPs on the other lipids. Multivariable MR can be performed using the R package as follows.
+When SNPs instrument multiple potential exposures, for example in the case of different lipid fractions, one method for overcoming this problem is to estimate the influence of each lipid conditioning on the effects of the SNPs on the other lipids. Multivariable MR can be performed using the R package as follows. Practically speaking, this is the process that needs to occur from the perspective of generating the data in the correct format:
 
-The GWAS IDs for HDL, LDL and total cholesterol are `ieu-a-299`, `ieu-a-300` and `ieu-a-302`. The GWAS ID for coronary heart disease (CHD) is `ieu-a-7`. In this example we will estimate the multivariable effects of HDL, LDL and total cholesterol on CHD.
+
+1. Get instruments for each exposure
+2. Combine these into a set of all instruments
+3. Clump these to avoid the possibility that e.g. a variant for exposure 1 is in LD with a variant for exposure 2
+4. Re-extract all the final clumped SNPs from (3) from all of the exposures
+5. Harmonise them all to be on the same effect allele
+6. Use the multivariable MR method against these harmonised data
+
+Example - The GWAS IDs for HDL, LDL and total cholesterol are `ieu-a-299`, `ieu-a-300` and `ieu-a-302`. The GWAS ID for coronary heart disease (CHD) is `ieu-a-7`. In this example we will estimate the multivariable effects of HDL, LDL and total cholesterol on CHD.
 
 ```{r eval=FALSE}
 id_exposure <- c("ieu-a-299", "ieu-a-300", "ieu-a-302")
@@ -522,6 +530,10 @@ With these three different parameters there are eight different ways to do MV an
 Plots can be generated using the `plots=TRUE` argument for `mv_multiple` and `mv_residual`. 
 
 The current plots being generated are not necessarily adequate because while they show the slope through the raw points, they do not demonstrate that the raw points might be effectively different between plots because they are conditional on the other exposures. 
+
+### Using your own summary data
+
+If you want to perform analysis with your local summary data (i.e. not in the OpenGWAS database) then use then look up the `mv_extract_exposures_local` function in replace of the `mv_extract_exposures` function.
 
 
 * * *

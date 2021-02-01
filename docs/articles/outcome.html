@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.5</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="outcome_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Outcome data</h1>
@@ -82,95 +82,102 @@
 <p>The IEU GWAS database (IGD) contains complete GWAS summary statistics from a large number of studies. You can browse them here:</p>
 <p><a href="https://gwas.mrcieu.ac.uk/" class="uri">https://gwas.mrcieu.ac.uk/</a></p>
 <p>To obtain details about the available GWASs programmatically do the following:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">ao</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/available_outcomes.html">available_outcomes</a></span>()
-<span class="co">#&gt; API: public: https://gwas-api.mrcieu.ac.uk/</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">ao</span>)
-<span class="co">#&gt; # A tibble: 6 x 20</span>
-<span class="co">#&gt;   id    trait sample_size   nsnp  year consortium author note  access    mr</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;</span>
-<span class="co">#&gt; 1 prot… Hete…        3301 1.05e7  2018 NA         Sun BB NA    public     1</span>
-<span class="co">#&gt; 2 ukb-… Diag…      337199 1.09e7  2017 Neale Lab  Neale  NA    public     1</span>
-<span class="co">#&gt; 3 ubm-… NET1…        7916 1.17e7  2018 NA         Ellio… NA    public     1</span>
-<span class="co">#&gt; 4 prot… Tumo…        3301 1.05e7  2018 NA         Sun BB NA    public     1</span>
-<span class="co">#&gt; 5 prot… Ribo…        3301 1.05e7  2018 NA         Sun BB NA    public     1</span>
-<span class="co">#&gt; 6 prot… Mito…        3301 1.05e7  2018 NA         Sun BB NA    public     1</span>
-<span class="co">#&gt; # … with 10 more variables: sex &lt;chr&gt;, pmid &lt;int&gt;, priority &lt;int&gt;,</span>
-<span class="co">#&gt; #   population &lt;chr&gt;, unit &lt;chr&gt;, category &lt;chr&gt;, subcategory &lt;chr&gt;,</span>
-<span class="co">#&gt; #   ncase &lt;int&gt;, ncontrol &lt;int&gt;, sd &lt;dbl&gt;</span></pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="va">ao</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/available_outcomes.html">available_outcomes</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; API: public: http://gwas-api.mrcieu.ac.uk/</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ao</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 28</span>
+<span class="co">#&gt;   id    trait coverage imputation_panel group_name  year    mr author consortium</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;            &lt;chr&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;     </span>
+<span class="co">#&gt; 1 ieu-… Alco… whole g… HRC              public      2019     1 Liu, M GWAS and …</span>
+<span class="co">#&gt; 2 ieu-… Urin… whole g… &lt;NA&gt;             public      2020     1 Zanet… &lt;NA&gt;      </span>
+<span class="co">#&gt; 3 eqtl… ENSG… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Vosa U NA        </span>
+<span class="co">#&gt; 4 eqtl… ENSG… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Vosa U NA        </span>
+<span class="co">#&gt; 5 eqtl… ENSG… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Vosa U NA        </span>
+<span class="co">#&gt; 6 eqtl… ENSG… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Vosa U NA        </span>
+<span class="co">#&gt; # … with 19 more variables: sex &lt;chr&gt;, qc_prior_to_upload &lt;chr&gt;, pmid &lt;int&gt;,</span>
+<span class="co">#&gt; #   population &lt;chr&gt;, sample_size &lt;int&gt;, nsnp &lt;int&gt;, build &lt;chr&gt;,</span>
+<span class="co">#&gt; #   study_design &lt;chr&gt;, covariates &lt;chr&gt;, category &lt;chr&gt;, subcategory &lt;chr&gt;,</span>
+<span class="co">#&gt; #   doi &lt;chr&gt;, note &lt;chr&gt;, priority &lt;int&gt;, unit &lt;chr&gt;, ontology &lt;chr&gt;,</span>
+<span class="co">#&gt; #   sd &lt;dbl&gt;, ncase &lt;int&gt;, ncontrol &lt;int&gt;</span></pre></div>
 <p>For information about authentication see <a href="https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication">https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication</a>.</p>
 <p>The <code>available_outcomes</code> function returns a table of all the available studies in the database. Each study has a unique ID. e.g.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span>(<span class="no">ao</span>, <span class="kw">select</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">trait</span>, <span class="no">id</span>)))
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">ao</span>, select<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">trait</span>, <span class="va">id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 6 x 2</span>
-<span class="co">#&gt;   trait                                                         id         </span>
-<span class="co">#&gt;   &lt;chr&gt;                                                         &lt;chr&gt;      </span>
-<span class="co">#&gt; 1 Heterogeneous nuclear ribonucleoprotein A/B                   prot-a-1363</span>
-<span class="co">#&gt; 2 Diagnoses - main ICD10: M24 Other specific joint derangements ukb-a-567  </span>
-<span class="co">#&gt; 3 NET100 0411                                                   ubm-a-1567 </span>
-<span class="co">#&gt; 4 Tumor necrosis factor alpha-induced protein 3                 prot-a-3030</span>
-<span class="co">#&gt; 5 Ribosyldihydronicotinamide dehydrogenase [quinone]            prot-a-2084</span>
-<span class="co">#&gt; 6 Mitochondrial ubiquitin ligase activator of NFKB 1            prot-a-1970</span></pre></body></html></div>
+<span class="co">#&gt;   trait                          id                    </span>
+<span class="co">#&gt;   &lt;chr&gt;                          &lt;chr&gt;                 </span>
+<span class="co">#&gt; 1 Alcoholic drinks per week      ieu-b-73              </span>
+<span class="co">#&gt; 2 Urinary sodium-potassium ratio ieu-b-72              </span>
+<span class="co">#&gt; 3 ENSG00000267355                eqtl-a-ENSG00000267355</span>
+<span class="co">#&gt; 4 ENSG00000119707                eqtl-a-ENSG00000119707</span>
+<span class="co">#&gt; 5 ENSG00000145632                eqtl-a-ENSG00000145632</span>
+<span class="co">#&gt; 6 ENSG00000144791                eqtl-a-ENSG00000144791</span></pre></div>
 </div>
 <div id="extracting-particular-snps-from-particular-studies" class="section level2">
 <h2 class="hasAnchor">
 <a href="#extracting-particular-snps-from-particular-studies" class="anchor"></a>Extracting particular SNPs from particular studies</h2>
 <p>If we want to perform MR of BMI against coronary heart disease, we need to identify the SNPs that influence the BMI, and then extract those SNPs from a GWAS on coronary heart disease.</p>
 <p>Let’s get the Locke et al 2014 instruments for BMI as an example:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">bmi_exp_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span>(<span class="kw">outcomes</span><span class="kw">=</span><span class="st">'ieu-a-2'</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">bmi_exp_dat</span>)
-<span class="co">#&gt;   beta.exposure pos.exposure se.exposure samplesize.exposure chr.exposure</span>
-<span class="co">#&gt; 1        0.0331     72837239      0.0030              338123            1</span>
-<span class="co">#&gt; 2        0.0201     78048331      0.0031              339065            1</span>
-<span class="co">#&gt; 3        0.0221     96924097      0.0030              337797            1</span>
-<span class="co">#&gt; 4        0.0659    110082886      0.0087              313621            1</span>
-<span class="co">#&gt; 5        0.0211    208255518      0.0038              333383            2</span>
-<span class="co">#&gt; 6        0.0183     25106437      0.0030              338525            3</span>
-<span class="co">#&gt;   pval.exposure id.exposure        SNP effect_allele.exposure</span>
-<span class="co">#&gt; 1   1.88018e-28     ieu-a-2  rs7531118                      C</span>
-<span class="co">#&gt; 2   4.56773e-11     ieu-a-2 rs17381664                      C</span>
-<span class="co">#&gt; 3   1.43384e-13     ieu-a-2 rs11165643                      T</span>
-<span class="co">#&gt; 4   5.05941e-14     ieu-a-2  rs7550711                      T</span>
-<span class="co">#&gt; 5   3.40596e-08     ieu-a-2 rs17203016                      G</span>
-<span class="co">#&gt; 6   8.01604e-10     ieu-a-2  rs6804842                      G</span>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span><span class="op">(</span>outcomes<span class="op">=</span><span class="st">'ieu-a-2'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">bmi_exp_dat</span><span class="op">)</span>
+<span class="co">#&gt;   pval.exposure samplesize.exposure chr.exposure se.exposure beta.exposure</span>
+<span class="co">#&gt; 1   2.18198e-08              339152            1      0.0030       -0.0168</span>
+<span class="co">#&gt; 2   4.56773e-11              339065            1      0.0031        0.0201</span>
+<span class="co">#&gt; 3   5.05941e-14              313621            1      0.0087        0.0659</span>
+<span class="co">#&gt; 4   5.45205e-10              338768            1      0.0029        0.0181</span>
+<span class="co">#&gt; 5   1.88018e-28              338123            1      0.0030        0.0331</span>
+<span class="co">#&gt; 6   2.28718e-40              339078            1      0.0037        0.0497</span>
+<span class="co">#&gt;   pos.exposure id.exposure        SNP effect_allele.exposure</span>
+<span class="co">#&gt; 1     47684677     ieu-a-2   rs977747                      G</span>
+<span class="co">#&gt; 2     78048331     ieu-a-2 rs17381664                      C</span>
+<span class="co">#&gt; 3    110082886     ieu-a-2  rs7550711                      T</span>
+<span class="co">#&gt; 4    201784287     ieu-a-2  rs2820292                      C</span>
+<span class="co">#&gt; 5     72837239     ieu-a-2  rs7531118                      C</span>
+<span class="co">#&gt; 6    177889480     ieu-a-2   rs543874                      G</span>
 <span class="co">#&gt;   other_allele.exposure eaf.exposure                      exposure</span>
-<span class="co">#&gt; 1                     T       0.6083 Body mass index || id:ieu-a-2</span>
+<span class="co">#&gt; 1                     T       0.5333 Body mass index || id:ieu-a-2</span>
 <span class="co">#&gt; 2                     T       0.4250 Body mass index || id:ieu-a-2</span>
-<span class="co">#&gt; 3                     C       0.5750 Body mass index || id:ieu-a-2</span>
-<span class="co">#&gt; 4                     C       0.0339 Body mass index || id:ieu-a-2</span>
-<span class="co">#&gt; 5                     A       0.2000 Body mass index || id:ieu-a-2</span>
-<span class="co">#&gt; 6                     A       0.5750 Body mass index || id:ieu-a-2</span>
+<span class="co">#&gt; 3                     C       0.0339 Body mass index || id:ieu-a-2</span>
+<span class="co">#&gt; 4                     A       0.5083 Body mass index || id:ieu-a-2</span>
+<span class="co">#&gt; 5                     T       0.6083 Body mass index || id:ieu-a-2</span>
+<span class="co">#&gt; 6                     A       0.2667 Body mass index || id:ieu-a-2</span>
 <span class="co">#&gt;   mr_keep.exposure pval_origin.exposure data_source.exposure</span>
 <span class="co">#&gt; 1             TRUE             reported                  igd</span>
 <span class="co">#&gt; 2             TRUE             reported                  igd</span>
 <span class="co">#&gt; 3             TRUE             reported                  igd</span>
 <span class="co">#&gt; 4             TRUE             reported                  igd</span>
 <span class="co">#&gt; 5             TRUE             reported                  igd</span>
-<span class="co">#&gt; 6             TRUE             reported                  igd</span></pre></body></html></div>
+<span class="co">#&gt; 6             TRUE             reported                  igd</span></pre></div>
 <p>We now need to find a suitable GWAS for coronary heart disease. We can search the available studies:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">ao</span>[<span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"heart disease"</span>, <span class="no">ao</span>$<span class="no">trait</span>), ]
-<span class="co">#&gt; # A tibble: 12 x 20</span>
-<span class="co">#&gt;    id    trait sample_size   nsnp  year consortium author note  access</span>
-<span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;       &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; </span>
-<span class="co">#&gt;  1 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span>
-<span class="co">#&gt;  2 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span>
-<span class="co">#&gt;  3 ieu-… Coro…       86995 2.42e6  2011 CARDIoGRAM Schun… &lt;NA&gt;  public</span>
-<span class="co">#&gt;  4 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span>
-<span class="co">#&gt;  5 ebi-… Coro…       86995 2.42e6  2011 NA         Schun… NA    public</span>
-<span class="co">#&gt;  6 ieu-… Coro…       30482 5.40e5  2011 C4D        Peden  &lt;NA&gt;  public</span>
-<span class="co">#&gt;  7 ukb-… Diag…      337199 1.09e7  2017 Neale Lab  Neale  NA    public</span>
-<span class="co">#&gt;  8 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span>
-<span class="co">#&gt;  9 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span>
-<span class="co">#&gt; 10 ieu-… Coro…      184305 9.46e6  2015 CARDIoGRA… Nikpay &lt;NA&gt;  public</span>
-<span class="co">#&gt; 11 ukb-… Diag…      463010 9.85e6  2018 MRC-IEU    Ben E… 4120… public</span>
-<span class="co">#&gt; 12 ieu-… Coro…      194427 7.91e4  2013 CARDIoGRA… Delou… &lt;NA&gt;  public</span>
-<span class="co">#&gt; # … with 11 more variables: mr &lt;int&gt;, sex &lt;chr&gt;, pmid &lt;int&gt;,</span>
-<span class="co">#&gt; #   priority &lt;int&gt;, population &lt;chr&gt;, unit &lt;chr&gt;, category &lt;chr&gt;,</span>
-<span class="co">#&gt; #   subcategory &lt;chr&gt;, ncase &lt;int&gt;, ncontrol &lt;int&gt;, sd &lt;dbl&gt;</span></pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="va">ao</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"heart disease"</span>, <span class="va">ao</span><span class="op">$</span><span class="va">trait</span><span class="op">)</span>, <span class="op">]</span>
+<span class="co">#&gt; # A tibble: 26 x 28</span>
+<span class="co">#&gt;    id    trait coverage imputation_panel group_name  year    mr author</span>
+<span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;            &lt;chr&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt; </span>
+<span class="co">#&gt;  1 ukb-… Diag… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Ben E…</span>
+<span class="co">#&gt;  2 ukb-… Diag… &lt;NA&gt;     &lt;NA&gt;             public      2017     1 Neale </span>
+<span class="co">#&gt;  3 finn… Othe… &lt;NA&gt;     &lt;NA&gt;             public      2020     1 NA    </span>
+<span class="co">#&gt;  4 finn… Othe… &lt;NA&gt;     &lt;NA&gt;             public      2020     1 NA    </span>
+<span class="co">#&gt;  5 ukb-… Diag… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Ben E…</span>
+<span class="co">#&gt;  6 ukb-… Isch… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Neale…</span>
+<span class="co">#&gt;  7 finn… Othe… &lt;NA&gt;     &lt;NA&gt;             public      2020     1 NA    </span>
+<span class="co">#&gt;  8 ieu-… Coro… &lt;NA&gt;     &lt;NA&gt;             public      2013     1 Delou…</span>
+<span class="co">#&gt;  9 ukb-… Diag… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Ben E…</span>
+<span class="co">#&gt; 10 finn… Majo… &lt;NA&gt;     &lt;NA&gt;             public      2020     1 NA    </span>
+<span class="co">#&gt; # … with 16 more rows, and 20 more variables: consortium &lt;chr&gt;, sex &lt;chr&gt;,</span>
+<span class="co">#&gt; #   qc_prior_to_upload &lt;chr&gt;, pmid &lt;int&gt;, population &lt;chr&gt;, sample_size &lt;int&gt;,</span>
+<span class="co">#&gt; #   nsnp &lt;int&gt;, build &lt;chr&gt;, study_design &lt;chr&gt;, covariates &lt;chr&gt;,</span>
+<span class="co">#&gt; #   category &lt;chr&gt;, subcategory &lt;chr&gt;, doi &lt;chr&gt;, note &lt;chr&gt;, priority &lt;int&gt;,</span>
+<span class="co">#&gt; #   unit &lt;chr&gt;, ontology &lt;chr&gt;, sd &lt;dbl&gt;, ncase &lt;int&gt;, ncontrol &lt;int&gt;</span></pre></div>
 <p>The most recent CARDIOGRAM GWAS is ID number <code>ieu-a-7</code>. We can extract the BMI SNPs from this GWAS as follows:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">chd_out_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span>(
-    <span class="kw">snps</span> <span class="kw">=</span> <span class="no">bmi_exp_dat</span>$<span class="no">SNP</span>,
-    <span class="kw">outcomes</span> <span class="kw">=</span> <span class="st">'ieu-a-7'</span>
-)
-<span class="co">#&gt; Extracting data for 79 SNP(s) from 1 GWAS(s)</span></pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="va">chd_out_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span>
+    snps <span class="op">=</span> <span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">SNP</span>,
+    outcomes <span class="op">=</span> <span class="st">'ieu-a-7'</span>
+<span class="op">)</span>
+<span class="co">#&gt; Extracting data for 79 SNP(s) from 1 GWAS(s)</span></pre></div>
 <p>The <code>extract_outcome_data</code> is a flexible function. The <code>snps</code> argument only requires an array of rsIDs, and the <code>outcomes</code> variable can be a vector of outcomes. e.g. <code>chd_out_dat(c("rs234", "rs17097147"), c('ieu-a-2', 'ieu-a-7'))</code> will extract the two SNPs from each of the outcomes <code>ieu-a-2</code> and <code>ieu-a-7</code>.</p>
 </div>
 <div id="ld-proxies" class="section level2">
@@ -202,21 +209,22 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
 ...
 ...</code></pre>
 <p>To extract the exposure SNPs from this data, we would use the following command:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">outcome_dat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/read_outcome_data.html">read_outcome_data</a></span>(
-    <span class="kw">snps</span> <span class="kw">=</span> <span class="no">bmi_exp_dat</span>$<span class="no">SNP</span>,
-    <span class="kw">filename</span> <span class="kw">=</span> <span class="st">"gwas_summary.csv"</span>,
-    <span class="kw">sep</span> <span class="kw">=</span> <span class="st">","</span>,
-    <span class="kw">snp_col</span> <span class="kw">=</span> <span class="st">"rsid"</span>,
-    <span class="kw">beta_col</span> <span class="kw">=</span> <span class="st">"effect"</span>,
-    <span class="kw">se_col</span> <span class="kw">=</span> <span class="st">"SE"</span>,
-    <span class="kw">effect_allele_col</span> <span class="kw">=</span> <span class="st">"a1"</span>,
-    <span class="kw">other_allele_col</span> <span class="kw">=</span> <span class="st">"a2"</span>,
-    <span class="kw">eaf_col</span> <span class="kw">=</span> <span class="st">"a1_freq"</span>,
-    <span class="kw">pval_col</span> <span class="kw">=</span> <span class="st">"p-value"</span>,
-    <span class="kw">units_col</span> <span class="kw">=</span> <span class="st">"Units"</span>,
-    <span class="kw">gene_col</span> <span class="kw">=</span> <span class="st">"Gene"</span>,
-    <span class="kw">samplesize_col</span> <span class="kw">=</span> <span class="st">"n"</span>
-)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="va">outcome_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_outcome_data.html">read_outcome_data</a></span><span class="op">(</span>
+    snps <span class="op">=</span> <span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">SNP</span>,
+    filename <span class="op">=</span> <span class="st">"gwas_summary.csv"</span>,
+    sep <span class="op">=</span> <span class="st">","</span>,
+    snp_col <span class="op">=</span> <span class="st">"rsid"</span>,
+    beta_col <span class="op">=</span> <span class="st">"effect"</span>,
+    se_col <span class="op">=</span> <span class="st">"SE"</span>,
+    effect_allele_col <span class="op">=</span> <span class="st">"a1"</span>,
+    other_allele_col <span class="op">=</span> <span class="st">"a2"</span>,
+    eaf_col <span class="op">=</span> <span class="st">"a1_freq"</span>,
+    pval_col <span class="op">=</span> <span class="st">"p-value"</span>,
+    units_col <span class="op">=</span> <span class="st">"Units"</span>,
+    gene_col <span class="op">=</span> <span class="st">"Gene"</span>,
+    samplesize_col <span class="op">=</span> <span class="st">"n"</span>
+<span class="op">)</span></pre></div>
 <p>This returns an outcome data frame with only the SNPs that were requested (if those SNPs were present in the “gwas_summary.csv” file).</p>
 </div>
 <div id="outcome-data-format" class="section level2">
@@ -277,7 +285,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

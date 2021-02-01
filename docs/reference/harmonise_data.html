@@ -73,7 +73,7 @@ relative to the same allele." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.5</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@ relative to the same allele." />
 relative to the same allele.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>harmonise_data</span>(<span class='no'>exposure_dat</span>, <span class='no'>outcome_dat</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+    <pre class="usage"><span class='fu'>harmonise_data</span><span class='op'>(</span><span class='va'>exposure_dat</span>, <span class='va'>outcome_dat</span>, action <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,9 +132,9 @@ relative to the same allele.</p>
     <tr>
       <th>action</th>
       <td><p>Level of strictness in dealing with SNPs.</p><ul>
-<li><p><code>action = 1</code>: Assume all reference alleles are on the positive strand, i.e. do nothing (warning - this is very risky and is not recommended);</p></li>
-<li><p><code>action = 2</code>: Try to infer positive strand alleles, using allele frequencies for palindromes;</p></li>
-<li><p><code>action = 3</code>: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis.
+<li><p><code>action = 1</code>: Assume all alleles are coded on the forward strand, i.e. do not attempt to flip alleles</p></li>
+<li><p><code>action = 2</code>: Try to infer positive strand alleles, using allele frequencies for palindromes (default, conservative);</p></li>
+<li><p><code>action = 3</code>: Correct strand for non-palindromic SNPs, and drop all palindromic SNPs from the analysis (more conservative).
 If a single value is passed then this action is applied to all outcomes.
 But multiple values can be supplied as a vector, each element relating to a different outcome.</p></li>
 </ul></td>
@@ -187,7 +187,7 @@ If one or both the datasets only has one allele (i.e. the effect allele) then ha
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

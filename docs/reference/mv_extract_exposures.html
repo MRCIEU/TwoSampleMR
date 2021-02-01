@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.5</span>
       </span>
     </div>
 
@@ -114,16 +114,16 @@
     <p>Requires a list of IDs from available_outcomes. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mv_extract_exposures</span>(
-  <span class='no'>id_exposure</span>,
-  <span class='kw'>clump_r2</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
-  <span class='kw'>clump_kb</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
-  <span class='kw'>harmonise_strictness</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw pkg'>ieugwasr</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ieugwasr/man/check_access_token.html'>check_access_token</a></span>(),
-  <span class='kw'>find_proxies</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>force_server</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>pval_threshold</span> <span class='kw'>=</span> <span class='fl'>5e-08</span>
-)</pre>
+    <pre class="usage"><span class='fu'>mv_extract_exposures</span><span class='op'>(</span>
+  <span class='va'>id_exposure</span>,
+  clump_r2 <span class='op'>=</span> <span class='fl'>0.001</span>,
+  clump_kb <span class='op'>=</span> <span class='fl'>10000</span>,
+  harmonise_strictness <span class='op'>=</span> <span class='fl'>2</span>,
+  access_token <span class='op'>=</span> <span class='fu'>ieugwasr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ieugwasr/man/check_access_token.html'>check_access_token</a></span><span class='op'>(</span><span class='op'>)</span>,
+  find_proxies <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  force_server <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  pval_threshold <span class='op'>=</span> <span class='fl'>5e-08</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,7 +181,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

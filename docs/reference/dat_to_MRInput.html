@@ -74,7 +74,7 @@ function converts from the TwoSampleMR format to the MRInput class." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.5</span>
       </span>
     </div>
 
@@ -118,7 +118,7 @@ be used with the same data used in the TwoSampleMR package. This
 function converts from the TwoSampleMR format to the MRInput class.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dat_to_MRInput</span>(<span class='no'>dat</span>, <span class='kw'>get_correlations</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>dat_to_MRInput</span><span class='op'>(</span><span class='va'>dat</span>, get_correlations <span class='op'>=</span> <span class='cn'>FALSE</span>, pop <span class='op'>=</span> <span class='st'>"EUR"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,6 +130,10 @@ function converts from the TwoSampleMR format to the MRInput class.</p>
     <tr>
       <th>get_correlations</th>
       <td><p>Default <code>FALSE</code>. If <code>TRUE</code> then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.</p></td>
+    </tr>
+    <tr>
+      <th>pop</th>
+      <td><p>If get_correlations is TRUE then use the following</p></td>
     </tr>
     </table>
 
@@ -152,7 +156,7 @@ function converts from the TwoSampleMR format to the MRInput class.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
