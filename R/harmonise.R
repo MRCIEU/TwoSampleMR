@@ -47,6 +47,8 @@
 harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 {
 	stopifnot(all(action %in% 1:3))
+	check_required_columns(exposure_dat, "exposure")
+	check_required_columns(outcome_dat, "outcome")
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
 	ncombinations <- length(unique(res.tab$id.outcome))
 	if(length(action) == 1)
@@ -553,10 +555,10 @@ harmonise <- function(dat, tolerance, action)
 	fB <- dat$eaf.outcome
 	dat <- subset(dat, select=-c(effect_allele.exposure, other_allele.exposure, effect_allele.outcome, other_allele.outcome, beta.exposure, beta.outcome, eaf.exposure, eaf.outcome))
 	
-	i22 <- !is.na(A1) & !is.na(A2) & !is.na(B1) & !is.na(B2)
-	i21 <- !is.na(A1) & !is.na(A2) & !is.na(B1) & is.na(B2)
-	i12 <- !is.na(A1) & is.na(A2) & !is.na(B1) & !is.na(B2)
-	i11 <- !is.na(A1) & is.na(A2) & !is.na(B1) & is.na(B2)
+	i22 <- which(!is.na(A1) & !is.na(A2) & !is.na(B1) & !is.na(B2))
+	i21 <- which(!is.na(A1) & !is.na(A2) & !is.na(B1) & is.na(B2))
+	i12 <- which(!is.na(A1) & is.na(A2) & !is.na(B1) & !is.na(B2))
+	i11 <- which(!is.na(A1) & is.na(A2) & !is.na(B1) & is.na(B2))
 
 	d22 <- harmonise_22(SNP[i22], A1[i22], A2[i22], B1[i22], B2[i22], betaA[i22], betaB[i22], fA[i22], fB[i22], tolerance, action)
 	d21 <- harmonise_21(SNP[i21], A1[i21], A2[i21], B1[i21], betaA[i21], betaB[i21], fA[i21], fB[i21], tolerance, action)
@@ -631,5 +633,26 @@ harmonise <- function(dat, tolerance, action)
 
 	attr(d, "log") <- jlog
 	return(d)
+}
+
+
+
+check_required_columns <- function(dat, type="exposure")
+{
+	required_columns <- c(
+		"SNP",
+		paste0(c("id.", "", "beta.", "se.", "effect_allele.", "other_allele."), type)
+	)
+	index <- required_columns %in% names(dat)
+	if(!all(index))
+	{
+		stop("The following required columns are missing from ", type, ": ", paste(required_columns[!index], collapse=", "))	
+	}
+
+	# if(!all(!is.na()))
+
+	# stopifnot(all(!is.na()))
+
+	# dat <- dat[[paste0("effect.", type)]]
 }
 
