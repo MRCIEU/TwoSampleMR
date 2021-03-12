@@ -3,9 +3,12 @@
 #' @param pval Vector of outcome p-values
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
+#' @importFrom stats pchisq
 fishers_combined_test <- function(pval)
 {
 	pval <- pval[is.finite(pval) & pval <=1 & pval >= 0]
@@ -15,7 +18,7 @@ fishers_combined_test <- function(pval)
 		warning("p-values of 0 are unreliable in Fisher's combined test.")
 		pval[index] <- 1e-50
 	}
-	p <- pchisq(-2 * sum(log(pval)), df=2*length(pval), low=FALSE)
+	p <- pchisq(-2 * sum(log(pval)), df=2*length(pval), lower.tail=FALSE)
 	return(list(pval=p, nsnp=length(pval)))
 }
 
@@ -47,8 +50,8 @@ enrichment_method_list <- function()
 #' Perform enrichment analysis
 #'
 #'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param method_list=enrichment_method_list()$obj List of methods to use in analysis. See \code{enrichment_method_list()} for details.
+#' @param dat Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.
+#' @param method_list List of methods to use in analysis. Default is \code{enrichment_method_list()$obj}. See [`enrichment_method_list()`] for details.
 #'
 #' @export
 #' @return data frame

@@ -4,29 +4,47 @@
 \alias{format_1_to_many}
 \title{Format MR results for a 1-to-many forest plot}
 \usage{
-format_1_to_many(mr_res, b = "b", se = "se", exponentiate = FALSE,
-  ao_slc = F, by = NULL, TraitM = "outcome", addcols = NULL)
+format_1_to_many(
+  mr_res,
+  b = "b",
+  se = "se",
+  exponentiate = FALSE,
+  ao_slc = F,
+  by = NULL,
+  TraitM = "outcome",
+  addcols = NULL,
+  weight = NULL
+)
 }
 \arguments{
-\item{mr_res}{Data frame of results supplied by the user}
+\item{mr_res}{Data frame of results supplied by the user.}
 
-\item{b}{Name of the column specifying the effect of the exposure on the outcome. Default = "b"}
+\item{b}{Name of the column specifying the effect of the exposure on the outcome. Default = \code{"b"}.}
 
-\item{se}{Name of the column specifying the standard error for b. Default = "se"}
+\item{se}{Name of the column specifying the standard error for b. Default = \code{"se"}.}
 
-\item{exponentiate}{Convert log odds ratios to odds ratios? Default=FALSE}
+\item{exponentiate}{Convert log odds ratios to odds ratios? Default=\code{FALSE}.}
 
-\item{ao_slc}{Logical; retrieve trait subcategory information using available_outcomes(). Default=FALSE}
+\item{ao_slc}{Logical; retrieve trait subcategory information using \code{\link[=available_outcomes]{available_outcomes()}}. Default=\code{FALSE}.}
 
-\item{by}{Name of the column indicating a grouping variable to stratify results on. Default=NULL}
+\item{by}{Name of the column indicating a grouping variable to stratify results on. Default=\code{NULL}.}
 
-\item{TraitM}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default="outcome"}
+\item{TraitM}{The column specifying the names of the traits. Corresponds to 'many' in the 1-to-many forest plot. Default=\code{"outcome"}.}
 
-\item{addcols}{Name of any additional columns to add to the plot. Character vector}
+\item{addcols}{Name of any additional columns to add to the plot. Character vector. The default is \code{NULL}.}
+
+\item{weight}{The default is \code{NULL}.}
 }
 \value{
 data frame.
 }
 \description{
-This function formats user-supplied results for the forest_plot_1_to_many() function. The user supplies their results in the form of a data frame. The data frame is assumed to contain at least three columns of data: 1) effect estimates, from an analysis of the effect of an exposure on an outcome; 2) standard errors for the effect estimates; and 3) a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
+This function formats user-supplied results for the \code{\link{forest_plot_1_to_many}} function.
+The user supplies their results in the form of a data frame.
+The data frame is assumed to contain at least three columns of data:
+\enumerate{
+\item effect estimates, from an analysis of the effect of an exposure on an outcome;
+\item standard errors for the effect estimates; and
+\item a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
+}
 }

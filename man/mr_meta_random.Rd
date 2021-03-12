@@ -7,20 +7,24 @@
 mr_meta_random(b_exp, b_out, se_exp, se_out, parameters)
 }
 \arguments{
-\item{b_exp}{Vector of genetic effects on exposure}
+\item{b_exp}{Vector of genetic effects on exposure.}
 
-\item{b_out}{Vector of genetic effects on outcome}
+\item{b_out}{Vector of genetic effects on outcome.}
 
-\item{se_exp}{Standard errors of genetic effects on exposure}
+\item{se_exp}{Standard errors of genetic effects on exposure.}
 
-\item{se_out}{Standard errors of genetic effects on outcome}
+\item{se_out}{Standard errors of genetic effects on outcome.}
+
+\item{parameters}{List of parameters.}
 }
 \value{
 List with the following elements:
-        b: causal effect estimate
-        se: standard error
-        pval: p-value
-        Q, Q_df, Q_pval: Heterogeneity stats
+\describe{
+\item{b}{causal effect estimate}
+\item{se}{standard error}
+\item{pval}{p-value}
+\item{Q, Q_df, Q_pval}{Heterogeneity stats}
+}
 }
 \description{
 Perform 2 sample IV using random effects meta analysis and delta method for standard errors

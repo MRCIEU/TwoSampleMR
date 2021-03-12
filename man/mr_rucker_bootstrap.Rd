@@ -7,13 +7,13 @@
 mr_rucker_bootstrap(dat, parameters = default_parameters())
 }
 \arguments{
-\item{dat}{<what param does>}
+\item{dat}{Output from \code{\link{harmonise_data}}.}
 
-\item{parameters=default_parameters()}{<what param does>}
+\item{parameters}{List of parameters. The default is \code{default_parameters()}.}
 }
 \value{
 List
 }
 \description{
-<full description>
+Run Rucker with bootstrap estimates.
 }

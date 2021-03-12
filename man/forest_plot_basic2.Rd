@@ -4,36 +4,53 @@
 \alias{forest_plot_basic2}
 \title{A basic forest plot}
 \usage{
-forest_plot_basic2(dat, section = NULL, colour_group = NULL,
-  colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
-  trans = "identity", xlim = NULL, lo = lo, up = up,
-  subheading_size = subheading_size)
+forest_plot_basic2(
+  dat,
+  section = NULL,
+  colour_group = NULL,
+  colour_group_first = TRUE,
+  xlab = NULL,
+  bottom = TRUE,
+  trans = "identity",
+  xlim = NULL,
+  lo = lo,
+  up = up,
+  subheading_size = subheading_size,
+  colour_scheme = "black",
+  shape_points = 15
+)
 }
 \arguments{
-\item{dat}{Output from format_1_to_many()}
+\item{dat}{Output from \code{\link[=format_1_to_many]{format_1_to_many()}}}
 
-\item{section}{Which category in dat to plot. If NULL then prints everything}
+\item{section}{Which category in dat to plot. If \code{NULL} then prints everything.}
 
-\item{colour_group}{Which exposure to plot. If NULL then prints everything grouping by colour.}
+\item{colour_group}{Which exposure to plot. If \code{NULL} then prints everything grouping by colour.}
 
-\item{xlab}{x-axis label. Default=NULL}
+\item{colour_group_first}{The default is \code{TRUE}.}
 
-\item{bottom}{Show x-axis? Default=FALSE}
+\item{xlab}{x-axis label. Default=\code{NULL}.}
 
-\item{trans}{x-axis scale}
+\item{bottom}{Show x-axis? Default=\code{FALSE}.}
 
-\item{xlim}{x-axis limits}
+\item{trans}{x-axis scale.}
 
-\item{lo}{Lower limit of x axis}
+\item{xlim}{x-axis limits.}
 
-\item{up}{Upper limit of x axis}
+\item{lo}{Lower limit of x axis.}
 
-\item{subheading_size}{text size for the subheadings. The subheadings correspond to the values of the section argument}
+\item{up}{Upper limit of x axis.}
+
+\item{subheading_size}{text size for the subheadings. The subheadings correspond to the values of the section argument.}
+
+\item{colour_scheme}{the general colour scheme for the plot. Default is to make all text and data points \code{"black"}.}
+
+\item{shape_points}{the shape of the data points to pass to \code{ggplot2::geom_points()}. Default is set to \code{15} (filled square).}
 }
 \value{
 ggplot object
 }
 \description{
 This function is used to create a basic forest plot.
-It requires the output from format_1_to_many().
+It requires the output from \code{\link{format_1_to_many}}.
 }

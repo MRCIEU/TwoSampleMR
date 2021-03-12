@@ -1,21 +1,30 @@
 Package: TwoSampleMR
 Title: Two Sample MR functions and interface to MR Base database
-Version: 0.4.22
+Version: 0.5.5
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
-                  role = c("aut", "cre")),
+                  role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0920-1055")),
              person("Philip", "Haycock", email = "philip.haycock@bristol.ac.uk",
-                  role = c("aut")),
+                  role = c("aut"), comment = c(ORCID = "0000-0001-5001-3350")),
              person("Jie", "Zheng", email = "Jie.Zheng@bristol.ac.uk",
-                  role = c("aut")),
+                  role = c("aut"), comment = c(ORCID = "0000-0002-6623-6839")),
              person("Tom", "Gaunt", email = "Tom.Gaunt@bristol.ac.uk",
-                  role = c("aut")),
+                  role = c("aut"), comment = c(ORCID = "0000-0003-0924-3247")),
              person("Ben", "Elsworth", email = "Ben.Elsworth@bristol.ac.uk",
-                  role = c("aut"))
+                  role = c("aut"), comment = c(ORCID = "0000-0001-7328-4233")),
+             person("Tom", "Palmer", email = "tom.palmer@bristol.ac.uk",
+                  role = c("aut"), comment = c(ORCID = "0000-0003-4655-4511"))
 			 )
-Description: See title
+Description: A package for performing Mendelian randomization
+    using GWAS summary data. It uses the IEU GWAS database to
+    obtain data automatically, and a wide range of methods to
+    run the analysis. You can use the MR-Base web app to try out
+    a limited range of the functionality in this package, but
+    for any serious work we strongly recommend using this R
+    package.
 Depends:
-    R (>= 3.1.0)
-Suggests:
+    R (>= 3.6.0)
+Imports:
+    ieugwasr (>= 0.1.5),
     ggplot2,
     gridExtra,
     cowplot,
@@ -25,26 +34,36 @@ Suggests:
     knitr,
     markdown,
     gtable,
-    RMySQL,
     rmarkdown,
-    MRInstruments,
     MendelianRandomization,
-    MRPRESSO,
     dplyr,
-    igraph,
     mr.raps,
-    RadialMR,
     psych,
-    testthat,
-    randomForest
-Imports:
+    magrittr,
+    car,
+    randomForest,
     meta,
-    jsonlite,
-    RCurl,
     data.table,
-    googleAuthR (>= 0.6.2),
-    httpuv
-License: Artistic-2.0
+    MRPRESSO,
+    MRInstruments,
+    RadialMR,
+    MRMix,
+    glmnet,
+    lattice,
+    pbapply,
+    MASS
+Remotes:
+    mrcieu/ieugwasr,
+    rondolab/MR-PRESSO,
+    mrcieu/MRInstruments,
+    WSpiller/RadialMR,
+    gqi/MRMix
+License: MIT + file LICENSE
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0
+RoxygenNote: 7.1.1
+Encoding: UTF-8
+Suggests: 
+    covr,
+    testthat
+Roxygen: list(markdown = TRUE)

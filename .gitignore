@@ -8,3 +8,11 @@ vignettes/vcf/*.txt.gz
 vignettes/vcf/*.rdata
 vignettes/vcf/*.RData
 vignettes/vcf/*.Rhistory
+doc
+Meta
+.Rproj.user
+.Rhistory
+vignettes/*_cache/
+vignettes/*_files/
+vignettes/*.R
+vignettes/*.html

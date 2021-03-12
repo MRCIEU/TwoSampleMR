@@ -7,15 +7,15 @@
 run_mr_presso(dat, NbDistribution = 1000, SignifThreshold = 0.05)
 }
 \arguments{
-\item{dat}{Output from harmonise_data}
+\item{dat}{Output from \code{\link{harmonise_data}}.}
 
-\item{NbDistribution}{= 1000 Number of bootstraps}
+\item{NbDistribution}{Number of bootstrap replications. The default is \code{1000}.}
 
-\item{SignifThreshold}{= 0.05 Outlier significance threshold}
+\item{SignifThreshold}{Outlier significance threshold. The default is \code{0.05}.}
 }
 \value{
 List of results for every exposure/outcome combination
 }
 \description{
-See https://github.com/rondolab/MR-PRESSO
+See \url{https://github.com/rondolab/MR-PRESSO} for more details.
 }

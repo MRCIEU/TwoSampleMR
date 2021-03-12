@@ -6,17 +6,22 @@
 \usage{
 format_gwas_catalog(gwas_catalog_subset, type = "exposure")
 }
+\arguments{
+\item{gwas_catalog_subset}{The GWAS catalog subset.}
+
+\item{type}{The default is \code{"exposure"}.}
+}
 \value{
 Data frame
 }
 \description{
-DEPRECATED. Please use \code{format_data} instead
+DEPRECATED. Please use \code{\link{format_data}} instead.
 }
 \examples{
 \dontrun{
-data(gwas_catalog)
 require(MRInstruments)
-bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units)
+data(gwas_catalog)
+bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units))
 bmi <- format_data(bmi)
 }
 }

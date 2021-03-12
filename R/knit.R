@@ -1,11 +1,11 @@
 #' Knit report using working environment
 #'
-#' Warning: It is quite likely that this will be called within an RMD file
-#' implying a recursive call to knit(). This will generate "duplicate label"
+#' Warning: It is quite likely that this will be called within an Rmd file
+#' implying a recursive call to \code{knit()}. This will generate "duplicate label"
 #' errors for unlabelled chunks. To avoid this, all code chunks
-#' in \code{rmd.filename} should be named.
+#' in your Rmd file should be named.
 #' Supposedly this error can also be avoided by setting the following option:
-#'      options(knitr.duplicate.label='allow')
+#' \code{options(knitr.duplicate.label = 'allow')}.
 #' I tried this but it didn't seem to help.
 #'
 #' @param input_filename Rmd file.
@@ -15,12 +15,12 @@
 #' generated.
 #' All output files including cache and figures will appear in the
 #' same folder as \code{output_filename}.
-#' @param  ... Arguments to be passed to \code{\link{knitr::knit}}
+#' @param  ... Arguments to be passed to \code{\link[knitr:knit]{knitr::knit}}
 #' @return NULL
 knit_report <- function(input_filename, output_filename, ...)
 {
-	require(knitr)
-    require(markdown)
+	requireNamespace("knitr", quietly = TRUE)
+    requireNamespace("markdown", quietly = TRUE)
     output_filename <- normalizePath(output_filename)
 
     output_dir <- dirname(output_filename)
@@ -40,18 +40,18 @@ knit_report <- function(input_filename, output_filename, ...)
     is.md <- tolower(suffix) %in% c("md", "markdown")
 
     if (is.html)
-        return(knit2html(input_filename, output=paste0(name, ".html"), envir=parent.frame(), ...))
+        return(knitr::knit2html(input_filename, output=paste0(name, ".html"), envir=parent.frame(), ...))
     else if (is.md)
-        return(knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
+        return(knitr::knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
     else if (is.pdf)
     {        
-        require(rmarkdown)
-        return(render(input_filename, pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
+        requireNamespace("rmarkdown", quietly = TRUE)
+        return(rmarkdown::render(input_filename, rmarkdown::pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
     {        
-        require(rmarkdown)
-        return(render(input_filename, word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
+        requireNamespace("rmarkdown", quietly = TRUE)
+        return(rmarkdown::render(input_filename, rmarkdown::word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else
         stop("Please choose a filename with pdf, html, docx or md suffix")
@@ -61,16 +61,18 @@ knit_report <- function(input_filename, output_filename, ...)
 #' Generate MR report
 #'
 #' Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
-#' A separate report is produced for each exposure - outcome pair that was analysed
+#' A separate report is produced for each exposure - outcome pair that was analysed.
 #'
-#' @param dat Output from \code{harmonise_exposure_outcome}
-#' @param output_path Directory in which reports should be saved
-#' @param output_type Choose "html" or "md". Default is "html".
+#' @md
+#' @param dat Output from \code{\link{harmonise_data}}
+#' @param output_path Directory in which reports should be saved.
+#' @param output_type Choose `"html"` or `"md"`. Default is `"html"`.
 #' All output files including cache and figures will appear in the
 #' folder specified in \code{output_path}.
-#' @param author Author name
-#' @param study Study title
-#' @param ... Extra options to be passed to knitr
+#' @param author Author name.
+#' @param study Study title.
+#' @param path The filepath to the report template.
+#' @param ... Extra options to be passed to \code{\link[knitr:knit]{knitr::knit}}.
 #'
 #' @export
 #' @return NULL

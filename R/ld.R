@@ -2,186 +2,69 @@
 #'
 #' Uses PLINK clumping method, where SNPs in LD within a particular window will be pruned. The SNP with the lowest p-value is retained.
 #'
-#' @param dat Output from \code{format_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated
-#' @param clump_kb=10000 Clumping window 
-#' @param clump_r2=0.001 Clumping r2 cutoff. Note that this default value has recently changed from 0.01.
-#' @param clump_p1=1 Clumping sig level for index SNPs
-#' @param clump_p2=1 Clumping sig level for secondary SNPs
+#' @md
+#' @param dat Output from [`format_data`]. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated.
+#' @param clump_kb Clumping window, default is `10000`.
+#' @param clump_r2 Clumping r2 cutoff. Note that this default value has recently changed from `0.01` to `0.001`.
+#' @param clump_p1 Clumping sig level for index SNPs, default is `1`.
+#' @param clump_p2 Clumping sig level for secondary SNPs, default is `1`.
+#' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a slightly different set of markers
 #'
 #' @export
 #' @return Data frame
-clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1)
+clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1, pop="EUR")
 {
-	if(missing(clump_r2))
-	{
-		message("Warning: since v0.4.2 the default r2 value for clumping has changed from 0.01 to 0.001")
-	}
+	# .Deprecated("ieugwasr::ld_clump()")
+
+	pval_column <- "pval.exposure"
+
 	if(!is.data.frame(dat))
 	{
 		stop("Expecting data frame returned from format_data")
 	}
 
-	if(! "pval.exposure" %in% names(dat))
+	if("pval.exposure" %in% names(dat) & "pval.outcome" %in% names(dat))
 	{
+		message("pval.exposure and pval.outcome columns present. Using pval.exposure for clumping.")
+	} else if(!"pval.exposure" %in% names(dat) & "pval.outcome" %in% names(dat))
+	{
+		message("pval.exposure column not present, using pval.outcome column for clumping.")
+		pval_column <- "pval.outcome"
+	} else if(! "pval.exposure" %in% names(dat))
+	{
+		message("pval.exposure not present, setting clumping p-value to 0.99 for all variants")
 		dat$pval.exposure <- 0.99
+	} else {
+		pval_column <- "pval.exposure"
 	}
-
+	
 	if(! "id.exposure" %in% names(dat))
 	{
 		dat$id.exposure <- random_string(1)
 	}
 
-	res <- plyr::ddply(dat, c("id.exposure"), function(x)
-	{
-		x <- plyr::mutate(x)
-		if(nrow(x) == 1)
-		{
-			message("Only one SNP for ", x$id.exposure[1])
-			return(x)
-		} else {
-			message("Clumping ", x$id.exposure[1], ", ", nrow(x), " SNPs")
-			return(ld_pruning_api(x, clump_kb=clump_kb, clump_r2=clump_r2, clump_p1=clump_p1, clump_p2=clump_p2))
-		}
-	})
-	return(res)
-}
-
-
-get_plink_exe <- function()
-{
-    os <- Sys.info()['sysname']
-    a <- paste0("exe/plink_", os)
-    if(os == "Windows") a <- paste0(a, ".exe")
-    plink_bin <- system.file(a, package="Eur1000Genomes")
-	if(!file.exists(plink_bin))
-	{
-		stop("No plink2 executable available for OS '", os, "'. Please provide your own plink2 executable file using the plink_bin argument.")
-	}
-	return(plink_bin)
-}
-
-
-plink_clump <- function(snps, pvals, refdat, clump_kb, clump_r2, clump_p1, clump_p2, plink_bin, tempdir)
-{
-	# Make textfile
-	shell <- ifelse(Sys.info()['sysname'] == "Windows", "cmd", "sh")
-	fn <- tempfile(tmpdir = tempdir)
-	write.table(data.frame(SNP=snps, P=pvals), file=fn, row=F, col=T, qu=F)
-
-	fun2 <- paste0(
-		shQuote(plink_bin, type=shell),
-		" --bfile ", shQuote(refdat, type=shell),
-		" --clump ", shQuote(fn, type=shell), 
-		" --clump-p1 ", clump_p1, 
-		" --clump-p2 ", clump_p2, 
-		" --clump-r2 ", clump_r2, 
-		" --clump-kb ", clump_kb, 
-		" --out ", shQuote(fn, type=shell)
-	)
-	system(fun2)
-	a <- read.table(paste(fn, ".clumped", sep=""), he=T)
-	unlink(paste(fn, "*", sep=""))
-	return(a)
-}
-
-
-#' Perform clumping on the chosen SNPs using through API
-#'
-#' @param dat Output from \code{read_exposure_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start) and p-value column (pval.exposure)
-#' @param clump_kb=10000 Clumping window 
-#' @param clump_r2=0.1 Clumping r2 cutoff
-#' @param clump_p1=1 Clumping sig level for index SNPs
-#' @param clump_p2=1 Clumping sig level for secondary SNPs
-#' @return Data frame of only independent SNPs
-ld_pruning_api <- function(dat, clump_kb=10000, clump_r2=0.1, clump_p1=1, clump_p2=1)
-{
-	snpfile <- upload_file_to_api(data.frame(SNP=dat$SNP, P=dat$pval.exposure), header=TRUE)
-	url <- paste0(options()$mrbaseapi, "clump?snpfile=", snpfile,
-		"&p1=", clump_p1,
-		"&p2=", clump_p2,
-		"&r2=", clump_r2,
-		"&kb=", clump_kb)
-	res <- fromJSON_safe(url)
-	y <- subset(dat, !SNP %in% res$SNP)
-	if(nrow(y) > 0)
-	{
-		message("Removing the following SNPs due to LD with other SNPs:\n", paste(y$SNP, collapse="\n"), sep="\n")
-	}
-	return(subset(dat, SNP %in% res$SNP))
-}
-
-
-
-get_snp_positions_biomart <- function(dat)
-{
-	dat$row_index <- 1:nrow(dat)
-	snp <- unique(dat$SNP)
-
-	if(length(snp) > 500)
-	{
-		message("Looking up SNP info for ", length(snp), " SNPs, this could take some time.")
-	}
-
-	bm <- ensembl_get_position(snp)
-	missing <- dat$SNP[! dat$SNP %in% bm$refsnp_id]
-	if(length(missing) > 0)
-	{
-		warning("The following SNP(s) were not present in ensembl GRCh37. They will be excluded.", paste(missing, collapse="\n"))
-		dat <- subset(dat, SNP %in% bm$refsnp_id)
-	}
-	stopifnot(nrow(dat) > 0)
-
-	dat <- dat[,names(dat)!="chr_name", drop=FALSE]
-	dat <- dat[,names(dat)!="chrom_start", drop=FALSE]
-	dat <- merge(dat, bm, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
-	dat <- dat[order(dat$row_index), ]
-	dat <- subset(dat, select=-c(row_index))
-	return(dat)
+	d <- data.frame(rsid=dat$SNP, pval=dat[[pval_column]], id=dat$id.exposure)
+	out <- ieugwasr::ld_clump(d, clump_kb=clump_kb, clump_r2=clump_r2, clump_p=clump_p1, pop=pop)
+	keep <- paste(dat$SNP, dat$id.exposure) %in% paste(out$rsid, out$id)
+	return(dat[keep, ])
 }
 
 
 #' Get LD matrix for list of SNPs
 #'
-#' This function takes a list of SNPs and searches for them in 502 European samples from 1000 Genomes phase 3 data
-#' It then creates an LD matrix of r values (signed, and not squared)
-#' All LD values are with respect to the major alleles in the 1000G dataset. You can specify whether the allele names are displayed
+#' This function takes a list of SNPs and searches for them in 502 European samples from 1000 Genomes phase 3 data.
+#' It then creates an LD matrix of r values (signed, and not squared).
+#' All LD values are with respect to the major alleles in the 1000G dataset. You can specify whether the allele names are displayed.
 #'
-#' @param snps List of SNPs
-#' @param with_alleles Whether to append the allele names to the SNP names. Default: TRUE
+#' @param snps List of SNPs.
+#' @param with_alleles Whether to append the allele names to the SNP names. The default is `TRUE`.
+#' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a slightly different set of markers
 #'
 #' @export
 #' @return Matrix of LD r values
-ld_matrix <- function(snps, with_alleles=TRUE)
+ld_matrix <- function(snps, with_alleles=TRUE, pop="EUR")
 {
-
-	if(length(snps) > 500)
-	{
-		stop("SNP list must be smaller than 500")
-	}
-
-	snpfile <- upload_file_to_api(data.frame(SNP=snps), header=FALSE)
-	url <- paste0(options()$mrbaseapi, "ld?snpfile=", snpfile)
-	res <- fromJSON_safe(url)
-	if(all(is.na(res))) stop("None of the requested SNPs were found")
-	snps2 <- res[1,]
-	res <- res[-1,, drop=FALSE]
-	res <- matrix(as.numeric(res), nrow(res), ncol(res))
-	snps3 <- do.call(rbind, strsplit(snps2, split="_"))
-	if(with_alleles)
-	{
-		rownames(res) <- snps2
-		colnames(res) <- snps2
-	} else {
-		rownames(res) <- snps3[,1]
-		colnames(res) <- snps3[,1]
-	}
-	missing <- snps[!snps %in% snps3[,1]]
-	if(length(missing) > 0)
-	{
-		warning("The following SNPs are not present in the LD reference panel\n", paste(missing, collapse="\n"))
-	}
-	ord <- match(snps3[,1], snps)
-	res <- res[order(ord), order(ord)]
-	return(res)
+	# .Deprecated("ieugwasr::ld_matrix()")
+	ieugwasr::ld_matrix(variants=snps, with_alleles=with_alleles, pop=pop)
 }
 

@@ -7,13 +7,13 @@
 format_aries_mqtl(aries_mqtl_subset, type = "exposure")
 }
 \arguments{
-\item{aries_mqtl_subset}{Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package}
+\item{aries_mqtl_subset}{Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package.}
 
-\item{type}{Are these data used as "exposure" or "outcome"? Default is "exposure"}
+\item{type}{Are these data used as \code{"exposure"} or \code{"outcome"}? Default is \code{"exposure"}.}
 }
 \value{
 Data frame
 }
 \description{
-See \code{format_data}
+See \code{\link{format_data}}.
 }

@@ -3,107 +3,45 @@
 #' This function searches for GWAS significant SNPs (for a given p-value) for a specified set of outcomes.
 #' It then performs LD based clumping to return only independent significant associations.
 #'
-#' @param outcomes Array of outcome IDs (see \code{available_outcomes})
-#' @param p1 = 5e-8 Significance threshold
-#' @param clump = TRUE Whether to clump results
-#' @param p2 = 5e-8 Secondary clumping threshold
-#' @param r2 = 0.001 Clumping r2 cut off
-#' @param kb = 10000 Clumping distance cutoff
-#' @param access_token = get_mrbase_access_token() Google OAuth2 access token. Used to authenticate level of access to data
-#' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package
+#' @param outcomes Array of outcome IDs (see [`available_outcomes`]).
+#' @param p1 Significance threshold. The default is `5e-8`.
+#' @param clump Logical; whether to clump results. The default is `TRUE`.
+#' @param p2 Secondary clumping threshold. The default is `5e-8`.
+#' @param r2 Clumping r2 cut off. The default is `0.001`.
+#' @param kb Clumping distance cutoff. The default is `10000`.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data. The default is `ieugwasr::check_access_token()`.
+#' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package.
 #'
 #' @export
 #' @return data frame
-extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = get_mrbase_access_token(), force_server=FALSE)
+extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, access_token = ieugwasr::check_access_token(), force_server=FALSE)
 {
-	outcomes <- unique(outcomes)
+	# .Deprecated("ieugwasr::tophits()")
+	outcomes <- ieugwasr::legacy_ids(unique(outcomes))
 
-	if(clump & p1 == 5e-8 & r2 == 0.001 & kb == 10000 & !force_server)
-	{
-		message("Requesting default values. Extracting from pre-clumped data")
-		a <- require(MRInstruments)
-		if(!a)
-		{
-			message("MRInstruments package not available")
-			message("To install: devtools::install_github('MRCIEU/MRInstruments')")
-			message("and then try again")
-			return(NULL)
-		}
-
-		data(mrbase_instruments, envir=environment())
-		a <- exists("mrbase_instruments")
-		if(!a)
-		{
-			message("Pre-clumped dataset is not available. You might have an old version of the MRInstruments package")
-			message("To update: devtools::install_github('MRCIEU/MRInstruments')")
-			message("and then try again")
-			return(NULL)
-		}
-
-		a <- subset(mrbase_instruments, id.exposure %in% outcomes)
-
-		if(nrow(a) == 0)
-		{
-			message("None of the requested outcomes had GWAS hits at the specified threshold.")
-			return(NULL)
-		}
-		a$exposure <- paste0(a$exposure, " || id:", a$id)
-		return(a)
-	}
-
-	message("Extracting data from ", length(unique(outcomes)), " GWAS(s)")
-	if(clump) message("and performing LD clumping")
-
-	# outcomes <- paste(outcomes, collapse=",")
-
-	d <- list()
-	for(i in 1:length(outcomes))
-	{
-		message(" [>] ", i, " of ", length(outcomes))
-		url <- paste0(options()$mrbaseapi, "extract_instruments?access_token=", access_token,
-			"&outcomes=", outcomes[i], 
-			"&pval=", p1,
-			"&clump=", ifelse(clump, "yes", "no"),
-			"&p2=", p2,
-			"&r2=", r2,
-			"&kb=", kb
-		)
-		out <- fromJSON_safe(url)
-		if(!is.data.frame(out)) out <- data.frame()
-		d[[i]] <- out
-	}
-	d <- plyr::rbind.fill(d)
-
-	if(length(d) == 0)
-	{
-		message("None of the requested outcomes had GWAS hits at the specified threshold.")
-		return(NULL)
-	}
+	d <- ieugwasr::tophits(outcomes, pval=p1, clump=clump, r2=r2, kb=kb, force_server=FALSE, access_token=access_token)
 
 	# d$phenotype.deprecated <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
+	if(nrow(d) == 0) return(NULL)
 	d$phenotype <- paste0(d$trait, " || id:", d$id)
-	d$ncase <- as.numeric(d$ncase)
-	d$ncontrol <- as.numeric(d$ncontrol)
 	d <- format_data(
 		d,
 		type="exposure",
 		snps=NULL,
 		phenotype_col="phenotype",
-		snp_col="name",
+		snp_col="rsid",
+		chr_col="chr",
+		pos_col="position",
 		beta_col="beta",
 		se_col="se",
-		eaf_col="effect_allelel_freq",
-		effect_allele_col="effect_allele",
-		other_allele_col="other_allele",
+		eaf_col="eaf",
+		effect_allele_col="ea",
+		other_allele_col="nea",
 		pval_col="p",
-		units_col="unit",
-		ncase_col="ncase",
-		ncontrol_col="ncontrol",
 		samplesize_col="n",
 		min_pval=1e-200,
 		id_col="id"
 	)
-	d$data_source.exposure <- "mrbase"
-
+	d$data_source.exposure <- "igd"
 	return(d)
 }

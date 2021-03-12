@@ -7,21 +7,21 @@
 weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, weights, nboot)
 }
 \arguments{
-\item{b_exp}{Vector of genetic effects on exposure}
+\item{b_exp}{Vector of genetic effects on exposure.}
 
-\item{b_out}{Vector of genetic effects on outcome}
+\item{b_out}{Vector of genetic effects on outcome.}
 
-\item{se_exp}{Standard errors of genetic effects on exposure}
+\item{se_exp}{Standard errors of genetic effects on exposure.}
 
-\item{se_out}{Standard errors of genetic effects on outcome}
+\item{se_out}{Standard errors of genetic effects on outcome.}
 
-\item{weights}{Weights to apply to each SNP}
+\item{weights}{Weights to apply to each SNP.}
 
-\item{nboot}{Number of bootstraps. Default 1000}
+\item{nboot}{Number of bootstrap replications. The default is \code{1000}.}
 }
 \value{
 Empirical standard error
 }
 \description{
-Based on new script for weighted median confidence interval, update 31 July 2015
+Based on new script for weighted median confidence interval, update 31 July 2015.
 }

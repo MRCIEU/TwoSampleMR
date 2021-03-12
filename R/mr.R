@@ -1,14 +1,16 @@
 
 #' Perform all Mendelian randomization tests
 #'
-#' @param dat Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}
-#' @param parameters Parameters to be used for various MR methods. Default is output from \code{dafault_param}.
-#' @param method_list List of methods to use in analysis. See \code{mr_method_list()} for details.
+#' @param dat Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.
+#' @param parameters Parameters to be used for various MR methods. Default is output from [`default_parameters`].
+#' @param method_list List of methods to use in analysis. See \code{\link{mr_method_list}} for details.
 #'
 #' @export
 #' @return List with the following elements:
-#'         mr: Table of MR results
-#'         extra: Table of extra results
+#' \describe{
+#' \item{mr}{Table of MR results}
+#' \item{extra}{Table of extra results}
+#' }
 mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_method_list(), use_by_default)$obj)
 {
 	mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
@@ -230,6 +232,8 @@ mr_method_list <- function()
 
 
 #' List of parameters for use with MR functions
+#' 
+#' The default is `list(test_dist = "z", nboot = 1000, Cov = 0, penk = 20, phi = 1, alpha = 0.05, Qthresh = 0.05, over.dispersion = TRUE, loss.function = "huber")`.
 #'
 #' @export
 default_parameters <- function()
@@ -248,18 +252,23 @@ default_parameters <- function()
 }
 
 
-#' Perform 2 sample IV using Wald ratio
+#' Perform 2 sample IV using Wald ratio.
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' \item{nsnp}{1}
+#' }
+#' @importFrom stats pnorm
 mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(length(b_exp) > 1)
@@ -276,16 +285,21 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 #' Perform 2 sample IV using simple standard error
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' }
+#' @importFrom stats pnorm
 mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -302,17 +316,22 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 #' Perform 2 sample IV using fixed effects meta analysis and delta method for standard errors
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
+#' @importFrom stats pchisq
 mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
@@ -325,7 +344,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.fixed
 	se <- res$seTE.fixed
 	pval <- res$pval.fixed
-	Q_pval <- pchisq(res$Q, res$df.Q, low=FALSE)
+	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
@@ -333,17 +352,22 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 #' Perform 2 sample IV using random effects meta analysis and delta method for standard errors
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
+#' @importFrom stats pchisq
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -356,7 +380,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.random
 	se <- res$seTE.random
 	pval <- res$pval.random
-	Q_pval <- pchisq(res$Q, res$df.Q, low=FALSE)
+	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
@@ -364,17 +388,21 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 #' Maximum likelihood MR method
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: causal effect estimate
-#'         se: standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{causal effect estimate}
+#' \item{se}{standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
+#' @importFrom stats optim pchisq
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -403,11 +431,11 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
 	}
 
-	pval <- 2 * pnorm(abs(b) / se, low=FALSE)
+	pval <- 2 * pnorm(abs(b) / se, lower.tail=FALSE)
 
 	Q <- 2 * opt$value
 	Q_df <- length(b_exp) - 1
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
@@ -416,23 +444,27 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 #' Egger's regression for Mendelian randomization
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param bootstrap Number of bootstraps to estimate standard error. If NULL then don't use bootstrap
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List of with the following elements:
-#'         b: MR estimate
-#'         se: Standard error of MR estimate
-#'         pval: p-value of MR estimate
-#'         b_i: Estimate of horizontal pleiotropy (intercept)
-#'         se_i: Standard error of intercept
-#'         pval_i: p-value of intercept
-#'         Q, Q_df, Q_pval: Heterogeneity stats
-#'         mod: Summary of regression
-#'         dat: Original data used for MR Egger regression
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error of MR estimate}
+#' \item{pval}{p-value of MR estimate}
+#' \item{b_i}{Estimate of horizontal pleiotropy (intercept)}
+#' \item{se_i}{Standard error of intercept}
+#' \item{pval_i}{p-value of intercept}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' \item{mod}{Summary of regression}
+#' \item{dat}{Original data used for MR Egger regression}
+#' }
+#' @importFrom stats coefficients lm pchisq pt
 mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	stopifnot(length(b_exp) == length(b_out))
@@ -484,7 +516,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 		Q <- smod$sigma^2 * (length(b_exp) - 2)
 		Q_df <- length(b_exp) - 2
-		Q_pval <- pchisq(Q, Q_df, low=FALSE)
+		Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	} else {
 		warning("Collinearities in MR Egger, try LD pruning the exposure variables.")
 		return(nulllist)
@@ -494,7 +526,7 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 
 
-
+#' @importFrom stats cov pnorm var
 linreg <- function(x, y, w=rep(x,1))
 {
 	xp <- w*x
@@ -508,29 +540,33 @@ linreg <- function(x, y, w=rep(x,1))
 
 	sum(w * (y-yhat)^2)
 	se <- sqrt(sum(w*(y-yhat)^2) /  (sum(!is.na(yhat)) - 2) / (sum(w*x^2)))
-	pval <- 2 * pnorm(abs(bhat / se), low=FALSE)
+	pval <- 2 * pnorm(abs(bhat / se), lower.tail=FALSE)
 	return(list(ahat=ahat,bhat=bhat,se=se, pval=pval))
 }
 
 
 #' Run bootstrap to generate standard errors for MR
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param nboot Number of bootstraps. Default 1000
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters. Specifically, the `nboot` parameter can be specified for the number of bootstrap replications. The default is `parameters=list(nboot=1000)`.
 #'
 #' @export
 #' @return List of with the following elements:
-#'         b: MR estimate
-#'         se: Standard error of MR estimate
-#'         pval: p-value of MR estimate
-#'         b_i: Estimate of horizontal pleiotropy (intercept)
-#'         se_i: Standard error of intercept
-#'         pval_i: p-value of intercept
-#'         mod: Summary of regression
-#'         dat: Original data used for MR Egger regression
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error of MR estimate}
+#' \item{pval}{p-value of MR estimate}
+#' \item{b_i}{Estimate of horizontal pleiotropy (intercept)}
+#' \item{se_i}{Standard error of intercept}
+#' \item{pval_i}{p-value of intercept}
+#' \item{mod}{Summary of regression}
+#' \item{dat}{Original data used for MR Egger regression}
+#' }
+#' @importFrom stats rnorm sd
 mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -584,17 +620,21 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #'
 #' Perform MR using summary statistics. Bootstraps used to calculate standard error.
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param nboot Number of bootstraps to calculate se. Default 1000
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters The default is `default_parameters()`. Specify the number of bootstrap replications to calculate the SE with `nboot`. The default is `list(nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
+#' @importFrom stats pnorm
 mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -604,7 +644,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, Q=NA, Q_df=NA, Q_pval=NA, nsnp=length(b_exp)))
 }
 
@@ -613,17 +653,22 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 #'
 #' Perform MR using summary statistics. Bootstraps used to calculate standard error.
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param nboot Number of bootstraps to calculate se. Default 1000
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters The number of bootstrap replications used to calculate the SE can be set through `parameters=list(nboot = 1000)`. The default is `list(nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{nsnp}{The number of SNPs}
+#' }
+#' @importFrom stats pnorm
 mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -632,7 +677,7 @@ mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_pa
 	b_iv <- b_out / b_exp
 	b <- weighted_median(b_iv, rep(1/length(b_exp), length(b_exp)))
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, rep(1/length(b_exp), length(b_exp)), parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -677,17 +722,18 @@ weighted_median <- function(b_iv, weights)
 
 #' Calculate standard errors for weighted median method using bootstrap
 #'
-#' Based on new script for weighted median confidence interval, update 31 July 2015
+#' Based on new script for weighted median confidence interval, update 31 July 2015.
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
-#' @param weights Weights to apply to each SNP
-#' @param nboot Number of bootstraps. Default 1000
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param weights Weights to apply to each SNP.
+#' @param nboot Number of bootstrap replications. The default is `1000`.
 #'
 #' @export
 #' @return Empirical standard error
+#' @importFrom stats rnorm sd
 weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nboot)
 {
 	med <- rep(0, nboot)
@@ -711,13 +757,16 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Standard errors of genetic effects on exposure
 #' @param se_out Standard errors of genetic effects on outcome
-#' @param parameters List containing "penk" - Constant term in penalisation, and "nboot" - number of bootstraps to calculate SE. default_parameters sets penk=20 and nboot=1000
+#' @param parameters List containing `penk` - Constant term in penalisation, and `nboot` - number of bootstrap replications to calculate SE. `default_parameters()` sets `parameters=list(penk=20, nboot=1000)`.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' }
+#' @importFrom stats pchisq pnorm
 mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -731,7 +780,7 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, pen.weights, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -739,11 +788,13 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 
 #' MR median estimators
 #'
-#' @param dat Output from harmonise_data()
-#' @param parameters=default_parameters() <what param does>
+#' @md
+#' @param dat Output from [`harmonise_data()`].
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @export
 #' @return data frame
+#' @importFrom stats qnorm
 mr_median <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
@@ -783,19 +834,24 @@ mr_median <- function(dat, parameters=default_parameters())
 #' 
 #' The default multiplicative random effects IVW estimate. 
 #' The standard error is corrected for under dispersion
-#' Use the \code{mr_ivw_mre} function for estimates that don't correct for under dispersion
+#' Use the [`mr_ivw_mre`] function for estimates that don't correct for under dispersion.
 #' 
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
+#' @importFrom stats lm pchisq pnorm
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -804,10 +860,10 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -817,19 +873,24 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #' 
 #' The default multiplicative random effects IVW estimate. 
 #' The standard error is corrected for under dispersion
-#' Use the \code{mr_ivw_mre} function for estimates that don't correct for under dispersion
+#' Use the \code{\link{mr_ivw_mre}} function for estimates that don't correct for under dispersion.
 #' 
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
+#' @importFrom stats lm pchisq pnorm
 mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -838,10 +899,10 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -850,19 +911,24 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 
 #' Inverse variance weighted regression (multiplicative random effects model)
 #'
-#' Same as mr_ivw but no correction for under dispersion 
+#' Same as \code{\link{mr_ivw}} but no correction for under dispersion.
 #' 
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
+#' @importFrom stats lm pchisq pnorm
 mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -871,10 +937,10 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -883,17 +949,22 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 
 #' Inverse variance weighted regression (fixed effects)
 #'
-#' @param b_exp Vector of genetic effects on exposure
-#' @param b_out Vector of genetic effects on outcome
-#' @param se_exp Standard errors of genetic effects on exposure
-#' @param se_out Standard errors of genetic effects on outcome
+#' @md
+#' @param b_exp Vector of genetic effects on exposure.
+#' @param b_out Vector of genetic effects on outcome.
+#' @param se_exp Standard errors of genetic effects on exposure.
+#' @param se_out Standard errors of genetic effects on outcome.
+#' @param parameters List of parameters.
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: MR estimate
-#'         se: Standard error
-#'         pval: p-value
-#'         Q, Q_df, Q_pval: Heterogeneity stats
+#' \describe{
+#' \item{b}{MR estimate}
+#' \item{se}{Standard error}
+#' \item{pval}{p-value}
+#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
+#' }
+#' @importFrom stats lm pchisq pnorm
 mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -902,10 +973,10 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/ivw.res$sigma
-	pval <- 2 * pnorm(abs(b/se), low=FALSE)
+	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, low=FALSE)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -914,8 +985,11 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' Robust adjusted profile score
 #'
 #' @inheritParams mr_ivw
-#' @param over.dispersion Should the model consider overdispersion (systematic pleiotropy)? Default is TRUE.
-#' @param loss.function Either the squared error loss ("l2") or robust loss functions/scores ("huber" or "tukey"). Default is "tukey"".
+#' @md
+#' @param parameters A list of parameters. Specifically, `over.dispersion` and `loss.function`. 
+#' `over.dispersion` is a logical concerning should the model consider overdispersion (systematic pleiotropy). 
+#' And `loss.function` allows using either the squared error loss (`"l2"`) or robust loss functions/scores (`"huber"` or `"tukey"`). 
+#' The default is `parameters=list(overdispersion = TRUE, loss.function = "tukey")`.
 #'
 #' @details This function calls the \code{mr.raps} package. Please refer to the documentation of that package for more detail.
 #'
@@ -930,15 +1004,16 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' }
 #'
 #' @export
-#'
+#' @importFrom stats pnorm
+#' @importFrom mr.raps mr.raps
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
-    cpg <- require(mr.raps)
+    cpg <- requireNamespace("mr.raps", quietly = TRUE)
     if (!cpg)
     {
         stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
     }
-    out <- suppressMessages(mr.raps::mr.raps.shrinkage(b_exp, b_out, se_exp, se_out,
+    out <- suppressMessages(mr.raps::mr.raps(b_exp, b_out, se_exp, se_out,
                             parameters$over.dispersion,
                             parameters$loss.function))
     list(b = out$beta.hat,
@@ -964,10 +1039,13 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
 #'
 #' @export
 #' @return List with the following elements:
-#'         b: Concordance (see description)
-#'         se: NA
-#'         pval: p-value
-#'         nsnp: Number of SNPs (excludes NAs and effect estimates that are 0)
+#' \describe{
+#' \item{b}{Concordance (see description)}
+#' \item{se}{NA}
+#' \item{pval}{p-value}
+#' \item{nsnp}{Number of SNPs (excludes NAs and effect estimates that are 0)}
+#' }
+#' @importFrom stats binom.test
 mr_sign <- function(b_exp, b_out, se_exp=NULL, se_out=NULL, parameters=NULL)
 {
 	b_exp[b_exp == 0] <- NA

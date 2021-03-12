@@ -4,26 +4,34 @@
 \alias{mr_report}
 \title{Generate MR report}
 \usage{
-mr_report(dat, output_path = ".", output_type = "html",
-  author = "Analyst", study = "Two Sample MR",
-  path = system.file("reports", package = "TwoSampleMR"), ...)
+mr_report(
+  dat,
+  output_path = ".",
+  output_type = "html",
+  author = "Analyst",
+  study = "Two Sample MR",
+  path = system.file("reports", package = "TwoSampleMR"),
+  ...
+)
 }
 \arguments{
-\item{dat}{Output from \code{harmonise_exposure_outcome}}
+\item{dat}{Output from \code{\link{harmonise_data}}}
 
-\item{output_path}{Directory in which reports should be saved}
+\item{output_path}{Directory in which reports should be saved.}
 
-\item{output_type}{Choose "html" or "md". Default is "html".
+\item{output_type}{Choose \code{"html"} or \code{"md"}. Default is \code{"html"}.
 All output files including cache and figures will appear in the
 folder specified in \code{output_path}.}
 
-\item{author}{Author name}
+\item{author}{Author name.}
 
-\item{study}{Study title}
+\item{study}{Study title.}
 
-\item{...}{Extra options to be passed to knitr}
+\item{path}{The filepath to the report template.}
+
+\item{...}{Extra options to be passed to \code{\link[knitr:knit]{knitr::knit}}.}
 }
 \description{
 Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
-A separate report is produced for each exposure - outcome pair that was analysed
+A separate report is produced for each exposure - outcome pair that was analysed.
 }

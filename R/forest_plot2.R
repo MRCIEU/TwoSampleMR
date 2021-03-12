@@ -1,21 +1,27 @@
 #' Format MR results for forest plot
 #'
-#' This function takes the results from mr() and is particularly useful
+#' This function takes the results from [`mr()`] and is particularly useful
 #' if the MR has been applied using multiple exposures and multiple outcomes. 
 #' It creates a new data frame with the following:
-#' - exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
-#' - only one estimate for each exposure-outcome
-#' - exponentiated effects if required
+#' \itemize{
+#' \item Variables: exposure, outcome, category, outcome sample size, effect, upper ci, lower ci, pval, nsnp
+#' \item only one estimate for each exposure-outcome
+#' \item exponentiated effects if required
+#' }
 #'
-#' By default it uses the available_outcomes() function to retrieve the study level characteristics for the outcome trait, including sample size and outcome category. This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base. If ao_slc set to TRUE then the user must supply their own study level characteris. This is useful when the user has supplied their own outcome GWAS results (ie they are not in MR-Base).  
+#' By default it uses the [`available_outcomes()`] function to retrieve the study level characteristics for the outcome trait, 
+#' including sample size and outcome category. 
+#' This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base.
+#'  
+#' If \code{ao_slc} is set to \code{TRUE} then the user must supply their own study level characteristics. 
+#' This is useful when the user has supplied their own outcome GWAS results (i.e. they are not in MR-Base).  
 #' 
-#' @param mr_res Results from mr()
-#' @param exponentiate Convert effects to OR? Default=FALSE
-#' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"
-#' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
-#' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
-#' @param ao_slc Logical; retrieve sample size and subcategory using available_outcomes(). If set to FALSE mr_res must contain the following additional columns: subcategory and sample_size. 
-#' @param priority Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"
+#' @param mr_res Results from [`mr()`].
+#' @param exponentiate Convert effects to OR? The default is `FALSE`.
+#' @param single_snp_method Which of the single SNP methods to use when only 1 SNP was used to estimate the causal effect? The default is `"Wald ratio"`.
+#' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is `"Inverse variance weighted"`.
+#' @param ao_slc Logical; retrieve sample size and subcategory using [`available_outcomes()`]. If set to `FALSE` `mr_res` must contain the following additional columns: `subcategory` and `sample_size`. 
+#' @param priority Name of category to prioritise at the top of the forest plot. The default is `"Cardiometabolic"`.
 #'
 #' @export
 #' @return data frame.
@@ -199,17 +205,18 @@ create_label <- function(n1, nom)
 #' A basic forest plot
 #'
 #' This function is used to create a basic forest plot.
-#' It requires the output from format_mr_results().
-#' It is 
+#' It requires the output from \code{\link{format_mr_results}}.
 #'
-#' @param dat Output from format_mr_results()
-#' @param section Which category in dat to plot. If NULL then prints everything
-#' @param colour_group Which exposure to plot. If NULL then prints everything grouping by colour.
-#' @param xlab x-axis label. Default=NULL
-#' @param bottom Show x-axis? Default=FALSE
-#' @param trans Transformation of x axis
-#' @param xlim x-axis limits
-#' @param threshold p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied
+#' @md
+#' @param dat Output from [`format_mr_results()`].
+#' @param section Which category in dat to plot. If `NULL` then prints everything.
+#' @param colour_group Which exposure to plot. If `NULL` then prints everything grouping by colour.
+#' @param colour_group_first The default is `TRUE`.
+#' @param xlab x-axis label. Default=`NULL`.
+#' @param bottom Show x-axis? Default=`FALSE`.
+#' @param trans Transformation of x axis.
+#' @param xlim x-axis limits.
+#' @param threshold p-value threshold to use for colouring points by significance level. If `NULL` (default) then colour layer won't be applied.
 #'
 #' @return ggplot object
 forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, threshold=NULL)
@@ -429,21 +436,21 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 
 #' Forest plot for multiple exposures and multiple outcomes
 #'
-#' Perform MR of multiple exposures and multiple outcomes. This plots the results
+#' Perform MR of multiple exposures and multiple outcomes. This plots the results.
 #' 
-#' @param mr_res Results from mr()
-#' @param exponentiate Convert effects to OR? Default=FALSE
-#' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? Default="Wald ratio"
-#' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? Default="Inverse variance weighted"
-#' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. Default=TRUE
-#' @param by_category Separate the results into sections by category? Default=TRUE
-#' @param in_columns Separate the exposures into different columns. Default=FALSE
-#' @param threshold p-value threshold to use for colouring points by significance level. If NULL (default) then colour layer won't be applied
-#' @param xlab x-axis label. If in_columns=TRUE then the exposure values are appended to the end of xlab. e.g. if xlab="Effect of" then x-labels will read "Effect of exposure1", "Effect of exposure2" etc. Otherwise will be printed as is.
-#' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. Default=NULL
-#' @param trans Transformation to apply to x-axis. e.g. "identity", "log2", etc. Default is "identity"
-#' @param ao_slc retrive sample size and subcategory from available_outcomes(). If set to FALSE then mr_res must contain the following additional columns: sample_size and subcategory. The default behaviour is to use available_outcomes() to retrieve sample size and subcategory
-#' @param priority Name of category to prioritise at the top of the forest plot. Default = "Cardiometabolic"
+#' @param mr_res Results from [`mr()`].
+#' @param exponentiate Convert effects to OR? Default is `FALSE`.
+#' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? The default is `"Wald ratio"`.
+#' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is `"Inverse variance weighted"`.
+#' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. The default is `TRUE`.
+#' @param by_category Separate the results into sections by category? The default is `TRUE`.
+#' @param in_columns Separate the exposures into different columns. The default is `FALSE`.
+#' @param threshold p-value threshold to use for colouring points by significance level. If `NULL` (default) then colour layer won't be applied.
+#' @param xlab x-axis label. If `in_columns=TRUE` then the exposure values are appended to the end of `xlab`. e.g. if `xlab="Effect of"` then x-labels will read `"Effect of exposure1"`, `"Effect of exposure2"` etc. Otherwise will be printed as is.
+#' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. The default is `NULL`.
+#' @param trans Transformation to apply to x-axis. e.g. `"identity"`, `"log2"`, etc. The default is `"identity"`.
+#' @param ao_slc retrive sample size and subcategory from [`available_outcomes()`]. If set to `FALSE` then `mr_res` must contain the following additional columns: `sample_size` and `subcategory`. The default behaviour is to use [`available_outcomes()`] to retrieve sample size and subcategory.
+#' @param priority Name of category to prioritise at the top of the forest plot. The default is `"Cardiometabolic"`.
 #'
 #' @export
 #' @return grid plot object
