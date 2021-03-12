@@ -143,10 +143,10 @@ mr_method_list <- function()
 		),
 		list(
 			obj = "mr_ivw_radial",
-			name = "IVW radial", 
+			name = "IVW radial",
 			PubmedID = "",
-			Description = "", 
-			use_by_default = FALSE, 
+			Description = "",
+			use_by_default = FALSE,
 			heterogeneity_test = TRUE
 		),
 		list(
@@ -232,7 +232,7 @@ mr_method_list <- function()
 
 
 #' List of parameters for use with MR functions
-#' 
+#'
 #' The default is `list(test_dist = "z", nboot = 1000, Cov = 0, penk = 20, phi = 1, alpha = 0.05, Qthresh = 0.05, over.dispersion = TRUE, loss.function = "huber")`.
 #'
 #' @export
@@ -247,7 +247,8 @@ default_parameters <- function()
 		alpha = 0.05,
 		Qthresh = 0.05,
 		over.dispersion = TRUE,
-		loss.function = "huber"
+                loss.function = "huber",
+                shrinkage = FALSE
 	)
 }
 
@@ -831,11 +832,11 @@ mr_median <- function(dat, parameters=default_parameters())
 
 
 #' Inverse variance weighted regression
-#' 
-#' The default multiplicative random effects IVW estimate. 
+#'
+#' The default multiplicative random effects IVW estimate.
 #' The standard error is corrected for under dispersion
 #' Use the [`mr_ivw_mre`] function for estimates that don't correct for under dispersion.
-#' 
+#'
 #' @md
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
@@ -870,11 +871,11 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 }
 
 #' Unweighted regression
-#' 
-#' The default multiplicative random effects IVW estimate. 
+#'
+#' The default multiplicative random effects IVW estimate.
 #' The standard error is corrected for under dispersion
 #' Use the \code{\link{mr_ivw_mre}} function for estimates that don't correct for under dispersion.
-#' 
+#'
 #' @md
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
@@ -912,7 +913,7 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #' Inverse variance weighted regression (multiplicative random effects model)
 #'
 #' Same as \code{\link{mr_ivw}} but no correction for under dispersion.
-#' 
+#'
 #' @md
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
@@ -986,9 +987,9 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #'
 #' @inheritParams mr_ivw
 #' @md
-#' @param parameters A list of parameters. Specifically, `over.dispersion` and `loss.function`. 
-#' `over.dispersion` is a logical concerning should the model consider overdispersion (systematic pleiotropy). 
-#' And `loss.function` allows using either the squared error loss (`"l2"`) or robust loss functions/scores (`"huber"` or `"tukey"`). 
+#' @param parameters A list of parameters. Specifically, `over.dispersion` and `loss.function`.
+#' `over.dispersion` is a logical concerning should the model consider overdispersion (systematic pleiotropy).
+#' And `loss.function` allows using either the squared error loss (`"l2"`) or robust loss functions/scores (`"huber"` or `"tukey"`).
 #' The default is `parameters=list(overdispersion = TRUE, loss.function = "tukey")`.
 #'
 #' @details This function calls the \code{mr.raps} package. Please refer to the documentation of that package for more detail.
@@ -1013,9 +1014,16 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
     {
         stop("Please install the mr.raps package using devtools::install_github('qingyuanzhao/mr.raps')")
     }
-    out <- suppressMessages(mr.raps::mr.raps(b_exp, b_out, se_exp, se_out,
-                            parameters$over.dispersion,
-                            parameters$loss.function))
+    data <- data.frame(beta.exposure = b_exp,
+                       beta.outcome = b_out,
+                       se.exposure = se_exp,
+                       se.outcome = se_out)
+    out <- suppressMessages(
+        mr.raps::mr.raps(data,
+                         diagnostics = FALSE,
+                         over.dispersion = parameters$over.dispersion,
+                         loss.function = parameters$loss.function,
+                         shrinkage = parameters$shrinkage))
     list(b = out$beta.hat,
          se = out$beta.se,
          pval = pnorm(- abs(out$beta.hat / out$beta.se)) * 2,
@@ -1024,13 +1032,13 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
 }
 
 #' MR sign test
-#' 
+#'
 #' Tests how often the SNP-exposure and SNP-outcome signs are concordant
 #' This is to avoid the problem of averaging over all SNPs, which can suffer bias due to outliers with strong effects; and to avoid excluding SNPs which is implicit in median and mode based estimators
-#' The effect estimate here is not to be interpreted as the effect size - it is the proportion of SNP-exposure and SNP-outcome effects that have concordant signs. 
+#' The effect estimate here is not to be interpreted as the effect size - it is the proportion of SNP-exposure and SNP-outcome effects that have concordant signs.
 #' e.g. +1 means all have the same sign, -1 means all have opposite signs, and 0 means that there is an equal number of concordant and discordant signs.
 #' Restricted to only work if there are 6 or more valud SNPs
-#' 
+#'
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome
 #' @param se_exp Not required
