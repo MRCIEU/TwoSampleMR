@@ -654,11 +654,6 @@ check_required_columns <- function(dat, type="exposure")
 	{
 		stop("The following required columns are missing from ", type, ": ", paste(required_columns[!index], collapse=", "))	
 	}
-
-	# if(!all(!is.na()))
-
-	# stopifnot(all(!is.na()))
-
-	# dat <- dat[[paste0("effect.", type)]]
+	return(NULL)
 }
 

@@ -1,4 +1,4 @@
-#context("harmonise") # uncomment for testthat
+context("harmonise")
 
 set.seed(1)
 
@@ -48,20 +48,19 @@ df_out <- format_data(
 )
 
 
-# uncomment below for testthat
-#test_that("harmonise_data works when exposure and outcome df are 1 row.", {
+test_that("harmonise_data works when exposure and outcome df are 1 row.", {
     for (i in seq(1,3)) {
         result <- harmonise_data(
             exposure_dat = df_exp[1,],
             outcome_dat = df_out[1,],
             action = 1
         )
-        #expect_equal(nrow(result), 1) # uncomment for testthat
+        expect_equal(nrow(result), 1)
     }
-#}) # uncomment for testthat
+})
 
 
-#test_that("harmonise_data works when there are no matching SNPs.", {
+test_that("harmonise_data works when there are no matching SNPs.", {
     for (i in seq(1,3)) {
         df_out$SNP <- paste(df_out$SNP, "foo", sep = "_")
         result <- harmonise_data(
@@ -69,8 +68,8 @@ df_out <- format_data(
             outcome_dat = df_out,
             action = 1
         )
-        #expect_equal(nrow(result), 0) # uncomment for testthat
+        expect_equal(nrow(result), 0)
     }
-#}) # uncomment for testthat
+})
 
 
