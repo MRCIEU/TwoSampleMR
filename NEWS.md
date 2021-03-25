@@ -1,3 +1,15 @@
+TwoSampleMR v0.5.6 (Release date: 2021-03-25)
+==============
+
+Changes:
+
+* Fix to scatter plot (thanks to Yossi Farjoun @yfarjoun)
+* Update to mr.raps parameters (thanks to Qingyuan Zhao @qingyuanzhao)
+* Bug fix to MVMR (thanks to Conor Judge @conorjudge)
+* Fix to harmonise_data (thanks to Leland Taylor @letaylor)
+* Documentation (thanks to @jinghuazhao)
+
+
 TwoSampleMR v0.5.5 (Release date: 2020-08-09)
 ==============
 
