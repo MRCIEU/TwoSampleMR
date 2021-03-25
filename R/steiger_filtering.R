@@ -45,8 +45,8 @@ steiger_filtering_internal <- function(dat)
 	dat <- add_rsq(dat)
 
 	st <- psych::r.test(
-		n = dat$samplesize.exposure, 
-		n2 = dat$samplesize.outcome, 
+		n = dat$effective_n.exposure, 
+		n2 = dat$effective_n.outcome, 
 		r12 = sqrt(dat$rsq.exposure), 
 		r34 = sqrt(dat$rsq.outcome)
 	)

@@ -1,6 +1,6 @@
 #' Estimate r-square of each association
 #'
-#' Can be applied to exposure_dat, outcome_dat or harmonised_data. Note that it will be beneficial in some circumstances to add the meta data to the data object using \code{add_metadata()} before running this function.
+#' Can be applied to exposure_dat, outcome_dat or harmonised_data. Note that it will be beneficial in some circumstances to add the meta data to the data object using \code{add_metadata()} before running this function. Also adds effective sample size for case control data
 #'
 #' @param dat exposure_dat, outcome_dat or harmonised_data
 #'
@@ -61,10 +61,12 @@ add_rsq_one <- function(dat, what="exposure")
 					dat[[paste0("ncontrol.", what)]][ind1],
 					dat[[paste0("prevalence.", what)]]
 				)^2
+				dat[[paste0("effective_n.", what)]][ind1] <- effective_n(dat[[paste0("ncase.", what)]][ind1], dat[[paste0("ncontrol.", what)]][ind1])
 			}
 		} else if(all(grepl("SD", dat[[paste0("units.", what)]])) & all(!is.na(dat[[paste0("eaf.", what)]]))) {
 			dat[[paste0("rsq.", what)]] <- NA
 			dat[[paste0("rsq.", what)]] <- 2 * dat[[paste0("beta.", what)]]^2 * dat[[paste0("eaf.", what)]] * (1-dat[[paste0("eaf.", what)]])
+			dat[[paste0("effective_n.", what)]] <- dat[[paste0("samplesize.", what)]]
 		} else {
 			ind1 <- !is.na(dat[[paste0("pval.", what)]]) & !is.na(dat[[paste0("samplesize.", what)]])
 			dat[[paste0("rsq.", what)]] <- NA
@@ -74,6 +76,7 @@ add_rsq_one <- function(dat, what="exposure")
 					dat[[paste0("pval.", what)]][ind1],
 					dat[[paste0("samplesize.", what)]][ind1]
 				)^2
+				dat[[paste0("effective_n.", what)]] <- dat[[paste0("samplesize.", what)]]
 			}
 		}
 	}
@@ -327,3 +330,16 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 }
 
 
+#' Estimate the effective sample size in a case control study
+#'
+#' Taken from https://www.nature.com/articles/nprot.2014.071
+#'
+#' @param ncase Vector of number of cases
+#' @param ncontrol Vector of number of controls
+#'
+#' @export
+#' @return Vector of effective sample size
+effective_n <- function(ncase, ncontrol)
+{
+	return(2 / (1/ncase + 1/ncontrol))
+}

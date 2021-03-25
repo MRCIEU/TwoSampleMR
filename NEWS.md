@@ -1,3 +1,10 @@
+TwoSampleMR v0.5.7 (Release date: TBC)
+==============
+
+Changes:
+
+* Updated steiger filtering to use effective sample size for case control studies (thanks to @niekverw)
+
 TwoSampleMR v0.5.6 (Release date: 2021-03-25)
 ==============
 
