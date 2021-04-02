@@ -322,10 +322,15 @@ allele_frequency <- function(g)
 #' @return Population allele frequency
 get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 {
-	co <- contingency(af, prop, odds_ratio)
-	af_controls <- co[1,2] / (co[1,2] + co[2,2])
-	af_cases <- co[1,1] / (co[1,1] + co[2,1])
-	af <- af_controls * (1 - prevalence) + af_cases * prevalence
+	stopifnot(length(af) == length(odds_ratio))
+	stopifnot(length(prop) == length(odds_ratio))
+	for(i in 1:length(odds_ratio))
+	{
+		co <- contingency(af[i], prop[i], odds_ratio[i])
+		af_controls <- co[1,2] / (co[1,2] + co[2,2])
+		af_cases <- co[1,1] / (co[1,1] + co[2,1])
+		af[i] <- af_controls * (1 - prevalence) + af_cases * prevalence
+	}
 	return(af)
 }
 

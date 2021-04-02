@@ -44,3 +44,16 @@ test_that("effective n", {
 		effn[1] < effn[2]
 	)
 })
+
+test_that("get_population_allele_frequency", {
+	d <- extract_instruments("ieu-a-7")
+	d <- add_metadata(d)
+	d$eaf.exposure.controls <- get_population_allele_frequency(
+		af = d$eaf.exposure,
+		prop = d$ncase.exposure / (d$ncase.exposure + d$ncontrol.exposure),
+		odds_ratio = exp(d$beta.exposure),
+		prevalence = 0.2
+	)
+	expect_equal(cor(d$eaf.exposure, d$eaf.exposure.controls), 1, tolerance = 0.1)
+})
+
