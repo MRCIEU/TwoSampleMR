@@ -111,7 +111,7 @@ mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_
 		)
 		l_inst[[i]] <- subset(l_full[[i]], pval.outcome < pval_threshold)
 		l_inst[[i]] <- convert_outcome_to_exposure(l_inst[[i]])
-		l_inst[[i]] <- subset(l_full[[i]], pval.exposure < pval_threshold)
+		l_inst[[i]] <- subset(l_inst[[i]], pval.exposure < pval_threshold)
 		l_inst[[i]] <- clump_data(l_inst[[i]], clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb)
 	}
 
