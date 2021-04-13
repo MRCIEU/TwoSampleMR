@@ -586,8 +586,7 @@ harmonise <- function(dat, tolerance, action)
 	d <- rbind(d21, d22, d12, d11)
 	d <- merge(d, dat, by="SNP", all.x=TRUE)
 	d$SNP <- d$orig_SNP
-  	d <- subset(d,select=-orig_SNP)		  
-	
+  	d <- subset(d,select=-orig_SNP)
 	d <- d[order(d$id.outcome), ]
 	d$mr_keep <- TRUE
 
