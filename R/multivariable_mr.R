@@ -10,10 +10,11 @@
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
 #' @param pval_threshold Instrument detection p-value threshold. Default = 5e-8
+#' @param pop Which 1000 genomes super population to use for clumping
 #'
 #' @export
 #' @return data frame in `exposure_dat` format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8)
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR")
 {
 	requireNamespace("reshape2", quietly = TRUE)
 	stopifnot(length(id_exposure) > 1)
@@ -25,7 +26,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 	temp$id.exposure <- 1
 	temp <- temp[order(temp$pval.exposure, decreasing=FALSE), ]
 	temp <- subset(temp, !duplicated(SNP))
-	temp <- clump_data(temp, clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb)
+	temp <- clump_data(temp, clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb, pop=pop)
 	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
 
