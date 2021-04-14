@@ -12,7 +12,8 @@ mv_extract_exposures(
   access_token = ieugwasr::check_access_token(),
   find_proxies = TRUE,
   force_server = FALSE,
-  pval_threshold = 5e-08
+  pval_threshold = 5e-08,
+  pop = "EUR"
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ mv_extract_exposures(
 \item{force_server}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is \code{FALSE}.}
 
 \item{pval_threshold}{Instrument detection p-value threshold. Default = 5e-8}
+
+\item{pop}{Which 1000 genomes super population to use for clumping}
 }
 \value{
 data frame in \code{exposure_dat} format
