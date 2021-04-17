@@ -550,6 +550,9 @@ harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action)
 
 harmonise <- function(dat, tolerance, action)
 {
+	dat$orig_SNP<-dat$SNP
+  	SNP_index<-sapply(1:length(dat$SNP),function(i)sum(dat$SNP[1:i]==dat$SNP[i]))
+  	dat$SNP<-paste0(dat$SNP,"_",SNP_index)
 	SNP <- dat$SNP
 	A1 <- dat$effect_allele.exposure
 	A2 <- dat$other_allele.exposure
@@ -582,6 +585,8 @@ harmonise <- function(dat, tolerance, action)
 
 	d <- rbind(d21, d22, d12, d11)
 	d <- merge(d, dat, by="SNP", all.x=TRUE)
+	d$SNP <- d$orig_SNP
+  	d <- subset(d,select=-orig_SNP)
 	d <- d[order(d$id.outcome), ]
 	d$mr_keep <- TRUE
 
