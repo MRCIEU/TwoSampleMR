@@ -4,6 +4,8 @@ TwoSampleMR v0.5.7 (Release date: TBC)
 Changes:
 
 * Updated steiger filtering to use effective sample size for case control studies (thanks to @niekverw)
+* Fixed issue with tri-allelic SNPs in harmonisation. Credit to Clare Horscroft (@chorscroft) for spotting the error and fixing
+* Fixed an issue with experimental version of local multivariable MR method. Credit to Mischa Lundberg (@MischaLundberg).
 
 TwoSampleMR v0.5.6 (Release date: 2021-03-25)
 ==============
