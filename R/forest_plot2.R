@@ -187,6 +187,7 @@ trim <- function( x ) {
 #' @param n1 number
 #' @param nom name
 #'
+#' @keywords internal
 #' @return text
 create_label <- function(n1, nom)
 {
