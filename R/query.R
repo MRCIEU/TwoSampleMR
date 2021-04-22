@@ -209,6 +209,7 @@ get_se <- function(eff, pval)
 #'
 #' @param d Data frame
 #' @return Data frame
+#' @keywords internal
 format_d <- function(d)
 {
 
