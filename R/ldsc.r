@@ -60,6 +60,7 @@ ldsc_h2_internal <- function(Z, r2, N, W=NULL)
 #' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961. 
 #'
 #' https://github.com/baolinwu/MTAR 
+#' @keywords internal
 ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 {
     if(is.null(W))
