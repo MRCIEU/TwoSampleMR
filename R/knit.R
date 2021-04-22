@@ -17,6 +17,7 @@
 #' same folder as \code{output_filename}.
 #' @param  ... Arguments to be passed to \code{\link[knitr:knit]{knitr::knit}}
 #' @return NULL
+#' @keywords internal
 knit_report <- function(input_filename, output_filename, ...)
 {
 	requireNamespace("knitr", quietly = TRUE)
