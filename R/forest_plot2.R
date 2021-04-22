@@ -161,6 +161,7 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 #'
 #' @param x Character or array of character
 #'
+#' @keywords internal
 #' @return Character or array of character
 simple_cap <- function(x) {
 	sapply(x, function(x){
