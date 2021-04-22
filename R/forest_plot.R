@@ -43,7 +43,8 @@
 #' @param decrease (logical) sort the studies by decreasing effect sizes `TRUE`/`FALSE`?
 #' @param se_Col (character) name of the column giving the standard error of the effect sizes.
 #' @param returnRobj (logical) return the graph as an internal R object `TRUE`/`FALSE`?
-#'
+#' 
+#' @keywords internal
 #' @return grid object giving the forest plot (or plot as pdf)
 #' @importFrom grDevices dev.off pdf
 #' @importFrom stats qnorm
