@@ -221,6 +221,7 @@ create_label <- function(n1, nom)
 #' @param threshold p-value threshold to use for colouring points by significance level. If `NULL` (default) then colour layer won't be applied.
 #'
 #' @return ggplot object
+#' @keywords internal
 forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, threshold=NULL)
 {
 	if(bottom)
