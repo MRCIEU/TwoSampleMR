@@ -60,3 +60,4 @@ grid object giving the forest plot (or plot as pdf)
 \description{
 Grouped forest plot
 }
+\keyword{internal}

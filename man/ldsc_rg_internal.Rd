@@ -38,3 +38,4 @@ Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene ass
 
 https://github.com/baolinwu/MTAR
 }
+\keyword{internal}
