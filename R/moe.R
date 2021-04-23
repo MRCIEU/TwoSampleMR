@@ -1,22 +1,3 @@
-#' Calculate I-square
-#'
-#' @param y Vector of effect estimates
-#' @param s Vector of standard errors
-#'
-#' @export
-#' @return Numeric
-Isq <- function(y,s)
-{
-	k <- length(y)
-	w <- 1/s^2
-	sum.w <- sum(w)
-	mu.hat <- sum(y*w)/sum.w
-	Q <- sum(w*(y-mu.hat)^2)
-	Isq <- (Q - (k-1))/Q
-	Isq <- max(0,Isq)
-	return(Isq)
-}
-
 #' @importFrom stats influence.measures ks.test median pnorm residuals shapiro.test var
 system_metrics <- function(dat)
 {
