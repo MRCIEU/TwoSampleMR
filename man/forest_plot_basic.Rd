@@ -42,3 +42,4 @@ ggplot object
 This function is used to create a basic forest plot.
 It requires the output from \code{\link{format_mr_results}}.
 }
+\keyword{internal}

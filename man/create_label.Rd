@@ -17,3 +17,4 @@ text
 \description{
 Create fixed width label
 }
+\keyword{internal}

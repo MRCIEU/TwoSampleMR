@@ -18,18 +18,18 @@ A package for performing Mendelian randomization using GWAS summary data. It use
 
 To install the latest version of TwoSampleMR, perform as normal:
 
-```
-install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR")
+``` r
+install.packages("remotes")
+remotes::install_github("MRCIEU/TwoSampleMR")
 ```
 
-To update the package just run the `install_github("MRCIEU/TwoSampleMR")` command again.
+To update the package just run the `remotes::install_github("MRCIEU/TwoSampleMR")` command again.
 
 We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:
 
-```
-install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")
+``` r
+install.packages("remotes")
+remotes::install_github("MRCIEU/TwoSampleMR@0.4.26")
 ```
 
 

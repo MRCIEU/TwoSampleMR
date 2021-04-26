@@ -161,6 +161,7 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 #'
 #' @param x Character or array of character
 #'
+#' @keywords internal
 #' @return Character or array of character
 simple_cap <- function(x) {
 	sapply(x, function(x){
@@ -186,6 +187,7 @@ trim <- function( x ) {
 #' @param n1 number
 #' @param nom name
 #'
+#' @keywords internal
 #' @return text
 create_label <- function(n1, nom)
 {
@@ -219,6 +221,7 @@ create_label <- function(n1, nom)
 #' @param threshold p-value threshold to use for colouring points by significance level. If `NULL` (default) then colour layer won't be applied.
 #'
 #' @return ggplot object
+#' @keywords internal
 forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, threshold=NULL)
 {
 	if(bottom)

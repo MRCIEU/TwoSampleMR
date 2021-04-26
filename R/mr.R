@@ -47,7 +47,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 
 
 #' Get list of available MR methods
-#'8
+#' 
 #' @export
 #' @return character vector of method names
 mr_method_list <- function()
@@ -1037,7 +1037,7 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
 #' This is to avoid the problem of averaging over all SNPs, which can suffer bias due to outliers with strong effects; and to avoid excluding SNPs which is implicit in median and mode based estimators
 #' The effect estimate here is not to be interpreted as the effect size - it is the proportion of SNP-exposure and SNP-outcome effects that have concordant signs.
 #' e.g. +1 means all have the same sign, -1 means all have opposite signs, and 0 means that there is an equal number of concordant and discordant signs.
-#' Restricted to only work if there are 6 or more valud SNPs
+#' Restricted to only work if there are 6 or more valid SNPs
 #'
 #' @param b_exp Vector of genetic effects on exposure
 #' @param b_out Vector of genetic effects on outcome

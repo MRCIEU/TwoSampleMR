@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">TwoSampleMR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.6</span>
       </span>
     </div>
 
@@ -75,6 +75,7 @@
 <!-- badges: start -->
 
 <p>A package for performing Mendelian randomization using GWAS summary data. It uses the <a href="https://gwas.mrcieu.ac.uk/">IEU GWAS database</a> to obtain data automatically, and a wide range of methods to run the analysis. You can use the <a href="http://www.mrbase.org/">MR-Base web app</a> to try out a limited range of the functionality in this package, but for any serious work we strongly recommend using this R package.</p>
+<p><strong>Full documentation available here:</strong> <a href="https://mrcieu.github.io/TwoSampleMR/">https://mrcieu.github.io/TwoSampleMR</a></p>
 <div id="january-2020-major-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#january-2020-major-update" class="anchor"></a>January 2020 major update</h2>
@@ -84,12 +85,14 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>To install the latest version of TwoSampleMR, perform as normal:</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR")</a></code></pre>
-<p>To update the package just run the <code>install_github("MRCIEU/TwoSampleMR")</code> command again.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR"</span><span class="op">)</span></code></pre></div>
+<p>To update the package just run the <code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github("MRCIEU/TwoSampleMR")</a></code> command again.</p>
 <p>We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")</a></code></pre>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR@0.4.26"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="docker" class="section level2">
 <h2 class="hasAnchor">
@@ -129,7 +132,6 @@ devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")</a></code></pre>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/MRCIEU/TwoSampleMR/actions?workflow=R-CMD-check"><img src="https://github.com/MRCIEU/TwoSampleMR/workflows/R-CMD-check/badge.svg" alt="Build Status"></a></li>
-<li><a href="https://travis-ci.org/MRCIEU/TwoSampleMR"><img src="https://travis-ci.org/MRCIEU/TwoSampleMR.svg?branch=ieugwasr" alt="Travis build status"></a></li>
 <li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/49515156"><img src="https://zenodo.org/badge/49515156.svg" alt="DOI"></a></li>
 <li><a href="https://codecov.io/gh/MRCIEU/TwoSampleMR?branch=ieugwasr"><img src="https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/ieugwasr/graph/badge.svg" alt="Codecov test coverage"></a></li>
