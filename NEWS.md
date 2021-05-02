@@ -3,6 +3,7 @@ TwoSampleMR v0.5.7 (Release date: TBC)
 
 Changes:
 
+* Some p-values that should have been ~0 were being stored as 1 in the elasticsearch database. This has now been fixed and those datasets have been clumped again to re-define the tophits. A full list of affected GWAS is available here: https://github.com/MRCIEU/opengwas-infpval-fix
 * Updated steiger filtering to use effective sample size for case control studies (thanks to @niekverw)
 * Fixed issue with tri-allelic SNPs in harmonisation. Credit to Clare Horscroft (@chorscroft) for spotting the error and fixing
 * Fixed an issue with experimental version of local multivariable MR method. Credit to Mischa Lundberg (@MischaLundberg).
