@@ -600,7 +600,6 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 		ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=outcome)) + 
 		ggplot2::geom_point(ggplot2::aes(colour=exposure)) + 
 		ggplot2::scale_colour_brewer(type="qual") + 
-		# ggplot2::labs(colour="Exposure") + 
 		ggplot2::labs(colour="Exposure") + 
 		ggplot2::theme(text=ggplot2::element_text(size=10))
 	)

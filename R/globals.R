@@ -15,5 +15,6 @@ utils::globalVariables(c(
   "scale_x_log10", "scale_y_log10", "se", "se.exposure", "se.outcome", "steiger_dir",
   "steiger_filtered", "theme", "theme_bw", "tibble", "tot", "type", "unit", "up", "up_ci",
   "use_by_default", "value", "vgu", "vgx", "word_document",
-  "complete.cases", ".", "eaf", "id", "l2", "l2.x", "n1", "n2", "rsid", "z"
+  "complete.cases", ".", "eaf", "id", "l2", "l2.x", "n1", "n2", "rsid", "z",
+  "orig_SNP"
 ))
