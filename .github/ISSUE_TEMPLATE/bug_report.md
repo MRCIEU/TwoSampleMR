@@ -1,38 +1,37 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
-labels: ''
+title: '[BUG]: '
+labels: 'bug'
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Please make sure that this is a bug! If you have questions about how to use TwoSampleMR please use the [Discussions](https://github.com/MRCIEU/TwoSampleMR/discussions) function instead.**
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## Describe the bug (required)
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+*Provide a clear and concise description of what the bug is*
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## Describe the current behaviour you observe (required)
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+*Include code blocks with any error messages*
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+## Describe the behaviour you expect (required)
 
-**Additional context**
-Add any other context about the problem here.
+## R code to reproduce the issue (required)
+
+*Please provide a minimal code snippet that will reproduce this issue*
+
+## Contribute a solution (optional)
+
+Please submit a pull request and/or briefly describe your proposed solution
+
+## System information
+
+*Please provide details of your operating system and R version*
+
+## Additional context
+
+*Add any other context about the problem here*
+
