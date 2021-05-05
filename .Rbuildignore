@@ -13,4 +13,5 @@
 ^pkgdown$
 figure$
 cache$
-^index.md$
+^index\.md$
+^README\.Rmd$

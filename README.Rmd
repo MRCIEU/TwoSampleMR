@@ -1,0 +1,12 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, child='index.md'}
+```
+
+<!-- Additional content -->
+
+**Full documentation available here:** https://mrcieu.github.io/TwoSampleMR
