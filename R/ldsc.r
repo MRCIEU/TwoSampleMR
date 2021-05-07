@@ -17,7 +17,7 @@ Ghuber <- function (u, k = 30, deriv = 0)
 #' @param N GWAS sample size for each variant (could be different across variants)
 #' @param W variant weight
 #'
-#' @export
+#' @keywords internal
 #' @return model fit
 ldsc_h2_internal <- function(Z, r2, N, W=NULL)
 {
