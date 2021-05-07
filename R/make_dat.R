@@ -12,5 +12,5 @@ make_dat <- function(exposures=c(2,301), outcomes=c(7,1001), proxies=TRUE)
 {
 	a <- extract_instruments(exposures)
 	b <- extract_outcome_data(a$SNP, outcomes, proxies=proxies)
-	return(harmonise_data(a,b))
+	return(harmonise_data(a,b, action=1))
 }
