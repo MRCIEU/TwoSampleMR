@@ -32,3 +32,10 @@ Data frame
 \description{
 Uses PLINK clumping method, where SNPs in LD within a particular window will be pruned. The SNP with the lowest p-value is retained.
 }
+\details{
+This function interacts with the OpenGWAS API, which houses LD reference panels for the 5 super-populations in the 1000 genomes reference panel. It includes only bi-allelic SNPs with MAF > 0.01, so it's quite possible that a variant you want to include in the clumping process will be absent. If it is absent, it will be automatically excluded from the results.
+
+You can check if your variants are present in the LD reference panel using ieugwasr::ld_reflookup()
+
+This function does put load on the OpenGWAS servers, which makes life more difficult for other users. We have implemented a method and made available the LD reference panels to perform clumping locally, see ieugwasr::ld_clump() and related vignettes for details.
+}
