@@ -61,7 +61,7 @@
 
       
 
-      </header><script src="exposure_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="exposure_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Exposure data</h1>
@@ -135,11 +135,11 @@ BMI rs1558902 0.39 0.0204081632653061 A T 0.42 5e-120 kg/m2 FTO 222476
 BMI rs10968576 0.11 0.0204081632653061 G A 0.31 3e-13 kg/m2 LRRN6C 247166
 BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886</code></pre>
 <p>The exact path to the file will be different on everyone’s computer, but it can be located like this:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bmi_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"bmi.txt"</span>, package<span class="op">=</span><span class="st">"TwoSampleMR"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="va">bmi_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"bmi.txt"</span>, package<span class="op">=</span><span class="st">"TwoSampleMR"</span><span class="op">)</span></pre></div>
 <p>You can read the data in like this:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_exposure_data.html">read_exposure_data</a></span><span class="op">(</span><span class="va">bmi_file</span><span class="op">)</span>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_exposure_data.html">read_exposure_data</a></span><span class="op">(</span><span class="va">bmi_file</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">bmi_exp_dat</span><span class="op">)</span>
 <span class="co">#&gt;          SNP beta.exposure se.exposure effect_allele.exposure</span>
 <span class="co">#&gt; 1 rs10767664          0.19  0.03061224                      A</span>
@@ -163,12 +163,12 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886</code>
 <span class="co">#&gt; 5              247166      BMI             TRUE             reported</span>
 <span class="co">#&gt; 6              227886      BMI             TRUE             reported</span>
 <span class="co">#&gt;   units.exposure_dat id.exposure data_source.exposure</span>
-<span class="co">#&gt; 1              kg/m2      mpnXLK             textfile</span>
-<span class="co">#&gt; 2              kg/m2      mpnXLK             textfile</span>
-<span class="co">#&gt; 3              kg/m2      mpnXLK             textfile</span>
-<span class="co">#&gt; 4              kg/m2      mpnXLK             textfile</span>
-<span class="co">#&gt; 5              kg/m2      mpnXLK             textfile</span>
-<span class="co">#&gt; 6              kg/m2      mpnXLK             textfile</span></code></pre></div>
+<span class="co">#&gt; 1              kg/m2      Aa0jhM             textfile</span>
+<span class="co">#&gt; 2              kg/m2      Aa0jhM             textfile</span>
+<span class="co">#&gt; 3              kg/m2      Aa0jhM             textfile</span>
+<span class="co">#&gt; 4              kg/m2      Aa0jhM             textfile</span>
+<span class="co">#&gt; 5              kg/m2      Aa0jhM             textfile</span>
+<span class="co">#&gt; 6              kg/m2      Aa0jhM             textfile</span></pre></div>
 <p>The output from this function is a new data frame with standardised column names:</p>
 <ul>
 <li><code>SNP</code></li>
@@ -188,7 +188,7 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886</code>
 <li><code>samplesize.exposure</code></li>
 </ul>
 <p>The function attempts to match the columns to the ones it expects. It also checks that the data type is as expected.</p>
-<p>If the required data for MR to be performed is not present (SNP name, effect size, standard error, effect allele) for a particular SNP, then the column <code>mr_keep.exposure</code> will be “FALSE.”</p>
+<p>If the required data for MR to be performed is not present (SNP name, effect size, standard error, effect allele) for a particular SNP, then the column <code>mr_keep.exposure</code> will be “FALSE”.</p>
 </div>
 <div id="example-2-the-text-file-has-non-default-column-names" class="section level3">
 <h3 class="hasAnchor">
@@ -200,11 +200,11 @@ rs13078807,0.1,0.020408163,G,A,0.2,4.00E-11,kg/m2,CADM2,221431
 rs1514175,0.07,0.020408163,A,G,0.43,8.00E-14,kg/m2,TNNI3K,207641
 rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <p>Note that this is a CSV file, with commas separating fields. The file is located here:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bmi2_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/bmi.csv"</span>, package<span class="op">=</span><span class="st">"TwoSampleMR"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="va">bmi2_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/bmi.csv"</span>, package<span class="op">=</span><span class="st">"TwoSampleMR"</span><span class="op">)</span></pre></div>
 <p>To read in this data:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_exposure_data.html">read_exposure_data</a></span><span class="op">(</span>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_exposure_data.html">read_exposure_data</a></span><span class="op">(</span>
     filename <span class="op">=</span> <span class="va">bmi2_file</span>,
     sep <span class="op">=</span> <span class="st">","</span>,
     snp_col <span class="op">=</span> <span class="st">"rsid"</span>,
@@ -242,23 +242,23 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="co">#&gt; 5              247166 exposure             TRUE             reported</span>
 <span class="co">#&gt; 6              227886 exposure             TRUE             reported</span>
 <span class="co">#&gt;   units.exposure_dat id.exposure data_source.exposure</span>
-<span class="co">#&gt; 1              kg/m2      QdNytt             textfile</span>
-<span class="co">#&gt; 2              kg/m2      QdNytt             textfile</span>
-<span class="co">#&gt; 3              kg/m2      QdNytt             textfile</span>
-<span class="co">#&gt; 4              kg/m2      QdNytt             textfile</span>
-<span class="co">#&gt; 5              kg/m2      QdNytt             textfile</span>
-<span class="co">#&gt; 6              kg/m2      QdNytt             textfile</span></code></pre></div>
-<p>If the <code>Phenotype</code> column is not provided (as is the case in this example) then it will assume that the phenotype’s name is simply “exposure.” This is entered in the <code>exposure</code> column. It can be renamed manually:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">exposure</span> <span class="op">&lt;-</span> <span class="st">"BMI"</span></code></pre></div>
+<span class="co">#&gt; 1              kg/m2      u040oX             textfile</span>
+<span class="co">#&gt; 2              kg/m2      u040oX             textfile</span>
+<span class="co">#&gt; 3              kg/m2      u040oX             textfile</span>
+<span class="co">#&gt; 4              kg/m2      u040oX             textfile</span>
+<span class="co">#&gt; 5              kg/m2      u040oX             textfile</span>
+<span class="co">#&gt; 6              kg/m2      u040oX             textfile</span></pre></div>
+<p>If the <code>Phenotype</code> column is not provided (as is the case in this example) then it will assume that the phenotype’s name is simply “exposure”. This is entered in the <code>exposure</code> column. It can be renamed manually:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">exposure</span> <span class="op">&lt;-</span> <span class="st">"BMI"</span></pre></div>
 </div>
 </div>
 <div id="using-an-existing-data-frame" class="section level2">
 <h2 class="hasAnchor">
 <a href="#using-an-existing-data-frame" class="anchor"></a>Using an existing data frame</h2>
 <p>If the data already exists as a data frame in R then it can be converted into the correct format using the <code>format_data</code> function. For example, here is some randomly created data:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">random_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="va">random_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
     SNP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"rs1"</span>, <span class="st">"rs2"</span><span class="op">)</span>,
     beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
     se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
@@ -267,10 +267,10 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="va">random_df</span>
 <span class="co">#&gt;   SNP beta se effect_allele</span>
 <span class="co">#&gt; 1 rs1    1  1             A</span>
-<span class="co">#&gt; 2 rs2    2  2             T</span></code></pre></div>
+<span class="co">#&gt; 2 rs2    2  2             T</span></pre></div>
 <p>This can be formatted like so:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">random_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_data.html">format_data</a></span><span class="op">(</span><span class="va">random_df</span>, type<span class="op">=</span><span class="st">"exposure"</span><span class="op">)</span>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="va">random_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_data.html">format_data</a></span><span class="op">(</span><span class="va">random_df</span>, type<span class="op">=</span><span class="st">"exposure"</span><span class="op">)</span>
 <span class="co">#&gt; No phenotype name specified, defaulting to 'exposure'.</span>
 <span class="co">#&gt; Warning in format_data(random_df, type = "exposure"): The following columns are not present but are helpful for harmonisation</span>
 <span class="co">#&gt; other_alleleeaf</span>
@@ -280,26 +280,26 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="co">#&gt; 1 rs1             1           1                      A exposure</span>
 <span class="co">#&gt; 2 rs2             2           2                      T exposure</span>
 <span class="co">#&gt;   mr_keep.exposure pval.exposure pval_origin.exposure id.exposure</span>
-<span class="co">#&gt; 1             TRUE     0.1586553             inferred      n0RQkL</span>
-<span class="co">#&gt; 2             TRUE     0.1586553             inferred      n0RQkL</span>
+<span class="co">#&gt; 1             TRUE     0.1586553             inferred      2x9kKk</span>
+<span class="co">#&gt; 2             TRUE     0.1586553             inferred      2x9kKk</span>
 <span class="co">#&gt;   other_allele.exposure eaf.exposure</span>
 <span class="co">#&gt; 1                    NA           NA</span>
-<span class="co">#&gt; 2                    NA           NA</span></code></pre></div>
+<span class="co">#&gt; 2                    NA           NA</span></pre></div>
 </div>
 <div id="obtaining-instruments-from-existing-catalogues" class="section level2">
 <h2 class="hasAnchor">
 <a href="#obtaining-instruments-from-existing-catalogues" class="anchor"></a>Obtaining instruments from existing catalogues</h2>
 <p>A number of sources of instruments have already been curated and are available for use. They are provided as data objects in the <code>MRInstruments</code> package. To install:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"MRCIEU/MRInstruments"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"MRCIEU/MRInstruments"</span><span class="op">)</span></pre></div>
 <p>This package contains a number of data.frames, each of which is a repository of SNP-trait associations. How to access the data frames is detailed below:</p>
 <div id="gwas-catalog" class="section level3">
 <h3 class="hasAnchor">
 <a href="#gwas-catalog" class="anchor"></a>GWAS catalog</h3>
 <p>The NHGRI-EBI GWAS catalog contains a catalog of significant associations obtained from GWASs. This version of the data is filtered and harmonised to contain associations that have the required data to perform MR, to ensure that the units used to report effect sizes from a particular study are all the same, and other data cleaning operations.</p>
 <p>To use the GWAS catalog:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/MRInstruments">MRInstruments</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/MRInstruments">MRInstruments</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">gwas_catalog</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gwas_catalog</span><span class="op">)</span>
 <span class="co">#&gt;                                                 Phenotype_simple</span>
@@ -364,18 +364,18 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="co">#&gt; 3    unit decrease 0.351806           2019-08-29</span>
 <span class="co">#&gt; 4 NR unit decrease 0.350000           2019-08-29</span>
 <span class="co">#&gt; 5             &lt;NA&gt;       NA           2019-08-29</span>
-<span class="co">#&gt; 6             &lt;NA&gt;       NA           2019-08-29</span></code></pre></div>
+<span class="co">#&gt; 6             &lt;NA&gt;       NA           2019-08-29</span></pre></div>
 <p>For example, to obtain instruments for body mass index using the Speliotes et al 2010 study:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bmi_gwas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">gwas_catalog</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"Speliotes"</span>, <span class="va">Author</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">Phenotype</span> <span class="op">==</span> <span class="st">"Body mass index"</span><span class="op">)</span>
-<span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_data.html">format_data</a></span><span class="op">(</span><span class="va">bmi_gwas</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="va">bmi_gwas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">gwas_catalog</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"Speliotes"</span>, <span class="va">Author</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">Phenotype</span> <span class="op">==</span> <span class="st">"Body mass index"</span><span class="op">)</span>
+<span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_data.html">format_data</a></span><span class="op">(</span><span class="va">bmi_gwas</span><span class="op">)</span></pre></div>
 </div>
 <div id="metabolites" class="section level3">
 <h3 class="hasAnchor">
 <a href="#metabolites" class="anchor"></a>Metabolites</h3>
 <p>Independent top hits from GWASs on 121 metabolites in whole blood are stored in the <code>metab_qtls</code> data object. Use <code><a href="https://rdrr.io/pkg/MRInstruments/man/metab_qtls.html">?metab_qtls</a></code> to get more information.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">metab_qtls</span><span class="op">)</span>
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">metab_qtls</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">metab_qtls</span><span class="op">)</span>
 <span class="co">#&gt;   phenotype chromosome  position       SNP effect_allele other_allele      eaf</span>
 <span class="co">#&gt; 1     AcAce          8   9181395 rs2169387             G            A 0.870251</span>
@@ -390,17 +390,17 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="co">#&gt; 3 -0.091667 0.015885 8.10e-09        14 24742</span>
 <span class="co">#&gt; 4 -0.104582 0.009940 7.40e-26        13 22569</span>
 <span class="co">#&gt; 5 -0.071001 0.009603 1.49e-13        14 24793</span>
-<span class="co">#&gt; 6 -0.069135 0.009598 6.12e-13        14 24792</span></code></pre></div>
+<span class="co">#&gt; 6 -0.069135 0.009598 6.12e-13        14 24792</span></pre></div>
 <p>For example, to obtain instruments for the Alanine:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ala_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_metab_qtls.html">format_metab_qtls</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">metab_qtls</span>, <span class="va">phenotype</span><span class="op">==</span><span class="st">"Ala"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="va">ala_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_metab_qtls.html">format_metab_qtls</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">metab_qtls</span>, <span class="va">phenotype</span><span class="op">==</span><span class="st">"Ala"</span><span class="op">)</span><span class="op">)</span></pre></div>
 </div>
 <div id="proteins" class="section level3">
 <h3 class="hasAnchor">
 <a href="#proteins" class="anchor"></a>Proteins</h3>
 <p>Independent top hits from GWASs on 47 protein levels in whole blood are stored in the <code>proteomic_qtls</code> data object. Use <code><a href="https://rdrr.io/pkg/MRInstruments/man/proteomic_qtls.html">?proteomic_qtls</a></code> to get more information.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">proteomic_qtls</span><span class="op">)</span>
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">proteomic_qtls</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">proteomic_qtls</span><span class="op">)</span>
 <span class="co">#&gt;   analyte chr  position        SNP  gene location annotation other_allele</span>
 <span class="co">#&gt; 1   CFHR1   1 196698945 rs12144939   CFH      cis   missense            T</span>
@@ -415,21 +415,21 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="co">#&gt; 3             A 0.803 0.197  2.64e-54 -0.919 0.05922332</span>
 <span class="co">#&gt; 4             G 0.809 0.191  1.01e-52 -0.882 0.05771545</span>
 <span class="co">#&gt; 5             C 0.676 0.324  2.88e-44 -0.629 0.04506925</span>
-<span class="co">#&gt; 6             G 0.508 0.492  6.66e-44  0.493 0.03547679</span></code></pre></div>
+<span class="co">#&gt; 6             G 0.508 0.492  6.66e-44  0.493 0.03547679</span></pre></div>
 <p>For example, to obtain instruments for the ApoH protein:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">apoh_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_proteomic_qtls.html">format_proteomic_qtls</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">proteomic_qtls</span>, <span class="va">analyte</span><span class="op">==</span><span class="st">"ApoH"</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb16"><pre class="downlit">
+<span class="va">apoh_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_proteomic_qtls.html">format_proteomic_qtls</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">proteomic_qtls</span>, <span class="va">analyte</span><span class="op">==</span><span class="st">"ApoH"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Warning in format_data(proteomic_qtls_subset, type = type, phenotype_col =</span>
 <span class="co">#&gt; "analyte"): effect_allele column is not character data. Coercing...</span>
 <span class="co">#&gt; Warning in format_data(proteomic_qtls_subset, type = type, phenotype_col =</span>
-<span class="co">#&gt; "analyte"): other_allele column is not character data. Coercing...</span></code></pre></div>
+<span class="co">#&gt; "analyte"): other_allele column is not character data. Coercing...</span></pre></div>
 </div>
 <div id="gene-expression-levels" class="section level3">
 <h3 class="hasAnchor">
 <a href="#gene-expression-levels" class="anchor"></a>Gene expression levels</h3>
 <p>Independent top hits from GWASs on 32432 gene identifiers and in 44 tissues are available from the GTEX study in <code>gtex_eqtl</code>. Use <code><a href="https://rdrr.io/pkg/MRInstruments/man/gtex_eqtl.html">?gtex_eqtl</a></code> to get more information.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">gtex_eqtl</span><span class="op">)</span>
+<div class="sourceCode" id="cb17"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">gtex_eqtl</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gtex_eqtl</span><span class="op">)</span>
 <span class="co">#&gt;                 tissue     gene_name gene_start         SNP snp_position</span>
 <span class="co">#&gt; 1 Adipose Subcutaneous RP4-669L17.10   1:317720   rs2519065     1:787151</span>
@@ -444,20 +444,20 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="co">#&gt; 3             T            C  0.807571 0.1776530 8.44694e-06 298</span>
 <span class="co">#&gt; 4             T            C  0.745393 0.0958531 1.82660e-13 298</span>
 <span class="co">#&gt; 5             A            C  1.927250 0.2247390 9.55098e-16 298</span>
-<span class="co">#&gt; 6             A            G  1.000400 0.1787470 5.61079e-08 298</span></code></pre></div>
+<span class="co">#&gt; 6             A            G  1.000400 0.1787470 5.61079e-08 298</span></pre></div>
 <p>For example, to obtain instruments for the IRAK1BP1 gene expression levels in subcutaneous adipose tissue:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">irak1bp1_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_gtex_eqtl.html">format_gtex_eqtl</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">gtex_eqtl</span>, <span class="va">gene_name</span><span class="op">==</span><span class="st">"IRAK1BP1"</span> <span class="op">&amp;</span> <span class="va">tissue</span> <span class="op">==</span> <span class="st">"Adipose Subcutaneous"</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb18"><pre class="downlit">
+<span class="va">irak1bp1_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_gtex_eqtl.html">format_gtex_eqtl</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">gtex_eqtl</span>, <span class="va">gene_name</span><span class="op">==</span><span class="st">"IRAK1BP1"</span> <span class="op">&amp;</span> <span class="va">tissue</span> <span class="op">==</span> <span class="st">"Adipose Subcutaneous"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Warning in format_data(gtex_eqtl_subset, type = type, phenotype_col = type, : The following columns are not present but are helpful for harmonisation</span>
 <span class="co">#&gt; eaf</span>
-<span class="co">#&gt; Inferring p-values</span></code></pre></div>
+<span class="co">#&gt; Inferring p-values</span></pre></div>
 </div>
 <div id="dna-methylation-levels" class="section level3">
 <h3 class="hasAnchor">
 <a href="#dna-methylation-levels" class="anchor"></a>DNA methylation levels</h3>
 <p>Independent top hits from GWASs on 0 DNA methylation levels in whole blood across 5 time points are available from the ARIES study in <code>aries_mqtl</code>. Use <code><a href="https://rdrr.io/pkg/MRInstruments/man/aries_mqtl.html">?aries_mqtl</a></code> to get more information.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">aries_mqtl</span><span class="op">)</span>
+<div class="sourceCode" id="cb19"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">aries_mqtl</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">aries_mqtl</span><span class="op">)</span>
 <span class="co">#&gt;          SNP timepoint        cpg    beta        pval         se snp_chr</span>
 <span class="co">#&gt; 1 esv2656832         1 cg21826606  0.3459 1.60408e-26 0.03265336       1</span>
@@ -479,10 +479,10 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="co">#&gt; 3                      11 69982941    ANO1          Body       cis</span>
 <span class="co">#&gt; 4                      11 69982996    ANO1          Body       cis</span>
 <span class="co">#&gt; 5         S_Shelf      11 74026371                             cis</span>
-<span class="co">#&gt; 6                      16 57727230 CCDC135       TSS1500       cis</span></code></pre></div>
+<span class="co">#&gt; 6                      16 57727230 CCDC135       TSS1500       cis</span></pre></div>
 <p>For example, to obtain instruments for cg25212131 CpG DNA methylation levels in at birth:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cg25212131_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_aries_mqtl.html">format_aries_mqtl</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">aries_mqtl</span>, <span class="va">cpg</span><span class="op">==</span><span class="st">"cg25212131"</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">==</span> <span class="st">"Birth"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit">
+<span class="va">cg25212131_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_aries_mqtl.html">format_aries_mqtl</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">aries_mqtl</span>, <span class="va">cpg</span><span class="op">==</span><span class="st">"cg25212131"</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">==</span> <span class="st">"Birth"</span><span class="op">)</span><span class="op">)</span></pre></div>
 </div>
 <div id="ieu-gwas-database" class="section level3">
 <h3 class="hasAnchor">
@@ -490,11 +490,11 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <p>The IEU GWAS database contains the entire summary statistics for thousands of GWASs. You can browse them here: <a href="https://gwas.mrcieu.ac.uk/" class="uri">https://gwas.mrcieu.ac.uk/</a></p>
 <p>You can use this database to define the instruments for a particular exposure. You can also use this database to obtain the effects for constructing polygenic risk scores using different p-value thresholds.</p>
 <p>You can check the status of the API:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/api_status.html">api_status</a></span><span class="op">(</span><span class="op">)</span>
+<div class="sourceCode" id="cb21"><pre class="downlit">
+<span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ieugwasr/man/api_status.html">api_status</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; API: public: http://gwas-api.mrcieu.ac.uk/</span>
 <span class="co">#&gt; $`API version`</span>
-<span class="co">#&gt; [1] "3.6.16"</span>
+<span class="co">#&gt; [1] "3.6.9"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $Access</span>
 <span class="co">#&gt; [1] "public"</span>
@@ -518,48 +518,50 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span class="co">#&gt; [1] "Available"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Total associations`</span>
-<span class="co">#&gt; [1] 1.84716e+11</span>
+<span class="co">#&gt; [1] 126337358104</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Total complete datasets`</span>
-<span class="co">#&gt; [1] 39719</span>
+<span class="co">#&gt; [1] 34670</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Total public datasets`</span>
-<span class="co">#&gt; [1] 39603</span>
+<span class="co">#&gt; [1] 34513</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attr(,"class")</span>
-<span class="co">#&gt; [1] "ApiStatus"</span></code></pre></div>
+<span class="co">#&gt; [1] "ApiStatus"</span></pre></div>
 <p>To obtain a list and details about the available GWASs do the following:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ao</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/available_outcomes.html">available_outcomes</a></span><span class="op">(</span><span class="op">)</span>
+<div class="sourceCode" id="cb22"><pre class="downlit">
+<span class="va">ao</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/available_outcomes.html">available_outcomes</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ao</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 6 x 22</span>
-<span class="co">#&gt;   id      trait    note  group_name  year    mr author consortium sex   priority</span>
-<span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;chr&gt;    &lt;int&gt;</span>
-<span class="co">#&gt; 1 eqtl-a~ ENSG000~ NA    public      2018     1 Vosa U NA         Male~        0</span>
-<span class="co">#&gt; 2 eqtl-a~ ENSG000~ NA    public      2018     1 Vosa U NA         Male~        0</span>
-<span class="co">#&gt; 3 ukb-e-~ Symptom~ NA    public      2020     1 Pan-U~ NA         Male~        0</span>
-<span class="co">#&gt; 4 eqtl-a~ ENSG000~ NA    public      2018     1 Vosa U NA         Male~        0</span>
-<span class="co">#&gt; 5 eqtl-a~ ENSG000~ NA    public      2018     1 Vosa U NA         Male~        0</span>
-<span class="co">#&gt; 6 eqtl-a~ ENSG000~ NA    public      2018     1 Vosa U NA         Male~        0</span>
-<span class="co">#&gt; # ... with 12 more variables: population &lt;chr&gt;, unit &lt;chr&gt;, sample_size &lt;int&gt;,</span>
-<span class="co">#&gt; #   nsnp &lt;int&gt;, build &lt;chr&gt;, subcategory &lt;chr&gt;, category &lt;chr&gt;, ontology &lt;chr&gt;,</span>
-<span class="co">#&gt; #   ncase &lt;int&gt;, ncontrol &lt;int&gt;, pmid &lt;int&gt;, sd &lt;dbl&gt;</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 6 x 28</span>
+<span class="co">#&gt;   id    trait coverage imputation_panel group_name  year    mr author consortium</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;            &lt;chr&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;     </span>
+<span class="co">#&gt; 1 ieu-… Alco… whole g… HRC              public      2019     1 Liu, M GWAS and …</span>
+<span class="co">#&gt; 2 ieu-… Urin… whole g… &lt;NA&gt;             public      2020     1 Zanet… &lt;NA&gt;      </span>
+<span class="co">#&gt; 3 eqtl… ENSG… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Vosa U NA        </span>
+<span class="co">#&gt; 4 eqtl… ENSG… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Vosa U NA        </span>
+<span class="co">#&gt; 5 eqtl… ENSG… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Vosa U NA        </span>
+<span class="co">#&gt; 6 eqtl… ENSG… &lt;NA&gt;     &lt;NA&gt;             public      2018     1 Vosa U NA        </span>
+<span class="co">#&gt; # … with 19 more variables: sex &lt;chr&gt;, qc_prior_to_upload &lt;chr&gt;, pmid &lt;int&gt;,</span>
+<span class="co">#&gt; #   population &lt;chr&gt;, sample_size &lt;int&gt;, nsnp &lt;int&gt;, build &lt;chr&gt;,</span>
+<span class="co">#&gt; #   study_design &lt;chr&gt;, covariates &lt;chr&gt;, category &lt;chr&gt;, subcategory &lt;chr&gt;,</span>
+<span class="co">#&gt; #   doi &lt;chr&gt;, note &lt;chr&gt;, priority &lt;int&gt;, unit &lt;chr&gt;, ontology &lt;chr&gt;,</span>
+<span class="co">#&gt; #   sd &lt;dbl&gt;, ncase &lt;int&gt;, ncontrol &lt;int&gt;</span></pre></div>
 <p>For information about authentication see <a href="https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication">https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication</a>.</p>
 <p>The <code>available_outcomes</code> function returns a table of all the available studies in the database. Each study has a unique ID. e.g.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">ao</span>, select<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">trait</span>, <span class="va">id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb23"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">ao</span>, select<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">trait</span>, <span class="va">id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 6 x 2</span>
-<span class="co">#&gt;   trait                               id                    </span>
-<span class="co">#&gt;   &lt;chr&gt;                               &lt;chr&gt;                 </span>
-<span class="co">#&gt; 1 ENSG00000198715                     eqtl-a-ENSG00000198715</span>
-<span class="co">#&gt; 2 ENSG00000179950                     eqtl-a-ENSG00000179950</span>
-<span class="co">#&gt; 3 Symptoms involving digestive system ukb-e-561_CSA         </span>
-<span class="co">#&gt; 4 ENSG00000106683                     eqtl-a-ENSG00000106683</span>
-<span class="co">#&gt; 5 ENSG00000143819                     eqtl-a-ENSG00000143819</span>
-<span class="co">#&gt; 6 ENSG00000139574                     eqtl-a-ENSG00000139574</span></code></pre></div>
+<span class="co">#&gt;   trait                          id                    </span>
+<span class="co">#&gt;   &lt;chr&gt;                          &lt;chr&gt;                 </span>
+<span class="co">#&gt; 1 Alcoholic drinks per week      ieu-b-73              </span>
+<span class="co">#&gt; 2 Urinary sodium-potassium ratio ieu-b-72              </span>
+<span class="co">#&gt; 3 ENSG00000267355                eqtl-a-ENSG00000267355</span>
+<span class="co">#&gt; 4 ENSG00000119707                eqtl-a-ENSG00000119707</span>
+<span class="co">#&gt; 5 ENSG00000145632                eqtl-a-ENSG00000145632</span>
+<span class="co">#&gt; 6 ENSG00000144791                eqtl-a-ENSG00000144791</span></pre></div>
 <p>To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bmi2014_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span><span class="op">(</span>outcomes<span class="op">=</span><span class="st">'ieu-a-2'</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit">
+<span class="va">bmi2014_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span><span class="op">(</span>outcomes<span class="op">=</span><span class="st">'ieu-a-2'</span><span class="op">)</span></pre></div>
 <p>This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can specify various parameters for this function:</p>
 <ul>
 <li>
@@ -579,11 +581,11 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <a href="#clumping" class="anchor"></a>Clumping</h2>
 <p>For standard two sample MR it is important to ensure that the instruments for the exposure are independent. Once instruments have been identified for an exposure variable, the IEU GWAS database can be used to perform clumping.</p>
 <p>You can provide a list of SNP IDs, the SNPs will be extracted from 1000 genomes data, LD calculated between them, and amongst those SNPs that have LD R-square above the specified threshold only the SNP with the lowest P-value will be retained. To do this, use the following command:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clump_data.html">clump_data</a></span><span class="op">(</span><span class="va">bmi_exp_dat</span><span class="op">)</span>
+<div class="sourceCode" id="cb25"><pre class="downlit">
+<span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clump_data.html">clump_data</a></span><span class="op">(</span><span class="va">bmi_exp_dat</span><span class="op">)</span>
 <span class="co">#&gt; Please look at vignettes for options on running this locally if you need to run many instances of this command.</span>
-<span class="co">#&gt; Clumping QdNytt, 30 variants, using EUR population reference</span>
-<span class="co">#&gt; Removing 3 of 30 variants due to LD with other variants or absence from LD reference panel</span></code></pre></div>
+<span class="co">#&gt; Clumping u040oX, 30 variants, using EUR population reference</span>
+<span class="co">#&gt; Removing 3 of 30 variants due to LD with other variants or absence from LD reference panel</span></pre></div>
 <p>The <code>clump_data</code> command takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the R/MRInstruments package the SNPs are already LD clumped.</p>
 <p><strong>Note:</strong> The LD reference panel only includes SNPs (no INDELs). There are five super-populations from which LD can be calculated, by default European samples are used. Only SNPs with MAF &gt; 0.01 within-population are available.</p>
 <p><strong>NOTE:</strong> If a variant is dropped from your unclumped data it could be because it is absent from the reference panel. For more flexibility, including using your own LD reference data, see here: <a href="https://mrcieu.github.io/ieugwasr/" class="uri">https://mrcieu.github.io/ieugwasr/</a></p>

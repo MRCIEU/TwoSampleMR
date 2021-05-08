@@ -61,7 +61,7 @@
 
       
 
-      </header><script src="introduction_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="introduction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction</h1>
@@ -84,7 +84,7 @@
 <li>the statistical routines to estimate the causal effects</li>
 <li>connection to a large repository of the actual GWAS summary statistics needed to perform the analyses.</li>
 </ul>
-<p>The general principles <span class="citation">(G. Davey Smith and Ebrahim 2003; George Davey Smith and Hemani 2014)</span>, and statistical methods <span class="citation">(Pierce and Burgess 2013; Bowden, Davey Smith, and Burgess 2015)</span> can be found elsewhere, here we will just outline how to use the R package.</p>
+<p>The general principles <span class="citation">(Davey Smith and Ebrahim 2003; Davey Smith and Hemani 2014)</span>, and statistical methods <span class="citation">(Pierce and Burgess 2013; Bowden, Davey Smith, and Burgess 2015)</span> can be found elsewhere, here we will just outline how to use the R package.</p>
 <p>This package uses the <a href="https://github.com/mrcieu/ieugwasr">ieugwasr</a> package to connect to the database of thousands of complete GWAS summary data.</p>
 <hr>
 </div>
@@ -92,9 +92,9 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>To install directly from the GitHub repository do the following:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/">devtools</a></span><span class="op">)</span>
-<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/">devtools</a></span><span class="op">)</span>
+<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR"</span><span class="op">)</span></pre></div>
 <p>If you don’t have the <code>devtools</code> package install it from CRAN using <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")</a></code>.</p>
 <hr>
 </div>
@@ -111,8 +111,8 @@
 <p>A diagramatic overview is shown here:</p>
 <p><img src="https://drive.google.com/uc?id=1yHTkn-kVqZzsQfQdXBHZBGdFWj8gSsPQ" width="800"></p>
 <p>A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
+<div class="sourceCode" id="cb2"><pre class="downlit">
+
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">TwoSampleMR</span><span class="op">)</span>
 
 <span class="co"># List available GWASs</span>
@@ -128,7 +128,7 @@
 <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span><span class="va">exposure_dat</span>, <span class="va">outcome_dat</span><span class="op">)</span>
 
 <span class="co"># Perform MR</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></pre></div>
 <p>Each step is documented on other pages in the documentation.</p>
 </div>
 <div id="authentication" class="section level2">
@@ -145,18 +145,18 @@
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
 <p><br></p>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Bowden2015" class="csl-entry">
-Bowden, Jack, George Davey Smith, and Stephen Burgess. 2015. <span>“<span class="nocase">Mendelian randomization with invalid instruments: effect estimation and bias detection through Egger regression</span>.”</span> <em>International Journal of Epidemiology</em> In press.
+<div id="refs" class="references">
+<div id="ref-Bowden2015">
+<p>Bowden, Jack, George Davey Smith, and Stephen Burgess. 2015. “Mendelian randomization with invalid instruments: effect estimation and bias detection through Egger regression.” <em>International Journal of Epidemiology</em> In press.</p>
 </div>
-<div id="ref-DaveySmith2003" class="csl-entry">
-Davey Smith, G., and S. Ebrahim. 2003. <span>“<span class="nocase">’Mendelian randomization’: can genetic epidemiology contribute to understanding environmental determinants of disease?</span>”</span> <em>International Journal of Epidemiology</em> 32 (1): 1–22. <a href="https://doi.org/10.1093/ije/dyg070">https://doi.org/10.1093/ije/dyg070</a>.
+<div id="ref-DaveySmith2003">
+<p>Davey Smith, G., and S. Ebrahim. 2003. “’Mendelian randomization’: can genetic epidemiology contribute to understanding environmental determinants of disease?” <em>International Journal of Epidemiology</em> 32 (1): 1–22. <a href="https://doi.org/10.1093/ije/dyg070">https://doi.org/10.1093/ije/dyg070</a>.</p>
 </div>
-<div id="ref-DaveySmithHemani2014" class="csl-entry">
-Davey Smith, George, and Gibran Hemani. 2014. <span>“<span class="nocase">Mendelian randomization: genetic anchors for causal inference in epidemiological studies</span>.”</span> <em>Human Molecular Genetics</em> 23 (R1): R89—–R98. <a href="https://doi.org/10.1093/hmg/ddu328">https://doi.org/10.1093/hmg/ddu328</a>.
+<div id="ref-DaveySmithHemani2014">
+<p>Davey Smith, George, and Gibran Hemani. 2014. “Mendelian randomization: genetic anchors for causal inference in epidemiological studies.” <em>Human Molecular Genetics</em> 23 (R1): R89—–R98. <a href="https://doi.org/10.1093/hmg/ddu328">https://doi.org/10.1093/hmg/ddu328</a>.</p>
 </div>
-<div id="ref-Pierce2013" class="csl-entry">
-Pierce, Brandon L, and Stephen Burgess. 2013. <span>“<span class="nocase">Efficient design for Mendelian randomization studies: subsample and 2-sample instrumental variable estimators.</span>”</span> <em>American Journal of Epidemiology</em> 178 (7): 1177–84. <a href="https://doi.org/10.1093/aje/kwt084">https://doi.org/10.1093/aje/kwt084</a>.
+<div id="ref-Pierce2013">
+<p>Pierce, Brandon L, and Stephen Burgess. 2013. “Efficient design for Mendelian randomization studies: subsample and 2-sample instrumental variable estimators.” <em>American Journal of Epidemiology</em> 178 (7): 1177–84. <a href="https://doi.org/10.1093/aje/kwt084">https://doi.org/10.1093/aje/kwt084</a>.</p>
 </div>
 </div>
 </div>
