@@ -29,8 +29,12 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 		}
 		info <- subset(info, select=c("id", cols))
 		names(info) <- paste0(names(info), ".", what)
-		index <- grepl("ukb-d", info$id) & is.na(info$sample_size)
-		info$sample_size[index] <- 300000
+		names(info)[names(info) == paste0("sample_size.", what)] <- paste0("samplesize.", what)
+		if("sample_size" %in% cols)
+		{
+			index <- grepl("ukb-d", info$id) & is.na(info[[paste0("samplesize.", what)]])
+			info[[paste0("samplesize.", what)]][index] <- 300000
+		}
 		return(info)
 	}
 
@@ -42,7 +46,18 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 		info <- get_info(id=exposure_id, what="exposure", cols=cols)
 		if(!is.null(info))
 		{
-			dat <- merge(dat, info, by="id.exposure", all.x=TRUE)
+			for(x in names(info))
+			{
+				if(! x %in% names(dat))
+				{
+					dat[[x]] <- NA
+				}
+
+				for(id in unique(info[["id.exposure"]]))
+				{
+					dat[[x]][is.na(dat[[x]]) & dat[["id.exposure"]] == id] <- info[[x]][info[["id.exposure"]] == id]
+				}
+			}
 		}
 	}
 
@@ -52,7 +67,18 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 		info <- get_info(id=outcome_id, what="outcome", cols=cols)
 		if(!is.null(info))
 		{
-			dat <- merge(dat, info, by="id.outcome", all.x=TRUE)
+			for(x in names(info))
+			{
+				if(! x %in% names(dat))
+				{
+					dat[[x]] <- NA
+				}
+
+				for(id in unique(info[["id.outcome"]]))
+				{
+					dat[[x]][is.na(dat[[x]]) & dat[["id.outcome"]] == id] <- info[[x]][info[["id.outcome"]] == id]
+				}
+			}
 		}
 	}
 

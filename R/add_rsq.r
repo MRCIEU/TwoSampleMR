@@ -62,6 +62,8 @@ add_rsq_one <- function(dat, what="exposure")
 					dat[[paste0("prevalence.", what)]]
 				)^2
 				dat[[paste0("effective_n.", what)]][ind1] <- effective_n(dat[[paste0("ncase.", what)]][ind1], dat[[paste0("ncontrol.", what)]][ind1])
+			} else {
+				message("Try adding metadata with add_metadata()")
 			}
 		} else if(all(grepl("SD", dat[[paste0("units.", what)]])) & all(!is.na(dat[[paste0("eaf.", what)]]))) {
 			dat[[paste0("rsq.", what)]] <- NA
@@ -72,11 +74,14 @@ add_rsq_one <- function(dat, what="exposure")
 			dat[[paste0("rsq.", what)]] <- NA
 			if(sum(ind1) > 0)
 			{		
-				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_pn(
-					dat[[paste0("pval.", what)]][ind1],
+				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_bsen(
+					dat[[paste0("beta.", what)]][ind1],
+					dat[[paste0("se.", what)]][ind1],
 					dat[[paste0("samplesize.", what)]][ind1]
 				)^2
 				dat[[paste0("effective_n.", what)]] <- dat[[paste0("samplesize.", what)]]
+			} else {
+				message("Try adding metadata with add_metadata()")
 			}
 		}
 	}
@@ -152,18 +157,18 @@ get_p_from_r2n <- function(r2, n)
 
 #' Calculate variance explained from p vals and sample size
 #'
+#' This method is an approximation, and may be numerically unstable.
+#' Ideally you should estimate r directly from independent replication samples.
+#' Use get_r_from_lor for binary traits.
+#'
 #' @param p Array of pvals
 #' @param n Array of sample sizes
 #'
 #' @export
-#' @return r value
+#' @return Vector of r values (all arbitrarily positive)
 #' @importFrom stats optim qf
 get_r_from_pn <- function(p, n)
 {
-	message("Estimating correlation for quantitative trait.")
-	message("This method is an approximation, and may be numerically unstable.")
-	message("Ideally you should estimate r directly from independent replication samples.")
-	message("Use get_r_from_lor for binary traits.")
 	optim.get_p_from_rn <- function(x, sample_size, pvalue)
 	{
 		abs(-log10(suppressWarnings(get_p_from_r2n(x, sample_size))) - -log10(pvalue))
@@ -195,6 +200,21 @@ get_r_from_pn <- function(p, n)
 	return(sqrt(R2))
 }
 
+#' Estimate Rsq from beta, standard error and sample size
+#'
+#' @param b Array of effect sizes
+#' @param se Array of standard errors
+#' @param n Array of (effective) sample sizes
+#'
+#' @export
+#' @return Vector of signed r values
+get_r_from_bsen <- function(b, se, n)
+{
+	Fval <- (b/se)^2
+	R2 <- Fval / (n-2+Fval)
+	return(sqrt(R2) * sign(b))
+}
+
 compareNA <- function(v1,v2) {
     same <- (v1 == v2) | (is.na(v1) & is.na(v2))
     same[is.na(same)] <- FALSE
@@ -217,7 +237,7 @@ compareNA <- function(v1,v2) {
 #' @param correction Scale the estimated r by correction value. The default is `FALSE`.
 #'
 #' @export
-#' @return Vector of r values
+#' @return Vector of signed r values
 get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", correction=FALSE)
 {
 	stopifnot(length(lor) == length(af))
@@ -256,7 +276,7 @@ get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", 
 		{
 			r[i] <- r[i] / 0.58
 		}
-		r[i] <- sqrt(r[i])
+		r[i] <- sqrt(r[i]) * sign(lor[i])
 	}
 	return(r)
 }

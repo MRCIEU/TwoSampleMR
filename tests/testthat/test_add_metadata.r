@@ -47,3 +47,16 @@ test_that("ukb-d", {
 	d <- add_metadata(d)
 	expect_true("units.outcome" %in% names(d))
 })
+
+test_that("bbj-a-1", {
+	d <- extract_instruments("bbj-a-1")	%>% add_metadata()
+	expect_true("samplesize.exposure" %in% names(d))
+	expect_true(all(!is.na(d$samplesize.exposure)))
+})
+
+test_that("ieu-b-109", {
+	expect_warning(d <- extract_instruments("ieu-b-109") %>% add_metadata())
+	expect_true("samplesize.exposure" %in% names(d))
+	expect_true(all(!is.na(d$samplesize.exposure)))
+})
+

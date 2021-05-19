@@ -57,3 +57,15 @@ test_that("get_population_allele_frequency", {
 	expect_equal(cor(d$eaf.exposure, d$eaf.exposure.controls), 1, tolerance = 0.1)
 })
 
+test_that("bbj-a-1", {
+	d <- extract_instruments('bbj-a-1') %>% add_metadata() %>% add_rsq()
+	expect_true(all(!is.na(d$rsq.exposure)))
+})
+
+test_that("bsen vs pn", {
+	d <- extract_instruments("ieu-a-2")
+	r1 <- get_r_from_bsen(d$beta.exposure, d$se.exposure, d$samplesize.exposure)
+	r2 <- get_r_from_pn(d$pval.exposure, d$samplesize.exposure)
+	expect_true(cor(abs(r1), r2) > 0.99)
+})
+

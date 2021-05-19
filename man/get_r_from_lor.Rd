@@ -30,7 +30,7 @@ get_r_from_lor(
 \item{correction}{Scale the estimated r by correction value. The default is \code{FALSE}.}
 }
 \value{
-Vector of r values
+Vector of signed r values
 }
 \description{
 This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis.

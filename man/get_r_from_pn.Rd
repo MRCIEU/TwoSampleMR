@@ -12,8 +12,10 @@ get_r_from_pn(p, n)
 \item{n}{Array of sample sizes}
 }
 \value{
-r value
+Vector of r values (all arbitrarily positive)
 }
 \description{
-Calculate variance explained from p vals and sample size
+This method is an approximation, and may be numerically unstable.
+Ideally you should estimate r directly from independent replication samples.
+Use get_r_from_lor for binary traits.
 }

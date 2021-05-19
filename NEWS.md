@@ -7,6 +7,8 @@ Changes:
 * Updated steiger filtering to use effective sample size for case control studies (thanks to @niekverw)
 * Fixed issue with tri-allelic SNPs in harmonisation. Credit to Clare Horscroft (@chorscroft) for spotting the error and fixing
 * Fixed an issue with experimental version of local multivariable MR method. Credit to Mischa Lundberg (@MischaLundberg).
+* Catching edge cases for retrieving sample size meta data
+* Updating default rsq estimation function to use beta and standard error instead of p-value, should improve numerical stability
 
 TwoSampleMR v0.5.6 (Release date: 2021-03-25)
 ==============
