@@ -9,6 +9,7 @@ Changes:
 * Fixed an issue with experimental version of local multivariable MR method. Credit to Mischa Lundberg (@MischaLundberg).
 * Catching edge cases for retrieving sample size meta data
 * Updating default rsq estimation function to use beta and standard error instead of p-value, should improve numerical stability
+* Allow chr and pos to be read in from local summary data files
 
 TwoSampleMR v0.5.6 (Release date: 2021-03-25)
 ==============

@@ -24,10 +24,12 @@
 #' @param id_col Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is `"id"`.
 #' @param min_pval Minimum allowed p-value. The default is `1e-200`.
 #' @param log_pval The pval is -log10(P). The default is `FALSE`.
+#' @param chr_col Optional column name for chromosome. Default is `"chr"`.
+#' @param pos_col Optional column name for genetic position Default is `"pos"`.
 #'
 #' @export
 #' @return data frame
-read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE)
+read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE, chr_col="chr", pos_col="pos")
 {
 	outcome_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	outcome_dat <- format_data(
@@ -49,7 +51,9 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 		gene_col=gene_col,
 		id_col=id_col,
 		min_pval=min_pval,
-		log_pval=log_pval
+		log_pval=log_pval,
+		chr_col=chr_col,
+		pos_col=pos_col
 	)
 	outcome_dat$data_source.outcome <- "textfile"
 	return(outcome_dat)
@@ -79,10 +83,12 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #' @param id_col Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is `"id"`.
 #' @param min_pval Minimum allowed p-value. The default is `1e-200`.
 #' @param log_pval The p-value is -log10(P). The default is `FALSE`.
+#' @param chr_col Optional column name for chromosome. Default is `"chr"`.
+#' @param pos_col Optional column name for genetic position Default is `"pos"`.
 #'
 #' @export
 #' @return data frame
-read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE)
+read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE, chr_col="chr", pos_col="pos")
 {
 	exposure_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
@@ -104,7 +110,9 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 		gene_col=gene_col,
 		id_col=id_col,
 		min_pval=min_pval,
-		log_pval=log_pval
+		log_pval=log_pval,
+		chr_col=chr_col,
+		pos_col=pos_col
 	)
 	exposure_dat$data_source.exposure <- "textfile"
 	if(clump)
