@@ -23,7 +23,9 @@ read_outcome_data(
   gene_col = "gene",
   id_col = "id",
   min_pval = 1e-200,
-  log_pval = FALSE
+  log_pval = FALSE,
+  chr_col = "chr",
+  pos_col = "pos"
 )
 }
 \arguments{
@@ -64,6 +66,10 @@ read_outcome_data(
 \item{min_pval}{Minimum allowed p-value. The default is \code{1e-200}.}
 
 \item{log_pval}{The pval is -log10(P). The default is \code{FALSE}.}
+
+\item{chr_col}{Optional column name for chromosome. Default is \code{"chr"}.}
+
+\item{pos_col}{Optional column name for genetic position Default is \code{"pos"}.}
 }
 \value{
 data frame
