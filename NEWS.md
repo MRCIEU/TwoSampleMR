@@ -10,6 +10,7 @@ Changes:
 * Catching edge cases for retrieving sample size meta data
 * Updating default rsq estimation function to use beta and standard error instead of p-value, should improve numerical stability
 * Allow chr and pos to be read in from local summary data files
+* When reading in local data without p-values, editing the inferred p-value method to be two-sided
 
 TwoSampleMR v0.5.6 (Release date: 2021-03-25)
 ==============

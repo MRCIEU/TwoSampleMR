@@ -372,7 +372,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
 	if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat) & ! "pval.outcome" %in% names(dat))
 	{
 		message("Inferring p-values")
-		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE)
+		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE) * 2
 		dat$pval_origin.outcome <- "inferred"
 	}
 	
