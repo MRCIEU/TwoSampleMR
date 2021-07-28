@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate variance explained from p vals and sample size — get_r_from_pn • TwoSampleMR</title>
+<title>Estimate Rsq from beta, standard error and sample size — get_r_from_bsen • TwoSampleMR</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Calculate variance explained from p vals and sample size — get_r_from_pn" />
-<meta property="og:description" content="This method is an approximation, and may be numerically unstable.
-Ideally you should estimate r directly from independent replication samples.
-Use get_r_from_lor for binary traits." />
+<meta property="og:title" content="Estimate Rsq from beta, standard error and sample size — get_r_from_bsen" />
+<meta property="og:description" content="Estimate Rsq from beta, standard error and sample size" />
 
 
 
@@ -107,35 +105,37 @@ Use get_r_from_lor for binary traits." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate variance explained from p vals and sample size</h1>
+    <h1>Estimate Rsq from beta, standard error and sample size</h1>
     
-    <div class="hidden name"><code>get_r_from_pn.Rd</code></div>
+    <div class="hidden name"><code>get_r_from_bsen.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This method is an approximation, and may be numerically unstable.
-Ideally you should estimate r directly from independent replication samples.
-Use get_r_from_lor for binary traits.</p>
+    <p>Estimate Rsq from beta, standard error and sample size</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_r_from_pn</span><span class='op'>(</span><span class='va'>p</span>, <span class='va'>n</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_r_from_bsen</span><span class='op'>(</span><span class='va'>b</span>, <span class='va'>se</span>, <span class='va'>n</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>p</th>
-      <td><p>Array of pvals</p></td>
+      <th>b</th>
+      <td><p>Array of effect sizes</p></td>
+    </tr>
+    <tr>
+      <th>se</th>
+      <td><p>Array of standard errors</p></td>
     </tr>
     <tr>
       <th>n</th>
-      <td><p>Array of sample sizes</p></td>
+      <td><p>Array of (effective) sample sizes</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Vector of r values (all arbitrarily positive)</p>
+    <p>Vector of signed r values</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
