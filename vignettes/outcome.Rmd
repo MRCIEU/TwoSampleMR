@@ -77,7 +77,7 @@ chd_out_dat <- extract_outcome_data(
 )
 ```
 
-The `extract_outcome_data` is a flexible function. The `snps` argument only requires an array of rsIDs, and the `outcomes` variable can be a vector of outcomes. e.g.
+The `extract_outcome_data()` function is flexible. The `snps` argument only requires an array of rsIDs, and the `outcomes` argument can be a vector of outcomes, e.g.
 ```{r eval=FALSE}
 chd_out_dat  <- extract_outcome_data(c("rs234", "rs17097147"), c('ieu-a-2', 'ieu-a-7'))
 ```
