@@ -176,5 +176,3 @@ https://github.com/mrcieu/gwasvcf
 and this package for how to connect the data to other packages including TwoSampleMR
 
 https://github.com/MRCIEU/gwasglue
-
-
