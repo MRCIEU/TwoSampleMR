@@ -37,7 +37,7 @@ https://gwas.mrcieu.ac.uk/
 
 To obtain details about the available GWASs programmatically do the following:
 
-```{r }
+```{r}
 ao <- available_outcomes()
 head(ao)
 ```
@@ -46,7 +46,7 @@ For information about authentication see [https://github.com/MRCIEU/ieugwasr/blo
 
 The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
 
-```{r }
+```{r}
 head(subset(ao, select=c(trait, id)))
 ```
 
@@ -64,13 +64,13 @@ head(bmi_exp_dat)
 
 We now need to find a suitable GWAS for coronary heart disease. We can search the available studies:
 
-```{r }
+```{r}
 ao[grepl("heart disease", ao$trait), ]
 ```
 
 The most recent CARDIOGRAM GWAS is ID number `ieu-a-7`. We can extract the BMI SNPs from this GWAS as follows:
 
-```{r }
+```{r}
 chd_out_dat <- extract_outcome_data(
 	snps = bmi_exp_dat$SNP,
 	outcomes = 'ieu-a-7'
