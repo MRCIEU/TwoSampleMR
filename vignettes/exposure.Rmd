@@ -143,14 +143,11 @@ bmi_exp_dat <- read_exposure_data(
 head(bmi_exp_dat)
 ```
 
-
 If the `Phenotype` column is not provided (as is the case in this example) then it will assume that the phenotype's name is simply "exposure". This is entered in the `exposure` column. It can be renamed manually:
-
 
 ```{r }
 bmi_exp_dat$exposure <- "BMI"
 ```
-
 
 ## Using an existing data frame
 
@@ -172,7 +169,6 @@ This can be formatted like so:
 random_exp_dat <- format_data(random_df, type="exposure")
 random_exp_dat
 ```
-
 
 ## Obtaining instruments from existing catalogues
 
@@ -203,11 +199,9 @@ bmi_gwas <- subset(gwas_catalog, grepl("Speliotes", Author) & Phenotype == "Body
 bmi_exp_dat <- format_data(bmi_gwas)
 ```
 
-
 ### Metabolites
 
 Independent top hits from GWASs on `r length(unique(metab_qtls$phenotype))` metabolites in whole blood are stored in the `metab_qtls` data object. Use `?metab_qtls` to get more information.
-
 
 ```{r}
 data(metab_qtls)
@@ -223,7 +217,6 @@ ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype=="Ala"))
 ### Proteins
 
 Independent top hits from GWASs on `r length(unique(proteomic_qtls$analyte))` protein levels in whole blood are stored in the `proteomic_qtls` data object. Use `?proteomic_qtls` to get more information.
-
 
 ```{r}
 data(proteomic_qtls)
@@ -250,7 +243,6 @@ For example, to obtain instruments for the IRAK1BP1 gene expression levels in su
 ```{r }
 irak1bp1_exp_dat <- format_gtex_eqtl(subset(gtex_eqtl, gene_name=="IRAK1BP1" & tissue == "Adipose Subcutaneous"))
 ```
-
 
 ### DNA methylation levels
 
