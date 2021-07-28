@@ -103,8 +103,7 @@ The output from this function is a new data frame with standardised column names
 
 The function attempts to match the columns to the ones it expects. It also checks that the data type is as expected.
 
-If the required data for MR to be performed is not present (SNP name, effect size, standard error, effect allele) for a particular SNP, then the column `mr_keep.exposure` will be "FALSE". 
-
+If the required data for MR to be performed is not present (SNP name, effect size, standard error, effect allele) for a particular SNP, then the column `mr_keep.exposure` will be `FALSE`. 
 
 ### Example 2: The text file has non-default column names
 
@@ -144,14 +143,11 @@ bmi_exp_dat <- read_exposure_data(
 head(bmi_exp_dat)
 ```
 
-
 If the `Phenotype` column is not provided (as is the case in this example) then it will assume that the phenotype's name is simply "exposure". This is entered in the `exposure` column. It can be renamed manually:
-
 
 ```{r }
 bmi_exp_dat$exposure <- "BMI"
 ```
-
 
 ## Using an existing data frame
 
@@ -173,7 +169,6 @@ This can be formatted like so:
 random_exp_dat <- format_data(random_df, type="exposure")
 random_exp_dat
 ```
-
 
 ## Obtaining instruments from existing catalogues
 
@@ -200,15 +195,15 @@ head(gwas_catalog)
 For example, to obtain instruments for body mass index using the Speliotes et al 2010 study:
 
 ```{r eval=FALSE}
-bmi_gwas <- subset(gwas_catalog, grepl("Speliotes", Author) & Phenotype == "Body mass index")
+bmi_gwas <-
+  subset(gwas_catalog,
+         grepl("Speliotes", Author) & Phenotype == "Body mass index")
 bmi_exp_dat <- format_data(bmi_gwas)
 ```
-
 
 ### Metabolites
 
 Independent top hits from GWASs on `r length(unique(metab_qtls$phenotype))` metabolites in whole blood are stored in the `metab_qtls` data object. Use `?metab_qtls` to get more information.
-
 
 ```{r}
 data(metab_qtls)
@@ -225,7 +220,6 @@ ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype=="Ala"))
 
 Independent top hits from GWASs on `r length(unique(proteomic_qtls$analyte))` protein levels in whole blood are stored in the `proteomic_qtls` data object. Use `?proteomic_qtls` to get more information.
 
-
 ```{r}
 data(proteomic_qtls)
 head(proteomic_qtls)
@@ -234,7 +228,8 @@ head(proteomic_qtls)
 For example, to obtain instruments for the ApoH protein:
 
 ```{r }
-apoh_exp_dat <- format_proteomic_qtls(subset(proteomic_qtls, analyte=="ApoH"))
+apoh_exp_dat <-
+  format_proteomic_qtls(subset(proteomic_qtls, analyte == "ApoH"))
 ```
 
 ### Gene expression levels
@@ -249,9 +244,12 @@ head(gtex_eqtl)
 For example, to obtain instruments for the IRAK1BP1 gene expression levels in subcutaneous adipose tissue:
 
 ```{r }
-irak1bp1_exp_dat <- format_gtex_eqtl(subset(gtex_eqtl, gene_name=="IRAK1BP1" & tissue == "Adipose Subcutaneous"))
+irak1bp1_exp_dat <-
+  format_gtex_eqtl(subset(
+    gtex_eqtl,
+    gene_name == "IRAK1BP1" & tissue == "Adipose Subcutaneous"
+  ))
 ```
-
 
 ### DNA methylation levels
 
@@ -265,9 +263,10 @@ head(aries_mqtl)
 For example, to obtain instruments for cg25212131 CpG DNA methylation levels in at birth:
 
 ```{r }
-cg25212131_exp_dat <- format_aries_mqtl(subset(aries_mqtl, cpg=="cg25212131" & age == "Birth"))
+cg25212131_exp_dat <-
+  format_aries_mqtl(subset(aries_mqtl, cpg == "cg25212131" &
+                             age == "Birth"))
 ```
-
 
 ### IEU GWAS database
 
@@ -305,7 +304,7 @@ bmi2014_exp_dat <- extract_instruments(outcomes='ieu-a-2')
 This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can specify various parameters for this function:
 
 - `p1` = P-value threshold for keeping a SNP
-- `clump` = Whether or not to return independent SNPs only (default=TRUE)
+- `clump` = Whether or not to return independent SNPs only (default is `TRUE`)
 - `r2` = The maximum LD R-square allowed between returned SNPs
 - `kb` = The distance in which to search for LD R-square values
 
@@ -327,4 +326,3 @@ The `clump_data` command takes any data frame that has been formatted to be an e
 **Note:** The LD reference panel only includes SNPs (no INDELs). There are five super-populations from which LD can be calculated, by default European samples are used. Only SNPs with MAF > 0.01 within-population are available.
 
 **NOTE:** If a variant is dropped from your unclumped data it could be because it is absent from the reference panel. For more flexibility, including using your own LD reference data, see here: https://mrcieu.github.io/ieugwasr/
-

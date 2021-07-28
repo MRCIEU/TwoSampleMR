@@ -113,11 +113,16 @@
 <a href="#twosamplemr-v057-release-date-tbc" class="anchor"></a>TwoSampleMR v0.5.7 (Release date: TBC)</h1>
 <p>Changes:</p>
 <ul>
+<li>Fix error in outcome data vignette (thanks @hdraisma)</li>
 <li>Some p-values that should have been ~0 were being stored as 1 in the elasticsearch database. This has now been fixed and those datasets have been clumped again to re-define the tophits. A full list of affected GWAS is available here: <a href="https://github.com/MRCIEU/opengwas-infpval-fix" class="uri">https://github.com/MRCIEU/opengwas-infpval-fix</a>
 </li>
 <li>Updated steiger filtering to use effective sample size for case control studies (thanks to @niekverw)</li>
 <li>Fixed issue with tri-allelic SNPs in harmonisation. Credit to Clare Horscroft (@chorscroft) for spotting the error and fixing</li>
 <li>Fixed an issue with experimental version of local multivariable MR method. Credit to Mischa Lundberg (@MischaLundberg).</li>
+<li>Catching edge cases for retrieving sample size meta data</li>
+<li>Updating default rsq estimation function to use beta and standard error instead of p-value, should improve numerical stability</li>
+<li>Allow chr and pos to be read in from local summary data files</li>
+<li>When reading in local data without p-values, editing the inferred p-value method to be two-sided</li>
 </ul>
 </div>
     <div id="twosamplemr-v056-release-date-2021-03-25" class="section level1">
