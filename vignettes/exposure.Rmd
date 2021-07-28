@@ -195,7 +195,9 @@ head(gwas_catalog)
 For example, to obtain instruments for body mass index using the Speliotes et al 2010 study:
 
 ```{r eval=FALSE}
-bmi_gwas <- subset(gwas_catalog, grepl("Speliotes", Author) & Phenotype == "Body mass index")
+bmi_gwas <-
+  subset(gwas_catalog,
+         grepl("Speliotes", Author) & Phenotype == "Body mass index")
 bmi_exp_dat <- format_data(bmi_gwas)
 ```
 
@@ -226,7 +228,8 @@ head(proteomic_qtls)
 For example, to obtain instruments for the ApoH protein:
 
 ```{r }
-apoh_exp_dat <- format_proteomic_qtls(subset(proteomic_qtls, analyte=="ApoH"))
+apoh_exp_dat <-
+  format_proteomic_qtls(subset(proteomic_qtls, analyte == "ApoH"))
 ```
 
 ### Gene expression levels
@@ -241,7 +244,11 @@ head(gtex_eqtl)
 For example, to obtain instruments for the IRAK1BP1 gene expression levels in subcutaneous adipose tissue:
 
 ```{r }
-irak1bp1_exp_dat <- format_gtex_eqtl(subset(gtex_eqtl, gene_name=="IRAK1BP1" & tissue == "Adipose Subcutaneous"))
+irak1bp1_exp_dat <-
+  format_gtex_eqtl(subset(
+    gtex_eqtl,
+    gene_name == "IRAK1BP1" & tissue == "Adipose Subcutaneous"
+  ))
 ```
 
 ### DNA methylation levels
