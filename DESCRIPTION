@@ -51,7 +51,8 @@ Imports:
     glmnet,
     lattice,
     pbapply,
-    MASS
+    MASS,
+    Cairo
 Remotes:
     mrcieu/ieugwasr,
     rondolab/MR-PRESSO,
