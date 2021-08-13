@@ -15,3 +15,4 @@ figure$
 cache$
 ^index\.md$
 ^README\.Rmd$
+^CITATION\.cff$
