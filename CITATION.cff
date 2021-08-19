@@ -92,7 +92,7 @@ preferred-citation:
   type: article
   journal: "eLife"
   volume: "7"
-  pages: "e34408"
+  start: "e34408"
   year: "2018"
   doi: "10.7554/eLife.34408"
   url: "https://elifesciences.org/articles/34408"
@@ -113,6 +113,6 @@ references:
     year: "2017"
     volume: "13"
     number: "11"
-    pages: "e1007081"
+    start: "e1007081"
     doi: "10.1371/journal.pgen.1007081"
     url: "https://doi.org/10.1371/journal.pgen.1007081"
