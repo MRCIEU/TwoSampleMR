@@ -6,3 +6,5 @@
 *.css linguist-vendored
 *.js linguist-vendored
 docs/* linguist-vendored
+*.rdb linguist-vendored
+*.rdx linguist-vendored
