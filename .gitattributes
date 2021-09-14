@@ -1,0 +1,7 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Settings for Linguist Languages pane
+*.html linguist-vendored
+*.css linguist-vendored
+*.js linguist-vendored
