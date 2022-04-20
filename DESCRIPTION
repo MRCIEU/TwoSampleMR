@@ -60,7 +60,6 @@ Remotes:
     WSpiller/RadialMR,
     gqi/MRMix
 License: MIT + file LICENSE
-LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 7.1.2
 Encoding: UTF-8
