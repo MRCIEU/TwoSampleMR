@@ -39,7 +39,6 @@ Imports:
     psych,
     magrittr,
     car,
-    randomForest,
     meta,
     data.table,
     MRPRESSO,
@@ -64,5 +63,6 @@ Suggests:
     covr,
     markdown,
     MRInstruments,
+    randomForest,
     testthat
 Roxygen: list(markdown = TRUE)
