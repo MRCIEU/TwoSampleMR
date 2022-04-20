@@ -81,7 +81,7 @@ jobs:
           _R_CHECK_FORCE_SUGGESTS_: false
         run: |
           options(crayon.enabled = TRUE)
-          rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran'), error_on = 'error', check_dir = 'check')
+          rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran', '--no-vignettes', '--no-build-vignettes'), error_on = 'error', check_dir = 'check', build_args = c('--no-build-vignettes'))
         shell: Rscript {0}
 
       - name: Show testthat output
