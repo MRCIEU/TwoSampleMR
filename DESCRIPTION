@@ -30,7 +30,6 @@ Imports:
     cowplot,
     plyr,
     reshape2,
-    stringr,
     knitr,
     markdown,
     gtable,
