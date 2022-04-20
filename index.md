@@ -3,7 +3,7 @@
 <!-- badges: start -->
 [![Build Status](https://github.com/MRCIEU/TwoSampleMR/workflows/R-CMD-check/badge.svg)](https://github.com/MRCIEU/TwoSampleMR/actions?workflow=R-CMD-check)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) [![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
-[![Codecov test coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/ieugwasr/graph/badge.svg)](https://codecov.io/gh/MRCIEU/TwoSampleMR?branch=ieugwasr)
+[![Codecov test coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg)](https://codecov.io/gh/MRCIEU/TwoSampleMR?branch=master)
 <!-- badges: end -->
 
 A package for performing Mendelian randomization using GWAS summary data. It uses the [IEU GWAS database](https://gwas.mrcieu.ac.uk/) to obtain data automatically, and a wide range of methods to run the analysis. You can use the [MR-Base web app](http://www.mrbase.org/) to try out a limited range of the functionality in this package, but for any serious work we strongly recommend using this R package.
