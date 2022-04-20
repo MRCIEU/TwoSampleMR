@@ -22,7 +22,7 @@ Description: A package for performing Mendelian randomization
     for any serious work we strongly recommend using this R
     package.
 Depends:
-    R (>= 3.6.0)
+    R (>= 4.0.0)
 Imports:
     ieugwasr (>= 0.1.5),
     ggplot2,
