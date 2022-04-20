@@ -45,7 +45,6 @@ Imports:
     meta,
     data.table,
     MRPRESSO,
-    MRInstruments,
     RadialMR,
     MRMix,
     glmnet,
@@ -65,5 +64,6 @@ RoxygenNote: 7.1.2
 Encoding: UTF-8
 Suggests: 
     covr,
+    MRInstruments,
     testthat
 Roxygen: list(markdown = TRUE)
