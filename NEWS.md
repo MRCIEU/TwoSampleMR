@@ -3,7 +3,7 @@ TwoSampleMR v0.5.7 (Release date: TBC)
 
 Changes:
 
-* Add Cairo package to Imports list (thanks @hdraisma)
+* Add Cairo package to Suggests list (thanks @hdraisma)
 * Fix error in outcome data vignette (thanks @hdraisma)
 * Some p-values that should have been ~0 were being stored as 1 in the elasticsearch database. This has now been fixed and those datasets have been clumped again to re-define the tophits. A full list of affected GWAS is available here: https://github.com/MRCIEU/opengwas-infpval-fix
 * Updated steiger filtering to use effective sample size for case control studies (thanks to @niekverw)

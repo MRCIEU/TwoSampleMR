@@ -49,8 +49,7 @@ Imports:
     glmnet,
     lattice,
     pbapply,
-    MASS,
-    Cairo
+    MASS
 Remotes:
     mrcieu/ieugwasr,
     rondolab/MR-PRESSO,
@@ -62,6 +61,7 @@ VignetteBuilder: knitr
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 Suggests: 
+    Cairo,
     covr,
     MRInstruments,
     testthat
