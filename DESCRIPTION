@@ -31,7 +31,6 @@ Imports:
     plyr,
     reshape2,
     knitr,
-    markdown,
     gtable,
     rmarkdown,
     MendelianRandomization,
@@ -63,6 +62,7 @@ Encoding: UTF-8
 Suggests: 
     Cairo,
     covr,
+    markdown,
     MRInstruments,
     testthat
 Roxygen: list(markdown = TRUE)
