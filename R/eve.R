@@ -174,11 +174,11 @@ mr_mean <- function(dat, parameters=default_parameters())
 {
 	m1 <- try(mr_mean_ivw(dat))
 	m2 <- try(mr_mean_egger(dat))
-	if(class(m1) == "try-error")
+	if(inherits(m1, "try-error"))
 	{
 		return(NULL)
 	} else {
-		if(class(m2) == "try-error")
+		if(inherits(m2, "try-error"))
 		{
 			return(m1)
 		} else {
