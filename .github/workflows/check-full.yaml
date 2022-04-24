@@ -18,7 +18,6 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {os: ubuntu-18.04,   r: '3.6', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
         - {os: ubuntu-18.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
         - {os: macOS-latest,   r: 'release'}
         - {os: windows-latest, r: 'release'}
@@ -79,9 +78,10 @@ jobs:
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: false
+          _R_CHECK_FORCE_SUGGESTS_: false
         run: |
           options(crayon.enabled = TRUE)
-          rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran'), error_on = 'error', check_dir = 'check')
+          rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran', '--no-vignettes', '--no-build-vignettes'), error_on = 'error', check_dir = 'check', build_args = c('--no-build-vignettes'))
         shell: Rscript {0}
 
       - name: Show testthat output

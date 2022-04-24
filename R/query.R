@@ -44,7 +44,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 	{
 		for(i in 1:length(outcomes))
 		{
-			if(class(firstpass) == "NULL")
+			if(is.null(firstpass))
 			{
 				missedsnps <- snps
 			} else {

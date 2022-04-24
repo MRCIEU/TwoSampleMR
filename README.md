@@ -11,7 +11,7 @@ Status](https://github.com/MRCIEU/TwoSampleMR/workflows/R-CMD-check/badge.svg)](
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
 [![Codecov test
-coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/ieugwasr/graph/badge.svg)](https://codecov.io/gh/MRCIEU/TwoSampleMR?branch=ieugwasr)
+coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg)](https://codecov.io/gh/MRCIEU/TwoSampleMR?branch=master)
 <!-- badges: end -->
 
 A package for performing Mendelian randomization using GWAS summary

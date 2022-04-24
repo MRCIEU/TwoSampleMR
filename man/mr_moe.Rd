@@ -30,11 +30,6 @@ Note that the mixture of experts has only been trained on datasets with at least
 }
 \examples{
 \dontrun{
-# Load libraries
-library(dplyr)
-library(randomForest)
-library(car)
-
 # Example of body mass index on coronary heart disease
 # Extract and harmonise data
 a <- extract_instruments(2)

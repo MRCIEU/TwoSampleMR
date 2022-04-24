@@ -418,7 +418,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 		loglikelihood,
 		hessian=TRUE,
 		control = list(maxit=25000)), silent=TRUE)
-	if(class(opt)=="try-error")
+	if(inherits(opt, "try-error"))
 	{
 		message("mr_two_sample_ml failed to converge")
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
@@ -426,7 +426,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 	b <- opt$par[length(b_exp)+1]
 	se <- try(sqrt(solve(opt$hessian)[length(b_exp)+1,length(b_exp)+1]))
-	if(class(se)=="try-error")
+	if(inherits(se, "try-error"))
 	{
 		message("mr_two_sample_ml failed to converge")
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))

@@ -166,11 +166,6 @@ get_rsq <- function(dat)
 #' @return List
 #' @examples
 #' \dontrun{
-#' # Load libraries
-#' library(dplyr)
-#' library(randomForest)
-#' library(car)
-#' 
 #' # Example of body mass index on coronary heart disease
 #' # Extract and harmonise data
 #' a <- extract_instruments(2)
@@ -193,11 +188,16 @@ get_rsq <- function(dat)
 mr_moe <- function(res, rf)
 {
 	requireNamespace("dplyr", quietly = TRUE)
-	requireNamespace("randomForest", quietly = TRUE)
+	if (!requireNamespace("randomForest", quietly = TRUE)) {
+	  stop(
+	    "Package \"randomForest\" must be installed to use this function.",
+	    call. = FALSE
+	  )
+	}
 	lapply(res, function(x)
 	{
 		o <- try(mr_moe_single(x, rf))
-		if(class(o) == "try-error")
+		if(inherits(o, "try-error"))
 		{
 			return(x)
 		} else {
@@ -209,7 +209,12 @@ mr_moe <- function(res, rf)
 mr_moe_single <- function(res, rf)
 {
   requireNamespace("dplyr", quietly = TRUE)
-  requireNamespace("randomForest", quietly = TRUE)
+  if (!requireNamespace("randomForest", quietly = TRUE)) {
+    stop(
+      "Package \"randomForest\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
 	metric <- res$info[1,] %>% dplyr::select(-c(id.exposure, id.outcome, steiger_filtered, outlier_filtered, nsnp_removed))
 
 	methodlist <- names(rf)

@@ -1,5 +1,5 @@
 Package: TwoSampleMR
-Title: Two Sample MR functions and interface to MR Base database
+Title: Two Sample MR Functions and Interface to MR Base Database
 Version: 0.5.6
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk",
                   role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0920-1055")),
@@ -22,7 +22,7 @@ Description: A package for performing Mendelian randomization
     for any serious work we strongly recommend using this R
     package.
 Depends:
-    R (>= 3.6.0)
+    R (>= 4.0.0)
 Imports:
     ieugwasr (>= 0.1.5),
     ggplot2,
@@ -30,9 +30,7 @@ Imports:
     cowplot,
     plyr,
     reshape2,
-    stringr,
     knitr,
-    markdown,
     gtable,
     rmarkdown,
     MendelianRandomization,
@@ -41,18 +39,15 @@ Imports:
     psych,
     magrittr,
     car,
-    randomForest,
     meta,
     data.table,
     MRPRESSO,
-    MRInstruments,
     RadialMR,
     MRMix,
     glmnet,
     lattice,
     pbapply,
-    MASS,
-    Cairo
+    MASS
 Remotes:
     mrcieu/ieugwasr,
     rondolab/MR-PRESSO,
@@ -60,11 +55,14 @@ Remotes:
     WSpiller/RadialMR,
     gqi/MRMix
 License: MIT + file LICENSE
-LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
 Suggests: 
+    Cairo,
     covr,
+    markdown,
+    MRInstruments,
+    randomForest,
     testthat
 Roxygen: list(markdown = TRUE)
