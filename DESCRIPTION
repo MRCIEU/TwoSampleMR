@@ -56,7 +56,7 @@ Remotes:
     gqi/MRMix
 License: MIT + file LICENSE
 VignetteBuilder: knitr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Encoding: UTF-8
 Suggests: 
     Cairo,
