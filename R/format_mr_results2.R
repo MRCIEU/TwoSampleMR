@@ -100,7 +100,7 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 #' @param ao_slc Logical; if set to `TRUE` then outcome study level characteristics are retrieved from [`available_outcomes()`]. Default is `TRUE`. 
 #' @param Exp Logical; if set to `TRUE` results are exponentiated. Useful if user wants log odds ratios expressed as odds ratios. Default is `FALSE`. 
 #' @param split.exposure Logical; if set to `TRUE` the exposure column is split into separate columns for the exposure name and exposure ID. Default is `FALSE`. 
-#' @param split.outcome Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is `FALSE`.  
+#' @param split.outcome Logical; if set to `TRUE` the outcome column is split into separate columns for the outcome name and outcome ID. Default is `FALSE`.  
 #' 
 #' @export
 #' @return data frame
