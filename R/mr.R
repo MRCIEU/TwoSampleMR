@@ -534,8 +534,8 @@ linreg <- function(x, y, w=rep(x,1))
 	yp <- w*y
 	t(xp) %*% yp / (t(xp)%*%xp)
 
-	bhat <- cov(x*w,y*w, use="pair") / var(x*w, na.rm=T)
-	ahat <- mean(y, na.rm=T) - mean(x, na.rm=T) * bhat
+	bhat <- cov(x*w,y*w, use="pair") / var(x*w, na.rm=TRUE)
+	ahat <- mean(y, na.rm=TRUE) - mean(x, na.rm=TRUE) * bhat
 	yhat <- ahat + bhat * x
 	se <- sqrt(sum((yp - yhat)^2) / (sum(!is.na(yhat)) - 2) / t(x)%*%x )
 
@@ -613,7 +613,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 	}
 	cat("\n")
 
-	return(list(b = mean(res[,2], na.rm=T), se = sd(res[,2], na.rm=T), pval = sum(sign(mean(res[,2],na.rm=T)) * res[,2] < 0)/nboot, nsnp = length(b_exp), b_i = mean(res[,1], na.rm=T), se_i = sd(res[,1], na.rm=T), pval_i = sum(sign(mean(res[,1],na.rm=T)) * res[,1] < 0)/nboot))
+	return(list(b = mean(res[,2], na.rm=TRUE), se = sd(res[,2], na.rm=TRUE), pval = sum(sign(mean(res[,2],na.rm=TRUE)) * res[,2] < 0)/nboot, nsnp = length(b_exp), b_i = mean(res[,1], na.rm=TRUE), se_i = sd(res[,1], na.rm=TRUE), pval_i = sum(sign(mean(res[,1],na.rm=TRUE)) * res[,1] < 0)/nboot))
 }
 
 
