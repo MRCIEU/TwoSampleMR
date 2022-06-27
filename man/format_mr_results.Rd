@@ -9,7 +9,7 @@ format_mr_results(
   exponentiate = FALSE,
   single_snp_method = "Wald ratio",
   multi_snp_method = "Inverse variance weighted",
-  ao_slc = T,
+  ao_slc = TRUE,
   priority = "Cardiometabolic"
 )
 }

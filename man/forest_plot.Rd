@@ -16,7 +16,7 @@ forest_plot(
   xlab = "",
   xlim = NULL,
   trans = "identity",
-  ao_slc = T,
+  ao_slc = TRUE,
   priority = "Cardiometabolic"
 )
 }
