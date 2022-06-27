@@ -71,7 +71,6 @@ A diagramatic overview is shown here:
 A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:
 
 ```{r eval=FALSE}
-
 library(TwoSampleMR)
 
 # List available GWASs
@@ -81,7 +80,7 @@ ao <- available_outcomes()
 exposure_dat <- extract_instruments("ieu-a-2")
 
 # Get effects of instruments on outcome
-outcome_dat <- extract_outcome_data(snps=exposure_dat$SNP, outcomes="ieu-a-7")
+outcome_dat <- extract_outcome_data(snps=exposure_dat$SNP, outcomes = "ieu-a-7")
 
 # Harmonise the exposure and outcome data
 dat <- harmonise_data(exposure_dat, outcome_dat)
