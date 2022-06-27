@@ -292,13 +292,13 @@ For information about authentication see [https://github.com/MRCIEU/ieugwasr/blo
 The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
 
 ```{r }
-head(subset(ao, select=c(trait, id)))
+head(subset(ao, select = c(trait, id)))
 ```
 
 To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:
 
 ```{r }
-bmi2014_exp_dat <- extract_instruments(outcomes='ieu-a-2')
+bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 ```
 
 This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can specify various parameters for this function:
