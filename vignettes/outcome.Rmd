@@ -47,7 +47,7 @@ For information about authentication see [https://github.com/MRCIEU/ieugwasr/blo
 The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
 
 ```{r}
-head(subset(ao, select=c(trait, id)))
+head(subset(ao, select = c(trait, id)))
 ```
 
 
@@ -58,7 +58,7 @@ If we want to perform MR of BMI against coronary heart disease, we need to ident
 Let's get the Locke et al 2014 instruments for BMI as an example:
 
 ```{r}
-bmi_exp_dat <- extract_instruments(outcomes='ieu-a-2')
+bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 head(bmi_exp_dat)
 ```
 
