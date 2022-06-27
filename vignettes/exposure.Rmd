@@ -119,13 +119,13 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
 
 Note that this is a CSV file, with commas separating fields. The file is located here:
 
-```{r }
-bmi2_file <- system.file("extdata/bmi.csv", package="TwoSampleMR")
+```{r}
+bmi2_file <- system.file("extdata/bmi.csv", package = "TwoSampleMR")
 ```
 
 To read in this data:
 
-```{r }
+```{r}
 bmi_exp_dat <- read_exposure_data(
 	filename = bmi2_file,
 	sep = ",",
@@ -145,7 +145,7 @@ head(bmi_exp_dat)
 
 If the `Phenotype` column is not provided (as is the case in this example) then it will assume that the phenotype's name is simply "exposure". This is entered in the `exposure` column. It can be renamed manually:
 
-```{r }
+```{r}
 bmi_exp_dat$exposure <- "BMI"
 ```
 
@@ -186,7 +186,7 @@ The NHGRI-EBI GWAS catalog contains a catalog of significant associations obtain
 
 To use the GWAS catalog:
 
-```{r }
+```{r}
 library(MRInstruments)
 data(gwas_catalog)
 head(gwas_catalog)
@@ -212,8 +212,8 @@ head(metab_qtls)
 
 For example, to obtain instruments for the Alanine:
 
-```{r }
-ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype=="Ala"))
+```{r}
+ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype == "Ala"))
 ```
 
 ### Proteins
@@ -227,7 +227,7 @@ head(proteomic_qtls)
 
 For example, to obtain instruments for the ApoH protein:
 
-```{r }
+```{r}
 apoh_exp_dat <-
   format_proteomic_qtls(subset(proteomic_qtls, analyte == "ApoH"))
 ```
@@ -243,7 +243,7 @@ head(gtex_eqtl)
 
 For example, to obtain instruments for the IRAK1BP1 gene expression levels in subcutaneous adipose tissue:
 
-```{r }
+```{r}
 irak1bp1_exp_dat <-
   format_gtex_eqtl(subset(
     gtex_eqtl,
@@ -262,7 +262,7 @@ head(aries_mqtl)
 
 For example, to obtain instruments for cg25212131 CpG DNA methylation levels in at birth:
 
-```{r }
+```{r}
 cg25212131_exp_dat <-
   format_aries_mqtl(subset(aries_mqtl, cpg == "cg25212131" &
                              age == "Birth"))
@@ -282,7 +282,7 @@ ieugwasr::api_status()
 
 To obtain a list and details about the available GWASs do the following:
 
-```{r }
+```{r}
 ao <- available_outcomes()
 head(ao)
 ```
@@ -291,13 +291,13 @@ For information about authentication see [https://github.com/MRCIEU/ieugwasr/blo
 
 The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
 
-```{r }
+```{r}
 head(subset(ao, select = c(trait, id)))
 ```
 
 To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:
 
-```{r }
+```{r}
 bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 ```
 
@@ -317,7 +317,7 @@ For standard two sample MR it is important to ensure that the instruments for th
 
 You can provide a list of SNP IDs, the SNPs will be extracted from 1000 genomes data, LD calculated between them, and amongst those SNPs that have LD R-square above the specified threshold only the SNP with the lowest P-value will be retained. To do this, use the following command:
 
-```{r }
+```{r}
 bmi_exp_dat <- clump_data(bmi_exp_dat)
 ```
 
