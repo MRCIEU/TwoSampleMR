@@ -8,4 +8,3 @@ test_that("scatter plot", {
 	expect_true(is.list(p))
 	expect_true(length(p) == 1)
 })
-

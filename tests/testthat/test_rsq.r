@@ -68,4 +68,3 @@ test_that("bsen vs pn", {
 	r2 <- get_r_from_pn(d$pval.exposure, d$samplesize.exposure)
 	expect_true(cor(abs(r1), r2) > 0.99)
 })
-

@@ -27,7 +27,3 @@ out <- clump_data(a)
 test_that("clump multiple", {
 	expect_equal(length(unique(a$id.exposure)), length(unique(out$id.exposure)))
 })
-
-
-
-

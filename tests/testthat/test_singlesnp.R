@@ -27,4 +27,3 @@ test_that("singlesnp_plot", {
 	p <- mr_funnel_plot(w)
 	expect_true(length(p) == 1)
 })
-

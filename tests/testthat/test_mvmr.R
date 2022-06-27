@@ -45,4 +45,3 @@ test_that("ordering", {
 	mv_multiple(control2)
 
 })
-

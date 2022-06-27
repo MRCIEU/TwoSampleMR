@@ -13,4 +13,3 @@ test_that("leaveoneout_plot", {
 	p <- mr_leaveoneout_plot(w)
 	expect_true(length(p) == 1)
 })
-
