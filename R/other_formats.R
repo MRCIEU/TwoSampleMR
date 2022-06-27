@@ -208,7 +208,7 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
 	pval <- 2 * pnorm(abs(b/se), lower.tail = FALSE)
 	Q_df <- out$df
 	Q <- out$qstatistic
-	Q_pval <- pchisq(Q, Q_df, lower.tail=F)
+	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp),
         Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
