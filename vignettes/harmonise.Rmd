@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r echo=FALSE}
-knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
+knitr::opts_chunk$set(eval = TRUE, cache = TRUE)
 suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
 suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
 suppressWarnings(suppressPackageStartupMessages(library(knitr)))
@@ -33,7 +33,7 @@ The exposure data and outcome data are now obtained, e.g.:
 
 ```{r }
 ao <- available_outcomes()
-bmi_exp_dat <- extract_instruments(outcomes='ieu-a-2')
+bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
 ```
 
