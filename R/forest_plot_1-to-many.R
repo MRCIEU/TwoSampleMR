@@ -22,7 +22,7 @@
 #'
 #' @export
 #' @return data frame.
-format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=F,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL)
+format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FALSE,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL)
 {
 	# mr_res
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -172,7 +172,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 		Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
 		groups<-unique(mr_res[,group])
 		mr_res$Index<-unlist(lapply(1:length(unique(mr_res[,group])),FUN=function(x) rep(Letters[Letters==Letters[x]],length(which(mr_res[,group]==groups[x])))))
-		mr_res<-mr_res[order(mr_res[,b],decreasing=T),]
+		mr_res<-mr_res[order(mr_res[,b],decreasing=TRUE),]
 		mr_res$Index2<-Letters[1:nrow(mr_res)]
 		mr_res$Index3<-paste(mr_res$Index,mr_res$Index2,sep="")
 		mr_res<-mr_res[order(mr_res$Index3),]
@@ -181,7 +181,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 
 	if(sort_action ==2){
 		if(is.null(group)) warning("You must indicate a grouping variable")
-		mr_res<-mr_res[order(mr_res[,b],decreasing=T),]
+		mr_res<-mr_res[order(mr_res[,b],decreasing=TRUE),]
 		mr_res<-mr_res[order(mr_res[,group]),]
 	}
 		
@@ -203,7 +203,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 		mr_res2$b.sort<-mr_res2$b
 		mr_res<-rbind(mr_res1,mr_res2)
 
-		mr_res<-mr_res[order(mr_res$b.sort,decreasing=T),]
+		mr_res<-mr_res[order(mr_res$b.sort,decreasing=TRUE),]
 		groups<-unique(mr_res[,group])
 		List<-NULL
 		for(i in 1:length(groups)){
@@ -217,11 +217,11 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 	}
 
 	if(sort_action ==4){
-		mr_res<-mr_res[order(mr_res[,b],decreasing=T),]
+		mr_res<-mr_res[order(mr_res[,b],decreasing=TRUE),]
 	}
 
 	if(sort_action ==5){
-		mr_res<-mr_res[order(mr_res[,b],decreasing=F),]
+		mr_res<-mr_res[order(mr_res[,b],decreasing=FALSE),]
 	}
 
 	return(mr_res)
@@ -569,7 +569,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @export
 #' @return grid plot object
 #' 
-forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=T,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL){
+forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=TRUE,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL){
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)
 	requireNamespace("gridExtra", quietly=TRUE)
