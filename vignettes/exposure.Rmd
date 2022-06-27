@@ -175,7 +175,7 @@ random_exp_dat
 A number of sources of instruments have already been curated and are available for use. They are provided as data objects in the `MRInstruments` package. To install:
 
 ```{r eval=FALSE}
-devtools::install_github("MRCIEU/MRInstruments")
+remotes::install_github("MRCIEU/MRInstruments")
 ```
 
 This package contains a number of data.frames, each of which is a repository of SNP-trait associations. How to access the data frames is detailed below:

@@ -45,11 +45,11 @@ This package uses the [ieugwasr](https://github.com/mrcieu/ieugwasr) package to 
 To install directly from the GitHub repository do the following:
 
 ```{r eval=FALSE}
-library(devtools)
+library(remotes)
 install_github("MRCIEU/TwoSampleMR")
 ```
 
-If you don't have the `devtools` package install it from CRAN using `install.packages("devtools")`.
+If you don't have the `remotes` package install it from CRAN using `install.packages("remotes")`.
 
 * * * 
 

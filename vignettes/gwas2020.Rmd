@@ -127,16 +127,16 @@ Please visit here to make a log of new data requests, or to contribute new data.
 To install the new version of TwoSampleMR, perform as normal:
 
 ```
-install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR")
+install.packages("remotes")
+remotes::install_github("MRCIEU/TwoSampleMR")
 ```
 
-To update the package just run the `devtools::install_github("MRCIEU/TwoSampleMR")` command again.
+To update the package just run the `remotes::install_github("MRCIEU/TwoSampleMR")` command again.
 
 We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:
 
 ```
-install.packages("devtools")
-devtools::install_github("MRCIEU/TwoSampleMR@0.4.26")
+install.packages("remotes")
+remotes::install_github("MRCIEU/TwoSampleMR@0.4.26")
 ```
 
