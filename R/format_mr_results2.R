@@ -133,7 +133,7 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 # All.res<-split_exposure(All.res)
 # All.res<-split_outcome(All.res)
 
-combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,Exp=F,split.exposure=F,split.outcome=F)
+combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.exposure=FALSE,split.outcome=FALSE)
 {
 	requireNamespace("plyr", quietly=TRUE)
 
@@ -168,7 +168,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,Exp=F,split.exposure=
 	names(het)[names(het)=="method"]<-"Method"
 	names(sin)[names(sin)=="method"]<-"Method"
 
-	res<-merge(res,het,by=c("id.outcome","id.exposure","Method"),all.x=T)
+	res<-merge(res,het,by=c("id.outcome","id.exposure","Method"),all.x=TRUE)
 	res<-plyr::rbind.fill(res,sin[,c("exposure","outcome","id.exposure","id.outcome","SNP","b","se","pval","Method")])
 
 	if(ao_slc)
@@ -203,7 +203,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=T,Exp=F,split.exposure=
 	names(plt)[names(plt)=="se"]<-"intercept_se"
 	names(plt)[names(plt)=="pval"]<-"intercept_pval"
 
-	res<-merge(res,plt,by=c("id.outcome","id.exposure","Method"),all.x=T)
+	res<-merge(res,plt,by=c("id.outcome","id.exposure","Method"),all.x=TRUE)
 
 	if(split.exposure){
 		res<-split_exposure(res)
@@ -272,15 +272,15 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 				if(dist.outcome=="binary") warning(paste("dist.outcome set to binary but case sample size is missing. Will use total sample size instead but power pruning may be less accurate"))
 			}
 			if(any(is.na(ncase))) stop("sample size missing for at least 1 summary set")
-			dat1<-dat1[order(ncase,decreasing=T),]
+			dat1<-dat1[order(ncase,decreasing=TRUE),]
 			# id.expout<-paste(split_exposure(dat)$exposure,split_outcome(dat)$outcome)
-			ncase<-ncase[order(ncase,decreasing=T)]
+			ncase<-ncase[order(ncase,decreasing=TRUE)]
 			# dat1$power.prune.ncase<-"drop"
 			# dat1$power.prune.ncase[ncase==ncase[1]]<-"keep"
 			dat1<-dat1[ncase==ncase[1],]
 			nexp<-dat1$samplesize.exposure
-			dat1<-dat1[order(nexp,decreasing=T),]
-			nexp<-nexp[order(nexp,decreasing=T)]
+			dat1<-dat1[order(nexp,decreasing=TRUE),]
+			nexp<-nexp[order(nexp,decreasing=TRUE)]
 			# dat1$power.prune.nexp<-"drop"
 			# dat1$power.prune.nexp[nexp==nexp[1]]<-"keep"
 			# dat1$power.prune<-"drop"
@@ -399,7 +399,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 size.prune <- function(dat)
 {
 	dat$ncase[is.na(dat$ncase)]<-dat$samplesize[is.na(dat$ncase)]
-	dat<-dat[order(dat$ncase,decreasing=T),]
+	dat<-dat[order(dat$ncase,decreasing=TRUE),]
 	id.expout<-paste(dat$exposure,dat$outcome)
 	id.keep<-id.expout[!duplicated(paste(dat$exposure,dat$originalname.outcome))]
 	dat<-dat[id.expout %in% id.keep,]
