@@ -30,7 +30,6 @@ suppressWarnings(suppressPackageStartupMessages(library(knitr)))
 
 The exposure data and outcome data are now obtained, e.g.:
 
-
 ```{r }
 ao <- available_outcomes()
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
@@ -74,7 +73,6 @@ other allele = G
 
 Here the effect allele on the exposure and the outcome is the same
 
-
 ### Incorrect reference, unambigious
 
 ```
@@ -89,7 +87,6 @@ other allele = T
 
 Here the outcome GWAS is presenting the effect for the alternate allele on the reverse strand. We need to flip the outcome effect to 0.05 to correspond to the same allele as the exposure GWAS on the forward strand.
 
-
 ### Ambiguous
 
 ```
@@ -103,7 +100,6 @@ other allele = C
 ```
 
 Here the alleles do not correspond for the same SNP, so this SNP will be discarded from the analysis.
-
 
 ### Palindromic SNP, inferrable
 
@@ -121,7 +117,6 @@ effect allele frequency = 0.91
 
 Here the alleles correspond, but it is a palindromic SNP, such that the alleles on the forward strand are the same as on the reverse strand (A/T on forward is T/A on the reverse). However, the allele frequency of the effect allele gives us information - if the outcome effect allele (A) were on the forward strand we would expect it to have a low allele frequency, but given it has a high frequency (0.91) we infer that the outcome GWAS is presenting the effect on the reverse strand for the alternative allele. We would flip the effect to 0.05 for the outcome GWAS.
 
-
 ### Palindromic SNP, not inferrable
 
 ```
@@ -137,7 +132,6 @@ effect allele frequency = 0.50
 ```
 
 This is similar to the above, except the allele frequency no longer gives us information about the strand. We would discard this SNP. This is done for any palindromic SNPs that have minor allele frequency above 0.42.
-
 
 ### Options
 
