@@ -51,7 +51,6 @@ Imports:
     rmarkdown
 Suggests: 
     Cairo,
-    covr,
     markdown,
     MRInstruments,
     randomForest,
