@@ -34,7 +34,7 @@ test_that("read data", {
 	exp_dat <- extract_instruments("ieu-a-2")
 	names(exp_dat) <- gsub(".exposure", "", names(exp_dat))
 	fn <- tempfile()
-	write.table(exp_dat, file=fn, row=F, col=T, qu=F, sep="\t")
+	write.table(exp_dat, file=fn, row=FALSE, col=TRUE, qu=FALSE, sep="\t")
 
 	a <- read_exposure_data(fn, sep="\t")
 	b <- read_outcome_data(fn, sep="\t")

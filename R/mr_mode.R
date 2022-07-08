@@ -127,7 +127,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	CIlow_Mode <- beta_Mode-qnorm(1-alpha/2)*se_Mode
 	CIupp_Mode <- beta_Mode+qnorm(1-alpha/2)*se_Mode
 
-	P_Mode <- pt(abs(beta_Mode/se_Mode), df=length(b_exp)-1, lower.tail=F)*2
+	P_Mode <- pt(abs(beta_Mode/se_Mode), df=length(b_exp)-1, lower.tail=FALSE)*2
 
 	#Vector to indicate the method referring to each row
 	Method <- rep(c('Simple mode', 'Weighted mode', 'Penalised mode', 'Simple mode (NOME)', 'Weighted mode (NOME)'), each=length(phi))

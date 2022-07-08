@@ -25,7 +25,7 @@
 #'
 #' @export
 #' @return data frame.
-format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", ao_slc=T, priority="Cardiometabolic")
+format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", ao_slc=TRUE, priority="Cardiometabolic")
 {
 
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -457,7 +457,7 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 #'
 #' @export
 #' @return grid plot object
-forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, in_columns=FALSE, threshold=NULL, xlab="", xlim=NULL, trans="identity",ao_slc=T, priority="Cardiometabolic")
+forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, in_columns=FALSE, threshold=NULL, xlab="", xlim=NULL, trans="identity",ao_slc=TRUE, priority="Cardiometabolic")
 {
 	requireNamespace("ggplot2", quietly=TRUE)
 	requireNamespace("cowplot", quietly=TRUE)

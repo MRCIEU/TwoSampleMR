@@ -13,7 +13,7 @@ forest_plot_1_to_many(
   col1_title = "",
   exponentiate = FALSE,
   trans = "identity",
-  ao_slc = T,
+  ao_slc = TRUE,
   lo = NULL,
   up = NULL,
   by = NULL,

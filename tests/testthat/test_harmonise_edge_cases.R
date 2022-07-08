@@ -71,5 +71,3 @@ test_that("harmonise_data works when there are no matching SNPs.", {
         expect_equal(nrow(result), 0)
     }
 })
-
-

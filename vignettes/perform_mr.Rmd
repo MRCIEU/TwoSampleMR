@@ -31,15 +31,15 @@ suppressWarnings(suppressPackageStartupMessages(library(ggplot2)))
 
 Let's continue with the example of BMI on CHD:
 
-```{r }
-bmi_exp_dat <- extract_instruments(outcomes='ieu-a-2')
+```{r}
+bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
 dat <- harmonise_data(bmi_exp_dat, chd_out_dat)
 ```
 
 Once the exposure and outcome data are harmonised, we have effects and standard errors for each instrument SNP available for the exposure and outcome traits. We can use this information to perform Mendelian randomisation. To do this, simply run:
 
-```{r }
+```{r}
 res <- mr(dat)
 res
 ```
@@ -52,14 +52,14 @@ If there were multiple exposures against multiple outcomes in `dat`, the `mr()` 
 
 The list of available MR methods can be obtained:
 
-```{r }
+```{r}
 mr_method_list()
 ```
 
 To perform them, they can be specified in the `mr()` function, e.g. to only perform MR Egger regression and Inverse variance weighted methods,
 
-```{r }
-mr(dat, method_list=c("mr_egger_regression", "mr_ivw"))
+```{r}
+mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 ```
 
 By default, all the methods that are labelled `TRUE` in the `use_by_default` column are used by the `mr()` function.
@@ -72,14 +72,14 @@ By default, all the methods that are labelled `TRUE` in the `use_by_default` col
 
 Some of the MR methods can also perform tests for heterogeneity. To obtain those statistics:
 
-```{r }
+```{r}
 mr_heterogeneity(dat)
 ```
 
 As with the `mr()` function, the `mr_heterogeneity()` function can take an argument to only perform heterogeneity tests using specified methods, e.g.
 
-```{r }
-mr_heterogeneity(dat, method_list=c("mr_egger_regression", "mr_ivw"))
+```{r}
+mr_heterogeneity(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 ```
 
 
@@ -87,7 +87,7 @@ mr_heterogeneity(dat, method_list=c("mr_egger_regression", "mr_ivw"))
 
 The intercept term in MR Egger regression can be a useful indication of whether directional horizontal pleiotropy is driving the results of an MR analysis. This can be obtained as follows:
 
-```{r }
+```{r}
 mr_pleiotropy_test(dat)
 ```
 
@@ -96,7 +96,7 @@ mr_pleiotropy_test(dat)
 
 To obtain the MR estimates using each of the SNPs singly we can do the following:
 
-```{r }
+```{r}
 res_single <- mr_singlesnp(dat)
 ```
 
@@ -104,14 +104,14 @@ This returns a data.frame of results that is similar to the output from `mr()` e
 
 The method used to perform the single SNP MR is the Wald ratio by default, though this can be changed, e.g. to use the fixed effects meta analysis method instead:
 
-```{r }
-res_single <- mr_singlesnp(dat, single_method="mr_meta_fixed")
+```{r}
+res_single <- mr_singlesnp(dat, single_method = "mr_meta_fixed")
 ```
 
 The `mr_singlesnp()` function calculates the full MR using all available SNPs as well, and by default it uses the IVW and MR Egger methods. This can be specified as so:
 
-```{r }
-res_single <- mr_singlesnp(dat, all_method="mr_two_sample_ml")
+```{r}
+res_single <- mr_singlesnp(dat, all_method = "mr_two_sample_ml")
 ```
 
 will perform only the maximum likelihood method for the combined test.
@@ -121,7 +121,7 @@ will perform only the maximum likelihood method for the combined test.
 
 It is possible to perform a leave-one-out analysis, where the MR is performed again but leaving out each SNP in turn, to identify if a single SNP is driving the association.
 
-```{r }
+```{r}
 res_loo <- mr_leaveoneout(dat)
 ```
 
@@ -138,40 +138,40 @@ There are a few ways to visualise the results, listed below
 
 We can depict the relationship of the SNP effects on the exposure against the SNP effects on the outcome using a scatter plot.
 
-```{r }
+```{r}
 res <- mr(dat)
 p1 <- mr_scatter_plot(res, dat)
 ```
 
 A scatter plot is created for each exposure-outcome test, and stored in `p1` as a list of plots. For example, to plot the first scatter plot:
 
-```{r }
+```{r}
 p1[[1]]
 ```
 
 And to see how many plots there are:
 
-```{r }
+```{r}
 length(p1)
 ```
 
 Lines are drawn for each method used in `mr(dat)`, the slope of the line corresponding to the estimated causal effect. To limit which lines are drawn, simply specify the desired methods, e.g. to only draw MR Egger and IVW:
 
-```{r }
-res <- mr(dat, method_list=c("mr_egger_regression", "mr_ivw"))
+```{r}
+res <- mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 p1 <- mr_scatter_plot(res, dat)
 ```
 
 It is possible to save this plot using the `ggsave()` function from the `ggplot2` package, e.g. to save as a pdf
 
 ```{r eval=FALSE}
-ggsave(p1[[1]], file="filename.pdf", width=7, height=7)
+ggsave(p1[[1]], file = "filename.pdf", width = 7, height = 7)
 ```
 
 or save as a png
 
 ```{r eval=FALSE}
-ggsave(p1[[1]], file="filename.png", width=7, height=7)
+ggsave(p1[[1]], file = "filename.png", width = 7, height = 7)
 ```
 
 See `?ggplot2::ggsave` for more info.
@@ -191,8 +191,8 @@ Here, the plot shows the causal effect as estimated using each of the SNPs on th
 
 To get plots that use different methods, specify them in the `mr_singlesnp()` function:
 
-```{r }
-res_single <- mr_singlesnp(dat, all_method=c("mr_ivw", "mr_two_sample_ml"))
+```{r}
+res_single <- mr_singlesnp(dat, all_method = c("mr_ivw", "mr_two_sample_ml"))
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
 ```
@@ -201,7 +201,7 @@ p2[[1]]
 
 Use the `mr_leaveoneout_plot` function to visualise the leave-one-out analysis:
 
-```{r }
+```{r}
 res_loo <- mr_leaveoneout(dat)
 p3 <- mr_leaveoneout_plot(res_loo)
 p3[[1]]
@@ -214,7 +214,7 @@ Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)`
 
 Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows:
 howzit
-```{r }
+```{r}
 res_single <- mr_singlesnp(dat)
 p4 <- mr_funnel_plot(res_single)
 p4[[1]]
@@ -222,11 +222,11 @@ p4[[1]]
 
 ## 1-to-many forest plot
 
-A 1-to-many MR analysis interrogates the effect of a single exposure on multiple outcomes or multiple exposures on a single outcome. The results of this analysis can be visualised using the 1-to-many forest plot, with or without stratification on a categorical variable. From a visual point of view, the function works best for 50 or fewer results and is not really designed to handle more than a 100 results. If your number of results is much greater than 50, it may be better to split these across two separate plots. For example, if you have 100 sets of results you could divide these equally across two plots and then combine the two plots together in another programme like powerpoint. The function assumes the results are already in the right order for plotting. As such, users are advised to sort their results according to how they would like them to appear in the plot. Users can use their own code to do this or they can use the sort.1.to.many() function.  
+A 1-to-many MR analysis interrogates the effect of a single exposure on multiple outcomes or multiple exposures on a single outcome. The results of this analysis can be visualised using the 1-to-many forest plot, with or without stratification on a categorical variable. From a visual point of view, the function works best for 50 or fewer results and is not really designed to handle more than a 100 results. If your number of results is much greater than 50, it may be better to split these across two separate plots. For example, if you have 100 sets of results you could divide these equally across two plots and then combine the two plots together in another programme like Powerpoint. The function assumes the results are already in the right order for plotting. As such, users are advised to sort their results according to how they would like them to appear in the plot. Users can use their own code to do this or they can use the `sort_1_to_many()` function.  
 
 ### Step 1: generate 1-to-many MR results  
-```{r cache=FALSE,warning=FALSE,eval=FALSE}
-exp_dat <- extract_instruments(outcomes=c(2,100,1032,104,1,72,999))
+```{r cache=FALSE, warning=FALSE, eval=FALSE}
+exp_dat <- extract_instruments(outcomes = c(2, 100, 1032, 104, 1, 72, 999))
 table(exp_dat$exposure)
 chd_out_dat <- extract_outcome_data(
 	snps = exp_dat$SNP,
@@ -237,7 +237,7 @@ dat2 <- harmonise_data(
 	exposure_dat = exp_dat, 
 	outcome_dat = chd_out_dat
 )
-res<-mr(dat2)
+res <- mr(dat2)
 ```
 
 ### Step 2. Make the 1-to-many forest plot
@@ -246,71 +246,116 @@ res<-mr(dat2)
 
 In this example we wish to plot results from an MR analysis of the effect of multiple exposures on coronary heart disease, with results sorted by decreasing effect size (largest effect at the top of the plot) and with one MR method for each unique exposure-outcome combination. We will also make the size of each point estimate proportional to its inverse variance. This is a useful way to draw attention towards the most reliable results and away from results with very wide confidence intervals. To specify the size of the point estimate, set the weight argument to the name of the column in the data with the weight information.
 
-```{r cache=FALSE, warning=FALSE,eval=FALSE}
-res<-subset_on_method(res) #default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP). 
-res<-sort_1_to_many(res,b="b",sort_action=4) #this sorts results by decreasing effect size (largest effect at top of the plot)
-res<-split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
-res$weight<-1/res$se
+```{r cache=FALSE, warning=FALSE, eval=FALSE}
+res <- subset_on_method(res) #default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP). 
+res <- sort_1_to_many(res, b = "b", sort_action = 4) #this sorts results by decreasing effect size (largest effect at top of the plot)
+res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
+res$weight <- 1/res$se
 
-min(exp(res$b-1.96*res$se)) #identify value for 'lo' in forest_plot_1_to_many
-max(exp(res$b+1.96*res$se)) #identify value for 'up' in forest_plot_1_to_many
+min(exp(res$b - 1.96*res$se)) #identify value for 'lo' in forest_plot_1_to_many
+max(exp(res$b + 1.96*res$se)) #identify value for 'up' in forest_plot_1_to_many
 
-forest_plot_1_to_many(res,b="b",se="se",
-	exponentiate=T,ao_slc=F,lo=0.3,up=2.5,
-	TraitM="exposure",col1_width=2,by=NULL,
-	trans="log2",xlab="OR for CHD per SD increase in risk factor (95% confidence interval)",weight="weight")
-
-
+forest_plot_1_to_many(
+  res,
+  b = "b",
+  se = "se",
+  exponentiate = TRUE,
+  ao_slc = FALSE,
+  lo = 0.3,
+  up = 2.5,
+  TraitM = "exposure",
+  col1_width = 2,
+  by = NULL,
+  trans = "log2",
+  xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
+  weight = "weight"
+)
 ```
 
 It is also possible to add additional columns and column titles and to choose the size of the text in the columns: 
 
 ```{r cache=FALSE, warning=FALSE, message=FALSE, eval=FALSE}
 res$pval<-formatC(res$pval, format = "e", digits = 2)
-forest_plot_1_to_many(res,b="b",se="se",
-    exponentiate=T,ao_slc=F,lo=0.3,up=2.5,
-    TraitM="exposure",by=NULL,
-    trans="log2",xlab="OR for CHD per SD increase in risk factor (95% CI)",    
-    weight="weight",subheading_size=11,
-    col1_title="Risk factor",
-    col1_width=2.5,
-    col_text_size=4,
-    addcols=c("nsnp","pval"),
-    addcol_widths=c(1.0,1.0),
-    addcol_titles=c("No. SNPs","P-val")
-    )
+forest_plot_1_to_many(
+  res,
+  b = "b",
+  se = "se",
+  exponentiate = TRUE,
+  ao_slc = FALSE,
+  lo = 0.3,
+  up = 2.5,
+  TraitM = "exposure",
+  by = NULL,
+  trans = "log2",
+  xlab = "OR for CHD per SD increase in risk factor (95% CI)",
+  weight = "weight",
+  subheading_size = 11,
+  col1_title = "Risk factor",
+  col1_width = 2.5,
+  col_text_size = 4,
+  addcols = c("nsnp", "pval"),
+  addcol_widths = c(1.0, 1.0),
+  addcol_titles = c("No. SNPs", "P-val")
+)
 ```
 
 In my own workflow I prefer to to keep the plot free of axis and column titles and to add them separately in a program like powerpoint:
 
 ```{r cache=FALSE, warning=FALSE,message=FALSE, eval=FALSE}
-forest_plot_1_to_many(res,b="b",se="se",
-    exponentiate=T,ao_slc=F,lo=0.3,up=3.0,
-    TraitM="exposure",col1_width=2.0,by=NULL,
-    trans="log2",xlab="",addcols=c("nsnp","pval"),
- 	weight="weight", col_text_size=4,	
-    addcol_widths=c(0.5,1.0),addcol_titles=c("",""))
+forest_plot_1_to_many(
+  res,
+  b = "b",
+  se = "se",
+  exponentiate = TRUE,
+  ao_slc = FALSE,
+  lo = 0.3,
+  up = 3.0,
+  TraitM = "exposure",
+  col1_width = 2.0,
+  by = NULL,
+  trans = "log2",
+  xlab = "",
+  addcols = c("nsnp", "pval"),
+  weight = "weight",
+  col_text_size = 4,
+  addcol_widths = c(0.5, 1.0),
+  addcol_titles = c("", "")
+)
 ```
-
-
 
 #### Example 2. MR results for multiple MR methods grouped by multiple exposures 
 
 In this next example we plot the results from an analysis of the effect of multiple exposures on coronary heart disease using multiple methods, with results grouped by exposure. We also want the result for the IVW method to be given priority and to go above the other methods. We also want the exposure with the largest IVW effect size to go the top of the plot. We also set the TraitM argument to the column describing the MR method. This is because we are grouping the results on the exposures. Normally the row labels would correspond to the exposures but in this example we want the row names to correspond to the MR method. 
 
+```{r cache=FALSE, warning=FALSE, fig.height=10, eval=FALSE}
+res <- mr(dat2)
+res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
 
-```{r cache=FALSE, warning=FALSE,fig.height=10, eval=FALSE}
-res<-mr(dat2)
-res<-split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
+res <-
+  sort_1_to_many(
+    res,
+    group = "exposure",
+    sort_action = 3,
+    priority = "Inverse variance weighted",
+    trait_m = "method"
+  )
 
-res<-sort_1_to_many(res,group="exposure",sort_action=3,priority="Inverse variance weighted",trait_m="method")
-
-forest_plot_1_to_many(res,b="b",se="se",
-	exponentiate=T,trans="log2",ao_slc=F,lo=0.03,
-	up=22,col1_width=2,by="exposure",TraitM="method",
-	xlab="OR for CHD per SD increase in risk factor (95% confidence interval)",
-	subheading_size=12,col_text_size=4)
-
+forest_plot_1_to_many(
+  res,
+  b = "b",
+  se = "se",
+  exponentiate = TRUE,
+  trans = "log2",
+  ao_slc = FALSE,
+  lo = 0.03,
+  up = 22,
+  col1_width = 2,
+  by = "exposure",
+  TraitM = "method",
+  xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
+  subheading_size = 12,
+  col_text_size = 4
+)
 ```
 
 
@@ -319,21 +364,31 @@ forest_plot_1_to_many(res,b="b",se="se",
 In this next example we plot the same results as above but with results stratified by a grouping variable. We also select one MR method for each unique exposure-outcome combination and sort the results by decreasing effect size within each group (i.e. largest effect at the top). 
 
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
+res <- mr(dat2) 
+res <- split_exposure(res)
+res <- subset_on_method(res)
+res$subcategory[res$exposure %in% c("Adiponectin", "Hip circumference", "Waist circumference")] <- "Group 1"
+res$subcategory[is.na(res$subcategory)] <- "Group 2"
+res$weight <- 1/res$se
+res <- sort_1_to_many(res, sort_action = 1, group = "subcategory")
 
-res<-mr(dat2) 
-res<-split_exposure(res)
-res<-subset_on_method(res)
-res$subcategory[res$exposure %in% c("Adiponectin","Hip circumference","Waist circumference")]<-"Group 1"
-res$subcategory[is.na(res$subcategory)]<-"Group 2"
-res$weight<-1/res$se
-res<-sort_1_to_many(res,sort_action=1,group="subcategory")
-
-forest_plot_1_to_many(res,b="b",se="se",
-	exponentiate=T,trans="log2",ao_slc=F,lo=0.3,
-	up=2.5,TraitM="exposure",col_text_size=4,col1_width=1.5,by="subcategory",
-	xlab="OR for CHD per SD increase in risk factor (95% confidence interval)",
-	subheading_size=14,weight="weight")
-
+forest_plot_1_to_many(
+  res,
+  b = "b",
+  se = "se",
+  exponentiate = TRUE,
+  trans = "log2",
+  ao_slc = FALSE,
+  lo = 0.3,
+  up = 2.5,
+  TraitM = "exposure",
+  col_text_size = 4,
+  col1_width = 1.5,
+  by = "subcategory",
+  xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
+  subheading_size = 14,
+  weight = "weight"
+)
 ```
 
 In the above example we made up an arbitrary grouping variable called "subcategory" with values "Group 1" and "Group 2". Typically, however, the grouping variable might correspond to something like a trait ontology (e.g. anthropometric and glycemic traits) or study design (e.g. MR and observational studies). 
@@ -343,12 +398,12 @@ In the above example we made up an arbitrary grouping variable called "subcatego
 
 The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:
 
-```{r cache=TRUE, eval=TRUE, echo=TRUE, warning=FALSE,message=FALSE, eval=FALSE}
+```{r cache=TRUE, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
 
-exp_dat <- extract_instruments(outcomes=2)  #extract instruments for BMI
-ao<-available_outcomes()
-ao<-ao[ao$category=="Disease",] #identify diseases
-ao<-ao[which(ao$ncase>100),]
+exp_dat <- extract_instruments(outcomes = 2)  #extract instruments for BMI
+ao <- available_outcomes()
+ao <- ao[ao$category == "Disease", ] #identify diseases
+ao <- ao[which(ao$ncase > 100), ]
 
 dis_dat <- extract_outcome_data(
 	snps = exp_dat$SNP,
@@ -360,41 +415,56 @@ dat3 <- harmonise_data(
 	outcome_dat = dis_dat
 )
 
+res <- mr(dat3, method_list = c("mr_wald_ratio", "mr_ivw"))
+res <- split_outcome(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
 
-res<-mr(dat3,method_list=c("mr_wald_ratio","mr_ivw"))
-res<-split_outcome(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
-
-res<-sort_1_to_many(res,b="b",sort_action=4) #this sorts results by decreasing effect size (largest effect at top of the plot)
-
+res <- sort_1_to_many(res, b = "b", sort_action = 4) #this sorts results by decreasing effect size (largest effect at top of the plot)
 ```
 
 MR results for 103 diseases can be difficult to visualise in a single-column forest plot. In my own workflow I would split these across two plots and then join them together in a separate program, such as powerpoint, and do further refinements there. I typically save my plots using the pdf() graphics device. In this particular example the disease labels probably require some cleaning up (some are a bit long) or alternatively the column text size could be made smaller. It is also possible to change the colour of the plot and the shape of the point estimates. Type ?forest_plot_1_to_many for further details.
 
-```{r cache=TRUE, warning=FALSE,fig.height=10, eval=FALSE}
+```{r cache=TRUE, warning=FALSE, fig.height=10, eval=FALSE}
+res1 <- res[1:52, ]
+res2 <- res[53:103, ]
 
-res1<-res[1:52,]
-res2<-res[53:103,]
+plot1 <- forest_plot_1_to_many(
+  res1,
+  b = "b",
+  se = "se",
+  exponentiate = TRUE,
+  trans = "log2",
+  ao_slc = FALSE,
+  lo = 0.004,
+  up = 461,
+  col1_width = 2,
+  TraitM = "outcome",
+  col_text_size = 3,
+  xlab = ""
+)
 
-plot1<-forest_plot_1_to_many(res1,b="b",se="se",
-	exponentiate=T,trans="log2",ao_slc=F,lo=0.004,
-	up=461,col1_width=2,TraitM="outcome",
-	col_text_size=3,xlab="")
-
-plot2<-forest_plot_1_to_many(res2,b="b",se="se",
-	exponentiate=T,trans="log2",ao_slc=F,lo=0.004,
-	up=461,col1_width=2,TraitM="outcome",
-	subheading_size=11,col_text_size=3,xlab="")
+plot2 <- forest_plot_1_to_many(
+  res2,
+  b = "b",
+  se = "se",
+  exponentiate = TRUE,
+  trans = "log2",
+  ao_slc = FALSE,
+  lo = 0.004,
+  up = 461,
+  col1_width = 2,
+  TraitM = "outcome",
+  subheading_size = 11,
+  col_text_size = 3,
+  xlab = ""
+)
 
 plot1
 plot2
 
-pdf("plot1.pdf",height=10,width=8)
+pdf("plot1.pdf", height = 10, width = 8)
 plot1
 dev.off() 
-
 ```
-
-
 
 * * * 
 
@@ -403,13 +473,18 @@ dev.off()
 MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method that considers the measurement error in SNP-exposure effects, is unbiased when there are many (e.g. hundreds of) weak instruments, and is robust to systematic and idiosyncratic pleiotropy. See the [arXiv preprint](https://arxiv.org/abs/1801.09652) for more detail about the statistical methodology.
 
 MR.RAPS is implemented in the R package _mr.raps_ that is available on CRAN. It can be directly called from TwoSampleMR by
-```{r eval = FALSE}
+```{r eval=FALSE}
 res <- mr(dat, method_list = c("mr_raps"))
 ```
 
 MR.RAPS comes with two main options: _over.dispersion_ (whether the method should consider systematic pleiotropy) and _loss.function_ (either "l2", "huber", or "tukey"). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is _over.dispersion = TRUE_ and _loss.function = "tukey"_. To change these options, modify the _parameters_ argument of _mr_ by (for example)
-```{r eval = FALSE}
-res <- mr(dat, method_list = c("mr_raps"), parameters = list(over.dispersion = FALSE, loss.function = "l2"))
+```{r eval=FALSE}
+res <-
+  mr(
+    dat,
+    method_list = c("mr_raps"),
+    parameters = list(over.dispersion = FALSE, loss.function = "l2")
+  )
 ```
 
 * * *
@@ -426,7 +501,6 @@ By default this produces a html file in the current working directory, but see t
 
 This function will create a separate report file for every exposure-outcome combination that is present in the `dat` object.
 
-
 * * *
 
 ## MR Steiger directionality test
@@ -439,7 +513,7 @@ PLoS Genetics. 2017. 13(11).](http://journals.plos.org/plosgenetics/article?id=1
 
 In MR it is assumed that the instruments influence the exposure first and then the outcome through the exposure. But sometimes this is difficult to evaluate, for example is a cis-acting SNP influencing gene expression levels or DNA methylation levels first? The causal direction between the hypothesised exposure and outcomes can be tested using the Steiger test [reference to go here]. For example:
 
-```{r }
+```{r}
 out <- directionality_test(dat)
 kable(out)
 ```
@@ -454,7 +528,6 @@ This test is, like many others, liable to give inaccurate causal directions unde
 These tests are obtained using:
 
 ```{r eval=FALSE, warnings=FALSE}
-
 mr_steiger(
 	p_exp = dat$pval.exposure, 
 	p_out = dat$pval.outcome, 
@@ -464,7 +537,6 @@ mr_steiger(
 	r_yyo = 1,
 	r_exp=0
 )
-
 ```
 
 * * *
@@ -535,7 +607,6 @@ The current plots being generated are not necessarily adequate because while the
 
 If you want to perform analysis with your local summary data (i.e. not in the OpenGWAS database) then use then look up the `mv_extract_exposures_local` function in replace of the `mv_extract_exposures` function.
 
-
 * * *
 
 ## MR estimates when instruments are correlated
@@ -543,7 +614,6 @@ If you want to perform analysis with your local summary data (i.e. not in the Op
 In the examples shown so far it is assumed that instruments are independent (i.e. they are not in linkage disequilibrium, LD). This is to avoid 'double counting' effects. An alternative approach is to estimate the MR effects accounting for the correlation between variants.
 
 The TwoSampleMR package has not implemented this yet, but the [MendelianRandomization](https://cran.r-project.org/web/packages/MendelianRandomization/index.html) R package by Olena Yavorska and Stephen Burgess does have this functionality. We can use the TwoSampleMR package to extract, format and harmonise data, and then convert to the format required by the MendelianRandomization package. The IEU GWAS database server has the individual level genetic data for ~500 Europeans in 1000 genomes data, and can obtain the LD matrix for a set of SNPs using these data. For example:
-
 
 ```{r eval=FALSE}
 snplist <- c("rs234", "rs1205")
@@ -574,8 +644,8 @@ MendelianRandomization::mr_ivw(dat2[[1]])
 Alternatively, convert to the `MRInput` format but also obtaining the LD matrix for the instruments
 
 ```{r eval=FALSE}
-dat2 <- dat_to_MRInput(dat, get_correlation=TRUE)
-MendelianRandomization::mr_ivw(dat2[[1]], correl=TRUE)
+dat2 <- dat_to_MRInput(dat, get_correlation = TRUE)
+MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
 ```
 
 * * *
@@ -614,8 +684,6 @@ res <- mr_wrapper(dat)
 res_moe <- mr_moe(res, rf)
 ```
 
-
-
 The function does the following:
 
 1. Performs MR using each of 11 MR methods
@@ -633,7 +701,6 @@ The result object itself is a list with the following elements:
 - `info` (metrics used to generate MOE)
 
 Looking at the `estimates`, we see that there is a column called `MOE` which is the predicted AUROC curve performance of each method. 
-
 * * *
 
 ## Post MR results management 
@@ -644,27 +711,26 @@ The TwoSampleMR package also provides the following functions for managing or ed
 
 The outcome column in the output of mr() combines the original outcome name with the outcome trait ID. 
 
-```{r }
+```{r}
 head(res)
 ```
 
 The outcome column can be split into separate columns for the id and outcome name using the split_outcome function:
 
-```{r }
-res<-mr(dat)
+```{r}
+res <- mr(dat)
 split_outcome(res)
 ```
 
 ### Split exposure names
 
-Similarly to the outcome column, the exposure column in the output of mr() combines the original exposure name with the exposure trait ID. This can be split into separate columns for the id and exposure name using the split_exposure function. 
-
+Similarly to the outcome column, the exposure column in the output of `mr()` combines the original exposure name with the exposure trait ID. This can be split into separate columns for the id and exposure name using the split_exposure function. 
 
 ### Generate odds ratios with 95% confidence intervals
 
 Users can convert log odds ratios into odds ratios with 95% confidence intervals using: 
 
-```{r }
+```{r}
 generate_odds_ratios(res)
 ```
 
@@ -672,7 +738,7 @@ generate_odds_ratios(res)
 
 It is sometimes useful to subset results on MR method, so that there is one unique result for each exposure-outcome combination: 
 
-```{r }
+```{r}
 subset_on_method(res)
 ```
 
@@ -680,16 +746,44 @@ The default is to subset on the IVW method when >1 SNP is available and to use t
 
 ### Combine all results 
 
-It is often useful to combine all results and study level characterists into a single dataframe or table, e.g. for sharing results with collaborators or when the user wishes to present all results in a single table or figure. This can be done using the combine_all_mrresults() function:
+It is often useful to combine all results and study level characterists into a single dataframe or table, e.g. for sharing results with collaborators or when the user wishes to present all results in a single table or figure. This can be done using the `combine_all_mrresults()` function:
 
 ```{r, eval=FALSE }
-res<-mr(dat)
-het<-mr_heterogeneity(dat)
-plt<-mr_pleiotropy_test(dat)
-sin<-mr_singlesnp(dat)
-all_res<-combine_all_mrresults(res,het,plt,sin,ao_slc=T,Exp=T,split.exposure=F,split.outcome=T)
-head(all_res[,c("Method","outcome","exposure","nsnp","b","se","pval","intercept","intercept_se","intercept_pval","Q","Q_df","Q_pval","consortium","ncase","ncontrol","pmid","population")])
+res <- mr(dat)
+het <- mr_heterogeneity(dat)
+plt <- mr_pleiotropy_test(dat)
+sin <- mr_singlesnp(dat)
+all_res <-
+  combine_all_mrresults(
+    res,
+    het,
+    plt,
+    sin,
+    ao_slc = TRUE,
+    Exp = TRUE,
+    split.exposure = FALSE,
+    split.outcome = TRUE
+  )
+head(all_res[, c(
+  "Method",
+  "outcome",
+  "exposure",
+  "nsnp",
+  "b",
+  "se",
+  "pval",
+  "intercept",
+  "intercept_se",
+  "intercept_pval",
+  "Q",
+  "Q_df",
+  "Q_pval",
+  "consortium",
+  "ncase",
+  "ncontrol",
+  "pmid",
+  "population"
+)])
 ```
 
-This combines all results from mr(), mr_heterogeneity(), mr_pleiotropy_test() and mr_singlesnp() into a single dataframe. It also merges the results with outcome study level characteristics from the available_outcomes() function, including sample size characteristics. If requested, it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). 
-
+This combines all results from `mr()`, `mr_heterogeneity()`, `mr_pleiotropy_test()` and `mr_singlesnp()` into a single dataframe. It also merges the results with outcome study level characteristics from the `available_outcomes()` function, including sample size characteristics. If requested, it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). 

@@ -9,4 +9,3 @@ test_that("check columns before harmonising", {
 	expect_null(check_required_columns(out_dat, "outcome"))
 	expect_error(check_required_columns(subset(exp_dat, select=-id.exposure), "exposure"))
 })
-

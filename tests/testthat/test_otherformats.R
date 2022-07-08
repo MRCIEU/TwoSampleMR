@@ -43,4 +43,3 @@ test_that("radial MR", {
 	w <- mr_ivw_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
 	expect_true(class(w) == "list")
 })
-

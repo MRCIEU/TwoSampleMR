@@ -30,8 +30,6 @@ install.packages("remotes")
 remotes::install_github("MRCIEU/TwoSampleMR@0.4.26")
 ```
 
-
 ## Docker
 
 A docker image containing R with the TwoSampleMR package pre-installed is available here: https://hub.docker.com/r/mrcieu/twosamplemr
-

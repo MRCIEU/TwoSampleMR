@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r echo=FALSE}
-knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
+knitr::opts_chunk$set(eval = TRUE, cache = TRUE)
 suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
 suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
 suppressWarnings(suppressPackageStartupMessages(library(knitr)))
@@ -30,10 +30,9 @@ suppressWarnings(suppressPackageStartupMessages(library(knitr)))
 
 The exposure data and outcome data are now obtained, e.g.:
 
-
 ```{r }
 ao <- available_outcomes()
-bmi_exp_dat <- extract_instruments(outcomes='ieu-a-2')
+bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
 ```
 
@@ -74,7 +73,6 @@ other allele = G
 
 Here the effect allele on the exposure and the outcome is the same
 
-
 ### Incorrect reference, unambigious
 
 ```
@@ -89,7 +87,6 @@ other allele = T
 
 Here the outcome GWAS is presenting the effect for the alternate allele on the reverse strand. We need to flip the outcome effect to 0.05 to correspond to the same allele as the exposure GWAS on the forward strand.
 
-
 ### Ambiguous
 
 ```
@@ -103,7 +100,6 @@ other allele = C
 ```
 
 Here the alleles do not correspond for the same SNP, so this SNP will be discarded from the analysis.
-
 
 ### Palindromic SNP, inferrable
 
@@ -121,7 +117,6 @@ effect allele frequency = 0.91
 
 Here the alleles correspond, but it is a palindromic SNP, such that the alleles on the forward strand are the same as on the reverse strand (A/T on forward is T/A on the reverse). However, the allele frequency of the effect allele gives us information - if the outcome effect allele (A) were on the forward strand we would expect it to have a low allele frequency, but given it has a high frequency (0.91) we infer that the outcome GWAS is presenting the effect on the reverse strand for the alternative allele. We would flip the effect to 0.05 for the outcome GWAS.
 
-
 ### Palindromic SNP, not inferrable
 
 ```
@@ -138,7 +133,6 @@ effect allele frequency = 0.50
 
 This is similar to the above, except the allele frequency no longer gives us information about the strand. We would discard this SNP. This is done for any palindromic SNPs that have minor allele frequency above 0.42.
 
-
 ### Options
 
 There are three options to harmonising the data. 
@@ -147,28 +141,27 @@ There are three options to harmonising the data.
 2. Try to infer the forward strand alleles using allele frequency information
 3. Correct the strand for non-palindromic SNPs, but drop all palindromic SNPs
 
-By default, the `harmonise_data` function uses option 2, but this can be modified using the `action` argument, e.g. `harmonise_data(exposure_dat, outcome_dat, action=3)`.
+By default, the `harmonise_data` function uses option 2, but this can be modified using the `action` argument, e.g. `harmonise_data(exposure_dat, outcome_dat, action = 3)`.
 
 ## Drop duplicate exposure-outcome summary sets
 
 After data harmonisation, users may find that their dataset contains duplicate exposure-outcome summary sets. This can arise, for example, when a GWAS consortium has released multiple results from separate GWAS analyses for the same trait. For example, there are multiple GWAS summary datasets for body mass index and coronary heart disease:
 
-```{r }
-ao[ao$trait=="Body mass index",c("trait","id","pmid","author","sample_size","nsnp")]
-ao[ao$trait=="Coronary heart disease",c("trait","id","pmid","author","ncase","ncontrol","nsnp")]
-
+```{r}
+ao[ao$trait == "Body mass index", c("trait", "id", "pmid", "author", "sample_size", "nsnp")]
+ao[ao$trait == "Coronary heart disease", c("trait", "id", "pmid", "author", "ncase", "ncontrol", "nsnp")]
 ```
 
 There are therefore multiple potential combinations of body mass index and coronary heart disease, which would likely lead to duplicate MR analyses. We recommend that users prune their datasets so that only the exposure-outcome combination with the highested expected power is retained. This can be done by selecting the exposure-outcome summary set with the largest sample size for the outcome, using the power_prune function:
 
 ```{r eval=FALSE}
-dat<-power_prune(dat,method=1,dist.outcome="binary")
+dat <- power_prune(dat, method = 1, dist.outcome = "binary")
 ```
 
 This drops the duplicate exposure-outcome sets with the smaller outcome sample size (number of cases for binary outcomes). Remaining duplicates are then dropped on the basis of the exposure sample size. However, if there are a large number of SNPs available to instrument an exposure, the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. This can occur, for example, if the larger outcome GWAS has used a targeted genotyping array. In such instances, it may be better to prune studies on the basis of instrument strength (i.e. variation in exposure explained by the instrumental SNPs) as well as sample size. This can be done by setting the method argument to 2: 
 
 ```{r eval=FALSE}
-dat<-power_prune(dat,method=2,dist.outcome="binary")
+dat <- power_prune(dat, method = 2, dist.outcome = "binary")
 ```
 
 This procedure drops duplicate exposure-outcome sets on the basis of instrument strength and sample size, and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure should not be binary). The SNP-outcome effects can correspond to either a binary or continuous trait (default behaviour is to assume a binary distribution). If the exposure is binary then method 1 should be used. 

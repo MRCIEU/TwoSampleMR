@@ -8,5 +8,3 @@ test_that("wrapper", {
 	expect_true(length(w) == 1)
 	expect_true(length(names(w[[1]])) == 5)
 })
-
-

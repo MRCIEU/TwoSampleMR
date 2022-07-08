@@ -9,7 +9,7 @@ format_1_to_many(
   b = "b",
   se = "se",
   exponentiate = FALSE,
-  ao_slc = F,
+  ao_slc = FALSE,
   by = NULL,
   TraitM = "outcome",
   addcols = NULL,

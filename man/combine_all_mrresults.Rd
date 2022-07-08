@@ -9,10 +9,10 @@ combine_all_mrresults(
   het,
   plt,
   sin,
-  ao_slc = T,
-  Exp = F,
-  split.exposure = F,
-  split.outcome = F
+  ao_slc = TRUE,
+  Exp = FALSE,
+  split.exposure = FALSE,
+  split.outcome = FALSE
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ combine_all_mrresults(
 
 \item{split.exposure}{Logical; if set to \code{TRUE} the exposure column is split into separate columns for the exposure name and exposure ID. Default is \code{FALSE}.}
 
-\item{split.outcome}{Logical; if set to TRUE the outcome column is split into separate columns for the outcome name and outcome ID. Default is \code{FALSE}.}
+\item{split.outcome}{Logical; if set to \code{TRUE} the outcome column is split into separate columns for the outcome name and outcome ID. Default is \code{FALSE}.}
 }
 \value{
 data frame

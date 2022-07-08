@@ -11,4 +11,3 @@ test_that("get afl2", {
 	c <- ldsc_rg("ukb-a-248", "ukb-b-19953", snpinfo=hm3info)
 	height <- ldsc_h2("ukb-b-10787", snpinfo=hm3info)
 })
-

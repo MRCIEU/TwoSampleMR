@@ -9,7 +9,7 @@
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
 
-	if(!class(a) == 'try-error')
+	if(!inherits(a, 'try-error'))
 	{
 		latest <- gsub("Version: ", "", a[grep("Version", a)])
 		current = utils::packageDescription('TwoSampleMR')
@@ -20,7 +20,7 @@
 			packageStartupMessage("\nWarning:\nYou are running an old version of the TwoSampleMR package.\n",
 				"This version:   ", current$Version, "\n",
 				"Latest version: ", latest, "\n",
-				"Please consider updating using devtools::install_github('MRCIEU/TwoSampleMR')")
+				"Please consider updating using remotes::install_github('MRCIEU/TwoSampleMR')")
 		}
 	}
 }

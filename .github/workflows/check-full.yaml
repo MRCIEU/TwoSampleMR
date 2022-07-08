@@ -5,6 +5,9 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
+  schedule:
+    - cron: '37 7 * * MON' # run at 7:37am UTC on Mondays
 
 name: R-CMD-check
 
@@ -18,11 +21,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {os: ubuntu-18.04,   r: 'oldrel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+        - {os: ubuntu-20.04,   r: 'oldrel-2', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+        - {os: ubuntu-20.04,   r: 'oldrel-1', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
         - {os: macOS-latest,   r: 'release'}
         - {os: windows-latest, r: 'release'}
-        - {os: ubuntu-18.04,   r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
-        - {os: ubuntu-18.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", http-user-agent: "R/4.0.0 (ubuntu-18.04) R (4.0.0 x86_64-pc-linux-gnu x86_64 linux-gnu) on GitHub Actions"}
+        - {os: ubuntu-20.04,   r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+        - {os: ubuntu-20.04,   r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
