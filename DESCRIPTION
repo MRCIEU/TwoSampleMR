@@ -61,7 +61,7 @@ Remotes:
     gqi/MRMix,
     mrcieu/ieugwasr,
     mrcieu/MRInstruments,
-    rondolab/MR-PRESSO,
+    MRPRESSO=rondolab/MR-PRESSO,
     WSpiller/RadialMR
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
