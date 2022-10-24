@@ -165,12 +165,12 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886</code>
 <span><span class="co">#&gt; 5              247166      BMI             TRUE             reported</span></span>
 <span><span class="co">#&gt; 6              227886      BMI             TRUE             reported</span></span>
 <span><span class="co">#&gt;   units.exposure_dat id.exposure data_source.exposure</span></span>
-<span><span class="co">#&gt; 1              kg/m2      1VjwiQ             textfile</span></span>
-<span><span class="co">#&gt; 2              kg/m2      1VjwiQ             textfile</span></span>
-<span><span class="co">#&gt; 3              kg/m2      1VjwiQ             textfile</span></span>
-<span><span class="co">#&gt; 4              kg/m2      1VjwiQ             textfile</span></span>
-<span><span class="co">#&gt; 5              kg/m2      1VjwiQ             textfile</span></span>
-<span><span class="co">#&gt; 6              kg/m2      1VjwiQ             textfile</span></span></code></pre></div>
+<span><span class="co">#&gt; 1              kg/m2      9FhFCW             textfile</span></span>
+<span><span class="co">#&gt; 2              kg/m2      9FhFCW             textfile</span></span>
+<span><span class="co">#&gt; 3              kg/m2      9FhFCW             textfile</span></span>
+<span><span class="co">#&gt; 4              kg/m2      9FhFCW             textfile</span></span>
+<span><span class="co">#&gt; 5              kg/m2      9FhFCW             textfile</span></span>
+<span><span class="co">#&gt; 6              kg/m2      9FhFCW             textfile</span></span></code></pre></div>
 <p>The output from this function is a new data frame with standardised column names:</p>
 <ul>
 <li><code>SNP</code></li>
@@ -244,12 +244,12 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span><span class="co">#&gt; 5              247166 exposure             TRUE             reported</span></span>
 <span><span class="co">#&gt; 6              227886 exposure             TRUE             reported</span></span>
 <span><span class="co">#&gt;   units.exposure_dat id.exposure data_source.exposure</span></span>
-<span><span class="co">#&gt; 1              kg/m2      LB4XET             textfile</span></span>
-<span><span class="co">#&gt; 2              kg/m2      LB4XET             textfile</span></span>
-<span><span class="co">#&gt; 3              kg/m2      LB4XET             textfile</span></span>
-<span><span class="co">#&gt; 4              kg/m2      LB4XET             textfile</span></span>
-<span><span class="co">#&gt; 5              kg/m2      LB4XET             textfile</span></span>
-<span><span class="co">#&gt; 6              kg/m2      LB4XET             textfile</span></span></code></pre></div>
+<span><span class="co">#&gt; 1              kg/m2      dnryOc             textfile</span></span>
+<span><span class="co">#&gt; 2              kg/m2      dnryOc             textfile</span></span>
+<span><span class="co">#&gt; 3              kg/m2      dnryOc             textfile</span></span>
+<span><span class="co">#&gt; 4              kg/m2      dnryOc             textfile</span></span>
+<span><span class="co">#&gt; 5              kg/m2      dnryOc             textfile</span></span>
+<span><span class="co">#&gt; 6              kg/m2      dnryOc             textfile</span></span></code></pre></div>
 <p>If the <code>Phenotype</code> column is not provided (as is the case in this example) then it will assume that the phenotype’s name is simply “exposure”. This is entered in the <code>exposure</code> column. It can be renamed manually:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">exposure</span> <span class="op">&lt;-</span> <span class="st">"BMI"</span></span></code></pre></div>
@@ -282,8 +282,8 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span><span class="co">#&gt; 1 rs1             1           1                      A exposure</span></span>
 <span><span class="co">#&gt; 2 rs2             2           2                      T exposure</span></span>
 <span><span class="co">#&gt;   mr_keep.exposure pval.exposure pval_origin.exposure id.exposure</span></span>
-<span><span class="co">#&gt; 1             TRUE     0.3173105             inferred      2wk1fI</span></span>
-<span><span class="co">#&gt; 2             TRUE     0.3173105             inferred      2wk1fI</span></span>
+<span><span class="co">#&gt; 1             TRUE     0.3173105             inferred      Xja7rr</span></span>
+<span><span class="co">#&gt; 2             TRUE     0.3173105             inferred      Xja7rr</span></span>
 <span><span class="co">#&gt;   other_allele.exposure eaf.exposure</span></span>
 <span><span class="co">#&gt; 1                    NA           NA</span></span>
 <span><span class="co">#&gt; 2                    NA           NA</span></span></code></pre></div>
@@ -529,10 +529,10 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <span><span class="co">#&gt; [1] "Available"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`Total associations`</span></span>
-<span><span class="co">#&gt; [1] 244645624572</span></span>
+<span><span class="co">#&gt; [1] 244891373422</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`Total complete datasets`</span></span>
-<span><span class="co">#&gt; [1] 42458</span></span>
+<span><span class="co">#&gt; [1] 42465</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $`Total public datasets`</span></span>
 <span><span class="co">#&gt; [1] 42334</span></span>
@@ -544,17 +544,18 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <code class="sourceCode R"><span><span class="va">ao</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/available_outcomes.html">available_outcomes</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ao</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 22</span></span></span>
-<span><span class="co">#&gt;   id    trait note  group_name    mr  year author sex      pmid population unit </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ieu-… Syst… NA    public         1  <span style="text-decoration: underline;">2</span>021 Sakau… Male…  3.46<span style="color: #949494;">e</span>7 East Asian mmHg </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> ieu-… Seps… HES … public        <span style="color: #BB0000;">NA</span>  <span style="text-decoration: underline;">2</span>021 Hamil… Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  European   logOR</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> eqtl… ENSG… NA    public         1  <span style="text-decoration: underline;">2</span>018 Vosa U Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  European   NA   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> ukb-… Chee… 1408… public         1  <span style="text-decoration: underline;">2</span>018 Ben E… Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  European   SD   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> ukb-… Age … 2764… public         1  <span style="text-decoration: underline;">2</span>018 Ben E… Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  European   SD   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> ukb-… Diag… NA    public         1  <span style="text-decoration: underline;">2</span>017 Neale  Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  European   SD   </span></span>
+<span><span class="co">#&gt;   id          trait note  group…¹    mr  year author sex      pmid popul…² unit </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ieu-b-5075  Syst… NA    public      1  <span style="text-decoration: underline;">2</span>021 Sakau… Male…  3.46<span style="color: #949494;">e</span>7 East A… mmHg </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> ieu-b-5064  Seps… HES … public     <span style="color: #BB0000;">NA</span>  <span style="text-decoration: underline;">2</span>021 Hamil… Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  Europe… logOR</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> eqtl-a-ENS… ENSG… NA    public      1  <span style="text-decoration: underline;">2</span>018 Vosa U Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  Europe… NA   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> ukb-b-1489  Chee… 1408… public      1  <span style="text-decoration: underline;">2</span>018 Ben E… Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  Europe… SD   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> ukb-b-8727  Age … 2764… public      1  <span style="text-decoration: underline;">2</span>018 Ben E… Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  Europe… SD   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> ukb-a-583   Diag… NA    public      1  <span style="text-decoration: underline;">2</span>017 Neale  Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  Europe… SD   </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 11 more variables: sample_size &lt;int&gt;, nsnp &lt;int&gt;, build &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   category &lt;chr&gt;, subcategory &lt;chr&gt;, ontology &lt;chr&gt;, ncase &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   consortium &lt;chr&gt;, ncontrol &lt;int&gt;, priority &lt;int&gt;, sd &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;">#   consortium &lt;chr&gt;, ncontrol &lt;int&gt;, priority &lt;int&gt;, sd &lt;dbl&gt;, and abbreviated</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   variable names ¹​group_name, ²​population</span></span></span></code></pre></div>
 <p>For information about authentication see <a href="https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication" class="external-link">https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication</a>.</p>
 <p>The <code>available_outcomes</code> function returns a table of all the available studies in the database. Each study has a unique ID. e.g.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
@@ -593,7 +594,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clump_data.html">clump_data</a></span><span class="op">(</span><span class="va">bmi_exp_dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Please look at vignettes for options on running this locally if you need to run many instances of this command.</span></span>
-<span><span class="co">#&gt; Clumping LB4XET, 30 variants, using EUR population reference</span></span>
+<span><span class="co">#&gt; Clumping dnryOc, 30 variants, using EUR population reference</span></span>
 <span><span class="co">#&gt; Removing 3 of 30 variants due to LD with other variants or absence from LD reference panel</span></span></code></pre></div>
 <p>The <code>clump_data</code> command takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the R/MRInstruments package the SNPs are already LD clumped.</p>
 <p><strong>Note:</strong> The LD reference panel only includes SNPs (no INDELs). There are five super-populations from which LD can be calculated, by default European samples are used. Only SNPs with MAF &gt; 0.01 within-population are available.</p>
@@ -618,7 +619,7 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476</code></pre>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
