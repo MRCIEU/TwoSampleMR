@@ -4,8 +4,13 @@
 \alias{mr_penalised_weighted_median}
 \title{Penalised weighted median MR}
 \usage{
-mr_penalised_weighted_median(b_exp, b_out, se_exp, se_out,
-  parameters = default_parameters())
+mr_penalised_weighted_median(
+  b_exp,
+  b_out,
+  se_exp,
+  se_out,
+  parameters = default_parameters()
+)
 }
 \arguments{
 \item{b_exp}{Vector of genetic effects on exposure}

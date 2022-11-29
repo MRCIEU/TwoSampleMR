@@ -4,10 +4,14 @@
 \alias{format_mr_results}
 \title{Format MR results for forest plot}
 \usage{
-format_mr_results(mr_res, exponentiate = FALSE,
+format_mr_results(
+  mr_res,
+  exponentiate = FALSE,
   single_snp_method = "Wald ratio",
-  multi_snp_method = "Inverse variance weighted", ao_slc = T,
-  priority = "Cardiometabolic")
+  multi_snp_method = "Inverse variance weighted",
+  ao_slc = T,
+  priority = "Cardiometabolic"
+)
 }
 \arguments{
 \item{mr_res}{Results from mr()}

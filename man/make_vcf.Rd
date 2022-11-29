@@ -4,8 +4,22 @@
 \alias{make_vcf}
 \title{Generate VCF format from GWAS summary dataset}
 \usage{
-make_vcf(CHROM, POS, ID, REF, ALT, QUAL, FILTER, B, SE, PVAL, AF, N,
-  build = "b37", vcf_reference_name)
+make_vcf(
+  CHROM,
+  POS,
+  ID,
+  REF,
+  ALT,
+  QUAL,
+  FILTER,
+  B,
+  SE,
+  PVAL,
+  AF,
+  N,
+  build = "b37",
+  vcf_reference_name
+)
 }
 \arguments{
 \item{CHROM}{Vector of chromosome names}

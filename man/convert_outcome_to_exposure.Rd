@@ -9,8 +9,6 @@ convert_outcome_to_exposure(outcome_dat)
 convert_outcome_to_exposure(outcome_dat)
 }
 \arguments{
-\item{outcome_dat}{Output from \code{format_data(type="outcome")}}
-
 \item{outcome_dat}{Output from \code{extract_outcome_data}}
 }
 \value{

@@ -4,11 +4,21 @@
 \alias{forest_plot_basic2}
 \title{A basic forest plot}
 \usage{
-forest_plot_basic2(dat, section = NULL, colour_group = NULL,
-  colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
-  trans = "identity", xlim = NULL, lo = lo, up = up,
-  subheading_size = subheading_size, colour_scheme = "black",
-  shape_points = 15)
+forest_plot_basic2(
+  dat,
+  section = NULL,
+  colour_group = NULL,
+  colour_group_first = TRUE,
+  xlab = NULL,
+  bottom = TRUE,
+  trans = "identity",
+  xlim = NULL,
+  lo = lo,
+  up = up,
+  subheading_size = subheading_size,
+  colour_scheme = "black",
+  shape_points = 15
+)
 }
 \arguments{
 \item{dat}{Output from format_1_to_many()}

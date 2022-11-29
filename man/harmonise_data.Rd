@@ -4,7 +4,7 @@
 \alias{harmonise_data}
 \title{Harmonise the alleles and effects between the exposure and outcome}
 \usage{
-harmonise_data(exposure_dat, outcome_dat, action = 2)
+harmonise_data(exposure_dat, outcome_dat, action = 2, tolerance = 0.08)
 }
 \arguments{
 \item{exposure_dat}{Output from \code{read_exposure_data}}

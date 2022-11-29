@@ -4,9 +4,17 @@
 \alias{forest_plot_basic}
 \title{A basic forest plot}
 \usage{
-forest_plot_basic(dat, section = NULL, colour_group = NULL,
-  colour_group_first = TRUE, xlab = NULL, bottom = TRUE,
-  trans = "identity", xlim = NULL, threshold = NULL)
+forest_plot_basic(
+  dat,
+  section = NULL,
+  colour_group = NULL,
+  colour_group_first = TRUE,
+  xlab = NULL,
+  bottom = TRUE,
+  trans = "identity",
+  xlim = NULL,
+  threshold = NULL
+)
 }
 \arguments{
 \item{dat}{Output from format_mr_results()}

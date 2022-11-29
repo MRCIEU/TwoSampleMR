@@ -4,8 +4,13 @@
 \alias{ld_pruning_api}
 \title{Perform clumping on the chosen SNPs using through API}
 \usage{
-ld_pruning_api(dat, clump_kb = 10000, clump_r2 = 0.1, clump_p1 = 1,
-  clump_p2 = 1)
+ld_pruning_api(
+  dat,
+  clump_kb = 10000,
+  clump_r2 = 0.1,
+  clump_p1 = 1,
+  clump_p2 = 1
+)
 }
 \arguments{
 \item{dat}{Output from \code{read_exposure_data}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start) and p-value column (pval.exposure)}

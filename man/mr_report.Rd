@@ -4,9 +4,15 @@
 \alias{mr_report}
 \title{Generate MR report}
 \usage{
-mr_report(dat, output_path = ".", output_type = "html",
-  author = "Analyst", study = "Two Sample MR",
-  path = system.file("reports", package = "TwoSampleMR"), ...)
+mr_report(
+  dat,
+  output_path = ".",
+  output_type = "html",
+  author = "Analyst",
+  study = "Two Sample MR",
+  path = system.file("reports", package = "TwoSampleMR"),
+  ...
+)
 }
 \arguments{
 \item{dat}{Output from \code{harmonise_exposure_outcome}}

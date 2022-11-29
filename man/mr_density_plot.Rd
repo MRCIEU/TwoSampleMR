@@ -4,8 +4,12 @@
 \alias{mr_density_plot}
 \title{Density plot}
 \usage{
-mr_density_plot(singlesnp_results, mr_results, exponentiate = FALSE,
-  bandwidth = "nrd0")
+mr_density_plot(
+  singlesnp_results,
+  mr_results,
+  exponentiate = FALSE,
+  bandwidth = "nrd0"
+)
 }
 \arguments{
 \item{singlesnp_results}{from \code{mr_singlesnp}}

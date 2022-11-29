@@ -4,8 +4,15 @@
 \alias{is_forward_strand}
 \title{Check a GWAS dataset against a reference known to be on the forward strand}
 \usage{
-is_forward_strand(gwas_snp, gwas_a1, gwas_a2, ref_snp, ref_a1, ref_a2,
-  threshold = 0.9)
+is_forward_strand(
+  gwas_snp,
+  gwas_a1,
+  gwas_a2,
+  ref_snp,
+  ref_a1,
+  ref_a2,
+  threshold = 0.9
+)
 }
 \arguments{
 \item{gwas_snp}{Vector of SNP names for the dataset being checked}

@@ -4,8 +4,13 @@
 \alias{mv_residual}
 \title{Perform basic multivariable MR}
 \usage{
-mv_residual(mvdat, intercept = FALSE, instrument_specific = FALSE,
-  pval_threshold = 5e-08, plots = FALSE)
+mv_residual(
+  mvdat,
+  intercept = FALSE,
+  instrument_specific = FALSE,
+  pval_threshold = 5e-08,
+  plots = FALSE
+)
 }
 \arguments{
 \item{mvdat}{Output from \code{mv_harmonise_data}}

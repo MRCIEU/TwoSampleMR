@@ -4,8 +4,16 @@
 \alias{combine_all_mrresults}
 \title{Combine all mr results}
 \usage{
-combine_all_mrresults(res, het, plt, sin, ao_slc = T, Exp = F,
-  split.exposure = F, split.outcome = F)
+combine_all_mrresults(
+  res,
+  het,
+  plt,
+  sin,
+  ao_slc = T,
+  Exp = F,
+  split.exposure = F,
+  split.outcome = F
+)
 }
 \arguments{
 \item{res}{Results from mr()}

@@ -4,9 +4,11 @@
 \alias{mr_heterogeneity}
 \title{Get heterogeneity stats}
 \usage{
-mr_heterogeneity(dat, parameters = default_parameters(),
-  method_list = subset(mr_method_list(), heterogeneity_test &
-  use_by_default)$obj)
+mr_heterogeneity(
+  dat,
+  parameters = default_parameters(),
+  method_list = subset(mr_method_list(), heterogeneity_test & use_by_default)$obj
+)
 }
 \arguments{
 \item{dat}{Harmonised exposure and outcome data. Output from \code{harmonise_exposure_outcome}}
