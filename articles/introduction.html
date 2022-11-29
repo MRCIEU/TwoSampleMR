@@ -67,7 +67,8 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction</h1>
-                        <h4 data-toc-skip class="author">Gibran Hemani</h4>
+                        <h4 data-toc-skip class="author">Gibran
+Hemani</h4>
             
       
       
@@ -80,14 +81,26 @@
 <div class="section level2">
 <h2 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
 </h2>
-<p>Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components</p>
+<p>Two sample Mendelian randomisation (2SMR) is a method to estimate the
+causal effect of an exposure on an outcome using only summary statistics
+from genome wide association studies (GWAS). Though conceptually
+straightforward, there are a number of steps that are required to
+perform the analysis properly, and they can be cumbersome. The
+TwoSampleMR package aims to make this easy by combining three important
+components</p>
 <ul>
 <li>data management and harmonisation</li>
 <li>the statistical routines to estimate the causal effects</li>
-<li>connection to a large repository of the actual GWAS summary statistics needed to perform the analyses.</li>
+<li>connection to a large repository of the actual GWAS summary
+statistics needed to perform the analyses.</li>
 </ul>
-<p>The general principles <span class="citation">(G. Davey Smith and Ebrahim 2003; George Davey Smith and Hemani 2014)</span>, and statistical methods <span class="citation">(Pierce and Burgess 2013; Bowden, Davey Smith, and Burgess 2015)</span> can be found elsewhere, here we will just outline how to use the R package.</p>
-<p>This package uses the <a href="https://github.com/mrcieu/ieugwasr" class="external-link">ieugwasr</a> package to connect to the database of thousands of complete GWAS summary data.</p>
+<p>The general principles <span class="citation">(G. Davey Smith and
+Ebrahim 2003; George Davey Smith and Hemani 2014)</span>, and
+statistical methods <span class="citation">(Pierce and Burgess 2013;
+Bowden, Davey Smith, and Burgess 2015)</span> can be found elsewhere,
+here we will just outline how to use the R package.</p>
+<p>This package uses the <a href="https://github.com/mrcieu/ieugwasr" class="external-link">ieugwasr</a> package to
+connect to the database of thousands of complete GWAS summary data.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -97,7 +110,8 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span></span>
 <span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR"</span><span class="op">)</span></span></code></pre></div>
-<p>If you don’t have the <code>remotes</code> package install it from CRAN using <code>install.packages("remotes")</code>.</p>
+<p>If you don’t have the <code>remotes</code> package install it from
+CRAN using <code>install.packages("remotes")</code>.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -105,14 +119,19 @@
 </h2>
 <p>The workflow for performing MR is as follows:</p>
 <ol style="list-style-type: decimal">
-<li>Select instruments for the exposure (perform LD clumping if necessary)</li>
-<li>Extract the instruments from the <a href="https://gwas.mrcieu.ac.uk/" class="external-link">IEU GWAS database</a> for the outcomes of interest</li>
-<li>Harmonise the effect sizes for the instruments on the exposures and the outcomes to be each for the same reference allele</li>
-<li>Perform MR analysis, sensitivity analyses, create plots, compile reports</li>
+<li>Select instruments for the exposure (perform LD clumping if
+necessary)</li>
+<li>Extract the instruments from the <a href="https://gwas.mrcieu.ac.uk/" class="external-link">IEU GWAS database</a> for the outcomes
+of interest</li>
+<li>Harmonise the effect sizes for the instruments on the exposures and
+the outcomes to be each for the same reference allele</li>
+<li>Perform MR analysis, sensitivity analyses, create plots, compile
+reports</li>
 </ol>
 <p>A diagramatic overview is shown here:</p>
 <p><img src="https://drive.google.com/uc?id=1yHTkn-kVqZzsQfQdXBHZBGdFWj8gSsPQ" width="800"></p>
-<p>A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:</p>
+<p>A basic analysis, e.g. the causal effect of body mass index on
+coronary heart disease, looks like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TwoSampleMR</span><span class="op">)</span></span>
 <span></span>
@@ -135,10 +154,14 @@
 <div class="section level2">
 <h2 id="authentication">Authentication<a class="anchor" aria-label="anchor" href="#authentication"></a>
 </h2>
-<p><strong>The authentication method has changed recently due to the GoogleAuthR method changing.</strong> The main differences are that:</p>
+<p><strong>The authentication method has changed recently due to the
+GoogleAuthR method changing.</strong> The main differences are that:</p>
 <ol style="list-style-type: decimal">
-<li>By default you will not be asked to authenticate and will only have access to public data</li>
-<li>If you do need to authenticate in order to access private datasets there is no longer a single file called <code>mrbase.oauth</code>, rather, there is a directory called <code>ieugwasr_oauth</code>.</li>
+<li>By default you will not be asked to authenticate and will only have
+access to public data</li>
+<li>If you do need to authenticate in order to access private datasets
+there is no longer a single file called <code>mrbase.oauth</code>,
+rather, there is a directory called <code>ieugwasr_oauth</code>.</li>
 </ol>
 <p>Detailed information is given here: <a href="https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication" class="external-link">https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication</a></p>
 </div>
@@ -148,16 +171,27 @@
 <p><br></p>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Bowden2015" class="csl-entry">
-Bowden, Jack, George Davey Smith, and Stephen Burgess. 2015. <span>“<span class="nocase">Mendelian randomization with invalid instruments: effect estimation and bias detection through Egger regression</span>.”</span> <em>International Journal of Epidemiology</em> In press.
+Bowden, Jack, George Davey Smith, and Stephen Burgess. 2015.
+<span>“<span class="nocase">Mendelian randomization with invalid
+instruments: effect estimation and bias detection through Egger
+regression</span>.”</span> <em>International Journal of
+Epidemiology</em> In press.
 </div>
 <div id="ref-DaveySmith2003" class="csl-entry">
-Davey Smith, G., and S. Ebrahim. 2003. <span>“<span class="nocase">’Mendelian randomization’: can genetic epidemiology contribute to understanding environmental determinants of disease?</span>”</span> <em>International Journal of Epidemiology</em> 32 (1): 1–22. <a href="https://doi.org/10.1093/ije/dyg070" class="external-link">https://doi.org/10.1093/ije/dyg070</a>.
+Davey Smith, G., and S. Ebrahim. 2003. <span>“<span class="nocase">’Mendelian randomization’: can genetic epidemiology
+contribute to understanding environmental determinants of
+disease?</span>”</span> <em>International Journal of Epidemiology</em>
+32 (1): 1–22. <a href="https://doi.org/10.1093/ije/dyg070" class="external-link">https://doi.org/10.1093/ije/dyg070</a>.
 </div>
 <div id="ref-DaveySmithHemani2014" class="csl-entry">
-Davey Smith, George, and Gibran Hemani. 2014. <span>“<span class="nocase">Mendelian randomization: genetic anchors for causal inference in epidemiological studies</span>.”</span> <em>Human Molecular Genetics</em> 23 (R1): R89—–R98. <a href="https://doi.org/10.1093/hmg/ddu328" class="external-link">https://doi.org/10.1093/hmg/ddu328</a>.
+Davey Smith, George, and Gibran Hemani. 2014. <span>“<span class="nocase">Mendelian randomization: genetic anchors for causal
+inference in epidemiological studies</span>.”</span> <em>Human Molecular
+Genetics</em> 23 (R1): R89—–R98. <a href="https://doi.org/10.1093/hmg/ddu328" class="external-link">https://doi.org/10.1093/hmg/ddu328</a>.
 </div>
 <div id="ref-Pierce2013" class="csl-entry">
-Pierce, Brandon L, and Stephen Burgess. 2013. <span>“<span class="nocase">Efficient design for Mendelian randomization studies: subsample and 2-sample instrumental variable estimators.</span>”</span> <em>American Journal of Epidemiology</em> 178 (7): 1177–84. <a href="https://doi.org/10.1093/aje/kwt084" class="external-link">https://doi.org/10.1093/aje/kwt084</a>.
+Pierce, Brandon L, and Stephen Burgess. 2013. <span>“<span class="nocase">Efficient design for Mendelian randomization studies:
+subsample and 2-sample instrumental variable estimators.</span>”</span>
+<em>American Journal of Epidemiology</em> 178 (7): 1177–84. <a href="https://doi.org/10.1093/aje/kwt084" class="external-link">https://doi.org/10.1093/aje/kwt084</a>.
 </div>
 </div>
 </div>

@@ -67,7 +67,8 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Perform MR</h1>
-                        <h4 data-toc-skip class="author">Gibran Hemani and Philip Haycock</h4>
+                        <h4 data-toc-skip class="author">Gibran Hemani
+and Philip Haycock</h4>
             
       
       
@@ -88,7 +89,10 @@
 <span><span class="co">#&gt; Extracting data for 79 SNP(s) from 1 GWAS(s)</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span><span class="va">bmi_exp_dat</span>, <span class="va">chd_out_dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span></code></pre></div>
-<p>Once the exposure and outcome data are harmonised, we have effects and standard errors for each instrument SNP available for the exposure and outcome traits. We can use this information to perform Mendelian randomisation. To do this, simply run:</p>
+<p>Once the exposure and outcome data are harmonised, we have effects
+and standard errors for each instrument SNP available for the exposure
+and outcome traits. We can use this information to perform Mendelian
+randomisation. To do this, simply run:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
@@ -107,12 +111,15 @@
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
 <span><span class="co">#&gt;           se         pval</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2 0.07378718 1.563660e-07</span></span>
+<span><span class="co">#&gt; 2 0.07467135 2.185821e-07</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4 0.15193756 2.802021e-02</span></span>
-<span><span class="co">#&gt; 5 0.10466004 3.799729e-04</span></span></code></pre></div>
-<p>This returns a data frame of estimates of the causal effect of the exposure on the outcome for a range of different MR methods.</p>
-<p>If there were multiple exposures against multiple outcomes in <code>dat</code>, the <code><a href="../reference/mr.html">mr()</a></code> function will perform each MR method for each combination of exposure-outcome traits.</p>
+<span><span class="co">#&gt; 4 0.15577687 3.199704e-02</span></span>
+<span><span class="co">#&gt; 5 0.09242898 6.860763e-05</span></span></code></pre></div>
+<p>This returns a data frame of estimates of the causal effect of the
+exposure on the outcome for a range of different MR methods.</p>
+<p>If there were multiple exposures against multiple outcomes in
+<code>dat</code>, the <code><a href="../reference/mr.html">mr()</a></code> function will perform each MR
+method for each combination of exposure-outcome traits.</p>
 </div>
 <div class="section level2">
 <h2 id="mr-methods">MR methods<a class="anchor" aria-label="anchor" href="#mr-methods"></a>
@@ -196,7 +203,9 @@
 <span><span class="co">#&gt; 16              FALSE</span></span>
 <span><span class="co">#&gt; 17              FALSE</span></span>
 <span><span class="co">#&gt; 18               TRUE</span></span></code></pre></div>
-<p>To perform them, they can be specified in the <code><a href="../reference/mr.html">mr()</a></code> function, e.g. to only perform MR Egger regression and Inverse variance weighted methods,</p>
+<p>To perform them, they can be specified in the <code><a href="../reference/mr.html">mr()</a></code>
+function, e.g. to only perform MR Egger regression and Inverse variance
+weighted methods,</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span>, method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_egger_regression"</span>, <span class="st">"mr_ivw"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
@@ -209,7 +218,9 @@
 <span><span class="co">#&gt;           se        pval</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.01259e-04</span></span>
 <span><span class="co">#&gt; 2 0.05898302 4.03202e-14</span></span></code></pre></div>
-<p>By default, all the methods that are labelled <code>TRUE</code> in the <code>use_by_default</code> column are used by the <code><a href="../reference/mr.html">mr()</a></code> function.</p>
+<p>By default, all the methods that are labelled <code>TRUE</code> in
+the <code>use_by_default</code> column are used by the <code><a href="../reference/mr.html">mr()</a></code>
+function.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -218,7 +229,8 @@
 <div class="section level3">
 <h3 id="heterogeneity-statistics">Heterogeneity statistics<a class="anchor" aria-label="anchor" href="#heterogeneity-statistics"></a>
 </h3>
-<p>Some of the MR methods can also perform tests for heterogeneity. To obtain those statistics:</p>
+<p>Some of the MR methods can also perform tests for heterogeneity. To
+obtain those statistics:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mr_heterogeneity.html">mr_heterogeneity</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
@@ -230,7 +242,9 @@
 <span><span class="co">#&gt;         Q_pval</span></span>
 <span><span class="co">#&gt; 1 6.841585e-06</span></span>
 <span><span class="co">#&gt; 2 8.728420e-06</span></span></code></pre></div>
-<p>As with the <code><a href="../reference/mr.html">mr()</a></code> function, the <code><a href="../reference/mr_heterogeneity.html">mr_heterogeneity()</a></code> function can take an argument to only perform heterogeneity tests using specified methods, e.g.</p>
+<p>As with the <code><a href="../reference/mr.html">mr()</a></code> function, the
+<code><a href="../reference/mr_heterogeneity.html">mr_heterogeneity()</a></code> function can take an argument to only
+perform heterogeneity tests using specified methods, e.g.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mr_heterogeneity.html">mr_heterogeneity</a></span><span class="op">(</span><span class="va">dat</span>, method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_egger_regression"</span>, <span class="st">"mr_ivw"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
@@ -246,7 +260,9 @@
 <div class="section level3">
 <h3 id="horizontal-pleiotropy">Horizontal pleiotropy<a class="anchor" aria-label="anchor" href="#horizontal-pleiotropy"></a>
 </h3>
-<p>The intercept term in MR Egger regression can be a useful indication of whether directional horizontal pleiotropy is driving the results of an MR analysis. This can be obtained as follows:</p>
+<p>The intercept term in MR Egger regression can be a useful indication
+of whether directional horizontal pleiotropy is driving the results of
+an MR analysis. This can be obtained as follows:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mr_pleiotropy_test.html">mr_pleiotropy_test</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
@@ -257,25 +273,37 @@
 <div class="section level3">
 <h3 id="single-snp-analysis">Single SNP analysis<a class="anchor" aria-label="anchor" href="#single-snp-analysis"></a>
 </h3>
-<p>To obtain the MR estimates using each of the SNPs singly we can do the following:</p>
+<p>To obtain the MR estimates using each of the SNPs singly we can do
+the following:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<p>This returns a data.frame of results that is similar to the output from <code><a href="../reference/mr.html">mr()</a></code> except it performs the analysis multiple times for each exposure-outcome combination - each time using a different single SNP to perform the analysis.</p>
-<p>The method used to perform the single SNP MR is the Wald ratio by default, though this can be changed, e.g. to use the fixed effects meta analysis method instead:</p>
+<p>This returns a data.frame of results that is similar to the output
+from <code><a href="../reference/mr.html">mr()</a></code> except it performs the analysis multiple times
+for each exposure-outcome combination - each time using a different
+single SNP to perform the analysis.</p>
+<p>The method used to perform the single SNP MR is the Wald ratio by
+default, though this can be changed, e.g. to use the fixed effects meta
+analysis method instead:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span><span class="op">(</span><span class="va">dat</span>, single_method <span class="op">=</span> <span class="st">"mr_meta_fixed"</span><span class="op">)</span></span></code></pre></div>
-<p>The <code><a href="../reference/mr_singlesnp.html">mr_singlesnp()</a></code> function calculates the full MR using all available SNPs as well, and by default it uses the IVW and MR Egger methods. This can be specified as so:</p>
+<p>The <code><a href="../reference/mr_singlesnp.html">mr_singlesnp()</a></code> function calculates the full MR using
+all available SNPs as well, and by default it uses the IVW and MR Egger
+methods. This can be specified as so:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span><span class="op">(</span><span class="va">dat</span>, all_method <span class="op">=</span> <span class="st">"mr_two_sample_ml"</span><span class="op">)</span></span></code></pre></div>
-<p>will perform only the maximum likelihood method for the combined test.</p>
+<p>will perform only the maximum likelihood method for the combined
+test.</p>
 </div>
 <div class="section level3">
 <h3 id="leave-one-out-analysis">Leave-one-out analysis<a class="anchor" aria-label="anchor" href="#leave-one-out-analysis"></a>
 </h3>
-<p>It is possible to perform a leave-one-out analysis, where the MR is performed again but leaving out each SNP in turn, to identify if a single SNP is driving the association.</p>
+<p>It is possible to perform a leave-one-out analysis, where the MR is
+performed again but leaving out each SNP in turn, to identify if a
+single SNP is driving the association.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_loo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_leaveoneout.html">mr_leaveoneout</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<p>By default the method used is the inverse variance weighted method, but this can be changed by using the <code>method</code> argument.</p>
+<p>By default the method used is the inverse variance weighted method,
+but this can be changed by using the <code>method</code> argument.</p>
 <hr>
 </div>
 </div>
@@ -286,12 +314,15 @@
 <div class="section level3">
 <h3 id="scatter-plot">Scatter plot<a class="anchor" aria-label="anchor" href="#scatter-plot"></a>
 </h3>
-<p>We can depict the relationship of the SNP effects on the exposure against the SNP effects on the outcome using a scatter plot.</p>
+<p>We can depict the relationship of the SNP effects on the exposure
+against the SNP effects on the outcome using a scatter plot.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_scatter_plot.html">mr_scatter_plot</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<p>A scatter plot is created for each exposure-outcome test, and stored in <code>p1</code> as a list of plots. For example, to plot the first scatter plot:</p>
+<p>A scatter plot is created for each exposure-outcome test, and stored
+in <code>p1</code> as a list of plots. For example, to plot the first
+scatter plot:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <p><img src="perform_mr_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
@@ -299,12 +330,17 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>Lines are drawn for each method used in <code>mr(dat)</code>, the slope of the line corresponding to the estimated causal effect. To limit which lines are drawn, simply specify the desired methods, e.g. to only draw MR Egger and IVW:</p>
+<p>Lines are drawn for each method used in <code>mr(dat)</code>, the
+slope of the line corresponding to the estimated causal effect. To limit
+which lines are drawn, simply specify the desired methods, e.g. to only
+draw MR Egger and IVW:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span>, method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_egger_regression"</span>, <span class="st">"mr_ivw"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_scatter_plot.html">mr_scatter_plot</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<p>It is possible to save this plot using the <code>ggsave()</code> function from the <code>ggplot2</code> package, e.g. to save as a pdf</p>
+<p>It is possible to save this plot using the <code>ggsave()</code>
+function from the <code>ggplot2</code> package, e.g. to save as a
+pdf</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggsave</span><span class="op">(</span><span class="va">p1</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, file <span class="op">=</span> <span class="st">"filename.pdf"</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
 <p>or save as a png</p>
@@ -315,41 +351,51 @@
 <div class="section level3">
 <h3 id="forest-plot">Forest plot<a class="anchor" aria-label="anchor" href="#forest-plot"></a>
 </h3>
-<p>Use the <code><a href="../reference/mr_forest_plot.html">mr_forest_plot()</a></code> function to compare the MR estimates using the different MR methods against the single SNP tests.</p>
+<p>Use the <code><a href="../reference/mr_forest_plot.html">mr_forest_plot()</a></code> function to compare the MR
+estimates using the different MR methods against the single SNP
+tests.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_forest_plot.html">mr_forest_plot</a></span><span class="op">(</span><span class="va">res_single</span><span class="op">)</span></span>
 <span><span class="va">p2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_errorbarh).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_errorbarh()`).</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="perform_mr_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
-<p>Here, the plot shows the causal effect as estimated using each of the SNPs on their own, and comparing against the causal effect as estimated using the methods that use all the SNPs.</p>
-<p>To get plots that use different methods, specify them in the <code><a href="../reference/mr_singlesnp.html">mr_singlesnp()</a></code> function:</p>
+<p>Here, the plot shows the causal effect as estimated using each of the
+SNPs on their own, and comparing against the causal effect as estimated
+using the methods that use all the SNPs.</p>
+<p>To get plots that use different methods, specify them in the
+<code><a href="../reference/mr_singlesnp.html">mr_singlesnp()</a></code> function:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span><span class="op">(</span><span class="va">dat</span>, all_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_ivw"</span>, <span class="st">"mr_two_sample_ml"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_forest_plot.html">mr_forest_plot</a></span><span class="op">(</span><span class="va">res_single</span><span class="op">)</span></span>
 <span><span class="va">p2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_errorbarh).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_errorbarh()`).</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="perform_mr_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="leave-one-out-plot">Leave-one-out plot<a class="anchor" aria-label="anchor" href="#leave-one-out-plot"></a>
 </h3>
-<p>Use the <code>mr_leaveoneout_plot</code> function to visualise the leave-one-out analysis:</p>
+<p>Use the <code>mr_leaveoneout_plot</code> function to visualise the
+leave-one-out analysis:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_loo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_leaveoneout.html">mr_leaveoneout</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_leaveoneout_plot.html">mr_leaveoneout_plot</a></span><span class="op">(</span><span class="va">res_loo</span><span class="op">)</span></span>
 <span><span class="va">p3</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_errorbarh).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (geom_point).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_errorbarh()`).</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="perform_mr_files/figure-html/unnamed-chunk-22-1.png" width="700"></p>
-<p>Specify the test to use e.g. <code>mr_leaveoneout(dat, method = mr_egger_regression)</code> to use Egger regression.</p>
+<p>Specify the test to use
+e.g. <code>mr_leaveoneout(dat, method = mr_egger_regression)</code> to
+use Egger regression.</p>
 </div>
 <div class="section level3">
 <h3 id="funnel-plot">Funnel plot<a class="anchor" aria-label="anchor" href="#funnel-plot"></a>
 </h3>
-<p>Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows: howzit</p>
+<p>Asymmetry in a funnel plot is useful for gauging the reliability of a
+particular MR analysis. Funnel plots can be produced using the single
+SNP results as follows: howzit</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_funnel_plot.html">mr_funnel_plot</a></span><span class="op">(</span><span class="va">res_single</span><span class="op">)</span></span>
@@ -360,7 +406,21 @@
 <div class="section level2">
 <h2 id="to-many-forest-plot">1-to-many forest plot<a class="anchor" aria-label="anchor" href="#to-many-forest-plot"></a>
 </h2>
-<p>A 1-to-many MR analysis interrogates the effect of a single exposure on multiple outcomes or multiple exposures on a single outcome. The results of this analysis can be visualised using the 1-to-many forest plot, with or without stratification on a categorical variable. From a visual point of view, the function works best for 50 or fewer results and is not really designed to handle more than a 100 results. If your number of results is much greater than 50, it may be better to split these across two separate plots. For example, if you have 100 sets of results you could divide these equally across two plots and then combine the two plots together in another programme like Powerpoint. The function assumes the results are already in the right order for plotting. As such, users are advised to sort their results according to how they would like them to appear in the plot. Users can use their own code to do this or they can use the <code><a href="../reference/sort_1_to_many.html">sort_1_to_many()</a></code> function.</p>
+<p>A 1-to-many MR analysis interrogates the effect of a single exposure
+on multiple outcomes or multiple exposures on a single outcome. The
+results of this analysis can be visualised using the 1-to-many forest
+plot, with or without stratification on a categorical variable. From a
+visual point of view, the function works best for 50 or fewer results
+and is not really designed to handle more than a 100 results. If your
+number of results is much greater than 50, it may be better to split
+these across two separate plots. For example, if you have 100 sets of
+results you could divide these equally across two plots and then combine
+the two plots together in another programme like Powerpoint. The
+function assumes the results are already in the right order for
+plotting. As such, users are advised to sort their results according to
+how they would like them to appear in the plot. Users can use their own
+code to do this or they can use the <code><a href="../reference/sort_1_to_many.html">sort_1_to_many()</a></code>
+function.</p>
 <div class="section level3">
 <h3 id="step-1-generate-1-to-many-mr-results">Step 1: generate 1-to-many MR results<a class="anchor" aria-label="anchor" href="#step-1-generate-1-to-many-mr-results"></a>
 </h3>
@@ -382,9 +442,19 @@
 <h3 id="step-2--make-the-1-to-many-forest-plot">Step 2. Make the 1-to-many forest plot<a class="anchor" aria-label="anchor" href="#step-2--make-the-1-to-many-forest-plot"></a>
 </h3>
 <div class="section level4">
-<h4 id="example-1--effect-of-multiple-risk-factors-on-coronary-heart-disease">Example 1. Effect of multiple risk factors on coronary heart disease<a class="anchor" aria-label="anchor" href="#example-1--effect-of-multiple-risk-factors-on-coronary-heart-disease"></a>
+<h4 id="example-1--effect-of-multiple-risk-factors-on-coronary-heart-disease">Example 1. Effect of multiple risk factors on coronary heart
+disease<a class="anchor" aria-label="anchor" href="#example-1--effect-of-multiple-risk-factors-on-coronary-heart-disease"></a>
 </h4>
-<p>In this example we wish to plot results from an MR analysis of the effect of multiple exposures on coronary heart disease, with results sorted by decreasing effect size (largest effect at the top of the plot) and with one MR method for each unique exposure-outcome combination. We will also make the size of each point estimate proportional to its inverse variance. This is a useful way to draw attention towards the most reliable results and away from results with very wide confidence intervals. To specify the size of the point estimate, set the weight argument to the name of the column in the data with the weight information.</p>
+<p>In this example we wish to plot results from an MR analysis of the
+effect of multiple exposures on coronary heart disease, with results
+sorted by decreasing effect size (largest effect at the top of the plot)
+and with one MR method for each unique exposure-outcome combination. We
+will also make the size of each point estimate proportional to its
+inverse variance. This is a useful way to draw attention towards the
+most reliable results and away from results with very wide confidence
+intervals. To specify the size of the point estimate, set the weight
+argument to the name of the column in the data with the weight
+information.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co">#default is to subset on either the IVW method (&gt;1 instrumental SNP) or Wald ratio method (1 instrumental SNP). </span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_1_to_many.html">sort_1_to_many</a></span><span class="op">(</span><span class="va">res</span>, b <span class="op">=</span> <span class="st">"b"</span>, sort_action <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="co">#this sorts results by decreasing effect size (largest effect at top of the plot)</span></span>
@@ -409,7 +479,8 @@
 <span>  xlab <span class="op">=</span> <span class="st">"OR for CHD per SD increase in risk factor (95% confidence interval)"</span>,</span>
 <span>  weight <span class="op">=</span> <span class="st">"weight"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>It is also possible to add additional columns and column titles and to choose the size of the text in the columns:</p>
+<p>It is also possible to add additional columns and column titles and
+to choose the size of the text in the columns:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span><span class="op">$</span><span class="va">pval</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/formatc.html" class="external-link">formatC</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">pval</span>, format <span class="op">=</span> <span class="st">"e"</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/forest_plot_1_to_many.html">forest_plot_1_to_many</a></span><span class="op">(</span></span>
@@ -433,7 +504,9 @@
 <span>  addcol_widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">1.0</span><span class="op">)</span>,</span>
 <span>  addcol_titles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No. SNPs"</span>, <span class="st">"P-val"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>In my own workflow I prefer to to keep the plot free of axis and column titles and to add them separately in a program like powerpoint:</p>
+<p>In my own workflow I prefer to to keep the plot free of axis and
+column titles and to add them separately in a program like
+powerpoint:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/forest_plot_1_to_many.html">forest_plot_1_to_many</a></span><span class="op">(</span></span>
 <span>  <span class="va">res</span>,</span>
@@ -456,9 +529,19 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="example-2--mr-results-for-multiple-mr-methods-grouped-by-multiple-exposures">Example 2. MR results for multiple MR methods grouped by multiple exposures<a class="anchor" aria-label="anchor" href="#example-2--mr-results-for-multiple-mr-methods-grouped-by-multiple-exposures"></a>
+<h4 id="example-2--mr-results-for-multiple-mr-methods-grouped-by-multiple-exposures">Example 2. MR results for multiple MR methods grouped by multiple
+exposures<a class="anchor" aria-label="anchor" href="#example-2--mr-results-for-multiple-mr-methods-grouped-by-multiple-exposures"></a>
 </h4>
-<p>In this next example we plot the results from an analysis of the effect of multiple exposures on coronary heart disease using multiple methods, with results grouped by exposure. We also want the result for the IVW method to be given priority and to go above the other methods. We also want the exposure with the largest IVW effect size to go the top of the plot. We also set the TraitM argument to the column describing the MR method. This is because we are grouping the results on the exposures. Normally the row labels would correspond to the exposures but in this example we want the row names to correspond to the MR method.</p>
+<p>In this next example we plot the results from an analysis of the
+effect of multiple exposures on coronary heart disease using multiple
+methods, with results grouped by exposure. We also want the result for
+the IVW method to be given priority and to go above the other methods.
+We also want the exposure with the largest IVW effect size to go the top
+of the plot. We also set the TraitM argument to the column describing
+the MR method. This is because we are grouping the results on the
+exposures. Normally the row labels would correspond to the exposures but
+in this example we want the row names to correspond to the MR
+method.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column </span></span>
@@ -492,7 +575,11 @@
 <div class="section level4">
 <h4 id="example-3--stratify-results-on-a-grouping-variable">Example 3. Stratify results on a grouping variable<a class="anchor" aria-label="anchor" href="#example-3--stratify-results-on-a-grouping-variable"></a>
 </h4>
-<p>In this next example we plot the same results as above but with results stratified by a grouping variable. We also select one MR method for each unique exposure-outcome combination and sort the results by decreasing effect size within each group (i.e. largest effect at the top).</p>
+<p>In this next example we plot the same results as above but with
+results stratified by a grouping variable. We also select one MR method
+for each unique exposure-outcome combination and sort the results by
+decreasing effect size within each group (i.e. largest effect at the
+top).</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span> </span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
@@ -519,12 +606,21 @@
 <span>  subheading_size <span class="op">=</span> <span class="fl">14</span>,</span>
 <span>  weight <span class="op">=</span> <span class="st">"weight"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>In the above example we made up an arbitrary grouping variable called “subcategory” with values “Group 1” and “Group 2”. Typically, however, the grouping variable might correspond to something like a trait ontology (e.g. anthropometric and glycemic traits) or study design (e.g. MR and observational studies).</p>
+<p>In the above example we made up an arbitrary grouping variable called
+“subcategory” with values “Group 1” and “Group 2”. Typically, however,
+the grouping variable might correspond to something like a trait
+ontology (e.g. anthropometric and glycemic traits) or study design
+(e.g. MR and observational studies).</p>
 </div>
 <div class="section level4">
 <h4 id="example-4--effect-of-bmi-on-103-diseases">Example 4. Effect of BMI on 103 diseases<a class="anchor" aria-label="anchor" href="#example-4--effect-of-bmi-on-103-diseases"></a>
 </h4>
-<p>The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:</p>
+<p>The plot function works best with 50 or fewer rows and is not really
+designed to handle more than a 100. Visualising a single-column forest
+plot with 100 results is also quite difficult. If your number of results
+is much greater than 50, it is advisable to split the results across two
+different plots. In the example below we select BMI as the exposure and
+test this against 103 diseases in the IEU GWAS database:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span><span class="op">(</span>outcomes <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>  <span class="co">#extract instruments for BMI</span></span>
@@ -546,7 +642,15 @@
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_outcome.html">split_outcome</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column </span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_1_to_many.html">sort_1_to_many</a></span><span class="op">(</span><span class="va">res</span>, b <span class="op">=</span> <span class="st">"b"</span>, sort_action <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="co">#this sorts results by decreasing effect size (largest effect at top of the plot)</span></span></code></pre></div>
-<p>MR results for 103 diseases can be difficult to visualise in a single-column forest plot. In my own workflow I would split these across two plots and then join them together in a separate program, such as powerpoint, and do further refinements there. I typically save my plots using the pdf() graphics device. In this particular example the disease labels probably require some cleaning up (some are a bit long) or alternatively the column text size could be made smaller. It is also possible to change the colour of the plot and the shape of the point estimates. Type ?forest_plot_1_to_many for further details.</p>
+<p>MR results for 103 diseases can be difficult to visualise in a
+single-column forest plot. In my own workflow I would split these across
+two plots and then join them together in a separate program, such as
+powerpoint, and do further refinements there. I typically save my plots
+using the pdf() graphics device. In this particular example the disease
+labels probably require some cleaning up (some are a bit long) or
+alternatively the column text size could be made smaller. It is also
+possible to change the colour of the plot and the shape of the point
+estimates. Type ?forest_plot_1_to_many for further details.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">52</span>, <span class="op">]</span></span>
 <span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="fl">53</span><span class="op">:</span><span class="fl">103</span>, <span class="op">]</span></span>
@@ -595,11 +699,22 @@
 <div class="section level2">
 <h2 id="mr-raps-many-weak-instruments-analysis">MR.RAPS: Many weak instruments analysis<a class="anchor" aria-label="anchor" href="#mr-raps-many-weak-instruments-analysis"></a>
 </h2>
-<p>MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method that considers the measurement error in SNP-exposure effects, is unbiased when there are many (e.g. hundreds of) weak instruments, and is robust to systematic and idiosyncratic pleiotropy. See the <a href="https://arxiv.org/abs/1801.09652" class="external-link">arXiv preprint</a> for more detail about the statistical methodology.</p>
-<p>MR.RAPS is implemented in the R package <em>mr.raps</em> that is available on CRAN. It can be directly called from TwoSampleMR by</p>
+<p>MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method
+that considers the measurement error in SNP-exposure effects, is
+unbiased when there are many (e.g. hundreds of) weak instruments, and is
+robust to systematic and idiosyncratic pleiotropy. See the <a href="https://arxiv.org/abs/1801.09652" class="external-link">arXiv preprint</a> for more
+detail about the statistical methodology.</p>
+<p>MR.RAPS is implemented in the R package <em>mr.raps</em> that is
+available on CRAN. It can be directly called from TwoSampleMR by</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span>, method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_raps"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>MR.RAPS comes with two main options: <em>over.dispersion</em> (whether the method should consider systematic pleiotropy) and <em>loss.function</em> (either “l2”, “huber”, or “tukey”). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is <em>over.dispersion = TRUE</em> and <em>loss.function = “tukey”</em>. To change these options, modify the <em>parameters</em> argument of <em>mr</em> by (for example)</p>
+<p>MR.RAPS comes with two main options: <em>over.dispersion</em>
+(whether the method should consider systematic pleiotropy) and
+<em>loss.function</em> (either “l2”, “huber”, or “tukey”). The latter
+two loss functions are robust to idiosyncratic pleiotropy. The default
+option is <em>over.dispersion = TRUE</em> and <em>loss.function =
+“tukey”</em>. To change these options, modify the <em>parameters</em>
+argument of <em>mr</em> by (for example)</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span></span>
@@ -612,19 +727,32 @@
 <div class="section level2">
 <h2 id="reports">Reports<a class="anchor" aria-label="anchor" href="#reports"></a>
 </h2>
-<p>A report can be generated that performs all MR analyses, sensitivity analyses, and plots, and presents them in a single self-contained html web page, word document, or pdf document.</p>
+<p>A report can be generated that performs all MR analyses, sensitivity
+analyses, and plots, and presents them in a single self-contained html
+web page, word document, or pdf document.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mr_report.html">mr_report</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<p>By default this produces a html file in the current working directory, but see the help pages on how to modify this.</p>
-<p>This function will create a separate report file for every exposure-outcome combination that is present in the <code>dat</code> object.</p>
+<p>By default this produces a html file in the current working
+directory, but see the help pages on how to modify this.</p>
+<p>This function will create a separate report file for every
+exposure-outcome combination that is present in the <code>dat</code>
+object.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="mr-steiger-directionality-test">MR Steiger directionality test<a class="anchor" aria-label="anchor" href="#mr-steiger-directionality-test"></a>
 </h2>
 <p>This is an implementation of the method described here:</p>
-<p><a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081" class="external-link">Hemani G, Tilling K, Davey Smith G.<br><strong>Orienting the causal relationship between imprecisely measured traits using GWAS summary data.</strong><br> PLoS Genetics. 2017. 13(11).</a></p>
-<p>In MR it is assumed that the instruments influence the exposure first and then the outcome through the exposure. But sometimes this is difficult to evaluate, for example is a cis-acting SNP influencing gene expression levels or DNA methylation levels first? The causal direction between the hypothesised exposure and outcomes can be tested using the Steiger test [reference to go here]. For example:</p>
+<p><a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081" class="external-link">Hemani
+G, Tilling K, Davey Smith G.<br><strong>Orienting the causal
+relationship between imprecisely measured traits using GWAS summary
+data.</strong><br> PLoS Genetics. 2017. 13(11).</a></p>
+<p>In MR it is assumed that the instruments influence the exposure first
+and then the outcome through the exposure. But sometimes this is
+difficult to evaluate, for example is a cis-acting SNP influencing gene
+expression levels or DNA methylation levels first? The causal direction
+between the hypothesised exposure and outcomes can be tested using the
+Steiger test [reference to go here]. For example:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/directionality_test.html">directionality_test</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; r.exposure and/or r.outcome not present.</span></span>
@@ -662,11 +790,21 @@
 <td align="right">0</td>
 </tr></tbody>
 </table>
-<p>It calculates the variance explained in the exposure and the outcome by the instrumenting SNPs, and tests if the variance in the outcome is less than the exposure.</p>
-<p>This test is, like many others, liable to give inaccurate causal directions under some measurement error parameters in the exposure and the outcome (e.g. if the outcome has much lower measurement precision then its proportion of variance explained will be underestimated). Sensitivity can be applied to evaluate the extent to which the inferred causal direction is liable to measurement error, in two ways.</p>
+<p>It calculates the variance explained in the exposure and the outcome
+by the instrumenting SNPs, and tests if the variance in the outcome is
+less than the exposure.</p>
+<p>This test is, like many others, liable to give inaccurate causal
+directions under some measurement error parameters in the exposure and
+the outcome (e.g. if the outcome has much lower measurement precision
+then its proportion of variance explained will be underestimated).
+Sensitivity can be applied to evaluate the extent to which the inferred
+causal direction is liable to measurement error, in two ways.</p>
 <ol style="list-style-type: decimal">
-<li>Provide estimates of measurement error for the exposure and the outcome, and obtain an adjusted estimate of the causal direction</li>
-<li>For all possible values of measurement error, identify the proportion of the parameter space which supports the inferred causal direction</li>
+<li>Provide estimates of measurement error for the exposure and the
+outcome, and obtain an adjusted estimate of the causal direction</li>
+<li>For all possible values of measurement error, identify the
+proportion of the parameter space which supports the inferred causal
+direction</li>
 </ol>
 <p>These tests are obtained using:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
@@ -684,26 +822,44 @@
 <div class="section level2">
 <h2 id="multivariable-mr">Multivariable MR<a class="anchor" aria-label="anchor" href="#multivariable-mr"></a>
 </h2>
-<p>When SNPs instrument multiple potential exposures, for example in the case of different lipid fractions, one method for overcoming this problem is to estimate the influence of each lipid conditioning on the effects of the SNPs on the other lipids. Multivariable MR can be performed using the R package as follows. Practically speaking, this is the process that needs to occur from the perspective of generating the data in the correct format:</p>
+<p>When SNPs instrument multiple potential exposures, for example in the
+case of different lipid fractions, one method for overcoming this
+problem is to estimate the influence of each lipid conditioning on the
+effects of the SNPs on the other lipids. Multivariable MR can be
+performed using the R package as follows. Practically speaking, this is
+the process that needs to occur from the perspective of generating the
+data in the correct format:</p>
 <ol style="list-style-type: decimal">
 <li>Get instruments for each exposure</li>
 <li>Combine these into a set of all instruments</li>
-<li>Clump these to avoid the possibility that e.g. a variant for exposure 1 is in LD with a variant for exposure 2</li>
-<li>Re-extract all the final clumped SNPs from (3) from all of the exposures</li>
+<li>Clump these to avoid the possibility that e.g. a variant for
+exposure 1 is in LD with a variant for exposure 2</li>
+<li>Re-extract all the final clumped SNPs from (3) from all of the
+exposures</li>
 <li>Harmonise them all to be on the same effect allele</li>
 <li>Use the multivariable MR method against these harmonised data</li>
 </ol>
-<p>Example - The GWAS IDs for HDL, LDL and total cholesterol are <code>ieu-a-299</code>, <code>ieu-a-300</code> and <code>ieu-a-302</code>. The GWAS ID for coronary heart disease (CHD) is <code>ieu-a-7</code>. In this example we will estimate the multivariable effects of HDL, LDL and total cholesterol on CHD.</p>
+<p>Example - The GWAS IDs for HDL, LDL and total cholesterol are
+<code>ieu-a-299</code>, <code>ieu-a-300</code> and
+<code>ieu-a-302</code>. The GWAS ID for coronary heart disease (CHD) is
+<code>ieu-a-7</code>. In this example we will estimate the multivariable
+effects of HDL, LDL and total cholesterol on CHD.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">id_exposure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ieu-a-299"</span>, <span class="st">"ieu-a-300"</span>, <span class="st">"ieu-a-302"</span><span class="op">)</span></span>
 <span><span class="va">id_outcome</span> <span class="op">&lt;-</span> <span class="st">"ieu-a-7"</span></span></code></pre></div>
-<p>First obtain the instruments for each lipid fraction. This entails obtaining a combined set of SNPs including all instruments, and getting those SNPs for each lipid fraction. Therefore, if there are e.g. 20 instruments for each of 3 lipid fractions, but combined there are 30 unique SNPs, then we need to extract each of the 30 SNPs from each lipid fraction (exposure).</p>
+<p>First obtain the instruments for each lipid fraction. This entails
+obtaining a combined set of SNPs including all instruments, and getting
+those SNPs for each lipid fraction. Therefore, if there are e.g. 20
+instruments for each of 3 lipid fractions, but combined there are 30
+unique SNPs, then we need to extract each of the 30 SNPs from each lipid
+fraction (exposure).</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">exposure_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mv_extract_exposures.html">mv_extract_exposures</a></span><span class="op">(</span><span class="va">id_exposure</span><span class="op">)</span></span></code></pre></div>
 <p>Next, also extract those SNPs from the outcome.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span><span class="va">exposure_dat</span><span class="op">$</span><span class="va">SNP</span>, <span class="va">id_outcome</span><span class="op">)</span></span></code></pre></div>
-<p>Once the data has been obtained, harmonise so that all are on the same reference allele.</p>
+<p>Once the data has been obtained, harmonise so that all are on the
+same reference allele.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mvdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mv_harmonise_data.html">mv_harmonise_data</a></span><span class="op">(</span><span class="va">exposure_dat</span>, <span class="va">outcome_dat</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, perform the multivariable MR analysis</p>
@@ -713,48 +869,81 @@
 <div class="section level3">
 <h3 id="note-about-mv-methods">Note about MV methods<a class="anchor" aria-label="anchor" href="#note-about-mv-methods"></a>
 </h3>
-<p>There are several different ways in which this analysis can be formulated. e.g. consider 3 exposures against one outcome, one could:</p>
+<p>There are several different ways in which this analysis can be
+formulated. e.g. consider 3 exposures against one outcome, one
+could:</p>
 <ol style="list-style-type: decimal">
-<li>Fit all exposures together or fit one exposure at a time against the residuals of the outcome that has been adjusted for the other outcomes. The former is recommended by default in this R package through the <code>mv_multiple</code> function but the latter was how MV MR was originally described by Burgess et al 2015 and can be done with <code>mv_residual</code>.</li>
-<li>Fitting all instruments for all exposures (default) or only fitting the instruments for each exposure sequentially</li>
-<li>Forcing the slopes through the origin (default) or allowing an intercept term.</li>
+<li>Fit all exposures together or fit one exposure at a time against the
+residuals of the outcome that has been adjusted for the other outcomes.
+The former is recommended by default in this R package through the
+<code>mv_multiple</code> function but the latter was how MV MR was
+originally described by Burgess et al 2015 and can be done with
+<code>mv_residual</code>.</li>
+<li>Fitting all instruments for all exposures (default) or only fitting
+the instruments for each exposure sequentially</li>
+<li>Forcing the slopes through the origin (default) or allowing an
+intercept term.</li>
 </ol>
-<p>With these three different parameters there are eight different ways to do MV analysis. We recommend the default settings as described above.</p>
+<p>With these three different parameters there are eight different ways
+to do MV analysis. We recommend the default settings as described
+above.</p>
 </div>
 <div class="section level3">
 <h3 id="note-about-visualisation">Note about visualisation<a class="anchor" aria-label="anchor" href="#note-about-visualisation"></a>
 </h3>
-<p>Plots can be generated using the <code>plots=TRUE</code> argument for <code>mv_multiple</code> and <code>mv_residual</code>.</p>
-<p>The current plots being generated are not necessarily adequate because while they show the slope through the raw points, they do not demonstrate that the raw points might be effectively different between plots because they are conditional on the other exposures.</p>
+<p>Plots can be generated using the <code>plots=TRUE</code> argument for
+<code>mv_multiple</code> and <code>mv_residual</code>.</p>
+<p>The current plots being generated are not necessarily adequate
+because while they show the slope through the raw points, they do not
+demonstrate that the raw points might be effectively different between
+plots because they are conditional on the other exposures.</p>
 </div>
 <div class="section level3">
 <h3 id="using-your-own-summary-data">Using your own summary data<a class="anchor" aria-label="anchor" href="#using-your-own-summary-data"></a>
 </h3>
-<p>If you want to perform analysis with your local summary data (i.e. not in the OpenGWAS database) then use then look up the <code>mv_extract_exposures_local</code> function in replace of the <code>mv_extract_exposures</code> function.</p>
+<p>If you want to perform analysis with your local summary data
+(i.e. not in the OpenGWAS database) then use then look up the
+<code>mv_extract_exposures_local</code> function in replace of the
+<code>mv_extract_exposures</code> function.</p>
 <hr>
 </div>
 </div>
 <div class="section level2">
 <h2 id="mr-estimates-when-instruments-are-correlated">MR estimates when instruments are correlated<a class="anchor" aria-label="anchor" href="#mr-estimates-when-instruments-are-correlated"></a>
 </h2>
-<p>In the examples shown so far it is assumed that instruments are independent (i.e. they are not in linkage disequilibrium, LD). This is to avoid ‘double counting’ effects. An alternative approach is to estimate the MR effects accounting for the correlation between variants.</p>
-<p>The TwoSampleMR package has not implemented this yet, but the <a href="https://cran.r-project.org/web/packages/MendelianRandomization/index.html" class="external-link">MendelianRandomization</a> R package by Olena Yavorska and Stephen Burgess does have this functionality. We can use the TwoSampleMR package to extract, format and harmonise data, and then convert to the format required by the MendelianRandomization package. The IEU GWAS database server has the individual level genetic data for ~500 Europeans in 1000 genomes data, and can obtain the LD matrix for a set of SNPs using these data. For example:</p>
+<p>In the examples shown so far it is assumed that instruments are
+independent (i.e. they are not in linkage disequilibrium, LD). This is
+to avoid ‘double counting’ effects. An alternative approach is to
+estimate the MR effects accounting for the correlation between
+variants.</p>
+<p>The TwoSampleMR package has not implemented this yet, but the <a href="https://cran.r-project.org/web/packages/MendelianRandomization/index.html" class="external-link">MendelianRandomization</a>
+R package by Olena Yavorska and Stephen Burgess does have this
+functionality. We can use the TwoSampleMR package to extract, format and
+harmonise data, and then convert to the format required by the
+MendelianRandomization package. The IEU GWAS database server has the
+individual level genetic data for ~500 Europeans in 1000 genomes data,
+and can obtain the LD matrix for a set of SNPs using these data. For
+example:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snplist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rs234"</span>, <span class="st">"rs1205"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ld_matrix.html">ld_matrix</a></span><span class="op">(</span><span class="va">snplist</span><span class="op">)</span></span></code></pre></div>
-<p>Here <code>ld_matrix</code> returns the LD correlation values (not R^2) for each pair of variants present in the 1000 genomes data set.</p>
+<p>Here <code>ld_matrix</code> returns the LD correlation values (not
+R^2) for each pair of variants present in the 1000 genomes data set.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span></span>
 <span>    exposure_dat <span class="op">=</span> <span class="va">bmi_exp_dat</span>, </span>
 <span>    outcome_dat <span class="op">=</span> <span class="va">chd_out_dat</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Convert to the <code>MRInput</code> format for the MendelianRandomization package:</p>
+<p>Convert to the <code>MRInput</code> format for the
+MendelianRandomization package:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dat_to_MRInput.html">dat_to_MRInput</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<p>This produces a list of <code>MRInput</code> objects that can be used with the MendelianRandomization functions, e.g.</p>
+<p>This produces a list of <code>MRInput</code> objects that can be used
+with the MendelianRandomization functions, e.g.</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">MendelianRandomization</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MendelianRandomization/man/mr_ivw.html" class="external-link">mr_ivw</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>Alternatively, convert to the <code>MRInput</code> format but also obtaining the LD matrix for the instruments</p>
+<p>Alternatively, convert to the <code>MRInput</code> format but also
+obtaining the LD matrix for the instruments</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dat_to_MRInput.html">dat_to_MRInput</a></span><span class="op">(</span><span class="va">dat</span>, get_correlation <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">MendelianRandomization</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MendelianRandomization/man/mr_ivw.html" class="external-link">mr_ivw</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, correl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -763,12 +952,23 @@
 <div class="section level2">
 <h2 id="mr-moe-using-a-mixture-of-experts-machine-learning-approach">MR-MoE: Using a mixture of experts machine learning approach<a class="anchor" aria-label="anchor" href="#mr-moe-using-a-mixture-of-experts-machine-learning-approach"></a>
 </h2>
-<p>We recently developed MR-MoE, a method to choose the most appropriate amongst several MR tests using a machine learning algorithm. Note that the method is still under review, but full details are described here: <a href="http://www.biorxiv.org/content/early/2017/08/23/173682" class="external-link">biorxiv.org/content/early/2017/08/23/173682</a>.</p>
-<p>MR-MoE operates by taking a set of harmonised data, inferring some characteristics about the dataset, and using those characteristics to predict how well each of the different MR methods will perform on the dataset, in terms of maximising power while minimising false discovery rates.</p>
-<p>In order to run the analysis you must download an RData object that contains the trained random forests that are used to predict the efficacy of each method. This can be downloaded from here:</p>
+<p>We recently developed MR-MoE, a method to choose the most appropriate
+amongst several MR tests using a machine learning algorithm. Note that
+the method is still under review, but full details are described here:
+<a href="http://www.biorxiv.org/content/early/2017/08/23/173682" class="external-link">biorxiv.org/content/early/2017/08/23/173682</a>.</p>
+<p>MR-MoE operates by taking a set of harmonised data, inferring some
+characteristics about the dataset, and using those characteristics to
+predict how well each of the different MR methods will perform on the
+dataset, in terms of maximising power while minimising false discovery
+rates.</p>
+<p>In order to run the analysis you must download an RData object that
+contains the trained random forests that are used to predict the
+efficacy of each method. This can be downloaded from here:</p>
 <p><a href="dropbox.com/s/5la7y38od95swcf">dropbox.com/s/5la7y38od95swcf</a></p>
 <p><strong>Caution: this is a large file (approx 167Mb)</strong></p>
-<p>Once downloaded, read in the object and use the <code>mr_moe</code> function to perform the analysis. An example is shown here, estimating the causal effect of BMI on coronary heart disease:</p>
+<p>Once downloaded, read in the object and use the <code>mr_moe</code>
+function to perform the analysis. An example is shown here, estimating
+the causal effect of BMI on coronary heart disease:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extact instruments for BMI</span></span>
 <span><span class="va">exposure_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span><span class="op">(</span><span class="st">"ieu-a-2"</span><span class="op">)</span></span>
@@ -790,32 +990,49 @@
 <p>The function does the following:</p>
 <ol style="list-style-type: decimal">
 <li>Performs MR using each of 11 MR methods</li>
-<li>Applies Steiger filtering or heterogeneity filtering or both to remove SNPs that do not have substantially larger R^2 with the exposure than the outcome. Note - for binary traits ensure number of cases, number of controls, and allele frequencies are available for each SNP. For continuous traits make sure the p-value and sample size is available. The function infers if a trait is binary or continuous based on the units.exposure and units.outcome columns - binary traits must have those values set to ‘log odds’</li>
-<li>Performs the 14 MR methods again but using the subset of SNPs that survive Steiger filtering</li>
-<li>Generates meta data about the summary data to predict the most reliable of the 28 methods applied.</li>
+<li>Applies Steiger filtering or heterogeneity filtering or both to
+remove SNPs that do not have substantially larger R^2 with the exposure
+than the outcome. Note - for binary traits ensure number of cases,
+number of controls, and allele frequencies are available for each SNP.
+For continuous traits make sure the p-value and sample size is
+available. The function infers if a trait is binary or continuous based
+on the units.exposure and units.outcome columns - binary traits must
+have those values set to ‘log odds’</li>
+<li>Performs the 14 MR methods again but using the subset of SNPs that
+survive Steiger filtering</li>
+<li>Generates meta data about the summary data to predict the most
+reliable of the 28 methods applied.</li>
 </ol>
-<p>For every exposure / outcome combination in the <code>dat</code> object, the MR-MoE method is applied. The function returns a list which is as long as the number of exposure / outcome combinations. In this case, it will be of length 1, containing the result for BMI on CHD.</p>
+<p>For every exposure / outcome combination in the <code>dat</code>
+object, the MR-MoE method is applied. The function returns a list which
+is as long as the number of exposure / outcome combinations. In this
+case, it will be of length 1, containing the result for BMI on CHD.</p>
 <p>The result object itself is a list with the following elements:</p>
 <ul>
 <li>
 <code>estimates</code> (results from each MR)</li>
 <li>
-<code>heterogeneity</code> (results from heterogeneity for different filtering approaches)</li>
+<code>heterogeneity</code> (results from heterogeneity for different
+filtering approaches)</li>
 <li>
 <code>directional_pleiotropy</code> (egger intercepts)</li>
 <li>
 <code>info</code> (metrics used to generate MOE)</li>
 </ul>
-<p>Looking at the <code>estimates</code>, we see that there is a column called <code>MOE</code> which is the predicted AUROC curve performance of each method. * * *</p>
+<p>Looking at the <code>estimates</code>, we see that there is a column
+called <code>MOE</code> which is the predicted AUROC curve performance
+of each method. * * *</p>
 </div>
 <div class="section level2">
 <h2 id="post-mr-results-management">Post MR results management<a class="anchor" aria-label="anchor" href="#post-mr-results-management"></a>
 </h2>
-<p>The TwoSampleMR package also provides the following functions for managing or editing MR results.</p>
+<p>The TwoSampleMR package also provides the following functions for
+managing or editing MR results.</p>
 <div class="section level3">
 <h3 id="split-outcome-names">Split outcome names<a class="anchor" aria-label="anchor" href="#split-outcome-names"></a>
 </h3>
-<p>The outcome column in the output of mr() combines the original outcome name with the outcome trait ID.</p>
+<p>The outcome column in the output of mr() combines the original
+outcome name with the outcome trait ID.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
@@ -827,7 +1044,8 @@
 <span><span class="co">#&gt;           se        pval</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.01259e-04</span></span>
 <span><span class="co">#&gt; 2 0.05898302 4.03202e-14</span></span></code></pre></div>
-<p>The outcome column can be split into separate columns for the id and outcome name using the split_outcome function:</p>
+<p>The outcome column can be split into separate columns for the id and
+outcome name using the split_outcome function:</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
@@ -840,20 +1058,24 @@
 <span><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
 <span><span class="co">#&gt;                      method nsnp         b         se         pval</span></span>
 <span><span class="co">#&gt; 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07220496 8.329908e-08</span></span>
+<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07553122 2.994471e-07</span></span>
 <span><span class="co">#&gt; 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.14751958 2.377731e-02</span></span>
-<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.10212445 2.781799e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.16324421 4.046030e-02</span></span>
+<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.10141161 2.539045e-04</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="split-exposure-names">Split exposure names<a class="anchor" aria-label="anchor" href="#split-exposure-names"></a>
 </h3>
-<p>Similarly to the outcome column, the exposure column in the output of <code><a href="../reference/mr.html">mr()</a></code> combines the original exposure name with the exposure trait ID. This can be split into separate columns for the id and exposure name using the split_exposure function.</p>
+<p>Similarly to the outcome column, the exposure column in the output of
+<code><a href="../reference/mr.html">mr()</a></code> combines the original exposure name with the exposure
+trait ID. This can be split into separate columns for the id and
+exposure name using the split_exposure function.</p>
 </div>
 <div class="section level3">
 <h3 id="generate-odds-ratios-with-95-confidence-intervals">Generate odds ratios with 95% confidence intervals<a class="anchor" aria-label="anchor" href="#generate-odds-ratios-with-95-confidence-intervals"></a>
 </h3>
-<p>Users can convert log odds ratios into odds ratios with 95% confidence intervals using:</p>
+<p>Users can convert log odds ratios into odds ratios with 95%
+confidence intervals using:</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/generate_odds_ratios.html">generate_odds_ratios</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
@@ -870,15 +1092,16 @@
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
 <span><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653</span></span>
-<span><span class="co">#&gt; 2 0.07220496 8.329908e-08 0.24548477 0.5285282 1.472566 1.278241 1.696434</span></span>
+<span><span class="co">#&gt; 2 0.07553122 2.994471e-07 0.23896528 0.5350477 1.472566 1.269934 1.707530</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328</span></span>
-<span><span class="co">#&gt; 4 0.14751958 2.377731e-02 0.05101706 0.6292938 1.405166 1.052341 1.876285</span></span>
-<span><span class="co">#&gt; 5 0.10212445 2.781799e-04 0.18866096 0.5889888 1.475246 1.207631 1.802165</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.16324421 4.046030e-02 0.02019677 0.6601141 1.405166 1.020402 1.935013</span></span>
+<span><span class="co">#&gt; 5 0.10141161 2.539045e-04 0.19005813 0.5875916 1.475246 1.209320 1.799649</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="subset-on-method">Subset on method<a class="anchor" aria-label="anchor" href="#subset-on-method"></a>
 </h3>
-<p>It is sometimes useful to subset results on MR method, so that there is one unique result for each exposure-outcome combination:</p>
+<p>It is sometimes useful to subset results on MR method, so that there
+is one unique result for each exposure-outcome combination:</p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
@@ -887,12 +1110,18 @@
 <span><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091</span></span>
 <span><span class="co">#&gt;           se        pval</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.03202e-14</span></span></code></pre></div>
-<p>The default is to subset on the IVW method when &gt;1 SNP is available and to use the Wald ratio method when a single SNP is available. Users can specify which multi-SNP method to subset on.</p>
+<p>The default is to subset on the IVW method when &gt;1 SNP is
+available and to use the Wald ratio method when a single SNP is
+available. Users can specify which multi-SNP method to subset on.</p>
 </div>
 <div class="section level3">
 <h3 id="combine-all-results">Combine all results<a class="anchor" aria-label="anchor" href="#combine-all-results"></a>
 </h3>
-<p>It is often useful to combine all results and study level characterists into a single dataframe or table, e.g. for sharing results with collaborators or when the user wishes to present all results in a single table or figure. This can be done using the <code><a href="../reference/combine_all_mrresults.html">combine_all_mrresults()</a></code> function:</p>
+<p>It is often useful to combine all results and study level
+characterists into a single dataframe or table, e.g. for sharing results
+with collaborators or when the user wishes to present all results in a
+single table or figure. This can be done using the
+<code><a href="../reference/combine_all_mrresults.html">combine_all_mrresults()</a></code> function:</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">het</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_heterogeneity.html">mr_heterogeneity</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
@@ -929,7 +1158,14 @@
 <span>  <span class="st">"pmid"</span>,</span>
 <span>  <span class="st">"population"</span></span>
 <span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>This combines all results from <code><a href="../reference/mr.html">mr()</a></code>, <code><a href="../reference/mr_heterogeneity.html">mr_heterogeneity()</a></code>, <code><a href="../reference/mr_pleiotropy_test.html">mr_pleiotropy_test()</a></code> and <code><a href="../reference/mr_singlesnp.html">mr_singlesnp()</a></code> into a single dataframe. It also merges the results with outcome study level characteristics from the <code><a href="../reference/available_outcomes.html">available_outcomes()</a></code> function, including sample size characteristics. If requested, it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals).</p>
+<p>This combines all results from <code><a href="../reference/mr.html">mr()</a></code>,
+<code><a href="../reference/mr_heterogeneity.html">mr_heterogeneity()</a></code>, <code><a href="../reference/mr_pleiotropy_test.html">mr_pleiotropy_test()</a></code> and
+<code><a href="../reference/mr_singlesnp.html">mr_singlesnp()</a></code> into a single dataframe. It also merges the
+results with outcome study level characteristics from the
+<code><a href="../reference/available_outcomes.html">available_outcomes()</a></code> function, including sample size
+characteristics. If requested, it also exponentiates results (e.g. if
+the user wants log odds ratio converted into odds ratios with 95 percent
+confidence intervals).</p>
 </div>
 </div>
   </div>
