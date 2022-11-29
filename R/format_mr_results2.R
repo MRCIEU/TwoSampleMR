@@ -138,25 +138,35 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 	requireNamespace("plyr", quietly=TRUE)
 
 	het<-het[,c("id.exposure","id.outcome","method","Q","Q_df","Q_pval")]
-
+	
 	# Convert all factors to character
 	# lapply(names(Res), FUN=function(x) class(Res[,x]))
-	Pos<-which(unlist(lapply(names(res), FUN=function(x) class(res[,x])))=="factor")
-	for(i in 1:length(Pos)){
-		res[,Pos[i]]<-as.character(res[,Pos[i]])
+	Class<-unlist(lapply(names(res), FUN=function(x) class(res[,x])))	
+	if(any(Class == "factor")) { 
+		Pos<-which(unlist(lapply(names(res), FUN=function(x) class(res[,x])))=="factor")
+		for(i in 1:length(Pos)){
+			res[,Pos[i]]<-as.character(res[,Pos[i]])
+		}
 	}
 
 	# lapply(names(Het), FUN=function(x) class(Het[,x]))
-	Pos<-which(unlist(lapply(names(het), FUN=function(x) class(het[,x])))=="factor")
-	for(i in 1:length(Pos)){
-		het[,Pos[i]]<-as.character(het[,Pos[i]])
+	Class<-unlist(lapply(names(het), FUN=function(x) class(het[,x])))
+	if(any(Class == "factor")) { 
+		Pos<-which(unlist(lapply(names(het), FUN=function(x) class(het[,x])))=="factor")
+		for(i in 1:length(Pos)){
+			het[,Pos[i]]<-as.character(het[,Pos[i]])
+		}
 	}
 
 	# lapply(names(Sin), FUN=function(x) class(Sin[,x]))
-	Pos<-which(unlist(lapply(names(sin), FUN=function(x) class(sin[,x])))=="factor")
-	for(i in 1:length(Pos)){
-		sin[,Pos[i]]<-as.character(sin[,Pos[i]])
+	Class<-unlist(lapply(names(sin), FUN=function(x) class(sin[,x])))
+	if(any(Class == "factor")) { 
+		Pos<-which(unlist(lapply(names(sin), FUN=function(x) class(sin[,x])))=="factor")
+		for(i in 1:length(Pos)){
+			sin[,Pos[i]]<-as.character(sin[,Pos[i]])
+		}
 	}
+
 	sin<-sin[grep("[:0-9:]",sin$SNP),]
 	sin$method<-"Wald ratio"
 	names(sin)[names(sin)=="p"]<-"pval"
