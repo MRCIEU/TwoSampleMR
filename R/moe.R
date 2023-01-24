@@ -58,6 +58,12 @@ system_metrics <- function(dat)
 		metrics$cooks_egger <- sum(inf2[,4] > cooksthresh2) / nrow(dat)
 
 		# Homoscedasticity
+		if (!requireNamespace("car", quietly = TRUE)) {
+		  stop(
+		    "Package \"car\" must be installed to use this function.",
+		    call. = FALSE
+		  )
+		}
 		metrics$homosc_ivw <- car::ncvTest(ruck$lmod_ivw)$ChiSquare
 		metrics$homosc_egg <- car::ncvTest(ruck$lmod_egger)$ChiSquare
 

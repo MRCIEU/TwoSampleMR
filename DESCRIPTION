@@ -25,7 +25,6 @@ License: MIT + file LICENSE
 Depends:
     R (>= 4.0.0)
 Imports:
-    car,
     cowplot,
     data.table,
     dplyr,
@@ -51,6 +50,7 @@ Imports:
     rmarkdown
 Suggests: 
     Cairo,
+    car,
     markdown,
     MRInstruments,
     randomForest,
