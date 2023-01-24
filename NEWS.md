@@ -3,6 +3,8 @@ TwoSampleMR v0.5.7 (Release date: TBC)
 
 Changes:
 
+* Move car package to Suggests to allow TwoSampleMR to install on R between versions 4.0.0 and 4.1.0
+* In DESCRIPTION use pkgdepends syntax for MRPRESSO package due its repository name being different to the package name so that installing TwoSampleMR under pak continues to work
 * Various minor code tweaks to fix 2 R CMD check notes
 * Add Cairo package to Suggests list (thanks @hdraisma)
 * Fix error in outcome data vignette (thanks @hdraisma)
