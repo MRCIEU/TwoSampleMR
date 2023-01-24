@@ -50,7 +50,9 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.7" id="twosamplemr-v057-release-date-tbc">TwoSampleMR v0.5.7 (Release date: TBC)<a class="anchor" aria-label="anchor" href="#twosamplemr-v057-release-date-tbc"></a></h2>
 <p>Changes:</p>
-<ul><li>Various minor code tweaks to fix 2 R CMD check notes</li>
+<ul><li>Move car package to Suggests to allow TwoSampleMR to install on R between versions 4.0.0 and 4.1.0</li>
+<li>In DESCRIPTION use pkgdepends syntax for MRPRESSO package due its repository name being different to the package name so that installing TwoSampleMR under pak continues to work</li>
+<li>Various minor code tweaks to fix 2 R CMD check notes</li>
 <li>Add Cairo package to Suggests list (thanks @hdraisma)</li>
 <li>Fix error in outcome data vignette (thanks @hdraisma)</li>
 <li>Some p-values that should have been ~0 were being stored as 1 in the elasticsearch database. This has now been fixed and those datasets have been clumped again to re-define the tophits. A full list of affected GWAS is available here: <a href="https://github.com/MRCIEU/opengwas-infpval-fix" class="external-link uri">https://github.com/MRCIEU/opengwas-infpval-fix</a>
@@ -257,7 +259,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
