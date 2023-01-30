@@ -543,7 +543,6 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 #'
 #' @export
 #' @return data frame of retained features
-#' @importFrom glmnet cv.glmnet coef.glmnet
 mv_lasso_feature_selection <- function(mvdat)
 {
 	message("Performing feature selection")
