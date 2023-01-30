@@ -33,6 +33,7 @@ Imports:
     glmnet,
     gridExtra,
     gtable,
+    gwasrapidd,
     ieugwasr (>= 0.1.5),
     knitr,
     lattice,
@@ -65,4 +66,4 @@ Remotes:
     WSpiller/RadialMR
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
