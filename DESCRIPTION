@@ -25,30 +25,30 @@ License: MIT + file LICENSE
 Depends:
     R (>= 4.0.0)
 Imports:
-    cowplot,
     data.table,
     dplyr,
     ggplot2,
-    glmnet,
-    gridExtra,
-    gtable,
     ieugwasr (>= 0.1.5),
     knitr,
     lattice,
     magrittr,
     MASS,
-    MendelianRandomization,
     meta,
+    plyr,
+    psych,
+    reshape2
+Suggests: 
+    pbapply,
+    rmarkdown,
+    RadialMR,
     mr.raps,
     MRMix,
     MRPRESSO,
-    pbapply,
-    plyr,
-    psych,
-    RadialMR,
-    reshape2,
-    rmarkdown
-Suggests: 
+    MendelianRandomization,
+    cowplot,
+    glmnet,
+    gridExtra,
+    gtable,
     Cairo,
     car,
     markdown,
