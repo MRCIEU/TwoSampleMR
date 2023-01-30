@@ -31,13 +31,12 @@ Imports:
     ieugwasr (>= 0.1.5),
     knitr,
     lattice,
-    magrittr,
     MASS,
-    meta,
     plyr,
     psych,
     reshape2
 Suggests: 
+    meta,
     pbapply,
     rmarkdown,
     RadialMR,
