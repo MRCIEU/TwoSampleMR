@@ -196,7 +196,7 @@ p2[[1]]
 
 Use the `mr_leaveoneout_plot()` function to visualise the leave-one-out analysis:
 
-```{r}
+```{r fig.alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted."}
 res_loo <- mr_leaveoneout(dat)
 p3 <- mr_leaveoneout_plot(res_loo)
 p3[[1]]
