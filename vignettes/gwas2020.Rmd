@@ -139,4 +139,3 @@ We recommend using this new version going forwards but for a limited time we are
 install.packages("remotes")
 remotes::install_github("MRCIEU/TwoSampleMR@0.4.26")
 ```
-
