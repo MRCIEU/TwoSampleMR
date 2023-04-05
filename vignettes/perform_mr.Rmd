@@ -693,7 +693,8 @@ The result object itself is a list with the following elements:
 - `directional_pleiotropy` (egger intercepts)
 - `info` (metrics used to generate MOE)
 
-Looking at the `estimates`, we see that there is a column called `MOE` which is the predicted AUROC curve performance of each method. 
+Looking at the `estimates`, we see that there is a column called `MOE` which is the predicted AUROC curve performance of each method.
+
 * * *
 
 ## Post MR results management 
