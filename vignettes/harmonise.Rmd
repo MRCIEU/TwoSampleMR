@@ -30,7 +30,7 @@ suppressWarnings(suppressPackageStartupMessages(library(knitr)))
 
 The exposure data and outcome data are now obtained, e.g.:
 
-```{r }
+```{r}
 ao <- available_outcomes()
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
@@ -42,7 +42,7 @@ but it is important to harmonise the effects. This means that the effect of a SN
 
 To harmonise the exposure and outcome data, do the following:
 
-```{r }
+```{r}
 dat <- harmonise_data(
 	exposure_dat = bmi_exp_dat, 
 	outcome_dat = chd_out_dat
