@@ -186,7 +186,7 @@ Here, the plot shows the causal effect as estimated using each of the SNPs on th
 
 To get plots that use different methods, specify them in the `mr_singlesnp()` function:
 
-```{r}
+```{r fig.alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs."}
 res_single <- mr_singlesnp(dat, all_method = c("mr_ivw", "mr_two_sample_ml"))
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
