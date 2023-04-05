@@ -415,7 +415,7 @@ res <- split_outcome(res) # to keep the Y axis label clean we exclude the exposu
 res <- sort_1_to_many(res, b = "b", sort_action = 4) #this sorts results by decreasing effect size (largest effect at top of the plot)
 ```
 
-MR results for 103 diseases can be difficult to visualise in a single-column forest plot. In my own workflow I would split these across two plots and then join them together in a separate program, such as powerpoint, and do further refinements there. I typically save my plots using the pdf() graphics device. In this particular example the disease labels probably require some cleaning up (some are a bit long) or alternatively the column text size could be made smaller. It is also possible to change the colour of the plot and the shape of the point estimates. Type ?forest_plot_1_to_many for further details.
+MR results for 103 diseases can be difficult to visualise in a single-column forest plot. In my own workflow I would split these across two plots and then join them together in a separate program, such as Powerpoint, and do further refinements there. I typically save my plots using the `pdf()` graphics device. In this particular example the disease labels probably require some cleaning up (some are a bit long) or alternatively the column text size could be made smaller. It is also possible to change the colour of the plot and the shape of the point estimates. Type `?forest_plot_1_to_many` for further details.
 
 ```{r cache=TRUE, warning=FALSE, fig.height=10, eval=FALSE}
 res1 <- res[1:52, ]
