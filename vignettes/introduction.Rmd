@@ -62,7 +62,7 @@ The workflow for performing MR is as follows:
 3. Harmonise the effect sizes for the instruments on the exposures and the outcomes to be each for the same reference allele
 4. Perform MR analysis, sensitivity analyses, create plots, compile reports
 
-A diagramatic overview is shown here:
+A diagrammatic overview is shown here:
 
 
 <img src="https://drive.google.com/uc?id=1yHTkn-kVqZzsQfQdXBHZBGdFWj8gSsPQ" width="800"/>
