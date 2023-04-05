@@ -82,7 +82,6 @@ As with the `mr()` function, the `mr_heterogeneity()` function can take an argum
 mr_heterogeneity(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 ```
 
-
 ### Horizontal pleiotropy
 
 The intercept term in MR Egger regression can be a useful indication of whether directional horizontal pleiotropy is driving the results of an MR analysis. This can be obtained as follows:
@@ -90,7 +89,6 @@ The intercept term in MR Egger regression can be a useful indication of whether 
 ```{r}
 mr_pleiotropy_test(dat)
 ```
-
 
 ### Single SNP analysis
 
@@ -116,7 +114,6 @@ res_single <- mr_singlesnp(dat, all_method = "mr_two_sample_ml")
 
 will perform only the maximum likelihood method for the combined test.
 
-
 ### Leave-one-out analysis
 
 It is possible to perform a leave-one-out analysis, where the MR is performed again but leaving out each SNP in turn, to identify if a single SNP is driving the association.
@@ -132,7 +129,6 @@ By default the method used is the inverse variance weighted method, but this can
 ## Plots
 
 There are a few ways to visualise the results, listed below
-
 
 ### Scatter plot
 
@@ -175,7 +171,6 @@ ggsave(p1[[1]], file = "filename.png", width = 7, height = 7)
 ```
 
 See `?ggplot2::ggsave` for more info.
-
 
 ### Forest plot
 
@@ -393,7 +388,6 @@ forest_plot_1_to_many(
 
 In the above example we made up an arbitrary grouping variable called "subcategory" with values "Group 1" and "Group 2". Typically, however, the grouping variable might correspond to something like a trait ontology (e.g. anthropometric and glycemic traits) or study design (e.g. MR and observational studies). 
 
-
 #### Example 4. Effect of BMI on 103 diseases 
 
 The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:
@@ -561,7 +555,6 @@ id_outcome <- "ieu-a-7"
 ```
 
 First obtain the instruments for each lipid fraction. This entails obtaining a combined set of SNPs including all instruments, and getting those SNPs for each lipid fraction. Therefore, if there are e.g. 20 instruments for each of 3 lipid fractions, but combined there are 30 unique SNPs, then we need to extract each of the 30 SNPs from each lipid fraction (exposure). 
-
 
 ```{r eval=FALSE}
 exposure_dat <- mv_extract_exposures(id_exposure)
