@@ -65,7 +65,7 @@ The workflow for performing MR is as follows:
 A diagrammatic overview is shown here:
 
 
-<img src="https://drive.google.com/uc?id=1yHTkn-kVqZzsQfQdXBHZBGdFWj8gSsPQ" width="800"/>
+<img alt="A diagrammatic overview of performing a two-sample Mendelian randomization analysis" src="https://drive.google.com/uc?id=1yHTkn-kVqZzsQfQdXBHZBGdFWj8gSsPQ" width="800"/>
 
 
 A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:
