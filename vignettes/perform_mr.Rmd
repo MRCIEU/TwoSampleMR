@@ -194,7 +194,7 @@ p2[[1]]
 
 ### Leave-one-out plot
 
-Use the `mr_leaveoneout_plot` function to visualise the leave-one-out analysis:
+Use the `mr_leaveoneout_plot()` function to visualise the leave-one-out analysis:
 
 ```{r}
 res_loo <- mr_leaveoneout(dat)
