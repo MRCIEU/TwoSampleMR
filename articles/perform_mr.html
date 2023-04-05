@@ -111,10 +111,10 @@ randomisation. To do this, simply run:</p>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
 <span><span class="co">#&gt;           se         pval</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2 0.07281956 1.068948e-07</span></span>
+<span><span class="co">#&gt; 2 0.07383565 1.593125e-07</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4 0.14671867 2.304736e-02</span></span>
-<span><span class="co">#&gt; 5 0.09309991 7.650637e-05</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.14957082 2.570204e-02</span></span>
+<span><span class="co">#&gt; 5 0.09752303 1.496563e-04</span></span></code></pre></div>
 <p>This returns a data frame of estimates of the causal effect of the
 exposure on the outcome for a range of different MR methods.</p>
 <p>If there were multiple exposures against multiple outcomes in
@@ -325,7 +325,7 @@ in <code>p1</code> as a list of plots. For example, to plot the first
 scatter plot:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-15-1.png" alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted, MR-Egger, Simple mode, Weighted median, and Weighted mode." width="700"></p>
 <p>And to see how many plots there are:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span>
@@ -360,7 +360,7 @@ tests.</p>
 <span><span class="va">p2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_errorbarh()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-20-1.png" alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs." width="700"></p>
 <p>Here, the plot shows the causal effect as estimated using each of the
 SNPs on their own, and comparing against the causal effect as estimated
 using the methods that use all the SNPs.</p>
@@ -372,12 +372,12 @@ using the methods that use all the SNPs.</p>
 <span><span class="va">p2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_errorbarh()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-21-1.png" alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs." width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="leave-one-out-plot">Leave-one-out plot<a class="anchor" aria-label="anchor" href="#leave-one-out-plot"></a>
 </h3>
-<p>Use the <code>mr_leaveoneout_plot</code> function to visualise the
+<p>Use the <code><a href="../reference/mr_leaveoneout_plot.html">mr_leaveoneout_plot()</a></code> function to visualise the
 leave-one-out analysis:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_loo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_leaveoneout.html">mr_leaveoneout</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
@@ -385,7 +385,7 @@ leave-one-out analysis:</p>
 <span><span class="va">p3</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_errorbarh()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-22-1.png" width="700"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-22-1.png" alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted." width="700"></p>
 <p>Specify the test to use
 e.g. <code>mr_leaveoneout(dat, method = mr_egger_regression)</code> to
 use Egger regression.</p>
@@ -395,12 +395,12 @@ use Egger regression.</p>
 </h3>
 <p>Asymmetry in a funnel plot is useful for gauging the reliability of a
 particular MR analysis. Funnel plots can be produced using the single
-SNP results as follows: howzit</p>
+SNP results as follows:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_funnel_plot.html">mr_funnel_plot</a></span><span class="op">(</span><span class="va">res_single</span><span class="op">)</span></span>
 <span><span class="va">p4</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-23-1.png" alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs." width="700"></p>
 </div>
 </div>
 <div class="section level2">
@@ -645,12 +645,13 @@ test this against 103 diseases in the IEU GWAS database:</p>
 <p>MR results for 103 diseases can be difficult to visualise in a
 single-column forest plot. In my own workflow I would split these across
 two plots and then join them together in a separate program, such as
-powerpoint, and do further refinements there. I typically save my plots
-using the pdf() graphics device. In this particular example the disease
-labels probably require some cleaning up (some are a bit long) or
-alternatively the column text size could be made smaller. It is also
-possible to change the colour of the plot and the shape of the point
-estimates. Type ?forest_plot_1_to_many for further details.</p>
+Powerpoint, and do further refinements there. I typically save my plots
+using the <code><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf()</a></code> graphics device. In this particular example
+the disease labels probably require some cleaning up (some are a bit
+long) or alternatively the column text size could be made smaller. It is
+also possible to change the colour of the plot and the shape of the
+point estimates. Type <code><a href="../reference/forest_plot_1_to_many.html">?forest_plot_1_to_many</a></code> for further
+details.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">52</span>, <span class="op">]</span></span>
 <span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="fl">53</span><span class="op">:</span><span class="fl">103</span>, <span class="op">]</span></span>
@@ -708,13 +709,15 @@ detail about the statistical methodology.</p>
 available on CRAN. It can be directly called from TwoSampleMR by</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span>, method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_raps"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>MR.RAPS comes with two main options: <em>over.dispersion</em>
+<p>MR.RAPS comes with two main options: <code>over.dispersion</code>
 (whether the method should consider systematic pleiotropy) and
-<em>loss.function</em> (either “l2”, “huber”, or “tukey”). The latter
-two loss functions are robust to idiosyncratic pleiotropy. The default
-option is <em>over.dispersion = TRUE</em> and <em>loss.function =
-“tukey”</em>. To change these options, modify the <em>parameters</em>
-argument of <em>mr</em> by (for example)</p>
+<code>loss.function</code> (either <code>"l2"</code>,
+<code>"huber"</code>, or <code>"tukey"</code>). The latter two loss
+functions are robust to idiosyncratic pleiotropy. The default option is
+<code>over.dispersion = TRUE</code> and
+<code>loss.function = "tukey"</code>. To change these options, modify
+the <code>parameters</code> argument of <code><a href="../reference/mr.html">mr()</a></code> by (for
+example)</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span></span>
@@ -752,7 +755,8 @@ and then the outcome through the exposure. But sometimes this is
 difficult to evaluate, for example is a cis-acting SNP influencing gene
 expression levels or DNA methylation levels first? The causal direction
 between the hypothesised exposure and outcomes can be tested using the
-Steiger test [reference to go here]. For example:</p>
+Steiger test <span class="citation">(Hemani, Tilling, and Davey Smith
+2017)</span>. For example:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/directionality_test.html">directionality_test</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; r.exposure and/or r.outcome not present.</span></span>
@@ -876,9 +880,9 @@ could:</p>
 <li>Fit all exposures together or fit one exposure at a time against the
 residuals of the outcome that has been adjusted for the other outcomes.
 The former is recommended by default in this R package through the
-<code>mv_multiple</code> function but the latter was how MV MR was
+<code><a href="../reference/mv_multiple.html">mv_multiple()</a></code> function but the latter was how MV MR was
 originally described by Burgess et al 2015 and can be done with
-<code>mv_residual</code>.</li>
+<code><a href="../reference/mv_residual.html">mv_residual()</a></code>.</li>
 <li>Fitting all instruments for all exposures (default) or only fitting
 the instruments for each exposure sequentially</li>
 <li>Forcing the slopes through the origin (default) or allowing an
@@ -891,8 +895,8 @@ above.</p>
 <div class="section level3">
 <h3 id="note-about-visualisation">Note about visualisation<a class="anchor" aria-label="anchor" href="#note-about-visualisation"></a>
 </h3>
-<p>Plots can be generated using the <code>plots=TRUE</code> argument for
-<code>mv_multiple</code> and <code>mv_residual</code>.</p>
+<p>Plots can be generated using the <code>plots = TRUE</code> argument
+for <code><a href="../reference/mv_multiple.html">mv_multiple()</a></code> and <code><a href="../reference/mv_residual.html">mv_residual()</a></code>.</p>
 <p>The current plots being generated are not necessarily adequate
 because while they show the slope through the raw points, they do not
 demonstrate that the raw points might be effectively different between
@@ -903,8 +907,8 @@ plots because they are conditional on the other exposures.</p>
 </h3>
 <p>If you want to perform analysis with your local summary data
 (i.e. not in the OpenGWAS database) then use then look up the
-<code>mv_extract_exposures_local</code> function in replace of the
-<code>mv_extract_exposures</code> function.</p>
+<code><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local()</a></code> function in replace of the
+<code><a href="../reference/mv_extract_exposures.html">mv_extract_exposures()</a></code> function.</p>
 <hr>
 </div>
 </div>
@@ -927,8 +931,9 @@ example:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snplist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rs234"</span>, <span class="st">"rs1205"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ld_matrix.html">ld_matrix</a></span><span class="op">(</span><span class="va">snplist</span><span class="op">)</span></span></code></pre></div>
-<p>Here <code>ld_matrix</code> returns the LD correlation values (not
-R^2) for each pair of variants present in the 1000 genomes data set.</p>
+<p>Here <code><a href="../reference/ld_matrix.html">ld_matrix()</a></code> returns the LD correlation values (not
+R<sup>2</sup>) for each pair of variants present in the 1000 genomes
+data set.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span></span>
 <span>    exposure_dat <span class="op">=</span> <span class="va">bmi_exp_dat</span>, </span>
@@ -966,7 +971,7 @@ contains the trained random forests that are used to predict the
 efficacy of each method. This can be downloaded from here:</p>
 <p><a href="dropbox.com/s/5la7y38od95swcf">dropbox.com/s/5la7y38od95swcf</a></p>
 <p><strong>Caution: this is a large file (approx 167Mb)</strong></p>
-<p>Once downloaded, read in the object and use the <code>mr_moe</code>
+<p>Once downloaded, read in the object and use the <code><a href="../reference/mr_moe.html">mr_moe()</a></code>
 function to perform the analysis. An example is shown here, estimating
 the causal effect of BMI on coronary heart disease:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
@@ -991,10 +996,10 @@ the causal effect of BMI on coronary heart disease:</p>
 <ol style="list-style-type: decimal">
 <li>Performs MR using each of 11 MR methods</li>
 <li>Applies Steiger filtering or heterogeneity filtering or both to
-remove SNPs that do not have substantially larger R^2 with the exposure
-than the outcome. Note - for binary traits ensure number of cases,
-number of controls, and allele frequencies are available for each SNP.
-For continuous traits make sure the p-value and sample size is
+remove SNPs that do not have substantially larger R<sup>2</sup> with the
+exposure than the outcome. Note - for binary traits ensure number of
+cases, number of controls, and allele frequencies are available for each
+SNP. For continuous traits make sure the p-value and sample size is
 available. The function infers if a trait is binary or continuous based
 on the units.exposure and units.outcome columns - binary traits must
 have those values set to ‘log odds’</li>
@@ -1021,7 +1026,8 @@ filtering approaches)</li>
 </ul>
 <p>Looking at the <code>estimates</code>, we see that there is a column
 called <code>MOE</code> which is the predicted AUROC curve performance
-of each method. * * *</p>
+of each method.</p>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="post-mr-results-management">Post MR results management<a class="anchor" aria-label="anchor" href="#post-mr-results-management"></a>
@@ -1058,10 +1064,10 @@ outcome name using the split_outcome function:</p>
 <span><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
 <span><span class="co">#&gt;                      method nsnp         b         se         pval</span></span>
 <span><span class="co">#&gt; 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07414008 1.789846e-07</span></span>
+<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07452929 2.072923e-07</span></span>
 <span><span class="co">#&gt; 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.14910502 2.525803e-02</span></span>
-<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.10043730 2.235077e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15492759 3.109471e-02</span></span>
+<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.10151873 2.574399e-04</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="split-exposure-names">Split exposure names<a class="anchor" aria-label="anchor" href="#split-exposure-names"></a>
@@ -1090,12 +1096,12 @@ confidence intervals using:</p>
 <span><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091</span></span>
 <span><span class="co">#&gt; 4 Body mass index || id:ieu-a-2               Simple mode   79 0.3401554</span></span>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
-<span><span class="co">#&gt;           se         pval     lo_ci     up_ci       or or_lci95 or_uci95</span></span>
-<span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.2203308 0.7846562 1.652838 1.246489 2.191653</span></span>
-<span><span class="co">#&gt; 2 0.07414008 1.789846e-07 0.2416919 0.5323210 1.472566 1.273402 1.702880</span></span>
-<span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.3303024 0.5615158 1.561909 1.391389 1.753328</span></span>
-<span><span class="co">#&gt; 4 0.14910502 2.525803e-02 0.0479096 0.6324013 1.405166 1.049076 1.882125</span></span>
-<span><span class="co">#&gt; 5 0.10043730 2.235077e-04 0.1919678 0.5856820 1.475246 1.211631 1.796216</span></span></code></pre></div>
+<span><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
+<span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653</span></span>
+<span><span class="co">#&gt; 2 0.07452929 2.072923e-07 0.24092908 0.5330839 1.472566 1.272431 1.704180</span></span>
+<span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328</span></span>
+<span><span class="co">#&gt; 4 0.15492759 3.109471e-02 0.03649734 0.6438135 1.405166 1.037172 1.903727</span></span>
+<span><span class="co">#&gt; 5 0.10151873 2.574399e-04 0.18984816 0.5878016 1.475246 1.209066 1.800027</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="subset-on-method">Subset on method<a class="anchor" aria-label="anchor" href="#subset-on-method"></a>
@@ -1166,6 +1172,18 @@ results with outcome study level characteristics from the
 characteristics. If requested, it also exponentiates results (e.g. if
 the user wants log odds ratio converted into odds ratios with 95 percent
 confidence intervals).</p>
+</div>
+</div>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-hemani-plosgen-2017" class="csl-entry">
+Hemani, Gibran, Kate Tilling, and George Davey Smith. 2017.
+<span>“Orienting the Causal Relationship Between Imprecisely Measured
+Traits Using GWAS Summary Data.”</span> <em>PLOS Genetics</em> 13 (11):
+e1007081. <a href="https://doi.org/10.1371/journal.pgen.1007081" class="external-link">https://doi.org/10.1371/journal.pgen.1007081</a>.
+</div>
 </div>
 </div>
   </div>
