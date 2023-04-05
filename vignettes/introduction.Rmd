@@ -99,4 +99,3 @@ Each step is documented on other pages in the documentation.
 Detailed information is given here: [https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication](https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication)
 
 ## References
-<br/>
