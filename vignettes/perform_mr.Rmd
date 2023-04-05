@@ -505,7 +505,7 @@ This is an implementation of the method described here:
 **Orienting the causal relationship between imprecisely measured traits using GWAS summary data.**<br/>
 PLoS Genetics. 2017. 13(11).](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
 
-In MR it is assumed that the instruments influence the exposure first and then the outcome through the exposure. But sometimes this is difficult to evaluate, for example is a cis-acting SNP influencing gene expression levels or DNA methylation levels first? The causal direction between the hypothesised exposure and outcomes can be tested using the Steiger test [reference to go here]. For example:
+In MR it is assumed that the instruments influence the exposure first and then the outcome through the exposure. But sometimes this is difficult to evaluate, for example is a cis-acting SNP influencing gene expression levels or DNA methylation levels first? The causal direction between the hypothesised exposure and outcomes can be tested using the Steiger test [@hemani-plosgen-2017]. For example:
 
 ```{r}
 out <- directionality_test(dat)
@@ -780,3 +780,5 @@ head(all_res[, c(
 ```
 
 This combines all results from `mr()`, `mr_heterogeneity()`, `mr_pleiotropy_test()` and `mr_singlesnp()` into a single dataframe. It also merges the results with outcome study level characteristics from the `available_outcomes()` function, including sample size characteristics. If requested, it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). 
+
+## References
