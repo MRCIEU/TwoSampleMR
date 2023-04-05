@@ -592,13 +592,13 @@ With these three different parameters there are eight different ways to do MV an
 
 ### Note about visualisation
 
-Plots can be generated using the `plots=TRUE` argument for `mv_multiple` and `mv_residual`. 
+Plots can be generated using the `plots = TRUE` argument for `mv_multiple()` and `mv_residual()`. 
 
 The current plots being generated are not necessarily adequate because while they show the slope through the raw points, they do not demonstrate that the raw points might be effectively different between plots because they are conditional on the other exposures. 
 
 ### Using your own summary data
 
-If you want to perform analysis with your local summary data (i.e. not in the OpenGWAS database) then use then look up the `mv_extract_exposures_local` function in replace of the `mv_extract_exposures` function.
+If you want to perform analysis with your local summary data (i.e. not in the OpenGWAS database) then use then look up the `mv_extract_exposures_local()` function in replace of the `mv_extract_exposures()` function.
 
 * * *
 
@@ -613,7 +613,7 @@ snplist <- c("rs234", "rs1205")
 ld_matrix(snplist)
 ```
 
-Here `ld_matrix` returns the LD correlation values (not R^2) for each pair of variants present in the 1000 genomes data set.
+Here `ld_matrix()` returns the LD correlation values (not R^2^) for each pair of variants present in the 1000 genomes data set.
 
 ```{r eval=FALSE}
 dat <- harmonise_data(
@@ -655,7 +655,7 @@ In order to run the analysis you must download an RData object that contains the
 
 **Caution: this is a large file (approx 167Mb)**
 
-Once downloaded, read in the object and use the `mr_moe` function to perform the analysis. An example is shown here, estimating the causal effect of BMI on coronary heart disease:
+Once downloaded, read in the object and use the `mr_moe()` function to perform the analysis. An example is shown here, estimating the causal effect of BMI on coronary heart disease:
 
 ```{r eval=FALSE}
 # Extact instruments for BMI
@@ -680,7 +680,7 @@ res_moe <- mr_moe(res, rf)
 The function does the following:
 
 1. Performs MR using each of 11 MR methods
-2. Applies Steiger filtering or heterogeneity filtering or both to remove SNPs that do not have substantially larger R^2 with the exposure than the outcome. Note - for binary traits ensure number of cases, number of controls, and allele frequencies are available for each SNP. For continuous traits make sure the p-value and sample size is available. The function infers if a trait is binary or continuous based on the units.exposure and units.outcome columns - binary traits must have those values set to 'log odds'
+2. Applies Steiger filtering or heterogeneity filtering or both to remove SNPs that do not have substantially larger R^2^ with the exposure than the outcome. Note - for binary traits ensure number of cases, number of controls, and allele frequencies are available for each SNP. For continuous traits make sure the p-value and sample size is available. The function infers if a trait is binary or continuous based on the units.exposure and units.outcome columns - binary traits must have those values set to 'log odds'
 3. Performs the 14 MR methods again but using the subset of SNPs that survive Steiger filtering
 4. Generates meta data about the summary data to predict the most reliable of the 28 methods applied.
 
