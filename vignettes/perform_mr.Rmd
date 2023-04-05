@@ -176,7 +176,7 @@ See `?ggplot2::ggsave` for more info.
 
 Use the `mr_forest_plot()` function to compare the MR estimates using the different MR methods against the single SNP tests.
 
-```{r }
+```{r fig.alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs."}
 res_single <- mr_singlesnp(dat)
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
