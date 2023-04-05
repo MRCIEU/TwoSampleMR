@@ -208,7 +208,8 @@ Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)`
 ### Funnel plot
 
 Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows:
-```{r}
+
+```{r fig.alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs."}
 res_single <- mr_singlesnp(dat)
 p4 <- mr_funnel_plot(res_single)
 p4[[1]]
