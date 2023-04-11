@@ -202,7 +202,7 @@ p3 <- mr_leaveoneout_plot(res_loo)
 p3[[1]]
 ```
 
-Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)` to use Egger regression.
+Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)` to use MR-Egger regression.
 
 ### Funnel plot
 
