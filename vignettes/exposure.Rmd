@@ -310,7 +310,6 @@ This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can
 
 By changing changing the `p1` parameter it is possible to obtain SNP effects for constructing polygenic risk scores.
 
-
 ## Clumping
 
 For standard two sample MR it is important to ensure that the instruments for the exposure are independent. Once instruments have been identified for an exposure variable, the IEU GWAS database can be used to perform clumping.
