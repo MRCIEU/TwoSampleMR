@@ -28,7 +28,6 @@ suppressWarnings(suppressPackageStartupMessages(library(knitr)))
 
 Once instruments for the exposure trait have been specified, those variants need to be extracted from the outcome trait. 
 
-
 ## Available studies in IEU GWAS database
 
 The IEU GWAS database (IGD) contains complete GWAS summary statistics from a large number of studies. You can browse them here: 
@@ -49,7 +48,6 @@ The `available_outcomes` function returns a table of all the available studies i
 ```{r}
 head(subset(ao, select = c(trait, id)))
 ```
-
 
 ## Extracting particular SNPs from particular studies
 
@@ -83,7 +81,6 @@ chd_out_dat  <- extract_outcome_data(c("rs234", "rs17097147"), c('ieu-a-2', 'ieu
 ```
 will extract the two SNPs from each of the outcomes `ieu-a-2` and `ieu-a-7`.
 
-
 ## LD proxies
 
 By default if a particular requested SNP is not present in the outcome GWAS then a SNP (proxy) that is in LD with the requested SNP (target) will be searched for instead. LD proxies are defined using 1000 genomes European sample data. The effect of the proxy SNP on the outcome is returned, along with the proxy SNP, the effect allele of the proxy SNP, and the corresponding allele (in phase) for the target SNP.
@@ -94,7 +91,6 @@ The parameters for handling LD proxies are as follows:
 - `rsq` = numeric value of minimum rsq to find a proxy. Default is 0.8, minimum is 0.6
 - `palindromes` = Allow palindromic SNPs? Default is 1 (yes)
 - `maf_threshold` = If palindromes allowed then what is the maximum minor allele frequency of palindromes allowed? Default is 0.3.
-
 
 ## Using local GWAS summary data
 
@@ -134,7 +130,6 @@ outcome_dat <- read_outcome_data(
 
 This returns an outcome data frame with only the SNPs that were requested (if those SNPs were present in the "gwas_summary.csv" file).
 
-
 ## Outcome data format
 
 The `extract_outcome_data` function returns a table of SNP effects for the requested SNPs on the requested outcomes. The format of the data is similar to the exposure data format, except the main columns are as follows:
@@ -165,7 +160,6 @@ The `extract_outcome_data` function returns a table of SNP effects for the reque
 - `proxy_a2.outcome`
 - `mr_keep.outcome`
 - `data_source.outcome`
-
 
 ## More advanced use of local data
 
