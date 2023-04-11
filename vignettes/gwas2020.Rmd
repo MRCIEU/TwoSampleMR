@@ -56,7 +56,6 @@ All rs IDs have been mapped to dbSNP build 144. Therefore, some rs IDs may have 
 
 We are using Elasticsearch and Neo4j on an Oracle Cloud Infrastructure to serve the data. It's much faster. Interestingly, it actually gets faster when more people are using it because the cache gets 'warmed up' by more requests.
 
-
 ## What is new
 
 ### Browse available datasets online
@@ -102,7 +101,6 @@ Previously the data was only accessible through the database. Now the data can b
 ### Connect the data to different analytical tools
 
 Either the data in the database, or the GWAS VCF files, can be queried and the results translated into the formats for a bunch of different R packages for MR, colocalisation, fine mapping, etc. Have a look at the [gwasglue R package](https://github.com/mrcieu/gwasglue), to see what is available and how to do this. It's still under construction, but feel free to try it, make suggestions, and contribute code.
-
 
 ## Key links
 
