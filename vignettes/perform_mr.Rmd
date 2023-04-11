@@ -204,7 +204,6 @@ p3[[1]]
 
 Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)` to use Egger regression.
 
-
 ### Funnel plot
 
 Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows:
@@ -353,7 +352,6 @@ forest_plot_1_to_many(
 )
 ```
 
-
 #### Example 3. Stratify results on a grouping variable
 
 In this next example we plot the same results as above but with results stratified by a grouping variable. We also select one MR method for each unique exposure-outcome combination and sort the results by decreasing effect size within each group (i.e. largest effect at the top). 
@@ -393,7 +391,6 @@ In the above example we made up an arbitrary grouping variable called "subcatego
 The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:
 
 ```{r cache=TRUE, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
-
 exp_dat <- extract_instruments(outcomes = 2)  #extract instruments for BMI
 ao <- available_outcomes()
 ao <- ao[ao$category == "Disease", ] #identify diseases
@@ -538,7 +535,6 @@ mr_steiger(
 ## Multivariable MR
 
 When SNPs instrument multiple potential exposures, for example in the case of different lipid fractions, one method for overcoming this problem is to estimate the influence of each lipid conditioning on the effects of the SNPs on the other lipids. Multivariable MR can be performed using the R package as follows. Practically speaking, this is the process that needs to occur from the perspective of generating the data in the correct format:
-
 
 1. Get instruments for each exposure
 2. Combine these into a set of all instruments
