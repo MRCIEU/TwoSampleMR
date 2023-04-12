@@ -291,7 +291,3 @@ format_d <- function(d)
 
 	return(d)	
 }
-
-
-
-

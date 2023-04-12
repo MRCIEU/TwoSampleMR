@@ -57,5 +57,3 @@ estimate_trait_sd <- function(b, se, n, p)
 	estimated_sd <- b / standardised_bhat
 	return(estimated_sd)
 }
-
-

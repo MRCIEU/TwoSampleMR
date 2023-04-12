@@ -55,5 +55,3 @@ steiger_filtering_internal <- function(dat)
 
 	return(dat)
 }
-
-

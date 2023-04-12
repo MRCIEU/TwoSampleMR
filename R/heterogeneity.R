@@ -72,5 +72,3 @@ mr_pleiotropy_test <- function(dat)
 	})
 	return(ptab)
 }
-
-

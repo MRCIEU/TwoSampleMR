@@ -739,5 +739,3 @@ convert_outcome_to_exposure <- function(outcome_dat)
 	names(exposure_dat)[names(exposure_dat) == "id.outcome"] <- "id.exposure"
 	return(exposure_dat)
 }
-
-
