@@ -19,10 +19,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
-suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
-suppressWarnings(suppressPackageStartupMessages(library(knitr)))
 ```{r message=FALSE}
+library(TwoSampleMR)
 ```
 
 ## Introduction
