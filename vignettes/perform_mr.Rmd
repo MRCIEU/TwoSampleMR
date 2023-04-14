@@ -222,13 +222,13 @@ A 1-to-many MR analysis interrogates the effect of a single exposure on multiple
 exp_dat <- extract_instruments(outcomes = c(2, 100, 1032, 104, 1, 72, 999))
 table(exp_dat$exposure)
 chd_out_dat <- extract_outcome_data(
-	snps = exp_dat$SNP,
-	outcomes = 7
+  snps = exp_dat$SNP,
+  outcomes = 7
 )
 
 dat2 <- harmonise_data(
-	exposure_dat = exp_dat, 
-	outcome_dat = chd_out_dat
+  exposure_dat = exp_dat, 
+  outcome_dat = chd_out_dat
 )
 res <- mr(dat2)
 ```
@@ -396,13 +396,13 @@ ao <- ao[ao$category == "Disease", ] #identify diseases
 ao <- ao[which(ao$ncase > 100), ]
 
 dis_dat <- extract_outcome_data(
-	snps = exp_dat$SNP,
-	outcomes = ao$id
+  snps = exp_dat$SNP,
+  outcomes = ao$id
 )
 
 dat3 <- harmonise_data(
-	exposure_dat = exp_dat, 
-	outcome_dat = dis_dat
+  exposure_dat = exp_dat, 
+  outcome_dat = dis_dat
 )
 
 res <- mr(dat3, method_list = c("mr_wald_ratio", "mr_ivw"))
@@ -519,13 +519,13 @@ These tests are obtained using:
 
 ```{r eval=FALSE, warnings=FALSE}
 mr_steiger(
-	p_exp = dat$pval.exposure, 
-	p_out = dat$pval.outcome, 
-	n_exp = dat$samplesize.exposure, 
-	n_out = dat$samplesize.outcome, 
-	r_xxo = 1, 
-	r_yyo = 1,
-	r_exp=0
+  p_exp = dat$pval.exposure, 
+  p_out = dat$pval.outcome, 
+  n_exp = dat$samplesize.exposure, 
+  n_out = dat$samplesize.outcome, 
+  r_xxo = 1, 
+  r_yyo = 1,
+  r_exp=0
 )
 ```
 
@@ -612,8 +612,8 @@ Here `ld_matrix()` returns the LD correlation values (not R^2^) for each pair of
 
 ```{r eval=FALSE}
 dat <- harmonise_data(
-	exposure_dat = bmi_exp_dat, 
-	outcome_dat = chd_out_dat
+  exposure_dat = bmi_exp_dat, 
+  outcome_dat = chd_out_dat
 )
 ```
 
