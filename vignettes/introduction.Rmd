@@ -19,13 +19,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r echo=FALSE}
-knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
-suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
-suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
-suppressWarnings(suppressPackageStartupMessages(library(knitr)))
-```
-
 ## Background
 
 Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components 
