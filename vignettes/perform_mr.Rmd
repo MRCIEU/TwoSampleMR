@@ -19,11 +19,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
-suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
-suppressWarnings(suppressPackageStartupMessages(library(knitr)))
-suppressWarnings(suppressPackageStartupMessages(library(ggplot2)))
 ```{r message=FALSE}
+library(TwoSampleMR)
+library(ggplot2)
 ```
 
 ## Introduction
@@ -505,7 +503,7 @@ In MR it is assumed that the instruments influence the exposure first and then t
 
 ```{r}
 out <- directionality_test(dat)
-kable(out)
+knitr::kable(out)
 ```
 
 It calculates the variance explained in the exposure and the outcome by the instrumenting SNPs, and tests if the variance in the outcome is less than the exposure.
