@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
 suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
 suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
 suppressWarnings(suppressPackageStartupMessages(library(knitr)))
