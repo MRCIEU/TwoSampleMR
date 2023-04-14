@@ -7,13 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 This document details changes and new features specifically relating to the TwoSampleMR R package and the GWAS database behind it.
 
 ## What has changed
