@@ -500,7 +500,7 @@ This is an implementation of the method described here:
 
 [Hemani G, Tilling K, Davey Smith G.<br/>
 **Orienting the causal relationship between imprecisely measured traits using GWAS summary data.**<br/>
-PLoS Genetics. 2017. 13(11).](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
+PLoS Genetics. 2017. 13(11): e1007081.](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
 
 In MR it is assumed that the instruments influence the exposure first and then the outcome through the exposure. But sometimes this is difficult to evaluate, for example is a cis-acting SNP influencing gene expression levels or DNA methylation levels first? The causal direction between the hypothesised exposure and outcomes can be tested using the Steiger test [@hemani-plosgen-2017]. For example:
 
