@@ -239,8 +239,8 @@ res <- mr(dat2)
 In this example we wish to plot results from an MR analysis of the effect of multiple exposures on coronary heart disease, with results sorted by decreasing effect size (largest effect at the top of the plot) and with one MR method for each unique exposure-outcome combination. We will also make the size of each point estimate proportional to its inverse variance. This is a useful way to draw attention towards the most reliable results and away from results with very wide confidence intervals. To specify the size of the point estimate, set the weight argument to the name of the column in the data with the weight information.
 
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
-res <- subset_on_method(res) #default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP). 
-res <- sort_1_to_many(res, b = "b", sort_action = 4) #this sorts results by decreasing effect size (largest effect at top of the plot)
+res <- subset_on_method(res) # default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP). 
+res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by decreasing effect size (largest effect at top of the plot)
 res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
 res$weight <- 1/res$se
 
