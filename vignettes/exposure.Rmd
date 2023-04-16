@@ -164,7 +164,7 @@ random_df
 This can be formatted like so:
 
 ```{r}
-random_exp_dat <- format_data(random_df, type="exposure")
+random_exp_dat <- format_data(random_df, type = "exposure")
 random_exp_dat
 ```
 
