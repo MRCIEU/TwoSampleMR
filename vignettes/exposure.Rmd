@@ -195,7 +195,8 @@ For example, to obtain instruments for body mass index using the Speliotes et al
 ```{r eval=FALSE}
 bmi_gwas <-
   subset(gwas_catalog,
-         grepl("Speliotes", Author) & Phenotype == "Body mass index")
+         grepl("Speliotes", Author) &
+           Phenotype == "Body mass index")
 bmi_exp_dat <- format_data(bmi_gwas)
 ```
 
