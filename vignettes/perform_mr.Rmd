@@ -244,8 +244,8 @@ res <- sort_1_to_many(res, b = "b", sort_action = 4) #this sorts results by decr
 res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
 res$weight <- 1/res$se
 
-min(exp(res$b - 1.96*res$se)) #identify value for 'lo' in forest_plot_1_to_many
-max(exp(res$b + 1.96*res$se)) #identify value for 'up' in forest_plot_1_to_many
+min(exp(res$b - 1.96*res$se)) # identify value for 'lo' in forest_plot_1_to_many
+max(exp(res$b + 1.96*res$se)) # identify value for 'up' in forest_plot_1_to_many
 
 forest_plot_1_to_many(
   res,
@@ -389,9 +389,9 @@ In the above example we made up an arbitrary grouping variable called "subcatego
 The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:
 
 ```{r cache=TRUE, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
-exp_dat <- extract_instruments(outcomes = 2)  #extract instruments for BMI
+exp_dat <- extract_instruments(outcomes = 2) # extract instruments for BMI
 ao <- available_outcomes()
-ao <- ao[ao$category == "Disease", ] #identify diseases
+ao <- ao[ao$category == "Disease", ] # identify diseases
 ao <- ao[which(ao$ncase > 100), ]
 
 dis_dat <- extract_outcome_data(
@@ -407,7 +407,7 @@ dat3 <- harmonise_data(
 res <- mr(dat3, method_list = c("mr_wald_ratio", "mr_ivw"))
 res <- split_outcome(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
 
-res <- sort_1_to_many(res, b = "b", sort_action = 4) #this sorts results by decreasing effect size (largest effect at top of the plot)
+res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by decreasing effect size (largest effect at top of the plot)
 ```
 
 MR results for 103 diseases can be difficult to visualise in a single-column forest plot. In my own workflow I would split these across two plots and then join them together in a separate program, such as Powerpoint, and do further refinements there. I typically save my plots using the `pdf()` graphics device. In this particular example the disease labels probably require some cleaning up (some are a bit long) or alternatively the column text size could be made smaller. It is also possible to change the colour of the plot and the shape of the point estimates. Type `?forest_plot_1_to_many` for further details.
