@@ -153,10 +153,10 @@ If the data already exists as a data frame in R then it can be converted into th
 
 ```{r}
 random_df <- data.frame(
-	SNP = c("rs1", "rs2"),
-	beta = c(1, 2),
-	se = c(1, 2),
-	effect_allele = c("A", "T")
+  SNP = c("rs1", "rs2"),
+  beta = c(1, 2),
+  se = c(1, 2),
+  effect_allele = c("A", "T")
 )
 random_df
 ```
