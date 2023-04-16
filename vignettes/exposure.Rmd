@@ -202,7 +202,7 @@ bmi_exp_dat <- format_data(bmi_gwas)
 
 ### Metabolites
 
-Independent top hits from GWASs on `r length(unique(metab_qtls$phenotype))` metabolites in whole blood are stored in the `metab_qtls` data object. Use `?metab_qtls` to get more information.
+Independent top hits from GWASs on `r length(unique(MRInstruments::metab_qtls$phenotype))` metabolites in whole blood are stored in the `metab_qtls` data object. Use `?metab_qtls` to get more information.
 
 ```{r}
 data(metab_qtls)
@@ -217,7 +217,7 @@ ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype == "Ala"))
 
 ### Proteins
 
-Independent top hits from GWASs on `r length(unique(proteomic_qtls$analyte))` protein levels in whole blood are stored in the `proteomic_qtls` data object. Use `?proteomic_qtls` to get more information.
+Independent top hits from GWASs on `r length(unique(MRInstruments::proteomic_qtls$analyte))` protein levels in whole blood are stored in the `proteomic_qtls` data object. Use `?proteomic_qtls` to get more information.
 
 ```{r}
 data(proteomic_qtls)
@@ -233,7 +233,7 @@ apoh_exp_dat <-
 
 ### Gene expression levels
 
-Independent top hits from GWASs on `r length(unique(gtex_eqtl$gene_name))` gene identifiers and in `r length(unique(gtex_eqtl$tissue))` tissues are available from the GTEX study in `gtex_eqtl`. Use `?gtex_eqtl` to get more information.
+Independent top hits from GWASs on `r length(unique(MRInstruments::gtex_eqtl$gene_name))` gene identifiers and in `r length(unique(MRInstruments::gtex_eqtl$tissue))` tissues are available from the GTEX study in `gtex_eqtl`. Use `?gtex_eqtl` to get more information.
 
 ```{r}
 data(gtex_eqtl)
@@ -252,7 +252,7 @@ irak1bp1_exp_dat <-
 
 ### DNA methylation levels
 
-Independent top hits from GWASs on `r length(unique(aries_mqtl$gene_name))` DNA methylation levels in whole blood across `r length(unique(aries_mqtl$timepoint))` time points are available from the ARIES study in `aries_mqtl`. Use `?aries_mqtl` to get more information.
+Independent top hits from GWASs on `r length(unique(MRInstruments::aries_mqtl$gene_name))` DNA methylation levels in whole blood across `r length(unique(MRInstruments::aries_mqtl$timepoint))` time points are available from the ARIES study in `aries_mqtl`. Use `?aries_mqtl` to get more information.
 
 ```{r}
 data(aries_mqtl)
