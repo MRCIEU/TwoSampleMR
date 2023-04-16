@@ -39,7 +39,7 @@ ao <- available_outcomes()
 head(ao)
 ```
 
-For information about authentication see [https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication](https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication). 
+For information about authentication see <https://mrcieu.github.io/ieugwasr/>. 
 
 The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
 
