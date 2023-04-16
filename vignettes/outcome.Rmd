@@ -75,7 +75,7 @@ chd_out_dat <- extract_outcome_data(
 
 The `extract_outcome_data()` function is flexible. The `snps` argument only requires an array of rsIDs, and the `outcomes` argument can be a vector of outcomes, e.g.
 ```{r eval=FALSE}
-chd_out_dat  <- extract_outcome_data(c("rs234", "rs17097147"), c('ieu-a-2', 'ieu-a-7'))
+chd_out_dat <- extract_outcome_data(c("rs234", "rs17097147"), c('ieu-a-2', 'ieu-a-7'))
 ```
 will extract the two SNPs from each of the outcomes `ieu-a-2` and `ieu-a-7`.
 
