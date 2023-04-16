@@ -174,7 +174,7 @@ See `?ggplot2::ggsave` for more info.
 
 Use the `mr_forest_plot()` function to compare the MR estimates using the different MR methods against the single SNP tests.
 
-```{r fig.alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs.", warning=FALSE}
+```{r fig.alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs.", warning=FALSE, fig.height=10}
 res_single <- mr_singlesnp(dat)
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
@@ -184,7 +184,7 @@ Here, the plot shows the causal effect as estimated using each of the SNPs on th
 
 To get plots that use different methods, specify them in the `mr_singlesnp()` function:
 
-```{r fig.alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs.", warning=FALSE}
+```{r fig.alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs.", warning=FALSE, fig.height=10}
 res_single <- mr_singlesnp(dat, all_method = c("mr_ivw", "mr_two_sample_ml"))
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
@@ -194,7 +194,7 @@ p2[[1]]
 
 Use the `mr_leaveoneout_plot()` function to visualise the leave-one-out analysis:
 
-```{r fig.alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted.", warning=FALSE}
+```{r fig.alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted.", warning=FALSE, fig.height=10}
 res_loo <- mr_leaveoneout(dat)
 p3 <- mr_leaveoneout_plot(res_loo)
 p3[[1]]
