@@ -122,10 +122,10 @@ randomisation. To do this, simply run:</p>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
 <span><span class="co">#&gt;           se         pval</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2 0.07339068 1.340382e-07</span></span>
+<span><span class="co">#&gt; 2 0.07692075 4.873269e-07</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4 0.15654736 3.282661e-02</span></span>
-<span><span class="co">#&gt; 5 0.10096486 2.395792e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.14819275 2.440023e-02</span></span>
+<span><span class="co">#&gt; 5 0.09693351 1.374722e-04</span></span></code></pre></div>
 <p>This returns a data frame of estimates of the causal effect of the
 exposure on the outcome for a range of different MR methods.</p>
 <p>If there were multiple exposures against multiple outcomes in
@@ -1068,10 +1068,10 @@ outcome name using the split_outcome function:</p>
 <span><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
 <span><span class="co">#&gt;                      method nsnp         b         se         pval</span></span>
 <span><span class="co">#&gt; 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07193763 7.458915e-08</span></span>
+<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07389832 1.631961e-07</span></span>
 <span><span class="co">#&gt; 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.16057162 3.732468e-02</span></span>
-<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.10179672 2.667985e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15343447 2.953931e-02</span></span>
+<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.10642690 4.668831e-04</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="split-exposure-names">Split exposure names<a class="anchor" aria-label="anchor" href="#split-exposure-names"></a>
@@ -1102,10 +1102,10 @@ confidence intervals using:</p>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
 <span><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653</span></span>
-<span><span class="co">#&gt; 2 0.07193763 7.458915e-08 0.24600873 0.5280042 1.472566 1.278911 1.695545</span></span>
+<span><span class="co">#&gt; 2 0.07389832 1.631961e-07 0.24216577 0.5318472 1.472566 1.274005 1.702073</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328</span></span>
-<span><span class="co">#&gt; 4 0.16057162 3.732468e-02 0.02543506 0.6548758 1.405166 1.025761 1.924903</span></span>
-<span><span class="co">#&gt; 5 0.10179672 2.667985e-04 0.18930330 0.5883465 1.475246 1.208407 1.801008</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.15343447 2.953931e-02 0.03942386 0.6408870 1.405166 1.040211 1.898164</span></span>
+<span><span class="co">#&gt; 5 0.10642690 4.668831e-04 0.18022815 0.5974216 1.475246 1.197491 1.817427</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="subset-on-method">Subset on method<a class="anchor" aria-label="anchor" href="#subset-on-method"></a>

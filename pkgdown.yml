@@ -8,5 +8,8 @@ articles:
   introduction: introduction.html
   outcome: outcome.html
   perform_mr: perform_mr.html
-last_built: 2023-04-17T22:32Z
+last_built: 2023-04-17T22:57Z
+urls:
+  reference: https://mrcieu.github.io/TwoSampleMR/reference
+  article: https://mrcieu.github.io/TwoSampleMR/articles
 
