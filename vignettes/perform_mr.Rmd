@@ -139,7 +139,7 @@ p1 <- mr_scatter_plot(res, dat)
 
 A scatter plot is created for each exposure-outcome test, and stored in `p1` as a list of plots. For example, to plot the first scatter plot:
 
-```{r fig.alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted, MR-Egger, Simple mode, Weighted median, and Weighted mode."}
+```{r fig.alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted, MR-Egger, Simple mode, Weighted median, and Weighted mode.", fig.asp=1.15}
 p1[[1]]
 ```
 
@@ -206,7 +206,7 @@ Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)`
 
 Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows:
 
-```{r fig.alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs."}
+```{r fig.alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs.", fig.asp=1.15}
 res_single <- mr_singlesnp(dat)
 p4 <- mr_funnel_plot(res_single)
 p4[[1]]
