@@ -17,6 +17,7 @@ Changes:
 * Allow chr and pos to be read in from local summary data files
 * When reading in local data without p-values, editing the inferred p-value method to be two-sided
 * All images in the vignettes (and hence also in the rendered pkgdown website) now have accompanying alt text descriptions
+* The accompanying website for the package now uses Bootstrap 5, which means a search facility is enabled
 
 TwoSampleMR v0.5.6 (Release date: 2021-03-25)
 ==============
