@@ -1,6 +1,7 @@
 template:
   params:
     bootswatch: united
+  bootstrap: 5
 
 navbar:
   left:
