@@ -1,4 +1,11 @@
 /* pkgdown/extra.css */
+
+/* Bootstrap 3 used font-size of 14px */
+/* This sets font-size to 14px as 1rem is assumed to be 16px */
+html {
+  font-size: 0.875rem;
+}
+
 .row > main {
   max-width: 75%;
 }
