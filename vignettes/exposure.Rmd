@@ -12,18 +12,16 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  cache = TRUE
 )
 ```
 
-```{r echo=FALSE}
-knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
-suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
-suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
-suppressWarnings(suppressPackageStartupMessages(library(knitr)))
+```{r message=FALSE}
+library(TwoSampleMR)
 ```
 
 ## Introduction
@@ -155,10 +153,10 @@ If the data already exists as a data frame in R then it can be converted into th
 
 ```{r}
 random_df <- data.frame(
-	SNP = c("rs1", "rs2"),
-	beta = c(1, 2),
-	se = c(1, 2),
-	effect_allele = c("A", "T")
+  SNP = c("rs1", "rs2"),
+  beta = c(1, 2),
+  se = c(1, 2),
+  effect_allele = c("A", "T")
 )
 random_df
 ```
@@ -166,7 +164,7 @@ random_df
 This can be formatted like so:
 
 ```{r}
-random_exp_dat <- format_data(random_df, type="exposure")
+random_exp_dat <- format_data(random_df, type = "exposure")
 random_exp_dat
 ```
 
@@ -197,13 +195,14 @@ For example, to obtain instruments for body mass index using the Speliotes et al
 ```{r eval=FALSE}
 bmi_gwas <-
   subset(gwas_catalog,
-         grepl("Speliotes", Author) & Phenotype == "Body mass index")
+         grepl("Speliotes", Author) &
+           Phenotype == "Body mass index")
 bmi_exp_dat <- format_data(bmi_gwas)
 ```
 
 ### Metabolites
 
-Independent top hits from GWASs on `r length(unique(metab_qtls$phenotype))` metabolites in whole blood are stored in the `metab_qtls` data object. Use `?metab_qtls` to get more information.
+Independent top hits from GWASs on `r length(unique(MRInstruments::metab_qtls$phenotype))` metabolites in whole blood are stored in the `metab_qtls` data object. Use `?metab_qtls` to get more information.
 
 ```{r}
 data(metab_qtls)
@@ -218,7 +217,7 @@ ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype == "Ala"))
 
 ### Proteins
 
-Independent top hits from GWASs on `r length(unique(proteomic_qtls$analyte))` protein levels in whole blood are stored in the `proteomic_qtls` data object. Use `?proteomic_qtls` to get more information.
+Independent top hits from GWASs on `r length(unique(MRInstruments::proteomic_qtls$analyte))` protein levels in whole blood are stored in the `proteomic_qtls` data object. Use `?proteomic_qtls` to get more information.
 
 ```{r}
 data(proteomic_qtls)
@@ -234,7 +233,7 @@ apoh_exp_dat <-
 
 ### Gene expression levels
 
-Independent top hits from GWASs on `r length(unique(gtex_eqtl$gene_name))` gene identifiers and in `r length(unique(gtex_eqtl$tissue))` tissues are available from the GTEX study in `gtex_eqtl`. Use `?gtex_eqtl` to get more information.
+Independent top hits from GWASs on `r length(unique(MRInstruments::gtex_eqtl$gene_name))` gene identifiers and in `r length(unique(MRInstruments::gtex_eqtl$tissue))` tissues are available from the GTEX study in `gtex_eqtl`. Use `?gtex_eqtl` to get more information.
 
 ```{r}
 data(gtex_eqtl)
@@ -253,7 +252,7 @@ irak1bp1_exp_dat <-
 
 ### DNA methylation levels
 
-Independent top hits from GWASs on `r length(unique(aries_mqtl$gene_name))` DNA methylation levels in whole blood across `r length(unique(aries_mqtl$timepoint))` time points are available from the ARIES study in `aries_mqtl`. Use `?aries_mqtl` to get more information.
+Independent top hits from GWASs on `r length(unique(MRInstruments::aries_mqtl$gene_name))` DNA methylation levels in whole blood across `r length(unique(MRInstruments::aries_mqtl$timepoint))` time points are available from the ARIES study in `aries_mqtl`. Use `?aries_mqtl` to get more information.
 
 ```{r}
 data(aries_mqtl)
@@ -287,7 +286,7 @@ ao <- available_outcomes()
 head(ao)
 ```
 
-For information about authentication see [https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication](https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication). 
+For information about authentication see <https://mrcieu.github.io/ieugwasr/>. 
 
 The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
 
@@ -309,7 +308,6 @@ This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can
 - `kb` = The distance in which to search for LD R-square values
 
 By changing changing the `p1` parameter it is possible to obtain SNP effects for constructing polygenic risk scores.
-
 
 ## Clumping
 

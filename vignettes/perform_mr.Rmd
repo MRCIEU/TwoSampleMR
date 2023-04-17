@@ -12,19 +12,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  cache = TRUE,
+  fig.align = 'center'
 )
 ```
 
-```{r echo=FALSE}
-knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
-suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
-suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
-suppressWarnings(suppressPackageStartupMessages(library(knitr)))
-suppressWarnings(suppressPackageStartupMessages(library(ggplot2)))
+```{r message=FALSE}
+library(TwoSampleMR)
+library(ggplot2)
 ```
 
 ## Introduction
@@ -141,7 +140,7 @@ p1 <- mr_scatter_plot(res, dat)
 
 A scatter plot is created for each exposure-outcome test, and stored in `p1` as a list of plots. For example, to plot the first scatter plot:
 
-```{r fig.alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted, MR-Egger, Simple mode, Weighted median, and Weighted mode."}
+```{r fig.alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted, MR-Egger, Simple mode, Weighted median, and Weighted mode.", fig.asp=1.15}
 p1[[1]]
 ```
 
@@ -176,7 +175,7 @@ See `?ggplot2::ggsave` for more info.
 
 Use the `mr_forest_plot()` function to compare the MR estimates using the different MR methods against the single SNP tests.
 
-```{r fig.alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs."}
+```{r fig.alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs.", warning=FALSE, fig.height=10}
 res_single <- mr_singlesnp(dat)
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
@@ -186,7 +185,7 @@ Here, the plot shows the causal effect as estimated using each of the SNPs on th
 
 To get plots that use different methods, specify them in the `mr_singlesnp()` function:
 
-```{r fig.alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs."}
+```{r fig.alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs.", warning=FALSE, fig.height=10}
 res_single <- mr_singlesnp(dat, all_method = c("mr_ivw", "mr_two_sample_ml"))
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
@@ -196,20 +195,19 @@ p2[[1]]
 
 Use the `mr_leaveoneout_plot()` function to visualise the leave-one-out analysis:
 
-```{r fig.alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted."}
+```{r fig.alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted.", warning=FALSE, fig.height=10}
 res_loo <- mr_leaveoneout(dat)
 p3 <- mr_leaveoneout_plot(res_loo)
 p3[[1]]
 ```
 
-Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)` to use Egger regression.
-
+Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)` to use MR-Egger regression.
 
 ### Funnel plot
 
 Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows:
 
-```{r fig.alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs."}
+```{r fig.alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs.", fig.asp=1.15}
 res_single <- mr_singlesnp(dat)
 p4 <- mr_funnel_plot(res_single)
 p4[[1]]
@@ -224,13 +222,13 @@ A 1-to-many MR analysis interrogates the effect of a single exposure on multiple
 exp_dat <- extract_instruments(outcomes = c(2, 100, 1032, 104, 1, 72, 999))
 table(exp_dat$exposure)
 chd_out_dat <- extract_outcome_data(
-	snps = exp_dat$SNP,
-	outcomes = 7
+  snps = exp_dat$SNP,
+  outcomes = 7
 )
 
 dat2 <- harmonise_data(
-	exposure_dat = exp_dat, 
-	outcome_dat = chd_out_dat
+  exposure_dat = exp_dat, 
+  outcome_dat = chd_out_dat
 )
 res <- mr(dat2)
 ```
@@ -242,13 +240,13 @@ res <- mr(dat2)
 In this example we wish to plot results from an MR analysis of the effect of multiple exposures on coronary heart disease, with results sorted by decreasing effect size (largest effect at the top of the plot) and with one MR method for each unique exposure-outcome combination. We will also make the size of each point estimate proportional to its inverse variance. This is a useful way to draw attention towards the most reliable results and away from results with very wide confidence intervals. To specify the size of the point estimate, set the weight argument to the name of the column in the data with the weight information.
 
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
-res <- subset_on_method(res) #default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP). 
-res <- sort_1_to_many(res, b = "b", sort_action = 4) #this sorts results by decreasing effect size (largest effect at top of the plot)
+res <- subset_on_method(res) # default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP). 
+res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by decreasing effect size (largest effect at top of the plot)
 res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
 res$weight <- 1/res$se
 
-min(exp(res$b - 1.96*res$se)) #identify value for 'lo' in forest_plot_1_to_many
-max(exp(res$b + 1.96*res$se)) #identify value for 'up' in forest_plot_1_to_many
+min(exp(res$b - 1.96*res$se)) # identify value for 'lo' in forest_plot_1_to_many
+max(exp(res$b + 1.96*res$se)) # identify value for 'up' in forest_plot_1_to_many
 
 forest_plot_1_to_many(
   res,
@@ -353,7 +351,6 @@ forest_plot_1_to_many(
 )
 ```
 
-
 #### Example 3. Stratify results on a grouping variable
 
 In this next example we plot the same results as above but with results stratified by a grouping variable. We also select one MR method for each unique exposure-outcome combination and sort the results by decreasing effect size within each group (i.e. largest effect at the top). 
@@ -393,26 +390,25 @@ In the above example we made up an arbitrary grouping variable called "subcatego
 The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:
 
 ```{r cache=TRUE, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
-
-exp_dat <- extract_instruments(outcomes = 2)  #extract instruments for BMI
+exp_dat <- extract_instruments(outcomes = 2) # extract instruments for BMI
 ao <- available_outcomes()
-ao <- ao[ao$category == "Disease", ] #identify diseases
+ao <- ao[ao$category == "Disease", ] # identify diseases
 ao <- ao[which(ao$ncase > 100), ]
 
 dis_dat <- extract_outcome_data(
-	snps = exp_dat$SNP,
-	outcomes = ao$id
+  snps = exp_dat$SNP,
+  outcomes = ao$id
 )
 
 dat3 <- harmonise_data(
-	exposure_dat = exp_dat, 
-	outcome_dat = dis_dat
+  exposure_dat = exp_dat, 
+  outcome_dat = dis_dat
 )
 
 res <- mr(dat3, method_list = c("mr_wald_ratio", "mr_ivw"))
 res <- split_outcome(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
 
-res <- sort_1_to_many(res, b = "b", sort_action = 4) #this sorts results by decreasing effect size (largest effect at top of the plot)
+res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by decreasing effect size (largest effect at top of the plot)
 ```
 
 MR results for 103 diseases can be difficult to visualise in a single-column forest plot. In my own workflow I would split these across two plots and then join them together in a separate program, such as Powerpoint, and do further refinements there. I typically save my plots using the `pdf()` graphics device. In this particular example the disease labels probably require some cleaning up (some are a bit long) or alternatively the column text size could be made smaller. It is also possible to change the colour of the plot and the shape of the point estimates. Type `?forest_plot_1_to_many` for further details.
@@ -503,13 +499,13 @@ This is an implementation of the method described here:
 
 [Hemani G, Tilling K, Davey Smith G.<br/>
 **Orienting the causal relationship between imprecisely measured traits using GWAS summary data.**<br/>
-PLoS Genetics. 2017. 13(11).](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
+PLoS Genetics. 2017. 13(11): e1007081.](http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
 
 In MR it is assumed that the instruments influence the exposure first and then the outcome through the exposure. But sometimes this is difficult to evaluate, for example is a cis-acting SNP influencing gene expression levels or DNA methylation levels first? The causal direction between the hypothesised exposure and outcomes can be tested using the Steiger test [@hemani-plosgen-2017]. For example:
 
 ```{r}
 out <- directionality_test(dat)
-kable(out)
+knitr::kable(out)
 ```
 
 It calculates the variance explained in the exposure and the outcome by the instrumenting SNPs, and tests if the variance in the outcome is less than the exposure.
@@ -523,13 +519,13 @@ These tests are obtained using:
 
 ```{r eval=FALSE, warnings=FALSE}
 mr_steiger(
-	p_exp = dat$pval.exposure, 
-	p_out = dat$pval.outcome, 
-	n_exp = dat$samplesize.exposure, 
-	n_out = dat$samplesize.outcome, 
-	r_xxo = 1, 
-	r_yyo = 1,
-	r_exp=0
+  p_exp = dat$pval.exposure, 
+  p_out = dat$pval.outcome, 
+  n_exp = dat$samplesize.exposure, 
+  n_out = dat$samplesize.outcome, 
+  r_xxo = 1, 
+  r_yyo = 1,
+  r_exp=0
 )
 ```
 
@@ -538,7 +534,6 @@ mr_steiger(
 ## Multivariable MR
 
 When SNPs instrument multiple potential exposures, for example in the case of different lipid fractions, one method for overcoming this problem is to estimate the influence of each lipid conditioning on the effects of the SNPs on the other lipids. Multivariable MR can be performed using the R package as follows. Practically speaking, this is the process that needs to occur from the perspective of generating the data in the correct format:
-
 
 1. Get instruments for each exposure
 2. Combine these into a set of all instruments
@@ -617,8 +612,8 @@ Here `ld_matrix()` returns the LD correlation values (not R^2^) for each pair of
 
 ```{r eval=FALSE}
 dat <- harmonise_data(
-	exposure_dat = bmi_exp_dat, 
-	outcome_dat = chd_out_dat
+  exposure_dat = bmi_exp_dat, 
+  outcome_dat = chd_out_dat
 )
 ```
 

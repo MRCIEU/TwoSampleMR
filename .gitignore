@@ -17,3 +17,4 @@ vignettes/*_files/
 vignettes/*.R
 vignettes/*.html
 docs
+tests/testthat/*.pdf

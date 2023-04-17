@@ -15,15 +15,9 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.align = 'center'
 )
-```
-
-```{r echo=FALSE}
-knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
-suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
-suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
-suppressWarnings(suppressPackageStartupMessages(library(knitr)))
 ```
 
 ## Background
@@ -64,7 +58,9 @@ The workflow for performing MR is as follows:
 
 A diagrammatic overview is shown here:
 
-<img alt="A diagrammatic overview of performing a two-sample Mendelian randomization analysis" src="https://drive.google.com/uc?id=1yHTkn-kVqZzsQfQdXBHZBGdFWj8gSsPQ" width="800"/>
+```{r echo=FALSE, fig.alt="A diagrammatic overview of performing a two-sample Mendelian randomization analysis", out.width="800px"}
+knitr::include_graphics("img/twosamplemr_schematic_long-01.png")
+```
 
 A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:
 
@@ -95,7 +91,5 @@ Each step is documented on other pages in the documentation.
 
 1. By default you will not be asked to authenticate and will only have access to public data
 2. If you do need to authenticate in order to access private datasets there is no longer a single file called `mrbase.oauth`, rather, there is a directory called `ieugwasr_oauth`.
-
-Detailed information is given here: [https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication](https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication)
 
 ## References

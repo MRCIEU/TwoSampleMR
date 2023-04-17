@@ -11,9 +11,8 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-figure$
+^img$
 cache$
 ^index\.md$
 ^README\.Rmd$
 ^CITATION\.cff$
-^\.github$

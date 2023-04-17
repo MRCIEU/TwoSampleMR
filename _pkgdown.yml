@@ -1,11 +1,26 @@
 template:
   params:
     bootswatch: united
+  bootstrap: 5
 
 navbar:
   left:
     - text: "Guide"
-      href: articles/index.html
+      menu:
+        - text: List of articles
+          href: articles/index.html
+        - text: Introduction
+          href: articles/introduction.html
+        - text: Exposure data
+          href: articles/exposure.html
+        - text: Outcome data
+          href: articles/outcome.html
+        - text: Harmonise data
+          href: articles/harmonise.html
+        - text: Perform MR
+          href: articles/perform_mr.html
+        - text: Major changes to the IEU GWAS resource for 2020
+          href: articles/gwas2020.html
     - text: "Functions"
       href: reference/index.html
     - text: "Changelog"

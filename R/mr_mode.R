@@ -297,5 +297,3 @@ mr_mode_broken <- function(dat, parameters=default_parameters(), mode_method="al
 		return(res)
 	}
 }
-
-

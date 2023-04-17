@@ -12,22 +12,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  cache = TRUE
 )
 ```
 
-```{r echo=FALSE}
-knitr::opts_chunk$set(eval=TRUE, cache=TRUE)
-suppressWarnings(suppressPackageStartupMessages(library(TwoSampleMR)))
-suppressWarnings(suppressPackageStartupMessages(library(MRInstruments)))
-suppressWarnings(suppressPackageStartupMessages(library(knitr)))
+```{r message=FALSE}
+library(TwoSampleMR)
 ```
 
 Once instruments for the exposure trait have been specified, those variants need to be extracted from the outcome trait. 
-
 
 ## Available studies in IEU GWAS database
 
@@ -42,14 +39,13 @@ ao <- available_outcomes()
 head(ao)
 ```
 
-For information about authentication see [https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication](https://github.com/MRCIEU/ieugwasr/blob/master/README.md#authentication). 
+For information about authentication see <https://mrcieu.github.io/ieugwasr/>. 
 
 The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
 
 ```{r}
 head(subset(ao, select = c(trait, id)))
 ```
-
 
 ## Extracting particular SNPs from particular studies
 
@@ -79,10 +75,9 @@ chd_out_dat <- extract_outcome_data(
 
 The `extract_outcome_data()` function is flexible. The `snps` argument only requires an array of rsIDs, and the `outcomes` argument can be a vector of outcomes, e.g.
 ```{r eval=FALSE}
-chd_out_dat  <- extract_outcome_data(c("rs234", "rs17097147"), c('ieu-a-2', 'ieu-a-7'))
+chd_out_dat <- extract_outcome_data(c("rs234", "rs17097147"), c('ieu-a-2', 'ieu-a-7'))
 ```
 will extract the two SNPs from each of the outcomes `ieu-a-2` and `ieu-a-7`.
-
 
 ## LD proxies
 
@@ -94,7 +89,6 @@ The parameters for handling LD proxies are as follows:
 - `rsq` = numeric value of minimum rsq to find a proxy. Default is 0.8, minimum is 0.6
 - `palindromes` = Allow palindromic SNPs? Default is 1 (yes)
 - `maf_threshold` = If palindromes allowed then what is the maximum minor allele frequency of palindromes allowed? Default is 0.3.
-
 
 ## Using local GWAS summary data
 
@@ -134,7 +128,6 @@ outcome_dat <- read_outcome_data(
 
 This returns an outcome data frame with only the SNPs that were requested (if those SNPs were present in the "gwas_summary.csv" file).
 
-
 ## Outcome data format
 
 The `extract_outcome_data` function returns a table of SNP effects for the requested SNPs on the requested outcomes. The format of the data is similar to the exposure data format, except the main columns are as follows:
@@ -165,7 +158,6 @@ The `extract_outcome_data` function returns a table of SNP effects for the reque
 - `proxy_a2.outcome`
 - `mr_keep.outcome`
 - `data_source.outcome`
-
 
 ## More advanced use of local data
 
