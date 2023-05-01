@@ -92,4 +92,6 @@ Each step is documented on other pages in the documentation.
 1. By default you will not be asked to authenticate and will only have access to public data
 2. If you do need to authenticate in order to access private datasets there is no longer a single file called `mrbase.oauth`, rather, there is a directory called `ieugwasr_oauth`.
 
+Detailed information is given here: <https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication>
+
 ## References
