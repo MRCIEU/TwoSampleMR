@@ -1,4 +1,3 @@
-#' @importFrom stats influence.measures ks.test median pnorm residuals shapiro.test var
 system_metrics <- function(dat)
 {
 	# Number of SNPs
@@ -14,8 +13,8 @@ system_metrics <- function(dat)
 	Fstat <- dat$beta.exposure^2 / dat$se.exposure^2
 	Fstat[is.infinite(Fstat)] <- 300
 	metrics$meanF <- mean(Fstat, na.rm=TRUE)
-	metrics$varF <- var(Fstat, na.rm=TRUE)
-	metrics$medianF <- median(Fstat, na.rm=TRUE)
+	metrics$varF <- stats::var(Fstat, na.rm=TRUE)
+	metrics$medianF <- stats::median(Fstat, na.rm=TRUE)
 
 	# IF more than 1 SNP
 
@@ -46,8 +45,8 @@ system_metrics <- function(dat)
 		dfbeta_thresh <- 2 * nrow(dat)^-0.5
 		cooksthresh1 <- 4 / (nrow(dat) - 2)
 		cooksthresh2 <- 4 / (nrow(dat) - 3)
-		inf1 <- influence.measures(ruck$lmod_ivw)$infmat
-		inf2 <- influence.measures(ruck$lmod_egger)$infmat
+		inf1 <- stats::influence.measures(ruck$lmod_ivw)$infmat
+		inf2 <- stats::influence.measures(ruck$lmod_egger)$infmat
 		metrics$dfb1_ivw <- sum(inf1[,1] > dfbeta_thresh) / nrow(dat)
 		metrics$dfb2_ivw <- sum(inf1[,2] > dfbeta_thresh) / nrow(dat)
 		metrics$dfb3_ivw <- sum(inf1[,3] > dfbeta_thresh) / nrow(dat)
@@ -68,10 +67,10 @@ system_metrics <- function(dat)
 		metrics$homosc_egg <- car::ncvTest(ruck$lmod_egger)$ChiSquare
 
 		# Normality of residuals
-		metrics$shap_ivw <- shapiro.test(residuals(ruck$lmod_ivw))$statistic
-		metrics$shap_egger <- shapiro.test(residuals(ruck$lmod_egger))$statistic
-		metrics$ks_ivw <- ks.test(residuals(ruck$lmod_ivw), "pnorm")$statistic
-		metrics$ks_egger <- ks.test(residuals(ruck$lmod_egger), "pnorm")$statistic
+		metrics$shap_ivw <- stats::shapiro.test(stats::residuals(ruck$lmod_ivw))$statistic
+		metrics$shap_egger <- stats::shapiro.test(stats::residuals(ruck$lmod_egger))$statistic
+		metrics$ks_ivw <- stats::ks.test(stats::residuals(ruck$lmod_ivw), "pnorm")$statistic
+		metrics$ks_egger <- stats::ks.test(stats::residuals(ruck$lmod_egger), "pnorm")$statistic
 
 	}
 	return(metrics)
