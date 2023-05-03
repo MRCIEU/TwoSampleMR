@@ -598,7 +598,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 	}
 	cat("\n")
 
-	return(list(b = mean(res[,2], na.rm=TRUE), se = stats::sd(res[,2], na.rm=TRUE), pval = sum(sign(mean(res[,2],na.rm=TRUE)) * res[,2] < 0)/nboot, nsnp = length(b_exp), b_i = mean(res[,1], na.rm=TRUE), se_i = sd(res[,1], na.rm=TRUE), pval_i = sum(sign(mean(res[,1],na.rm=TRUE)) * res[,1] < 0)/nboot))
+	return(list(b = mean(res[,2], na.rm=TRUE), se = stats::sd(res[,2], na.rm=TRUE), pval = sum(sign(mean(res[,2],na.rm=TRUE)) * res[,2] < 0)/nboot, nsnp = length(b_exp), b_i = mean(res[,1], na.rm=TRUE), se_i = stats::sd(res[,1], na.rm=TRUE), pval_i = sum(sign(mean(res[,1],na.rm=TRUE)) * res[,1] < 0)/nboot))
 }
 
 
