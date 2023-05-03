@@ -427,12 +427,12 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 		rucker_median <- data.frame(
 			Method = "Rucker median (JK)",
 			nsnp = nsnp,
-			Estimate = median(modsel$Estimate),
+			Estimate = stats::median(modsel$Estimate),
 			SE = stats::mad(modsel$Estimate),
-			CI_low = quantile(modsel$Estimate, 0.025),
-			CI_upp = quantile(modsel$Estimate, 0.975)
+			CI_low = stats::quantile(modsel$Estimate, 0.025),
+			CI_upp = stats::quantile(modsel$Estimate, 0.975)
 		)
-		rucker_median$P <- 2 * pt(abs(rucker_median$Estimate/rucker_median$SE), nsnp-1, lower.tail=FALSE)
+		rucker_median$P <- 2 * stats::pt(abs(rucker_median$Estimate/rucker_median$SE), nsnp-1, lower.tail=FALSE)
 
 		rucker_mean <- data.frame(
 			Method = "Rucker mean (JK)",
