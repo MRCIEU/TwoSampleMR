@@ -269,9 +269,6 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #' @export
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
-
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
 	nboot <- parameters$nboot
