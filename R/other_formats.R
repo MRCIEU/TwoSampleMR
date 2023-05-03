@@ -4,7 +4,7 @@
 #' be used with the same data used in the TwoSampleMR package. This
 #' function converts from the TwoSampleMR format to the MRInput class.
 #'
-#' @param dat Output from the [`harmonise_data`] function.
+#' @param dat Output from the [harmonise_data()] function.
 #' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.
 #' @param pop If get_correlations is TRUE then use the following 
 #'
@@ -66,7 +66,7 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE, pop="EUR")
 
 #' Harmonise LD matrix against summary data
 #'
-#' LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be exposure dataset or harmonised dartaset
+#' LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be exposure dataset or harmonised dartaset.
 #'
 #' @param x Exposure dataset or harmonised dataset
 #' @param ld Output from ld_matrix
@@ -132,7 +132,7 @@ harmonise_ld_dat <- function(x, ld)
 #'
 #' See <https://github.com/rondolab/MR-PRESSO> for more details.
 #'
-#' @param dat Output from [`harmonise_data`].
+#' @param dat Output from [harmonise_data()].
 #' @param NbDistribution Number of bootstrap replications. The default is `1000`.
 #' @param SignifThreshold Outlier significance threshold. The default is `0.05`.
 #'
@@ -160,7 +160,7 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 #'
 #' Creates a list of RadialMR format datasets for each exposure - outcome pair.
 #'
-#' @param dat Output from [`harmonise_data`].
+#' @param dat Output from [harmonise_data()].
 #'
 #' @export
 #' @return List of RadialMR format datasets
@@ -194,7 +194,6 @@ dat_to_RadialMR <- function(dat)
 #' \item{se}{standard error}
 #' \item{pval}{p-value}
 #' }
-#' @importFrom stats pchisq pnorm
 mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
   if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) &
@@ -204,10 +203,10 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
 	out <- RadialMR::ivw_radial(d, alpha=0.05, weights=3)
 	b <- out$coef[1,1]
 	se <- out$coef[1,2]
-	pval <- 2 * pnorm(abs(b/se), lower.tail = FALSE)
+	pval <- 2 * stats::pnorm(abs(b/se), lower.tail = FALSE)
 	Q_df <- out$df
 	Q <- out$qstatistic
-	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
+	Q_pval <- stats::pchisq(Q, Q_df, lower.tail=FALSE)
 	return(list(b = b, se = se, pval = pval, nsnp = length(b_exp),
         Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
@@ -217,7 +216,7 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
 #'
 #' See <https://github.com/gqi/MRMix> for more details.
 #'
-#' @param dat Output from [`harmonise_data`]. Ensures that no eaf.exposure values are missing.
+#' @param dat Output from [harmonise_data()]. Ensures that no eaf.exposure values are missing.
 #'
 #' @export
 #' @return List of results, with one list item for every exposure/outcome pair in dat object
