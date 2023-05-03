@@ -181,7 +181,6 @@ dat_to_RadialMR <- function(dat)
 
 #' Radial IVW analysis
 #' 
-#' @md
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
 #' @param se_exp Standard errors of genetic effects on exposure.
