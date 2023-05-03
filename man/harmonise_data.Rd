@@ -7,9 +7,9 @@
 harmonise_data(exposure_dat, outcome_dat, action = 2)
 }
 \arguments{
-\item{exposure_dat}{Output from \code{read_exposure_data}.}
+\item{exposure_dat}{Output from \code{\link[=read_exposure_data]{read_exposure_data()}}.}
 
-\item{outcome_dat}{Output from \code{extract_outcome_data}.}
+\item{outcome_dat}{Output from \code{\link[=extract_outcome_data]{extract_outcome_data()}}.}
 
 \item{action}{Level of strictness in dealing with SNPs.
 \itemize{

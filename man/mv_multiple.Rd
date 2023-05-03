@@ -13,7 +13,7 @@ mv_multiple(
 )
 }
 \arguments{
-\item{mvdat}{Output from \code{\link{mv_harmonise_data}}.}
+\item{mvdat}{Output from \code{\link[=mv_harmonise_data]{mv_harmonise_data()}}.}
 
 \item{intercept}{Should the intercept by estimated (\code{TRUE}) or force line through the origin (\code{FALSE}, default).}
 
@@ -27,5 +27,6 @@ mv_multiple(
 List of results
 }
 \description{
-Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
+Performs modified multivariable MR analysis.
+For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 }
