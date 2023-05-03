@@ -269,7 +269,6 @@ default_parameters <- function()
 #' \item{pval}{p-value}
 #' \item{nsnp}{1}
 #' }
-#' @importFrom stats pnorm
 mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(length(b_exp) > 1)
@@ -279,7 +278,7 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- b_out / b_exp
 	se <- se_out / abs(b_exp)
 	# sqrt((segd^2/gp^2) + (gd^2/gp^4)*segp^2 - 2*(gd/gp^3)) #full delta method with cov set to 0
-	pval <- pnorm(abs(b) / se, lower.tail=FALSE) * 2
+	pval <- stats::pnorm(abs(b) / se, lower.tail=FALSE) * 2
 	return(list(b=b, se=se, pval=pval, nsnp=1))
 }
 
@@ -299,7 +298,6 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' \item{se}{standard error}
 #' \item{pval}{p-value}
 #' }
-#' @importFrom stats pnorm
 mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -308,7 +306,7 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 	}
 	b <- sum(b_exp*b_out / se_out^2) / sum(b_exp^2/se_out^2)
 	se <- sqrt(1 / sum(b_exp^2/se_out^2))
-	pval <- 2 * pnorm(abs(b) / se, lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b) / se, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -330,7 +328,6 @@ mr_meta_fixed_simple <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' \item{pval}{p-value}
 #' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' }
-#' @importFrom stats pchisq
 mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1)
@@ -343,7 +340,7 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.fixed
 	se <- res$seTE.fixed
 	pval <- res$pval.fixed
-	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
+	Q_pval <- stats::pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
@@ -365,7 +362,6 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' \item{pval}{p-value}
 #' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' }
-#' @importFrom stats pchisq
 mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -378,7 +374,7 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b <- res$TE.random
 	se <- res$seTE.random
 	pval <- res$pval.random
-	Q_pval <- pchisq(res$Q, res$df.Q, lower.tail=FALSE)
+	Q_pval <- stats::pchisq(res$Q, res$df.Q, lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = res$Q, Q_df = res$df.Q, Q_pval = Q_pval))
 }
 
@@ -400,7 +396,6 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' \item{pval}{p-value}
 #' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' }
-#' @importFrom stats optim pchisq
 mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
@@ -410,7 +405,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 	loglikelihood <- function(param) {
 		return(1/2*sum((b_exp-param[1:length(b_exp)])^2/se_exp^2)+1/2*sum((b_out-param[length(b_exp)+1]*param[1:length(b_exp)])^2/se_out^2))
 	}
-	opt <- try(optim(
+	opt <- try(stats::optim(
 		c(b_exp, sum(b_exp*b_out/se_out^2)/sum(b_exp^2/se_out^2)),
 		loglikelihood,
 		hessian=TRUE,
@@ -429,11 +424,11 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
 	}
 
-	pval <- 2 * pnorm(abs(b) / se, lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b) / se, lower.tail=FALSE)
 
 	Q <- 2 * opt$value
 	Q_df <- length(b_exp) - 1
-	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
+	Q_pval <- stats::pchisq(Q, Q_df, lower.tail=FALSE)
 
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
 }
@@ -461,14 +456,11 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 #' \item{mod}{Summary of regression}
 #' \item{dat}{Original data used for MR Egger regression}
 #' }
-#' @importFrom stats coefficients lm pchisq pt
 mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	stopifnot(length(b_exp) == length(b_out))
 	stopifnot(length(se_exp) == length(se_out))
 	stopifnot(length(b_exp) == length(se_out))
-
-	# print(b_exp)
 
 	nulllist <- list(
 			b = NA,
@@ -500,20 +492,20 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 	b_out = b_out*sign0(b_exp)
 	b_exp = abs(b_exp)
 	dat <- data.frame(b_out=b_out, b_exp=b_exp, se_exp=se_exp, se_out=se_out, flipped=to_flip)
-	mod <- lm(b_out ~ b_exp, weights=1/se_out^2)
+	mod <- stats::lm(b_out ~ b_exp, weights=1/se_out^2)
 	smod <- summary(mod)
-	if(nrow(coefficients(smod)) > 1)
+	if(nrow(stats::coefficients(smod)) > 1)
 	{
-		b <- coefficients(smod)[2,1]
-		se <- coefficients(smod)[2,2] / min(1,smod$sigma)
-		pval <- 2 * pt(abs(b / se), length(b_exp) - 2, lower.tail = FALSE)
-		b_i <- coefficients(smod)[1,1]
-		se_i <- coefficients(smod)[1,2] / min(1,smod$sigma)
-		pval_i <- 2 * pt(abs(b_i / se_i), length(b_exp) - 2, lower.tail = FALSE)
+		b <- stats::coefficients(smod)[2,1]
+		se <- stats::coefficients(smod)[2,2] / min(1,smod$sigma)
+		pval <- 2 * stats::pt(abs(b / se), length(b_exp) - 2, lower.tail = FALSE)
+		b_i <- stats::coefficients(smod)[1,1]
+		se_i <- stats::coefficients(smod)[1,2] / min(1,smod$sigma)
+		pval_i <- 2 * stats::pt(abs(b_i / se_i), length(b_exp) - 2, lower.tail = FALSE)
 
 		Q <- smod$sigma^2 * (length(b_exp) - 2)
 		Q_df <- length(b_exp) - 2
-		Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
+		Q_pval <- stats::pchisq(Q, Q_df, lower.tail=FALSE)
 	} else {
 		warning("Collinearities in MR Egger, try LD pruning the exposure variables.")
 		return(nulllist)
@@ -523,21 +515,20 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 
 
-#' @importFrom stats cov pnorm var
 linreg <- function(x, y, w=rep(x,1))
 {
 	xp <- w*x
 	yp <- w*y
 	t(xp) %*% yp / (t(xp)%*%xp)
 
-	bhat <- cov(x*w,y*w, use="pair") / var(x*w, na.rm=TRUE)
+	bhat <- stats::cov(x*w,y*w, use="pair") / stats::var(x*w, na.rm=TRUE)
 	ahat <- mean(y, na.rm=TRUE) - mean(x, na.rm=TRUE) * bhat
 	yhat <- ahat + bhat * x
 	se <- sqrt(sum((yp - yhat)^2) / (sum(!is.na(yhat)) - 2) / t(x)%*%x )
 
 	sum(w * (y-yhat)^2)
 	se <- sqrt(sum(w*(y-yhat)^2) /  (sum(!is.na(yhat)) - 2) / (sum(w*x^2)))
-	pval <- 2 * pnorm(abs(bhat / se), lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(bhat / se), lower.tail=FALSE)
 	return(list(ahat=ahat,bhat=bhat,se=se, pval=pval))
 }
 
@@ -562,7 +553,6 @@ linreg <- function(x, y, w=rep(x,1))
 #' \item{mod}{Summary of regression}
 #' \item{dat}{Original data used for MR Egger regression}
 #' }
-#' @importFrom stats rnorm sd
 mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, parameters)
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -588,8 +578,8 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 	{
 		# setTxtProgressBar(pb, i)
 		#sample from distributions of SNP betas
-		xs <- rnorm(length(b_exp),b_exp,se_exp)
-		ys <- rnorm(length(b_out),b_out,se_out)
+		xs <- stats::rnorm(length(b_exp),b_exp,se_exp)
+		ys <- stats::rnorm(length(b_out),b_out,se_out)
 
 		# Use absolute values for Egger reg
 		ys <- ys*sign(xs)
@@ -608,7 +598,7 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 	}
 	cat("\n")
 
-	return(list(b = mean(res[,2], na.rm=TRUE), se = sd(res[,2], na.rm=TRUE), pval = sum(sign(mean(res[,2],na.rm=TRUE)) * res[,2] < 0)/nboot, nsnp = length(b_exp), b_i = mean(res[,1], na.rm=TRUE), se_i = sd(res[,1], na.rm=TRUE), pval_i = sum(sign(mean(res[,1],na.rm=TRUE)) * res[,1] < 0)/nboot))
+	return(list(b = mean(res[,2], na.rm=TRUE), se = stats::sd(res[,2], na.rm=TRUE), pval = sum(sign(mean(res[,2],na.rm=TRUE)) * res[,2] < 0)/nboot, nsnp = length(b_exp), b_i = mean(res[,1], na.rm=TRUE), se_i = sd(res[,1], na.rm=TRUE), pval_i = sum(sign(mean(res[,1],na.rm=TRUE)) * res[,1] < 0)/nboot))
 }
 
 
@@ -629,7 +619,6 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-#' @importFrom stats pnorm
 mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -639,7 +628,7 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	b <- weighted_median(b_iv, 1 / VBj)
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, 1 / VBj, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, Q=NA, Q_df=NA, Q_pval=NA, nsnp=length(b_exp)))
 }
 
@@ -662,7 +651,6 @@ mr_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_
 #' \item{pval}{p-value}
 #' \item{nsnp}{The number of SNPs}
 #' }
-#' @importFrom stats pnorm
 mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -671,7 +659,7 @@ mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_pa
 	b_iv <- b_out / b_exp
 	b <- weighted_median(b_iv, rep(1/length(b_exp), length(b_exp)))
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, rep(1/length(b_exp), length(b_exp)), parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b=b, se=se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -727,7 +715,6 @@ weighted_median <- function(b_iv, weights)
 #'
 #' @export
 #' @return Empirical standard error
-#' @importFrom stats rnorm sd
 weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nboot)
 {
 	med <- rep(0, nboot)
@@ -737,7 +724,7 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 		betaIV.boot = b_out.boot/b_exp.boot
 		med[i] = weighted_median(betaIV.boot, weights)
 	}
-	return(sd(med))
+	return(stats::sd(med))
 }
 
 
@@ -760,7 +747,6 @@ weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nbo
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-#' @importFrom stats pchisq pnorm
 mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3)
@@ -770,11 +756,11 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 	VBj <- ((se_out)^2)/(b_exp)^2 + (b_out^2)*((se_exp^2))/(b_exp)^4
 	weights <- 1/VBj
 	bwm <- mr_weighted_median(b_exp, b_out, se_exp, se_out, parameters)
-	penalty <- pchisq(weights*(betaIV-bwm$b)^2, df=1, lower.tail=FALSE)
+	penalty <- stats::pchisq(weights*(betaIV-bwm$b)^2, df=1, lower.tail=FALSE)
 	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized weights
 	b <- weighted_median(betaIV, pen.weights) # penalized weighted median estimate
 	se <- weighted_median_bootstrap(b_exp, b_out, se_exp, se_out, pen.weights, parameters$nboot)
-	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b/se), lower.tail=FALSE)
 	return(list(b = b, se = se, pval=pval, nsnp=length(b_exp)))
 }
 
@@ -787,7 +773,6 @@ mr_penalised_weighted_median <- function(b_exp, b_out, se_exp, se_out, parameter
 #'
 #' @export
 #' @return data frame
-#' @importFrom stats qnorm
 mr_median <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
@@ -816,8 +801,8 @@ mr_median <- function(dat, parameters=default_parameters())
 		se = c(sm$se, wm$se, pm$se),
 		stringsAsFactors=FALSE
 	)
-	res$ci_low <- res$b - qnorm(1-parameters$alpha/2) * res$se
-	res$ci_upp <- res$b + qnorm(1-parameters$alpha/2) * res$se
+	res$ci_low <- res$b - stats::qnorm(1-parameters$alpha/2) * res$se
+	res$ci_upp <- res$b + stats::qnorm(1-parameters$alpha/2) * res$se
 	res$pval <- c(sm$pval, wm$pval, pm$pval)
 	return(res)
 }
@@ -843,19 +828,18 @@ mr_median <- function(dat, parameters=default_parameters())
 #' \item{pval}{p-value}
 #' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' }
-#' @importFrom stats lm pchisq pnorm
 mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
-	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
+	ivw.res <- summary(stats::lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error
-	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
+	Q_pval <- stats::pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -881,19 +865,18 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #' \item{pval}{p-value}
 #' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' }
-#' @importFrom stats lm pchisq pnorm
 mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
-	ivw.res <- summary(lm(b_out ~ -1 + b_exp))
+	ivw.res <- summary(stats::lm(b_out ~ -1 + b_exp))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/min(1,ivw.res$sigma) #sigma is the residual standard error
-	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
+	Q_pval <- stats::pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -918,19 +901,18 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #' \item{pval}{p-value}
 #' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' }
-#' @importFrom stats lm pchisq pnorm
 mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
-	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
+	ivw.res <- summary(stats::lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]
-	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
+	Q_pval <- stats::pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -953,19 +935,18 @@ mr_ivw_mre <- function(b_exp, b_out, se_exp, se_out, parameters=default_paramete
 #' \item{pval}{p-value}
 #' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' }
-#' @importFrom stats lm pchisq pnorm
 mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	if(sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2)
 	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
-	ivw.res <- summary(lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
+	ivw.res <- summary(stats::lm(b_out ~ -1 + b_exp, weights = 1/se_out^2))
 	b <- ivw.res$coef["b_exp","Estimate"]
 	se <- ivw.res$coef["b_exp","Std. Error"]/ivw.res$sigma
-	pval <- 2 * pnorm(abs(b/se), lower.tail=FALSE)
+	pval <- 2 * stats::pnorm(abs(b/se), lower.tail=FALSE)
 	Q_df <- length(b_exp) - 1
 	Q <- ivw.res$sigma^2 * Q_df
-	Q_pval <- pchisq(Q, Q_df, lower.tail=FALSE)
+	Q_pval <- stats::pchisq(Q, Q_df, lower.tail=FALSE)
 	# from formula phi =  Q/DF rearranged to to Q = phi*DF, where phi is sigma^2
 	# Q.ivw<-sum((1/(se_out/b_exp)^2)*(b_out/b_exp-ivw.reg.beta)^2)
 	return(list(b = b, se = se, pval = pval, nsnp=length(b_exp), Q = Q, Q_df = Q_df, Q_pval = Q_pval))
@@ -992,8 +973,6 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' }
 #'
 #' @export
-#' @importFrom stats pnorm
-#' @importFrom mr.raps mr.raps
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
     cpg <- requireNamespace("mr.raps", quietly = TRUE)
@@ -1013,7 +992,7 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
                          shrinkage = parameters$shrinkage))
     list(b = out$beta.hat,
          se = out$beta.se,
-         pval = pnorm(- abs(out$beta.hat / out$beta.se)) * 2,
+         pval = stats::pnorm(- abs(out$beta.hat / out$beta.se)) * 2,
          nsnp = length(b_exp))
 
 }
@@ -1040,7 +1019,6 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
 #' \item{pval}{p-value}
 #' \item{nsnp}{Number of SNPs (excludes NAs and effect estimates that are 0)}
 #' }
-#' @importFrom stats binom.test
 mr_sign <- function(b_exp, b_out, se_exp=NULL, se_out=NULL, parameters=NULL)
 {
 	b_exp[b_exp == 0] <- NA
@@ -1052,7 +1030,7 @@ mr_sign <- function(b_exp, b_out, se_exp=NULL, se_out=NULL, parameters=NULL)
 	x <- sum(sign(b_exp) == sign(b_out), na.rm=TRUE)
 	n <- sum(!is.na(b_exp) & !is.na(b_out))
 
-	out <- binom.test(x=x, n=n, p=0.5)
+	out <- stats::binom.test(x=x, n=n, p=0.5)
 	b <- (out$estimate - 0.5) * 2
 	names(b) <- NULL
 	pval <- out$p.value
