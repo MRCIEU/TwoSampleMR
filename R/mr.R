@@ -975,11 +975,6 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' @export
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
-    cpg <- requireNamespace("mr.raps", quietly = TRUE)
-    if (!cpg)
-    {
-        stop("Please install the mr.raps package using remotes::install_github('qingyuanzhao/mr.raps')")
-    }
     data <- data.frame(beta.exposure = b_exp,
                        beta.outcome = b_out,
                        se.exposure = se_exp,
