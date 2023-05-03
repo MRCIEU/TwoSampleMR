@@ -104,7 +104,6 @@ get_r_from_pn_less_accurate <- function(p, n)
 	return(r)
 }
 
-#' @importFrom stats coefficients cor lm rnorm
 test_r_from_pn <- function()
 {
 	param <- expand.grid(
@@ -115,10 +114,10 @@ test_r_from_pn <- function()
 	for(i in 1:nrow(param))
 	{
 		message(i)
-		x <- scale(rnorm(param$n[i]))
-		y <- x * sqrt(param$rsq[i]) + scale(rnorm(param$n[i])) * sqrt(1 - param$rsq[i])
-		param$rsq_emp[i] <- cor(x, y)^2
-		param$pval[i] <- max(coefficients(summary(lm(y ~ x)))[2,4], 1e-300)
+		x <- scale(stats::rnorm(param$n[i]))
+		y <- x * sqrt(param$rsq[i]) + scale(stats::rnorm(param$n[i])) * sqrt(1 - param$rsq[i])
+		param$rsq_emp[i] <- stats::cor(x, y)^2
+		param$pval[i] <- max(stats::coefficients(summary(stats::lm(y ~ x)))[2,4], 1e-300)
 		param$rsq1[i] <- get_r_from_pn_less_accurate(param$pval[i], param$n[i])^2
 		param$rsq2[i] <- get_r_from_pn(param$pval[i], param$n[i])^2
 	}
