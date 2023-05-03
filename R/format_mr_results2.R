@@ -135,7 +135,6 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 
 combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.exposure=FALSE,split.outcome=FALSE)
 {
-	requireNamespace("plyr", quietly=TRUE)
 
 	het<-het[,c("id.exposure","id.outcome","method","Q","Q_df","Q_pval")]
 	
