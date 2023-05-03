@@ -62,7 +62,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #' Read exposure data
 #'
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests.
-#' Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
+#' Infers p-values when possible from beta and se.
 #'
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param clump Whether to perform LD clumping with [clump_data()] on the exposure data. The default is `FALSE`.
@@ -126,7 +126,6 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. 
 #' Infers p-values when possible from beta and se. 
-#' If it is the exposure then looks up SNPs in biomaRt to get basic info.
 #'
 #' @param dat Data frame. Must have header with at least SNP column present.
 #' @param type Is this the exposure or the outcome data that is being read in? The default is `"exposure"`.
