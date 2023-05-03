@@ -13,8 +13,6 @@
 #' \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
 #' \item{pl}{plot of parameter space}
 #' }
-#' @importFrom grDevices rgb
-#' @importFrom lattice wireframe
 steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 {
 	requireNamespace("lattice", quietly=TRUE)
@@ -32,7 +30,7 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 	d$rgx <- rgx_o / d$rxx_o
 	d$z <- d$rgy - d$rgx
 	d$z[d$type=="A"] <- 0
-	mycolors.trans = rgb(c(255,0), c(0,0), 
+	mycolors.trans = grDevices::rgb(c(255,0), c(0,0), 
                c(0,255),alpha = c(70,255), maxColorValue = 255) 
 
 	temp <- lattice::wireframe(
@@ -99,7 +97,6 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
 #' \item{sensitivity_plot}{Plot of parameter space of causal directions and measurement error}
 #' }
-#' @importFrom stats pnorm
 mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
@@ -140,9 +137,9 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yy
 		r2_exp_adj = r_exp_adj^2, 
 		r2_out_adj = r_out_adj^2, 
 		correct_causal_direction = r_exp > r_out, 
-		steiger_test = pnorm(-abs(rtest[["z"]])) * 2,
+		steiger_test = stats::pnorm(-abs(rtest[["z"]])) * 2,
 		correct_causal_direction_adj = r_exp_adj > r_out_adj, 
-		steiger_test_adj = pnorm(-abs(rtest_adj[["z"]])) * 2,
+		steiger_test_adj = stats::pnorm(-abs(rtest_adj[["z"]])) * 2,
 		vz = sensitivity$vz,
 		vz0 = sensitivity$vz0,
 		vz1 = sensitivity$vz1,
@@ -232,7 +229,6 @@ directionality_test <- function(dat)
 #' \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
 #' \item{sensitivity_plot}{Plot of parameter space of causal directions and measurement error}
 #' }
-#' @importFrom stats pnorm rnorm
 mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
@@ -259,9 +255,9 @@ mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 		r2_exp_adj = r_exp_adj^2, 
 		r2_out_adj = r_out_adj^2, 
 		correct_causal_direction = r_exp > r_out, 
-		steiger_test = pnorm(-abs(rtest[["z"]]))*2,
+		steiger_test = stats::pnorm(-abs(rtest[["z"]]))*2,
 		correct_causal_direction_adj = r_exp_adj > r_out_adj, 
-		steiger_test_adj = pnorm(-abs(rtest_adj[["z"]]))*2,
+		steiger_test_adj = stats::pnorm(-abs(rtest_adj[["z"]]))*2,
 		vz = sensitivity$vz,
 		vz0 = sensitivity$vz0,
 		vz1 = sensitivity$vz1,
