@@ -196,11 +196,10 @@ cleanup_outcome_data <- function(d)
 #' @param eff effect size
 #' @param pval pvals
 #' @return array
-#' @importFrom stats qnorm
 #' @export
 get_se <- function(eff, pval)
 {
-	abs(eff) / abs(qnorm(pval / 2))
+	abs(eff) / abs(stats::qnorm(pval / 2))
 }
 
 
