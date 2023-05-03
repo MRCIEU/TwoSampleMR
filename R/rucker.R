@@ -380,8 +380,6 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 #' @importFrom stats mad median pt qchisq qnorm quantile sd
 mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 {
-	requireNamespace("ggplot2", quietly=TRUE)
-
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
 	nboot <- parameters$nboot
