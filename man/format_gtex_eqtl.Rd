@@ -15,5 +15,5 @@ format_gtex_eqtl(gtex_eqtl_subset, type = "exposure")
 Data frame
 }
 \description{
-See \code{\link{format_data}}.
+See \code{\link[=format_data]{format_data()}}.
 }
