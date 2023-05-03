@@ -196,7 +196,7 @@ get_r_from_pn <- function(p, n)
 	return(sqrt(R2))
 }
 
-#' Estimate Rsq from beta, standard error and sample size
+#' Estimate R-squared from beta, standard error and sample size
 #'
 #' @param b Array of effect sizes
 #' @param se Array of standard errors
