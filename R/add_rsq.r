@@ -156,7 +156,7 @@ get_p_from_r2n <- function(r2, n)
 #'
 #' This method is an approximation, and may be numerically unstable.
 #' Ideally you should estimate r directly from independent replication samples.
-#' Use get_r_from_lor for binary traits.
+#' Use [get_r_from_lor()] for binary traits.
 #'
 #' @param p Array of pvals
 #' @param n Array of sample sizes
