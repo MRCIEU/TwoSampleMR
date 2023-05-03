@@ -350,7 +350,7 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 
 #' Estimate the effective sample size in a case control study
 #'
-#' Taken from https://www.nature.com/articles/nprot.2014.071
+#' Taken from <https://www.nature.com/articles/nprot.2014.071>
 #'
 #' @param ncase Vector of number of cases
 #' @param ncontrol Vector of number of controls
