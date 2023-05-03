@@ -19,15 +19,14 @@ Isq <- function(y,s)
 	return(Isq)
 }
 
-#' @importFrom stats qchisq qnorm
 PM <- function(y = y, s = s, Alpha = 0.1)
 {
 	k = length(y)
 	df = k - 1
-	sig = qnorm(1-Alpha/2)
-	low = qchisq((Alpha/2), df)
-	up = qchisq(1-(Alpha/2), df)
-	med = qchisq(0.5, df)
+	sig = stats::qnorm(1-Alpha/2)
+	low = stats::qchisq((Alpha/2), df)
+	up = stats::qchisq(1-(Alpha/2), df)
+	med = stats::qchisq(0.5, df)
 	mn = df
 	mode = df-1
 	Quant = c(low, mode, mn, med, up)
