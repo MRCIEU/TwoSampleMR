@@ -16,10 +16,10 @@ available_outcomes <- function(access_token = ieugwasr::check_access_token())
 
 # Extract summary statistics from MySQL db through API given a list of SNPs and outcomes
 #'
-#' Supply the output from \code{\link{read_exposure_data}} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
+#' Supply the output from [read_exposure_data()] and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 #'
 #' @param snps Array of SNP rs IDs.
-#' @param outcomes Array of IDs (see \code{id} column in output from \code{\link{available_outcomes}}).
+#' @param outcomes Array of IDs (see \code{id} column in output from [available_outcomes()]).
 #' @param proxies Look for LD tags? Default is `TRUE`.
 #' @param rsq Minimum LD rsq value (if proxies = 1). Default = `0.8`.
 #' @param align_alleles Try to align tag alleles to target alleles (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
