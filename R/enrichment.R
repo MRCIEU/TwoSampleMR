@@ -8,7 +8,6 @@
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-#' @importFrom stats pchisq
 fishers_combined_test <- function(pval)
 {
 	pval <- pval[is.finite(pval) & pval <=1 & pval >= 0]
@@ -18,7 +17,7 @@ fishers_combined_test <- function(pval)
 		warning("p-values of 0 are unreliable in Fisher's combined test.")
 		pval[index] <- 1e-50
 	}
-	p <- pchisq(-2 * sum(log(pval)), df=2*length(pval), lower.tail=FALSE)
+	p <- stats::pchisq(-2 * sum(log(pval)), df=2*length(pval), lower.tail=FALSE)
 	return(list(pval=p, nsnp=length(pval)))
 }
 
