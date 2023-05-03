@@ -239,7 +239,6 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats lm pnorm
 mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
@@ -266,20 +265,20 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		{
 			if(instrument_specific)
 			{
-				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ beta.exposure[index, -c(i), drop=FALSE])$res
-				mod <- summary(lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
+				marginal_outcome[index,i] <- stats::lm(beta.outcome[index] ~ beta.exposure[index, -c(i), drop=FALSE])$res
+				mod <- summary(stats::lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
 			} else {
-				marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i), drop=FALSE])$res
-				mod <- summary(lm(marginal_outcome[,i] ~ beta.exposure[,i]))
+				marginal_outcome[,i] <- stats::lm(beta.outcome ~ beta.exposure[, -c(i), drop=FALSE])$res
+				mod <- summary(stats::lm(marginal_outcome[,i] ~ beta.exposure[,i]))
 			}
 		} else {
 			if(instrument_specific)
 			{
-				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i), drop=FALSE])$res
-				mod <- summary(lm(marginal_outcome[index,i] ~ 0 + beta.exposure[index, i]))
+				marginal_outcome[index,i] <- stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i), drop=FALSE])$res
+				mod <- summary(stats::lm(marginal_outcome[index,i] ~ 0 + beta.exposure[index, i]))
 			} else {
-				marginal_outcome[,i] <- lm(beta.outcome ~ 0 + beta.exposure[, -c(i), drop=FALSE])$res
-				mod <- summary(lm(marginal_outcome[,i] ~ 0 + beta.exposure[,i]))
+				marginal_outcome[,i] <- stats::lm(beta.outcome ~ 0 + beta.exposure[, -c(i), drop=FALSE])$res
+				mod <- summary(stats::lm(marginal_outcome[,i] ~ 0 + beta.exposure[,i]))
 			}			
 		}
 		if(sum(index) > (nexp + as.numeric(intercept)))
@@ -290,7 +289,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			effs[i] <- NA
 			se[i] <- NA
 		}
-		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * stats::pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -333,7 +332,6 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats lm pnorm
 mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
@@ -364,16 +362,16 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		{
 			if(instrument_specific)
 			{
-				mod <- summary(lm(beta.outcome[index] ~ 0 + beta.exposure[index, ,drop=FALSE], weights=w[index]))
+				mod <- summary(stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, ,drop=FALSE], weights=w[index]))
 			} else {
-				mod <- summary(lm(beta.outcome ~ 0 + beta.exposure, weights=w))
+				mod <- summary(stats::lm(beta.outcome ~ 0 + beta.exposure, weights=w))
 			}
 		} else {
 			if(instrument_specific)
 			{
-				mod <- summary(lm(beta.outcome[index] ~ beta.exposure[index, ,drop=FALSE], weights=w[index]))
+				mod <- summary(stats::lm(beta.outcome[index] ~ beta.exposure[index, ,drop=FALSE], weights=w[index]))
 			} else {
-				mod <- summary(lm(beta.outcome ~ beta.exposure, weights=w))
+				mod <- summary(stats::lm(beta.outcome ~ beta.exposure, weights=w))
 			}
 		}
 
@@ -385,7 +383,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			effs[i] <- mod$coef[as.numeric(intercept) + i, 1]
 			se[i] <- mod$coef[as.numeric(intercept) + i, 2]
 		}
-		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * stats::pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -423,7 +421,6 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats lm pnorm
 mv_basic <- function(mvdat, pval_threshold=5e-8)
 {
 	# This is a matrix of 
@@ -446,14 +443,14 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 		index <- pval.exposure[,i] < pval_threshold
 
 		# Get outcome effects adjusted for all effects on all other exposures
-		marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
+		marginal_outcome[,i] <- stats::lm(beta.outcome ~ beta.exposure[, -c(i)])$res
 
 		# Get the effect of the exposure on the residuals of the outcome
-		mod <- summary(lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
+		mod <- summary(stats::lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
 
 		effs[i] <- mod$coef[2, 1]
 		se[i] <- mod$coef[2, 2]
-		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * stats::pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -485,7 +482,6 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats pnorm
 mv_ivw <- function(mvdat, pval_threshold=5e-8)
 {
 	# This is a matrix of 
@@ -512,11 +508,11 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 		# marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
 
 		# Get the effect of the exposure on the residuals of the outcome
-		mod <- summary(lm(beta.outcome[index] ~ 0 + beta.exposure[index, ], weights=w[index]))
+		mod <- summary(stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, ], weights=w[index]))
 
 		effs[i] <- mod$coef[i, 1]
 		se[i] <- mod$coef[i, 2]
-		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * stats::pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -542,7 +538,6 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 #'
 #' @export
 #' @return data frame of retained features
-#' @importFrom glmnet cv.glmnet coef.glmnet
 mv_lasso_feature_selection <- function(mvdat)
 {
 	message("Performing feature selection")
@@ -570,7 +565,6 @@ mv_lasso_feature_selection <- function(mvdat)
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats lm
 mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# Update mvdat object
