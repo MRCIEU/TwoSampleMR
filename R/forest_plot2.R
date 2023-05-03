@@ -28,8 +28,6 @@
 format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", ao_slc=TRUE, priority="Cardiometabolic")
 {
 
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
 
 	# Get extra info on outcomes
 	if(ao_slc) 
@@ -458,9 +456,6 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 #' @return grid plot object
 forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted", group_single_categories=TRUE, by_category=TRUE, in_columns=FALSE, threshold=NULL, xlab="", xlim=NULL, trans="identity",ao_slc=TRUE, priority="Cardiometabolic")
 {
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("cowplot", quietly=TRUE)
-	requireNamespace("gridExtra", quietly=TRUE)
 
 	dat <- format_mr_results(
 		mr_res, 
