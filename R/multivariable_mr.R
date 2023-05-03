@@ -5,7 +5,7 @@
 #' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
 #' @param clump_r2 The default is `0.01`.
 #' @param clump_kb The default is `10000`.
-#' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
+#' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
@@ -153,7 +153,7 @@ mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_
 
 #' Harmonise exposure and outcome for multivariable MR
 #'
-#' @param exposure_dat Output from [`mv_extract_exposures`].
+#' @param exposure_dat Output from [mv_extract_exposures()].
 #' @param outcome_dat Output from `extract_outcome_data(exposure_dat$SNP, id_output)`.
 #' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
 #'
@@ -230,7 +230,7 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #' Performs initial multivariable MR analysis from Burgess et al 2015.
 #' For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param mvdat Output from [mv_harmonise_data()].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
 #' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.

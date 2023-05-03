@@ -1,6 +1,6 @@
 #' Leave one out sensitivity analysis
 #'
-#' @param dat Output from [`harmonise_data()`].
+#' @param dat Output from [harmonise_data()].
 #' @param method Choose which method to use. The default is `mr_ivw`.
 #' @param parameters List of parameters.
 #'

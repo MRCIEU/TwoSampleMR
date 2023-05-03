@@ -262,7 +262,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #'
 #' Run Rucker with bootstrap estimates.
 #'
-#' @param dat Output from [`harmonise_data`].
+#' @param dat Output from [harmonise_data()].
 #' @param parameters List of parameters. The default is `default_parameters()`.
 #'
 #' @return List
