@@ -54,8 +54,8 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.7" id="twosamplemr-v057-release-date-tbc">TwoSampleMR v0.5.7 (Release date: TBC)<a class="anchor" aria-label="anchor" href="#twosamplemr-v057-release-date-tbc"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.5.7" id="twosamplemr-v057">TwoSampleMR v0.5.7<a class="anchor" aria-label="anchor" href="#twosamplemr-v057"></a></h2>
+<p>(Release date: TBC)</p>
 <ul><li>Move car package to Suggests to allow TwoSampleMR to install on R between versions 4.0.0 and 4.1.0</li>
 <li>In DESCRIPTION use pkgdepends syntax for MRPRESSO package due its repository name being different to the package name so that installing TwoSampleMR under pak continues to work</li>
 <li>Various minor code tweaks to fix 2 R CMD check notes</li>
@@ -72,10 +72,11 @@
 <li>When reading in local data without p-values, editing the inferred p-value method to be two-sided</li>
 <li>All images in the vignettes (and hence also in the rendered pkgdown website) now have accompanying alt text descriptions</li>
 <li>The accompanying website for the package now uses Bootstrap 5, which means a search facility is enabled</li>
+<li>The NAMESPACE has been simplified, hence the package load time is very slightly improved</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.6" id="twosamplemr-v056-release-date-2021-03-25">TwoSampleMR v0.5.6 (Release date: 2021-03-25)<a class="anchor" aria-label="anchor" href="#twosamplemr-v056-release-date-2021-03-25"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.5.6" id="twosamplemr-v056">TwoSampleMR v0.5.6<a class="anchor" aria-label="anchor" href="#twosamplemr-v056"></a></h2>
+<p>(Release date: 2021-03-25)</p>
 <ul><li>Fix to scatter plot (thanks to Yossi Farjoun @yfarjoun)</li>
 <li>Update to mr.raps parameters (thanks to Qingyuan Zhao @qingyuanzhao)</li>
 <li>Bug fix to MVMR (thanks to Conor Judge @conorjudge)</li>
@@ -83,8 +84,8 @@
 <li>Documentation (thanks to @jinghuazhao)</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.5" id="twosamplemr-v055-release-date-2020-08-09">TwoSampleMR v0.5.5 (Release date: 2020-08-09)<a class="anchor" aria-label="anchor" href="#twosamplemr-v055-release-date-2020-08-09"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.5.5" id="twosamplemr-v055">TwoSampleMR v0.5.5<a class="anchor" aria-label="anchor" href="#twosamplemr-v055"></a></h2>
+<p>(Release date: 2020-08-09)</p>
 <ul><li>Updating <code>clump_data</code> function to operate on outcome datasets in the same way as it operates on exposure datasets. Credit goes to Marina Vabistsevits for spotting this and suggesting a solution.</li>
 <li>Removing ios function, this has now moved to mr.ios package here: <a href="https://github.com/universe77/mr.ios" class="external-link uri">https://github.com/universe77/mr.ios</a>
 </li>
@@ -134,122 +135,122 @@
 </ul></li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.4" id="twosamplemr-v054-release-date-2020-05-10">TwoSampleMR v0.5.4 (Release date: 2020-05-10)<a class="anchor" aria-label="anchor" href="#twosamplemr-v054-release-date-2020-05-10"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.5.4" id="twosamplemr-v054">TwoSampleMR v0.5.4<a class="anchor" aria-label="anchor" href="#twosamplemr-v054"></a></h2>
+<p>(Release date: 2020-05-10)</p>
 <ul><li>All datasets now re-instated</li>
 <li>Added options for different populations in LD operations</li>
 <li>When converting to MRInput format and supplying an LD matrix, it is possible that multi-allelic variants will be represented differently on in the GWAS and the LD reference panel. Ambiguous alignments were not being removed, now fixed. Credit goes to Mona Almramhi for spotting and fixing this issue.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.3" id="twosamplemr-v053-release-date-2020-04-02">TwoSampleMR v0.5.3 (Release date: 2020-04-02)<a class="anchor" aria-label="anchor" href="#twosamplemr-v053-release-date-2020-04-02"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.5.3" id="twosamplemr-v053">TwoSampleMR v0.5.3<a class="anchor" aria-label="anchor" href="#twosamplemr-v053"></a></h2>
+<p>(Release date: 2020-04-02)</p>
 <ul><li>When converting to MRInput format and supplying an LD matrix, the LD matrix SNP order was not matching the summary data order. Credit goes to Mona Almramhi for spotting and fixing this issue.</li>
 <li>Reinstating all datasets that were previously disabled (ukb-a, ukb-d, ubm-a)</li>
 <li>Fixed bug with mr_wrapper. Thanks to Gunn-Helen Moen for this.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.2" id="twosamplemr-v052-release-date-2020-03-11">TwoSampleMR v0.5.2 (Release date: 2020-03-11)<a class="anchor" aria-label="anchor" href="#twosamplemr-v052-release-date-2020-03-11"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.5.2" id="twosamplemr-v052">TwoSampleMR v0.5.2<a class="anchor" aria-label="anchor" href="#twosamplemr-v052"></a></h2>
+<p>(Release date: 2020-03-11)</p>
 <ul><li>No longer marking LD functions as deprecated for now. Thanks to Jonas Bovijn for discussions on this.</li>
 <li>Various fixes for <code>R CMD check</code> warnings and notes.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.1" id="twosamplemr-v051-release-date-2020-02-14">TwoSampleMR v0.5.1 (Release date: 2020-02-14)<a class="anchor" aria-label="anchor" href="#twosamplemr-v051-release-date-2020-02-14"></a></h2>
-<p>Changes:</p>
-<ul><li>A number of datasets have been found to have issues since 0.5.0. These include”</li>
-<li>Some a minority of non-effect alleles being incorrect in the ieu-a batch. The consequence of this is harmonisation may have thrown out some SNPs due to harmonisation mismatches. Error arose in 0.5.0 and now fixed</li>
+<h2 class="pkg-version" data-toc-text="0.5.1" id="twosamplemr-v051">TwoSampleMR v0.5.1<a class="anchor" aria-label="anchor" href="#twosamplemr-v051"></a></h2>
+<p>(Release date: 2020-02-14)</p>
+<ul><li>A number of datasets have been found to have issues since 0.5.0. These include:</li>
+<li>A minority of non-effect alleles being incorrect in the ieu-a batch. The consequence of this is harmonisation may have thrown out some SNPs due to harmonisation mismatches. Error arose in 0.5.0 and now fixed</li>
 <li>p-value issues with the ubm-a batch. This would have led to fewer top-hits being identified than they should have. Error arose in 0.5.0 and currently disabled</li>
 <li>Effect allele frequency issues with the ukb-a batch, potentially due to misreported effect alleles. Error arose in 0.5.0 and currently disabled</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.0" id="twosamplemr-v050-release-date-2020-01-01">TwoSampleMR v0.5.0 (Release date: 2020-01-01)<a class="anchor" aria-label="anchor" href="#twosamplemr-v050-release-date-2020-01-01"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.5.0" id="twosamplemr-v050">TwoSampleMR v0.5.0<a class="anchor" aria-label="anchor" href="#twosamplemr-v050"></a></h2>
+<p>(Release date: 2020-01-01)</p>
 <ul><li>Major update, details here: <a href="https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html" class="uri">https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html</a>
 </li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.26" id="twosamplemr-v0426-release-date-2019-12-01">TwoSampleMR v0.4.26 (Release date: 2019-12-01)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0426-release-date-2019-12-01"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.26" id="twosamplemr-v0426">TwoSampleMR v0.4.26<a class="anchor" aria-label="anchor" href="#twosamplemr-v0426"></a></h2>
+<p>(Release date: 2019-12-01)</p>
 <ul><li>Improved precision of low p-values in steiger tests. Thanks to Hannah V Meyer and Tom Palmer for this.</li>
 <li>Improved instrument extraction for new datasets</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.25" id="twosamplemr-v0425-release-date-2019-09-12">TwoSampleMR v0.4.25 (Release date: 2019-09-12)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0425-release-date-2019-09-12"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.25" id="twosamplemr-v0425">TwoSampleMR v0.4.25<a class="anchor" aria-label="anchor" href="#twosamplemr-v0425"></a></h2>
+<p>(Release date: 2019-09-12)</p>
 <ul><li>Changes in googleAuthR package break authentication. Added interception to install older version while this is being fixed. Please use <code>devtools::install_github("MarkEdmondson1234/googleAuthR@v0.8.1")</code>
 </li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.24" id="twosamplemr-v0424-release-date-2019-09-10">TwoSampleMR v0.4.24 (Release date: 2019-09-10)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0424-release-date-2019-09-10"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.24" id="twosamplemr-v0424">TwoSampleMR v0.4.24<a class="anchor" aria-label="anchor" href="#twosamplemr-v0424"></a></h2>
+<p>(Release date: 2019-09-10)</p>
 <ul><li>Bug found in extract_instruments when requesting non-default parameters. Thanks to Shantanu Bafna for pointing this out.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.23" id="twosamplemr-v0423-release-date-2019-08-12">TwoSampleMR v0.4.23 (Release date: 2019-08-12)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0423-release-date-2019-08-12"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.23" id="twosamplemr-v0423">TwoSampleMR v0.4.23<a class="anchor" aria-label="anchor" href="#twosamplemr-v0423"></a></h2>
+<p>(Release date: 2019-08-12)</p>
 <ul><li>Forcing server to <code>extract_instruments</code> when pre-computed outcomes are not present by default. The old behaviour is still possible by setting <code>extract_instruments(force_server_if_empty=FALSE)</code>
 </li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.22" id="twosamplemr-v0422-release-date-2019-02-22">TwoSampleMR v0.4.22 (Release date: 2019-02-22)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0422-release-date-2019-02-22"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.22" id="twosamplemr-v0422">TwoSampleMR v0.4.22<a class="anchor" aria-label="anchor" href="#twosamplemr-v0422"></a></h2>
+<p>(Release date: 2019-02-22)</p>
 <ul><li>Changing default API address in preparation for moving to version 0.5.0 which will use the new API</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.21" id="twosamplemr-v0421-release-date-2019-02-19">TwoSampleMR v0.4.21 (Release date: 2019-02-19)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0421-release-date-2019-02-19"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.21" id="twosamplemr-v0421">TwoSampleMR v0.4.21<a class="anchor" aria-label="anchor" href="#twosamplemr-v0421"></a></h2>
+<p>(Release date: 2019-02-19)</p>
 <ul><li>Updated mixture of experts</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.20" id="twosamplemr-v0420-release-date-2019-01-31">TwoSampleMR v0.4.20 (Release date: 2019-01-31)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0420-release-date-2019-01-31"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.20" id="twosamplemr-v0420">TwoSampleMR v0.4.20<a class="anchor" aria-label="anchor" href="#twosamplemr-v0420"></a></h2>
+<p>(Release date: 2019-01-31)</p>
 <ul><li>The harmonise function now returns a summary of the harmonisation procedure e.g. number of SNPs removed etc. Access via attr(obj, “log”)</li>
 <li>Note that this has been tested and shown to give the same results as previously but there is a chance that it might lead to slightly different behaviour. Please install the previous version if you would prefer to avoid possibilities of changed behaviour - devtools::install_github(“<a href="mailto:MRCIEU/TwoSampleMR@0.4.18" class="email">MRCIEU/TwoSampleMR@0.4.18</a>”)</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.19" id="twosamplemr-v0419-release-date-2019-01-31">TwoSampleMR v0.4.19 (Release date: 2019-01-31)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0419-release-date-2019-01-31"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.19" id="twosamplemr-v0419">TwoSampleMR v0.4.19<a class="anchor" aria-label="anchor" href="#twosamplemr-v0419"></a></h2>
+<p>(Release date: 2019-01-31)</p>
 <ul><li>Fixed a bug in mr_heterogeneity that would have impacted a minority of cases. If the method list was being specified then the order of the results didn’t always match the method (MR Egger and IVW were mixed up). This did not affect default usage. Thanks to Anna Guyatt for pointing this out.</li>
 <li>Added index of suspicion functionality, and penalised mode estimator</li>
 <li>Added transformation function to scale effect estimate units to SD scale</li>
 <li>Starting to write change log again!</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.18" id="twosamplemr-v0418-release-date-2018-12-03">TwoSampleMR v0.4.18 (Release date: 2018-12-03)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0418-release-date-2018-12-03"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.18" id="twosamplemr-v0418">TwoSampleMR v0.4.18<a class="anchor" aria-label="anchor" href="#twosamplemr-v0418"></a></h2>
+<p>(Release date: 2018-12-03)</p>
 <ul><li>Improved performance of harmonisation</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.17" id="twosamplemr-v0417-release-date-2018-12-03">TwoSampleMR v0.4.17 (Release date: 2018-12-03)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0417-release-date-2018-12-03"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.17" id="twosamplemr-v0417">TwoSampleMR v0.4.17<a class="anchor" aria-label="anchor" href="#twosamplemr-v0417"></a></h2>
+<p>(Release date: 2018-12-03)</p>
 <ul><li>Added facility to harmonise indels</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.17" id="twosamplemr-v0417-release-date-2018-12-03-1">TwoSampleMR v0.4.17 (Release date: 2018-12-03)<a class="anchor" aria-label="anchor" href="#twosamplemr-v0417-release-date-2018-12-03-1"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.4.17" id="twosamplemr-v0417-1">TwoSampleMR v0.4.17<a class="anchor" aria-label="anchor" href="#twosamplemr-v0417-1"></a></h2>
+<p>(Release date: 2018-12-03)</p>
 <ul><li>Documentation and options added to multivariable MR</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.4" id="twosamplemr-v034-release-date-2017-11-30">TwoSampleMR v0.3.4 (Release date: 2017-11-30)<a class="anchor" aria-label="anchor" href="#twosamplemr-v034-release-date-2017-11-30"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.3.4" id="twosamplemr-v034">TwoSampleMR v0.3.4<a class="anchor" aria-label="anchor" href="#twosamplemr-v034"></a></h2>
+<p>(Release date: 2017-11-30)</p>
 <ul><li>Moving over to elastic search database so the request batching is changing from 50 SNPs per chunk to 10000. This can be modified through extract_outcome_data(splitsize=50)</li>
 <li>Changing harmonise_data behaviour - now does not discard the bad SNPs but retains them with the mr_keep column indicating whether or not they will be used by the mr analysis functions</li>
 <li>Fixed issue with oauth token</li>
 <li>Updated scatter plot to register the mr_keep column.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.3" id="twosamplemr-v033-release-date-2017-11-23">TwoSampleMR v0.3.3 (Release date: 2017-11-23)<a class="anchor" aria-label="anchor" href="#twosamplemr-v033-release-date-2017-11-23"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.3.3" id="twosamplemr-v033">TwoSampleMR v0.3.3<a class="anchor" aria-label="anchor" href="#twosamplemr-v033"></a></h2>
+<p>(Release date: 2017-11-23)</p>
 <ul><li>Fixed bug in singlesnp and leaveoneout analyses</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.2" id="twosamplemr-v032-release-date-2017-11-22">TwoSampleMR v0.3.2 (Release date: 2017-11-22)<a class="anchor" aria-label="anchor" href="#twosamplemr-v032-release-date-2017-11-22"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.3.2" id="twosamplemr-v032">TwoSampleMR v0.3.2<a class="anchor" aria-label="anchor" href="#twosamplemr-v032"></a></h2>
+<p>(Release date: 2017-11-22)</p>
 <ul><li>Added function to check for latest version on package load</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.1" id="twosamplemr-v031-release-date-2017-11-22">TwoSampleMR v0.3.1 (Release date: 2017-11-22)<a class="anchor" aria-label="anchor" href="#twosamplemr-v031-release-date-2017-11-22"></a></h2>
-<p>Changes:</p>
+<h2 class="pkg-version" data-toc-text="0.3.1" id="twosamplemr-v031">TwoSampleMR v0.3.1<a class="anchor" aria-label="anchor" href="#twosamplemr-v031"></a></h2>
+<p>(Release date: 2017-11-22)</p>
 <ul><li><p>One of the external packages that TwoSampleMR depends upon had changed, making the authorisation behaviour change. The authorisation was timing out after an hour and it was not refreshing after its timeout. This has now been fixed - the authorisation token will refresh after an hour.</p></li>
 <li><p>The authorisation token used to be stored in a hidden file called .httr-oauth. This has now been changed - it will be stored in a visible file called ‘mrbase.oauth’.</p></li>
 </ul></div>
