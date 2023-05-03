@@ -18,7 +18,6 @@ available_outcomes <- function(access_token = ieugwasr::check_access_token())
 #'
 #' Supply the output from \code{\link{read_exposure_data}} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 #'
-#' @md
 #' @param snps Array of SNP rs IDs.
 #' @param outcomes Array of IDs (see \code{id} column in output from \code{\link{available_outcomes}}).
 #' @param proxies Look for LD tags? Default is `TRUE`.
