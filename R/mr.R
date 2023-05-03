@@ -827,7 +827,7 @@ mr_median <- function(dat, parameters=default_parameters())
 #'
 #' The default multiplicative random effects IVW estimate.
 #' The standard error is corrected for under dispersion
-#' Use the [`mr_ivw_mre`] function for estimates that don't correct for under dispersion.
+#' Use the [mr_ivw_mre()] function for estimates that don't correct for under dispersion.
 #'
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
@@ -865,7 +865,7 @@ mr_ivw <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 #'
 #' The default multiplicative random effects IVW estimate.
 #' The standard error is corrected for under dispersion
-#' Use the \code{\link{mr_ivw_mre}} function for estimates that don't correct for under dispersion.
+#' Use the [mr_ivw_mre()] function for estimates that don't correct for under dispersion.
 #'
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
@@ -902,7 +902,7 @@ mr_uwr <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()
 
 #' Inverse variance weighted regression (multiplicative random effects model)
 #'
-#' Same as \code{\link{mr_ivw}} but no correction for under dispersion.
+#' Same as [mr_ivw()] but no correction for under dispersion.
 #'
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
