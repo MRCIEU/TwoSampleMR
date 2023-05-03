@@ -61,11 +61,10 @@ knit_report <- function(input_filename, output_filename, ...)
 
 #' Generate MR report
 #'
-#' Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
+#' Using the output from the [mr()] function this report will generate a report containing tables and graphs summarising the results.
 #' A separate report is produced for each exposure - outcome pair that was analysed.
 #'
-#' @md
-#' @param dat Output from \code{\link{harmonise_data}}
+#' @param dat Output from [harmonise_data()]
 #' @param output_path Directory in which reports should be saved.
 #' @param output_type Choose `"html"` or `"md"`. Default is `"html"`.
 #' All output files including cache and figures will appear in the
@@ -73,7 +72,7 @@ knit_report <- function(input_filename, output_filename, ...)
 #' @param author Author name.
 #' @param study Study title.
 #' @param path The filepath to the report template.
-#' @param ... Extra options to be passed to \code{\link[knitr:knit]{knitr::knit}}.
+#' @param ... Extra options to be passed to [knitr::knit()].
 #'
 #' @export
 #' @return NULL
