@@ -49,7 +49,6 @@
 mr_forest_plot_grouped <-
     function(name, eff_Col = "b", exposure_Name="exposure", outcome_Name="outcome", forest_Title = '', outfile_Name = 'annot_FP.pdf', left_Col_Names=c("Exposure", "Outcome"), left_Col_Titles = NULL, right_Col_Names = c("p", "Outcome.n.case", "Outcome.n.control", "Outcome.sample.size"), right_Col_Titles =
                  NULL, debug = FALSE,  log_ES = FALSE, decrease = TRUE,  returnRobj = TRUE, se_Col = "se") {
-        requireNamespace("gtable", quietly = TRUE)
         # name = (character) name of the r object from mr_singlesnp()
         # inRobj = (logical) is the data to be used an internal R object y/n?
         # eff_Col = (character) name of the column in the delimited file that contains the effect sizes
