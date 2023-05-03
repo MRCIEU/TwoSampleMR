@@ -227,7 +227,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 #' A basic forest plot
 #'
 #' This function is used to create a basic forest plot.
-#' It requires the output from \code{\link{format_1_to_many}}.
+#' It requires the output from \code{\link{format_1_to_many()}}.
 #'
 #' @md
 #' @param dat Output from [`format_1_to_many()`]
