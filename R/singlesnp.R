@@ -70,7 +70,7 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 
 #' Forest plot
 #'
-#' @param singlesnp_results from [`mr_singlesnp`].
+#' @param singlesnp_results from [mr_singlesnp()].
 #' @param exponentiate Plot on exponential scale. The default is `FALSE`.
 #'
 #' @export
@@ -135,8 +135,8 @@ mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 
 #' Density plot
 #'
-#' @param singlesnp_results from [`mr_singlesnp`].
-#' @param mr_results Results from [`mr`].
+#' @param singlesnp_results from [mr_singlesnp()].
+#' @param mr_results Results from [mr()].
 #' @param exponentiate Plot on exponentiated scale. The default is `FALSE`.
 #' @param bandwidth Density bandwidth parameter.
 #'
@@ -183,7 +183,7 @@ mr_density_plot <- function(singlesnp_results, mr_results, exponentiate=FALSE, b
 #'
 #' Create funnel plot from single SNP analyses.
 #'
-#' @param singlesnp_results from [`mr_singlesnp`].
+#' @param singlesnp_results from [mr_singlesnp()].
 #'
 #' @export
 #' @return List of plots
