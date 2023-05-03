@@ -141,11 +141,10 @@ test_r_from_pn <- function()
 #'
 #' @export
 #' @return P-value
-#' @importFrom stats pf df
 get_p_from_r2n <- function(r2, n)
 {
 	fval <- r2 * (n-2) / (1 - r2)
-	pval <- pf(fval, 1, n-1, lower.tail=FALSE)
+	pval <- stats::pf(fval, 1, n-1, lower.tail=FALSE)
 	return(pval)
 }
 
