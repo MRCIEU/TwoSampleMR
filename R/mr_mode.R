@@ -2,7 +2,6 @@
 #'
 #' Perform simple, weighted, penalised modes, as well as versions that use the NOME assumption.
 #'
-#' @md
 #' @param dat Output from [`harmonise_data()`].
 #' @param parameters List of parameters. The default is `default_parameters()`.
 #' @param mode_method The default is `"all"`. The other choices are `'Simple mode'`, `'Weighted mode'`, `'Penalised mode'`, `'Simple mode (NOME)'`, `'Weighted mode (NOME)'`.
