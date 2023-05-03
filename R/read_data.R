@@ -2,7 +2,8 @@
 
 #' Read outcome data
 #'
-#' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se.
+#' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests.
+#' Infers p-values when possible from beta and se.
 #'
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param snps SNPs to extract. If `NULL`, which the default, then doesn't extract any and keeps all.
@@ -60,7 +61,8 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 
 #' Read exposure data
 #'
-#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
+#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests.
+#' Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
 #'
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param clump Whether to perform LD clumping with [`clump_data`] on the exposure data. The default is `FALSE`.
@@ -512,7 +514,7 @@ check_units <- function(x, id, col)
 
 #' Get data selected from GWAS catalog into correct format
 #'
-#' DEPRECATED. Please use \code{\link{format_data}} instead.
+#' DEPRECATED. Please use [format_data()] instead.
 #'
 #' @param gwas_catalog_subset The GWAS catalog subset.
 #' @param type The default is `"exposure"`.
@@ -561,7 +563,7 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 
 #' Get data from metabolomic QTL results
 #'
-#' See \code{\link{format_data}}.
+#' See [format_data()].
 #' 
 #' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
@@ -588,7 +590,7 @@ format_metab_qtls <- function(metab_qtls_subset, type="exposure")
 
 #' Get data from proteomic QTL results
 #'
-#' See \code{\link{format_data}}.
+#' See [format_data()].
 #'
 #' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
@@ -615,7 +617,7 @@ format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 
 #' Get data from methylation QTL results
 #'
-#' See \code{\link{format_data}}.
+#' See [format_data()].
 #'
 #' @param aries_mqtl_subset Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
@@ -663,12 +665,12 @@ create_ids <- function(x)
 
 #' Combine data
 #'
-#' Taking exposure or outcome data (returned from \code{\link{format_data}})
+#' Taking exposure or outcome data (returned from [format_data()])
 #' combine multiple datasets together so they can be analysed in one
 #' batch. Removes duplicate SNPs, preferentially keeping those usable
 #' in MR analysis.
 #'
-#' @param x List of data frames returned from \code{\link{format_data}}.
+#' @param x List of data frames returned from [format_data()].
 #'
 #' @export
 #' @return data frame
@@ -706,9 +708,9 @@ combine_data <- function(x)
 
 #' Convert outcome data to exposure data
 #'
-#' Helper function to convert results from \code{\link{extract_outcome_data}} to \code{exposure_dat} format.
+#' Helper function to convert results from [extract_outcome_data()] to \code{exposure_dat} format.
 #'
-#' @param outcome_dat Output from \code{\link{extract_outcome_data}}.
+#' @param outcome_dat Output from [extract_outcome_data()].
 #'
 #' @export
 #' @return data frame
