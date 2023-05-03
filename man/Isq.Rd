@@ -2,7 +2,7 @@
 % Please edit documentation in R/rucker.R
 \name{Isq}
 \alias{Isq}
-\title{I-square calculation}
+\title{I-squared calculation}
 \usage{
 Isq(y, s)
 }
@@ -15,5 +15,5 @@ Isq(y, s)
 Isq value
 }
 \description{
-This function calculates the I-squared_GX statistic.
+This function calculates the \eqn{I^2_{GX}} statistic.
 }
