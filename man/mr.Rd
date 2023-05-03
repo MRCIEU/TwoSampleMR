@@ -11,11 +11,11 @@ mr(
 )
 }
 \arguments{
-\item{dat}{Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.}
+\item{dat}{Harmonised exposure and outcome data. Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 
-\item{parameters}{Parameters to be used for various MR methods. Default is output from \code{\link{default_parameters}}.}
+\item{parameters}{Parameters to be used for various MR methods. Default is output from \code{\link[=default_parameters]{default_parameters()}}.}
 
-\item{method_list}{List of methods to use in analysis. See \code{\link{mr_method_list}} for details.}
+\item{method_list}{List of methods to use in analysis. See \code{\link[=mr_method_list]{mr_method_list()}} for details.}
 }
 \value{
 List with the following elements:
