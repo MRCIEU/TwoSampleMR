@@ -118,7 +118,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 
 	#Compute SEs, confidence intervals and P-value
 	beta_Mode.boot <- boot(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV, beta_Mode.in=beta_Mode, nboot=nboot)
-	se_Mode <- apply(beta_Mode.boot, 2, mad)
+	se_Mode <- apply(beta_Mode.boot, 2, stats::mad)
 
 	CIlow_Mode <- beta_Mode-stats::qnorm(1-alpha/2)*se_Mode
 	CIupp_Mode <- beta_Mode+stats::qnorm(1-alpha/2)*se_Mode
