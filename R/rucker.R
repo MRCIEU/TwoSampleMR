@@ -69,7 +69,7 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 #'
 #' MR Rucker framework.
 #'
-#' @param dat Output from [`harmonise_data()`].
+#' @param dat Output from [harmonise_data()].
 #' @param parameters List of Qthresh for determining transition between models, and alpha values for calculating confidence intervals. Defaults to 0.05 for both in `default_parameters()`.
 #'
 #' @export
