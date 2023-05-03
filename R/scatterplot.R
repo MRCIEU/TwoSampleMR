@@ -1,5 +1,3 @@
-
-
 #' Create scatter plot with lines showing the causal estimate for different MR tests
 #'
 #' Requires dev version of ggplot2
