@@ -2,7 +2,7 @@
 #'
 #' @param rgx_o Observed variance of exposure explained by SNPs
 #' @param rgy_o Observed variance of outcome explained by SNPs
-#' @param ... Further arguments to be passed to wireframe
+#' @param ... Further arguments to be passed to [lattice::wireframe()]
 #'
 #' @export
 #' @return List with the following elements:
@@ -80,7 +80,7 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' @param r_out Vector of absolute correlations for SNP-outcome
 #' @param r_xxo Measurememt precision of exposure
 #' @param r_yyo Measurement precision of outcome
-#' @param ... Further arguments to be passed to wireframe
+#' @param ... Further arguments to be passed to [lattice::wireframe()]
 #'
 #' @export
 #' @return List with the following elements:
@@ -161,7 +161,6 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yy
 #'
 #' @export
 #' @return List
-#' 
 directionality_test <- function(dat)
 {
 	if(! all(c("r.exposure", "r.outcome") %in% names(dat)))
@@ -214,7 +213,7 @@ directionality_test <- function(dat)
 #' @param n_out Sample sizes for p_out
 #' @param r_xxo Measurememt precision of exposure
 #' @param r_yyo Measurement precision of outcome
-#' @param ... Further arguments to be passed to wireframe
+#' @param ... Further arguments to be passed to [lattice::wireframe()]
 #'
 #' @export
 #' @return List with the following elements:
