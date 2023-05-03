@@ -45,12 +45,12 @@ forest_plot_basic2(
 
 \item{colour_scheme}{the general colour scheme for the plot. Default is to make all text and data points \code{"black"}.}
 
-\item{shape_points}{the shape of the data points to pass to \code{ggplot2::geom_points()}. Default is set to \code{15} (filled square).}
+\item{shape_points}{the shape of the data points to pass to \code{\link[ggplot2:geom_point]{ggplot2::geom_point()}}. Default is set to \code{15} (filled square).}
 }
 \value{
 ggplot object
 }
 \description{
 This function is used to create a basic forest plot.
-It requires the output from \code{\link{format_1_to_many}}.
+It requires the output from \code{\link[=format_1_to_many]{format_1_to_many()}}.
 }

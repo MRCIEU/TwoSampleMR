@@ -53,7 +53,7 @@ forest_plot_1_to_many(
 
 \item{by}{Name of the grouping variable to stratify results on. Default is \code{NULL}.}
 
-\item{xlab}{X-axis label, default is \code{"Effect (95\\\% confidence interval)"}.}
+\item{xlab}{X-axis label, default is \code{"Effect (95\% confidence interval)"}.}
 
 \item{addcols}{Name of additional columns to plot. Character vector. The default is \code{NULL}.}
 
@@ -63,7 +63,7 @@ forest_plot_1_to_many(
 
 \item{subheading_size}{text size for the subheadings specified in by argument. The default is \code{6}.}
 
-\item{shape_points}{the shape of the data points to pass to geom_points(). Default is set to \code{15} (filled square).}
+\item{shape_points}{the shape of the data points to pass to \code{\link[ggplot2:geom_point]{ggplot2::geom_point()}}. Default is set to \code{15} (filled square).}
 
 \item{colour_scheme}{the general colour scheme for the plot. Default is to make all text and data points \code{"black"}.}
 
@@ -75,5 +75,8 @@ forest_plot_1_to_many(
 grid plot object
 }
 \description{
-Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results.
+Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes.
+Plots effect estimates and 95 percent confidence intervals.
+The ordering of results in the plot is determined by the order supplied by the user.
+Users may find \code{\link[=sort_1_to_many]{sort_1_to_many()}} helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results.
 }
