@@ -154,7 +154,6 @@ mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_
 
 #' Harmonise exposure and outcome for multivariable MR
 #'
-#' @md
 #' @param exposure_dat Output from [`mv_extract_exposures`].
 #' @param outcome_dat Output from `extract_outcome_data(exposure_dat$SNP, id_output)`.
 #' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
@@ -231,7 +230,6 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #'
 #' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @md
 #' @param mvdat Output from [`mv_harmonise_data`].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
@@ -325,7 +323,6 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 #' 
-#' @md
 #' @param mvdat Output from [`mv_harmonise_data`].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
@@ -418,7 +415,6 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #' 
 #' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @md
 #' @param mvdat Output from [`mv_harmonise_data`].
 #' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
 #'
@@ -480,7 +476,6 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 #'
 #' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 #'
-#' @md
 #' @param mvdat Output from [`mv_harmonise_data`].
 #' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
 #'
@@ -562,7 +557,6 @@ mv_lasso_feature_selection <- function(mvdat)
 #' \item Subset the mvdat to only retain relevant features and instruments.
 #' \item Perform MVMR on remaining data.
 #' }
-#' @md
 #' @param mvdat Output from [`mv_harmonise_data`].
 #' @param features Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. The default is `mvdat_lasso_feature_selection(mvdat)`.
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, the default).
