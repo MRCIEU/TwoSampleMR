@@ -80,7 +80,7 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #' 
 #' Plot results from leaveoneout analysis.
 #'
-#' @param leaveoneout_results Output from [`mr_leaveoneout`].
+#' @param leaveoneout_results Output from [mr_leaveoneout()].
 #'
 #' @export
 #' @return List of plots
