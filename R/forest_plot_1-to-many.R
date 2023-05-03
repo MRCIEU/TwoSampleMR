@@ -609,8 +609,6 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 	{
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 
-		# print(col1_title)
-		# print(sec)		
 		l[[count]] <- forest_plot_names2(
 			dat, 
 			sec[i],
@@ -666,9 +664,6 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 	}
 	h <- h + 5
 	h[length(sec)] <- h[length(sec)] + 1
-	# message(length(l))
-	# message(count)
-	# message(h)
 	return(
 		cowplot::plot_grid(
 			gridExtra::arrangeGrob(
