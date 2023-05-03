@@ -377,7 +377,6 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-#' @importFrom stats mad median pt qchisq qnorm quantile sd
 mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
@@ -436,11 +435,11 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 			Method = "Rucker mean (JK)",
 			nsnp = nsnp,
 			Estimate = mean(modsel$Estimate),
-			SE = sd(modsel$Estimate)
+			SE = stats::sd(modsel$Estimate)
 		)
-		rucker_mean$CI_low <- rucker_mean$Estimate - qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
-		rucker_mean$CI_upp <- rucker_mean$Estimate + qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
-		rucker_mean$P <- 2 * pt(abs(rucker_mean$Estimate/rucker_mean$SE), nsnp-1, lower.tail=FALSE)
+		rucker_mean$CI_low <- rucker_mean$Estimate - stats::qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
+		rucker_mean$CI_upp <- rucker_mean$Estimate + stats::qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
+		rucker_mean$P <- 2 * stats::pt(abs(rucker_mean$Estimate/rucker_mean$SE), nsnp-1, lower.tail=FALSE)
 
 		res <- rbind(rucker$rucker, rucker_point, rucker_mean, rucker_median)
 		rownames(res) <- NULL
@@ -452,9 +451,9 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 			ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 			ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 			ggplot2::geom_abline(slope=1, colour="grey") +
-			ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, lower.tail=FALSE), linetype="dotted") +
-			ggplot2::geom_hline(yintercept = qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
-			ggplot2::geom_vline(xintercept = qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
+			ggplot2::geom_abline(slope=1, intercept=-stats::qchisq(Qthresh, 1, lower.tail=FALSE), linetype="dotted") +
+			ggplot2::geom_hline(yintercept = stats::qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
+			ggplot2::geom_vline(xintercept = stats::qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
 			ggplot2::labs(x="Q", y="Q'")
 
 		modsel$model_name <- "IVW"
