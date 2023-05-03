@@ -12,9 +12,9 @@ mr_density_plot(
 )
 }
 \arguments{
-\item{singlesnp_results}{from \code{\link{mr_singlesnp}}.}
+\item{singlesnp_results}{from \code{\link[=mr_singlesnp]{mr_singlesnp()}}.}
 
-\item{mr_results}{Results from \code{\link{mr}}.}
+\item{mr_results}{Results from \code{\link[=mr]{mr()}}.}
 
 \item{exponentiate}{Plot on exponentiated scale. The default is \code{FALSE}.}
 

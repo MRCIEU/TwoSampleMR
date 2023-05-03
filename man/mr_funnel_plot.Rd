@@ -7,7 +7,7 @@
 mr_funnel_plot(singlesnp_results)
 }
 \arguments{
-\item{singlesnp_results}{from \code{\link{mr_singlesnp}}.}
+\item{singlesnp_results}{from \code{\link[=mr_singlesnp]{mr_singlesnp()}}.}
 }
 \value{
 List of plots
