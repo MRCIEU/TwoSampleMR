@@ -9,7 +9,6 @@
 #' \item a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
 #' }
 #' 
-#' @md
 #' @param mr_res Data frame of results supplied by the user.
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = `"b"`.
 #' @param se Name of the column specifying the standard error for b. Default = `"se"`.
@@ -229,7 +228,6 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 #' This function is used to create a basic forest plot.
 #' It requires the output from [format_1_to_many()].
 #'
-#' @md
 #' @param dat Output from [`format_1_to_many()`]
 #' @param section Which category in dat to plot. If `NULL` then prints everything.
 #' @param colour_group Which exposure to plot. If `NULL` then prints everything grouping by colour.
@@ -542,7 +540,6 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' The ordering of results in the plot is determined by the order supplied by the user.
 #' Users may find [sort_1_to_many()] helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
 #' 
-#' @md
 #' @param mr_res Data frame of results supplied by the user. The default is `"mr_res"`.
 #' @param b Name of the column specifying the effect of the exposure on the outcome. The default is `"b"`.
 #' @param se Name of the column specifying the standard error for b. The default is `"se"`.
