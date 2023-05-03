@@ -12,7 +12,7 @@ mr_singlesnp(
 )
 }
 \arguments{
-\item{dat}{Output from \code{\link{harmonise_data}}.}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 
 \item{parameters}{List of parameters. The default is \code{default_parameters()}.}
 

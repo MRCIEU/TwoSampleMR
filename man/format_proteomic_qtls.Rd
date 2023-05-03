@@ -15,5 +15,5 @@ format_proteomic_qtls(proteomic_qtls_subset, type = "exposure")
 Data frame
 }
 \description{
-See \code{\link{format_data}}.
+See \code{\link[=format_data]{format_data()}}.
 }

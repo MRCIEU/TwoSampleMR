@@ -15,7 +15,7 @@ format_gwas_catalog(gwas_catalog_subset, type = "exposure")
 Data frame
 }
 \description{
-DEPRECATED. Please use \code{\link{format_data}} instead.
+DEPRECATED. Please use \code{\link[=format_data]{format_data()}} instead.
 }
 \examples{
 \dontrun{
