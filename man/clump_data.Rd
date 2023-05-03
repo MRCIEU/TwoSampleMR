@@ -14,7 +14,7 @@ clump_data(
 )
 }
 \arguments{
-\item{dat}{Output from \code{\link{format_data}}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated.}
+\item{dat}{Output from \code{\link[=format_data]{format_data()}}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated.}
 
 \item{clump_kb}{Clumping window, default is \code{10000}.}
 

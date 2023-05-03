@@ -7,7 +7,7 @@
 mr_pleiotropy_test(dat)
 }
 \arguments{
-\item{dat}{Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.}
+\item{dat}{Harmonised exposure and outcome data. Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 }
 \value{
 data frame
