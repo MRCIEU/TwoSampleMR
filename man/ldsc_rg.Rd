@@ -13,7 +13,7 @@ ldsc_rg(id1, id2, ancestry = "infer", snpinfo = NULL, splitsize = 20000)
 
 \item{ancestry}{ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies}
 
-\item{snpinfo}{Output from \link[ieugwasr:afl2_list("hapmap3")]{ieugwasr::afl2_list("hapmap3")}, or \code{NULL} for it to be done automatically}
+\item{snpinfo}{Output from \code{ieugwasr::afl2_list("hapmap3")}, or \code{NULL} for it to be done automatically}
 
 \item{splitsize}{How many SNPs to extract at one time. Default=\code{20000}}
 }
