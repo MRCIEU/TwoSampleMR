@@ -9,7 +9,7 @@
 #' @param p2 Secondary clumping threshold. The default is `5e-8`.
 #' @param r2 Clumping r2 cut off. The default is `0.001`.
 #' @param kb Clumping distance cutoff. The default is `10000`.
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data. The default is `ieugwasr::check_access_token()`.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data. The default is [ieugwasr::check_access_token()].
 #' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package.
 #'
 #' @export
