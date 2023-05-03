@@ -113,8 +113,8 @@ TwoSampleMR v0.5.1
 
 (Release date: 2020-02-14)
 
-* Some a minority of non-effect alleles being incorrect in the ieu-a batch. The consequence of this is harmonisation may have thrown out some SNPs due to harmonisation mismatches. Error arose in 0.5.0 and now fixed
 * A number of datasets have been found to have issues since 0.5.0. These include:
+* A minority of non-effect alleles being incorrect in the ieu-a batch. The consequence of this is harmonisation may have thrown out some SNPs due to harmonisation mismatches. Error arose in 0.5.0 and now fixed
 * p-value issues with the ubm-a batch. This would have led to fewer top-hits being identified than they should have. Error arose in 0.5.0 and currently disabled
 * Effect allele frequency issues with the ukb-a batch, potentially due to misreported effect alleles. Error arose in 0.5.0 and currently disabled
 
