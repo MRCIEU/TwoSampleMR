@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_rsq.r
 \name{get_r_from_bsen}
 \alias{get_r_from_bsen}
-\title{Estimate Rsq from beta, standard error and sample size}
+\title{Estimate R-squared from beta, standard error and sample size}
 \usage{
 get_r_from_bsen(b, se, n)
 }
@@ -17,5 +17,5 @@ get_r_from_bsen(b, se, n)
 Vector of signed r values
 }
 \description{
-Estimate Rsq from beta, standard error and sample size
+Estimate R-squared from beta, standard error and sample size
 }
