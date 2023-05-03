@@ -167,7 +167,6 @@ mr_mean_egger <- function(d)
 	return(ret)
 }
 
-#' @importFrom stats pchisq
 mr_mean <- function(dat, parameters=default_parameters())
 {
 	m1 <- try(mr_mean_ivw(dat))
@@ -192,7 +191,7 @@ mr_mean <- function(dat, parameters=default_parameters())
 				method = "Rucker",
 				Q = out$heterogeneity$Q[1] - out$heterogeneity$Q[2],
 				df = 1,
-				pval = pchisq(Q, df, lower.tail=FALSE)
+				pval = stats::pchisq(Q, df, lower.tail=FALSE)
 			)
 			out$heterogeneity <- dplyr::bind_rows(out$heterogeneity, temp)
 			return(out)
