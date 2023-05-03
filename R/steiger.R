@@ -15,7 +15,6 @@
 #' }
 steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 {
-	requireNamespace("lattice", quietly=TRUE)
 	if(rgy_o > rgx_o)
 	{
 		a <- rgy_o
@@ -99,7 +98,6 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' }
 mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo=1, ...)
 {
-	requireNamespace("psych", quietly=TRUE)
 	r_exp <- abs(r_exp)
 	r_out <- abs(r_out)
 
@@ -231,7 +229,6 @@ directionality_test <- function(dat)
 #' }
 mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 {
-	requireNamespace("psych", quietly=TRUE)
 	index <- any(is.na(r_exp)) | any(is.na(r_out)) | any(is.na(n_exp)) | any(is.na(n_out))
 	n_exp <- n_exp[!index]
 	n_out <- n_out[!index]
