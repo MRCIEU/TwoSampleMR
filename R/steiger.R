@@ -1,5 +1,3 @@
-
-
 #' Evaluate the Steiger test's sensitivity to measurement error
 #'
 #' @param rgx_o Observed variance of exposure explained by SNPs
@@ -105,7 +103,6 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo=1, ...)
 {
 	requireNamespace("psych", quietly=TRUE)
-
 	r_exp <- abs(r_exp)
 	r_out <- abs(r_out)
 
