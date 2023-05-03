@@ -16,7 +16,6 @@
 #' @return data frame in `exposure_dat` format
 mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR")
 {
-	requireNamespace("reshape2", quietly = TRUE)
 	stopifnot(length(id_exposure) > 1)
 	id_exposure <- ieugwasr::legacy_ids(id_exposure)
 
