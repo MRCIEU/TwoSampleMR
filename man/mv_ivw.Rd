@@ -7,7 +7,7 @@
 mv_ivw(mvdat, pval_threshold = 5e-08)
 }
 \arguments{
-\item{mvdat}{Output from \code{\link{mv_harmonise_data}}.}
+\item{mvdat}{Output from \code{\link[=mv_harmonise_data]{mv_harmonise_data()}}.}
 
 \item{pval_threshold}{P-value threshold to include instruments. The default is \code{5e-8}.}
 }
@@ -15,5 +15,6 @@ mv_ivw(mvdat, pval_threshold = 5e-08)
 List of results
 }
 \description{
-Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
+Performs modified multivariable MR analysis.
+For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 }

@@ -1,4 +1,3 @@
-#' @importFrom stats coefficients lm pchisq pnorm pt
 mr_mean_ivw <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -25,12 +24,12 @@ mr_mean_ivw <- function(d)
 			se=res$b,
 			ci_low=b-se*1.96,
 			ci_upp=b+se*1.96,
-			pval=pt(abs(b/se), 1, lower.tail=FALSE) * 2
+			pval=stats::pt(abs(b/se), 1, lower.tail=FALSE) * 2
 		)
 		return(list(estimates=out))
 	}
 
-	unw <- summary(lm(b_out ~ -1 + b_exp))
+	unw <- summary(stats::lm(b_out ~ -1 + b_exp))
 	unw_out <- dplyr::tibble(
 		id.exposure = id.exposure,
 		id.outcome = id.outcome,
@@ -40,22 +39,22 @@ mr_mean_ivw <- function(d)
 		se = unw$coefficients[2],
 		ci_low=b-se*1.96,
 		ci_upp=b+se*1.96,
-		pval=pt(abs(b/se), nrow(d)-1, lower.tail=FALSE) * 2
+		pval=stats::pt(abs(b/se), nrow(d)-1, lower.tail=FALSE) * 2
 	)
 
 	weights1 <- sqrt(b_exp^2 / se_out^2)
 	y1 <- ratios * weights1
 
-	ivw1 <- lm(y1 ~ -1 + weights1)
-	weights2 <- sqrt(((se_out^2 + coefficients(ivw1)[1]^2 * se_exp^2) / b_exp^2)^-1)
+	ivw1 <- stats::lm(y1 ~ -1 + weights1)
+	weights2 <- sqrt(((se_out^2 + stats::coefficients(ivw1)[1]^2 * se_exp^2) / b_exp^2)^-1)
 
 	y2 <- ratios * weights2
-	ivw2 <- summary(lm(y2 ~ -1 + weights2))
+	ivw2 <- summary(stats::lm(y2 ~ -1 + weights2))
 
-	ivwoutliers <- dplyr::tibble(id.exposure = id.exposure, id.outcome = id.outcome, SNP=d$SNP, Qj=weights2^2 * (ratios - coefficients(ivw2)[1])^2, Qpval=pchisq(Qj,1,lower.tail=FALSE))
+	ivwoutliers <- dplyr::tibble(id.exposure = id.exposure, id.outcome = id.outcome, SNP=d$SNP, Qj=weights2^2 * (ratios - stats::coefficients(ivw2)[1])^2, Qpval=stats::pchisq(Qj,1,lower.tail=FALSE))
 
 	Qivw2 <- sum(ivwoutliers$Qj)
-	Qivw2pval <- pchisq(Qivw2, nrow(d)-1, lower.tail=FALSE)
+	Qivw2pval <- stats::pchisq(Qivw2, nrow(d)-1, lower.tail=FALSE)
 
 	# Collate
 	re_out <- dplyr::tibble(
@@ -67,12 +66,12 @@ mr_mean_ivw <- function(d)
 		se = c(ivw2$coefficients[2]),
 		ci_low = b - se * 1.96,
 		ci_upp = b + se * 1.96,
-		pval = pt(abs(b / se), nrow(d)-1, lower.tail=FALSE) * 2
+		pval = stats::pt(abs(b / se), nrow(d)-1, lower.tail=FALSE) * 2
 	)
 
 	fe_out <- re_out
 	fe_out$se <- fe_out$se / max(1, ivw2$sigma)
-	fe_out$pval <- pnorm(abs(fe_out$b / fe_out$se), lower.tail=FALSE) * 2
+	fe_out$pval <- stats::pnorm(abs(fe_out$b / fe_out$se), lower.tail=FALSE) * 2
 	fe_out$method <- c("FE IVW")
 
 	out <- dplyr::bind_rows(unw_out, fe_out, re_out)
@@ -84,14 +83,13 @@ mr_mean_ivw <- function(d)
 		method = c("IVW"),
 		Q = c(Qivw2),
 		df = c(nrow(d)-1),
-		pval = pchisq(Q, df, lower.tail=FALSE)
+		pval = stats::pchisq(Q, df, lower.tail=FALSE)
 	)
 
 	ret <- list(estimates=out, heterogeneity = heterogeneity, outliers=ivwoutliers)
 	return(ret)
 }
 
-#' @importFrom stats coefficients lm pchisq pnorm pt
 mr_mean_egger <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -110,19 +108,19 @@ mr_mean_egger <- function(d)
 	y1 <- ratios * weights1
 
 	# Egger
-	egger1 <- lm(y1 ~ weights1)
-	weights2 <- sqrt(((se_out^2 + coefficients(egger1)[2]^2 * se_exp^2) / b_exp^2)^-1)
+	egger1 <- stats::lm(y1 ~ weights1)
+	weights2 <- sqrt(((se_out^2 + stats::coefficients(egger1)[2]^2 * se_exp^2) / b_exp^2)^-1)
 
 	y2 <- ratios * weights2
-	egger2 <- summary(lm(y2 ~ weights2))
+	egger2 <- summary(stats::lm(y2 ~ weights2))
 	eggeroutliers <- dplyr::tibble(
 		SNP=d$SNP, 
-		Qj = weights2^2 * (ratios - coefficients(egger2)[1,1] / weights2 - coefficients(egger2)[2,1])^2, 
-		Qpval=pchisq(Qj,1,lower.tail=FALSE)
+		Qj = weights2^2 * (ratios - stats::coefficients(egger2)[1,1] / weights2 - stats::coefficients(egger2)[2,1])^2, 
+		Qpval=stats::pchisq(Qj,1,lower.tail=FALSE)
 	)
 
 	Qegger2 <- sum(eggeroutliers$Qj)
-	Qegger2pval <- pchisq(Qegger2, nrow(d)-1, lower.tail=FALSE)
+	Qegger2pval <- stats::pchisq(Qegger2, nrow(d)-1, lower.tail=FALSE)
 
 
 	# Collate
@@ -135,12 +133,12 @@ mr_mean_egger <- function(d)
 		se = c(egger2$coefficients[2,2]),
 		ci_low = b - se * 1.96,
 		ci_upp = b + se * 1.96,
-		pval = pt(abs(b / se), nrow(d)-2, lower.tail=FALSE) * 2
+		pval = stats::pt(abs(b / se), nrow(d)-2, lower.tail=FALSE) * 2
 	)
 
 	fe_out <- re_out
 	fe_out$se <- fe_out$se / max(1, egger2$sigma)
-	fe_out$pval <- pnorm(abs(fe_out$b / fe_out$se), lower.tail=FALSE) * 2
+	fe_out$pval <- stats::pnorm(abs(fe_out$b / fe_out$se), lower.tail=FALSE) * 2
 	fe_out$method <- c("FE Egger")
 
 	out <- dplyr::bind_rows(fe_out, re_out)
@@ -152,7 +150,7 @@ mr_mean_egger <- function(d)
 		method = c("Egger"),
 		Q = c(Qegger2),
 		df = c(nrow(d)-2),
-		pval = pchisq(Q, df, lower.tail=FALSE)
+		pval = stats::pchisq(Q, df, lower.tail=FALSE)
 	)
 
 	directional_pleiotropy <- dplyr::tibble(
@@ -162,14 +160,13 @@ mr_mean_egger <- function(d)
 		nsnp = nrow(d),
 		b = c(egger2$coefficients[1,1], egger2$coefficients[1,1]),
 		se = c(egger2$coefficients[1,2] / max(1, egger2$sigma), egger2$coefficients[1,2]),
-		pval = pt(abs(b/se), nrow(d)-2, lower.tail=FALSE) * 2
+		pval = stats::pt(abs(b/se), nrow(d)-2, lower.tail=FALSE) * 2
 	)
 
 	ret <- list(estimates=out, heterogeneity = heterogeneity, directional_pleiotropy = directional_pleiotropy, outliers=eggeroutliers)
 	return(ret)
 }
 
-#' @importFrom stats pchisq
 mr_mean <- function(dat, parameters=default_parameters())
 {
 	m1 <- try(mr_mean_ivw(dat))
@@ -194,7 +191,7 @@ mr_mean <- function(dat, parameters=default_parameters())
 				method = "Rucker",
 				Q = out$heterogeneity$Q[1] - out$heterogeneity$Q[2],
 				df = 1,
-				pval = pchisq(Q, df, lower.tail=FALSE)
+				pval = stats::pchisq(Q, df, lower.tail=FALSE)
 			)
 			out$heterogeneity <- dplyr::bind_rows(out$heterogeneity, temp)
 			return(out)
@@ -320,8 +317,8 @@ mr_wrapper_single <- function(dat, parameters=default_parameters())
 #' Perform full set of MR analyses
 #'
 #'
-#' @param dat Output from [`harmonise_data()`].
-#' @param parameters Parameters to pass to MR functions. Output from default_parameters() used as default.
+#' @param dat Output from [harmonise_data()].
+#' @param parameters Parameters to pass to MR functions. Output from [default_parameters()] used as default.
 #'
 #' @export
 #' @return list

@@ -15,7 +15,7 @@ mr_report(
 )
 }
 \arguments{
-\item{dat}{Output from \code{\link{harmonise_data}}}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}}
 
 \item{output_path}{Directory in which reports should be saved.}
 
@@ -29,9 +29,9 @@ folder specified in \code{output_path}.}
 
 \item{path}{The filepath to the report template.}
 
-\item{...}{Extra options to be passed to \code{\link[knitr:knit]{knitr::knit}}.}
+\item{...}{Extra options to be passed to \code{\link[knitr:knit]{knitr::knit()}}.}
 }
 \description{
-Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
+Using the output from the \code{\link[=mr]{mr()}} function this report will generate a report containing tables and graphs summarising the results.
 A separate report is produced for each exposure - outcome pair that was analysed.
 }

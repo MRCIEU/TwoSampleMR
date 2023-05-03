@@ -1,7 +1,6 @@
 #' Leave one out sensitivity analysis
 #'
-#' @md
-#' @param dat Output from [`harmonise_data()`].
+#' @param dat Output from [harmonise_data()].
 #' @param method Choose which method to use. The default is `mr_ivw`.
 #' @param parameters List of parameters.
 #'
@@ -81,14 +80,12 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #' 
 #' Plot results from leaveoneout analysis.
 #'
-#' @param leaveoneout_results Output from [`mr_leaveoneout`].
+#' @param leaveoneout_results Output from [mr_leaveoneout()].
 #'
 #' @export
 #' @return List of plots
 mr_leaveoneout_plot <- function(leaveoneout_results)
 {
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
 	res <- plyr::dlply(leaveoneout_results, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)

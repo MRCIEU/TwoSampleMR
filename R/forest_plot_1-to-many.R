@@ -1,6 +1,6 @@
 #' Format MR results for a 1-to-many forest plot
 #'
-#' This function formats user-supplied results for the \code{\link{forest_plot_1_to_many}} function. 
+#' This function formats user-supplied results for the [forest_plot_1_to_many()] function. 
 #' The user supplies their results in the form of a data frame. 
 #' The data frame is assumed to contain at least three columns of data: 
 #' \enumerate{
@@ -9,7 +9,6 @@
 #' \item a column of trait names, corresponding to the 'many' in a 1-to-many forest plot.
 #' }
 #' 
-#' @md
 #' @param mr_res Data frame of results supplied by the user.
 #' @param b Name of the column specifying the effect of the exposure on the outcome. Default = `"b"`.
 #' @param se Name of the column specifying the standard error for b. Default = `"se"`.
@@ -17,17 +16,13 @@
 #' @param addcols Name of any additional columns to add to the plot. Character vector. The default is `NULL`.
 #' @param by Name of the column indicating a grouping variable to stratify results on. Default=`NULL`.
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=`FALSE`.
-#' @param ao_slc Logical; retrieve trait subcategory information using [`available_outcomes()`]. Default=`FALSE`.
+#' @param ao_slc Logical; retrieve trait subcategory information using [available_outcomes()]. Default=`FALSE`.
 #' @param weight The default is `NULL`.
 #'
 #' @export
 #' @return data frame.
 format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FALSE,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL)
 {
-	# mr_res
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
-
 	if(!is.null(by)){
 		mr_res<-mr_res[,names(mr_res)!="subcategory"]
 		names(mr_res)[names(mr_res)==by]<-"subcategory"
@@ -139,7 +134,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 
 #' Sort results for 1-to-many forest plot
 #'
-#' This function sorts user-supplied results for the [`forest_plot_1_to_many()`] function. The user supplies their results in the form of a data frame.    
+#' This function sorts user-supplied results for the [forest_plot_1_to_many()] function. The user supplies their results in the form of a data frame.    
 #' 
 #' @param mr_res Data frame of results supplied by the user.
 #' @param b Name of the column specifying the effect of the exposure on the outcome. The default is `"b"`.
@@ -231,10 +226,9 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 #' A basic forest plot
 #'
 #' This function is used to create a basic forest plot.
-#' It requires the output from \code{\link{format_1_to_many}}.
+#' It requires the output from [format_1_to_many()].
 #'
-#' @md
-#' @param dat Output from [`format_1_to_many()`]
+#' @param dat Output from [format_1_to_many()]
 #' @param section Which category in dat to plot. If `NULL` then prints everything.
 #' @param colour_group Which exposure to plot. If `NULL` then prints everything grouping by colour.
 #' @param colour_group_first The default is `TRUE`.
@@ -246,7 +240,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 #' @param up Upper limit of x axis.
 #' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument.
 #' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points `"black"`.
-#' @param shape_points the shape of the data points to pass to `ggplot2::geom_points()`. Default is set to `15` (filled square).
+#' @param shape_points the shape of the data points to pass to [ggplot2::geom_point()]. Default is set to `15` (filled square).
 #'
 #' @return ggplot object
 forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
@@ -541,9 +535,11 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 #' 1-to-many forest plot 
 #'
-#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
+#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes.
+#' Plots effect estimates and 95 percent confidence intervals.
+#' The ordering of results in the plot is determined by the order supplied by the user.
+#' Users may find [sort_1_to_many()] helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
 #' 
-#' @md
 #' @param mr_res Data frame of results supplied by the user. The default is `"mr_res"`.
 #' @param b Name of the column specifying the effect of the exposure on the outcome. The default is `"b"`.
 #' @param se Name of the column specifying the standard error for b. The default is `"se"`.
@@ -553,7 +549,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param addcols Name of additional columns to plot. Character vector. The default is `NULL`.
 #' @param addcol_titles Titles of additional columns specified by the addcols argument. Character vector. The default is `NULL`.
 #' @param addcol_widths Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. The default is `NULL`.
-#' @param xlab X-axis label, default is `"Effect (95\% confidence interval)"`.
+#' @param xlab X-axis label, default is `"Effect (95% confidence interval)"`.
 #' @param by Name of the grouping variable to stratify results on. Default is `NULL`.
 #' @param subheading_size text size for the subheadings specified in by argument. The default is `6`.
 #' @param exponentiate Convert log odds ratios to odds ratios? Default is `FALSE`.
@@ -562,7 +558,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param lo Lower limit of X axis to plot. 
 #' @param up upper limit of X axis to plot. 
 #' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points `"black"`. 
-#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to `15` (filled square).
+#' @param shape_points the shape of the data points to pass to [ggplot2::geom_point()]. Default is set to `15` (filled square).
 #' @param col_text_size The default is `5`.
 #' @param weight The default is `NULL`.
 #'
@@ -570,12 +566,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @return grid plot object
 #' 
 forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=TRUE,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL){
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("cowplot", quietly=TRUE)
-	requireNamespace("gridExtra", quietly=TRUE)
-	
 	# if(is.null(lo) | is.null(up)) warning("Values missing for the lower or upper bounds of the x axis. Did you forget to set the lo and up arguments?")
-
 	
 	xlim=NULL
 	ncols=1+length(addcols)
@@ -615,8 +606,6 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 	{
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 
-		# print(col1_title)
-		# print(sec)		
 		l[[count]] <- forest_plot_names2(
 			dat, 
 			sec[i],
@@ -672,9 +661,6 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 	}
 	h <- h + 5
 	h[length(sec)] <- h[length(sec)] + 1
-	# message(length(l))
-	# message(count)
-	# message(h)
 	return(
 		cowplot::plot_grid(
 			gridExtra::arrangeGrob(
@@ -689,4 +675,3 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 	)
 
 }
-

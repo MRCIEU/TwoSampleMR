@@ -13,7 +13,7 @@ mv_residual(
 )
 }
 \arguments{
-\item{mvdat}{Output from \code{\link{mv_harmonise_data}}.}
+\item{mvdat}{Output from \code{\link[=mv_harmonise_data]{mv_harmonise_data()}}.}
 
 \item{intercept}{Should the intercept by estimated (\code{TRUE}) or force line through the origin (\code{FALSE}, default).}
 
@@ -27,5 +27,6 @@ mv_residual(
 List of results
 }
 \description{
-Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
+Performs initial multivariable MR analysis from Burgess et al 2015.
+For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 }

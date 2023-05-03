@@ -3,13 +3,13 @@
 #' This function searches for GWAS significant SNPs (for a given p-value) for a specified set of outcomes.
 #' It then performs LD based clumping to return only independent significant associations.
 #'
-#' @param outcomes Array of outcome IDs (see [`available_outcomes`]).
+#' @param outcomes Array of outcome IDs (see [available_outcomes()]).
 #' @param p1 Significance threshold. The default is `5e-8`.
 #' @param clump Logical; whether to clump results. The default is `TRUE`.
 #' @param p2 Secondary clumping threshold. The default is `5e-8`.
 #' @param r2 Clumping r2 cut off. The default is `0.001`.
 #' @param kb Clumping distance cutoff. The default is `10000`.
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data. The default is `ieugwasr::check_access_token()`.
+#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data. The default is [ieugwasr::check_access_token()].
 #' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package.
 #'
 #' @export

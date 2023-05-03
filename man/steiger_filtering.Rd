@@ -7,14 +7,15 @@
 steiger_filtering(dat)
 }
 \arguments{
-\item{dat}{Output from \code{\link{harmonise_data}}.}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 }
 \value{
-\code{\link{harmonise_data}} style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is \code{TRUE} if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome.
+\code{\link[=harmonise_data]{harmonise_data()}} style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is \code{TRUE} if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome.
 }
 \description{
-This function takes an object from \code{\link{harmonise_data}} and does the following:
-If there is no rsq.exposure or rsq.outcome column it will try to estimate it. This is done differently for traits that have "log odds" units.
+This function takes an object from \code{\link[=harmonise_data]{harmonise_data()}} and does the following:
+If there is no rsq.exposure or rsq.outcome column it will try to estimate it.
+This is done differently for traits that have "log odds" units.
 To estimate rsq for quantitative traits there must be either p-values and sample sizes for each SNP,
 or effect sizes and standard errors AND the units are in SD units (the column must contain "SD").
 To estimate rsq for binary traits the units must be called "log odds" and there must be beta.exposure,

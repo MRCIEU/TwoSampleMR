@@ -4,7 +4,7 @@
 #' Can be applied to either exposure data, outcome data, or harmonised data
 #'
 #' @param dat Either exposure data, outcome data or harmonised data
-#' @param cols Which metadata fields to add. Default = c("sample_size", "ncase", "ncontrol", "unit", "sd")
+#' @param cols Which metadata fields to add. Default = `c("sample_size", "ncase", "ncontrol", "unit", "sd")`
 #'
 #' @export
 #' @return Data frame

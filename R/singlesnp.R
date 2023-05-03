@@ -1,7 +1,6 @@
 #' Perform 2 sample MR on each SNP individually
 #'
-#' @md
-#' @param dat Output from [`harmonise_data`].
+#' @param dat Output from [harmonise_data()].
 #' @param parameters List of parameters. The default is `default_parameters()`.
 #' @param single_method Function to use for MR analysis. The default is `"mr_wald_ratio"`.
 #' @param all_method Functions to use for MR analysis. The default is `c("mr_ivw", "mr_egger_regression")`.
@@ -71,15 +70,13 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 
 #' Forest plot
 #'
-#' @param singlesnp_results from [`mr_singlesnp`].
+#' @param singlesnp_results from [mr_singlesnp()].
 #' @param exponentiate Plot on exponential scale. The default is `FALSE`.
 #'
 #' @export
 #' @return List of plots
 mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 {
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
 	res <- plyr::dlply(singlesnp_results, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)
@@ -136,8 +133,8 @@ mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 
 #' Density plot
 #'
-#' @param singlesnp_results from [`mr_singlesnp`].
-#' @param mr_results Results from [`mr`].
+#' @param singlesnp_results from [mr_singlesnp()].
+#' @param mr_results Results from [mr()].
 #' @param exponentiate Plot on exponentiated scale. The default is `FALSE`.
 #' @param bandwidth Density bandwidth parameter.
 #'
@@ -145,8 +142,6 @@ mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 #' @return List of plots
 mr_density_plot <- function(singlesnp_results, mr_results, exponentiate=FALSE, bandwidth="nrd0")
 {
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
 	res <- plyr::dlply(singlesnp_results, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)
@@ -184,14 +179,12 @@ mr_density_plot <- function(singlesnp_results, mr_results, exponentiate=FALSE, b
 #'
 #' Create funnel plot from single SNP analyses.
 #'
-#' @param singlesnp_results from [`mr_singlesnp`].
+#' @param singlesnp_results from [mr_singlesnp()].
 #'
 #' @export
 #' @return List of plots
 mr_funnel_plot <- function(singlesnp_results)
 {
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
 	res <- plyr::dlply(singlesnp_results, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)
@@ -216,4 +209,3 @@ mr_funnel_plot <- function(singlesnp_results)
 	})
 	res
 }
-

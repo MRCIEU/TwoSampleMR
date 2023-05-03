@@ -46,12 +46,9 @@
 #' 
 #' @keywords internal
 #' @return grid object giving the forest plot (or plot as pdf)
-#' @importFrom grDevices dev.off pdf
-#' @importFrom stats qnorm
 mr_forest_plot_grouped <-
     function(name, eff_Col = "b", exposure_Name="exposure", outcome_Name="outcome", forest_Title = '', outfile_Name = 'annot_FP.pdf', left_Col_Names=c("Exposure", "Outcome"), left_Col_Titles = NULL, right_Col_Names = c("p", "Outcome.n.case", "Outcome.n.control", "Outcome.sample.size"), right_Col_Titles =
                  NULL, debug = FALSE,  log_ES = FALSE, decrease = TRUE,  returnRobj = TRUE, se_Col = "se") {
-        requireNamespace("gtable", quietly = TRUE)
         # name = (character) name of the r object from mr_singlesnp()
         # inRobj = (logical) is the data to be used an internal R object y/n?
         # eff_Col = (character) name of the column in the delimited file that contains the effect sizes
@@ -70,8 +67,8 @@ mr_forest_plot_grouped <-
         # decrease = (logical) sort the studies by decreasing effect sizes y/n?
 
         # returnRobj = (logical) return the graph as an internal R object y/n?
-        name$lb <- name[,eff_Col] - qnorm(p = 0.95) * name[,se_Col]
-        name$ub <- name[,eff_Col] + qnorm(p = 0.95) * name[,se_Col]
+        name$lb <- name[,eff_Col] - stats::qnorm(p = 0.95) * name[,se_Col]
+        name$ub <- name[,eff_Col] + stats::qnorm(p = 0.95) * name[,se_Col]
         data <- name
         spacer <- function(exposure, eff_col, outcome, Data_Fm, decrease = TRUE) {
                 # exposure = (character), column name of the column containing the name of the particular exposure
@@ -285,9 +282,9 @@ mr_forest_plot_grouped <-
         grid.newpage()
         grid.draw(group)
         if (returnRobj == FALSE) {
-            pdf(outfile_Name,width = 23.4, height = 16.5)
+            grDevices::pdf(outfile_Name,width = 23.4, height = 16.5)
             grid.draw(group)
-            dev.off()
+            grDevices::dev.off()
         } else {
             return(group)
         }

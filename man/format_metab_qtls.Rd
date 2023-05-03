@@ -15,5 +15,5 @@ format_metab_qtls(metab_qtls_subset, type = "exposure")
 Data frame
 }
 \description{
-See \code{\link{format_data}}.
+See \code{\link[=format_data]{format_data()}}.
 }

@@ -7,7 +7,7 @@
 mr_forest_plot(singlesnp_results, exponentiate = FALSE)
 }
 \arguments{
-\item{singlesnp_results}{from \code{\link{mr_singlesnp}}.}
+\item{singlesnp_results}{from \code{\link[=mr_singlesnp]{mr_singlesnp()}}.}
 
 \item{exponentiate}{Plot on exponential scale. The default is \code{FALSE}.}
 }

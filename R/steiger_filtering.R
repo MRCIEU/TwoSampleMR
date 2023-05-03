@@ -1,7 +1,8 @@
 #' Steiger filtering function
 #' 
-#' This function takes an object from [`harmonise_data`] and does the following:
-#' If there is no rsq.exposure or rsq.outcome column it will try to estimate it. This is done differently for traits that have "log odds" units. 
+#' This function takes an object from [harmonise_data()] and does the following:
+#' If there is no rsq.exposure or rsq.outcome column it will try to estimate it.
+#' This is done differently for traits that have "log odds" units. 
 #' To estimate rsq for quantitative traits there must be either p-values and sample sizes for each SNP, 
 #' or effect sizes and standard errors AND the units are in SD units (the column must contain "SD"). 
 #' To estimate rsq for binary traits the units must be called "log odds" and there must be beta.exposure, 
@@ -15,10 +16,10 @@
 #' Try to use replication effect estimates for the exposure (which are not biased by winner's curse), 
 #' and note that if there is strong antagonistic confounding or differential measurement error between the exposure and outcome then the causal directions could be inferred incorrectly.
 #'
-#' @param dat Output from [`harmonise_data`].
+#' @param dat Output from [harmonise_data()].
 #' 
 #' @export
-#' @return [`harmonise_data`] style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is `TRUE` if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome.
+#' @return [harmonise_data()] style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is `TRUE` if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome.
 steiger_filtering <- function(dat)
 {
 	plyr::ddply(dat, c("id.exposure", "id.outcome"), steiger_filtering_internal)
@@ -26,7 +27,6 @@ steiger_filtering <- function(dat)
 
 
 
-#' @importFrom stats pnorm
 steiger_filtering_internal <- function(dat)
 {
 	if(! "units.outcome" %in% names(dat))
@@ -51,7 +51,7 @@ steiger_filtering_internal <- function(dat)
 		r34 = sqrt(dat$rsq.outcome)
 	)
 	dat$steiger_dir <- dat$rsq.exposure > dat$rsq.outcome
-	dat$steiger_pval <- pnorm(-abs(st$z)) * 2
+	dat$steiger_pval <- stats::pnorm(-abs(st$z)) * 2
 
 	return(dat)
 }

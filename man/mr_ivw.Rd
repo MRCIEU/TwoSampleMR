@@ -29,5 +29,5 @@ List with the following elements:
 \description{
 The default multiplicative random effects IVW estimate.
 The standard error is corrected for under dispersion
-Use the \code{\link{mr_ivw_mre}} function for estimates that don't correct for under dispersion.
+Use the \code{\link[=mr_ivw_mre]{mr_ivw_mre()}} function for estimates that don't correct for under dispersion.
 }

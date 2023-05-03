@@ -7,9 +7,9 @@
 mr_scatter_plot(mr_results, dat)
 }
 \arguments{
-\item{mr_results}{Output from \code{\link{mr}}.}
+\item{mr_results}{Output from \code{\link[=mr]{mr()}}.}
 
-\item{dat}{Output from \code{\link{harmonise_data}}.}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 }
 \value{
 List of plots

@@ -23,7 +23,7 @@ mv_extract_exposures(
 
 \item{clump_kb}{The default is \code{10000}.}
 
-\item{harmonise_strictness}{See the \code{action} option of \code{\link{harmonise_data}}. The default is \code{2}.}
+\item{harmonise_strictness}{See the \code{action} option of \code{\link[=harmonise_data]{harmonise_data()}}. The default is \code{2}.}
 
 \item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data.}
 

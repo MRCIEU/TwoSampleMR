@@ -75,5 +75,6 @@ read_outcome_data(
 data frame
 }
 \description{
-Reads in outcome data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se.
+Reads in outcome data. Checks and organises columns for use with MR or enrichment tests.
+Infers p-values when possible from beta and se.
 }

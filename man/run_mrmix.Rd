@@ -7,7 +7,7 @@
 run_mrmix(dat)
 }
 \arguments{
-\item{dat}{Output from \code{\link{harmonise_data}}. Ensures that no eaf.exposure values are missing.}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}. Ensures that no eaf.exposure values are missing.}
 }
 \value{
 List of results, with one list item for every exposure/outcome pair in dat object

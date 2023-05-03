@@ -7,11 +7,11 @@
 dat_to_MRInput(dat, get_correlations = FALSE, pop = "EUR")
 }
 \arguments{
-\item{dat}{Output from the \code{\link{harmonise_data}} function.}
+\item{dat}{Output from the \code{\link[=harmonise_data]{harmonise_data()}} function.}
 
 \item{get_correlations}{Default \code{FALSE}. If \code{TRUE} then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.}
 
-\item{pop}{If get_correlations is TRUE then use the following}
+\item{pop}{If \code{get_correlations} is \code{TRUE} then use the following}
 }
 \value{
 List of MRInput objects for each exposure/outcome combination

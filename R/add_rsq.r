@@ -1,6 +1,9 @@
 #' Estimate r-square of each association
 #'
-#' Can be applied to exposure_dat, outcome_dat or harmonised_data. Note that it will be beneficial in some circumstances to add the meta data to the data object using \code{add_metadata()} before running this function. Also adds effective sample size for case control data
+#' Can be applied to exposure_dat, outcome_dat or harmonised_data.
+#' Note that it will be beneficial in some circumstances to add the meta data to
+#' the data object using [add_metadata()] before running this function. 
+#' Also adds effective sample size for case control data.
 #'
 #' @param dat exposure_dat, outcome_dat or harmonised_data
 #'
@@ -89,13 +92,12 @@ add_rsq_one <- function(dat, what="exposure")
 }
 
 
-#' @importFrom stats qchisq
 get_r_from_pn_less_accurate <- function(p, n)
 {
 	# qval <- qf(p, 1, n-2, low=FALSE)
 	p[p == 1] <- 0.999
 	p[p == 0] <- 1e-200
-	qval <- qchisq(p, 1, lower.tail = FALSE) / (qchisq(p, n-2, lower.tail = FALSE)/(n-2))
+	qval <- stats::qchisq(p, 1, lower.tail = FALSE) / (stats::qchisq(p, n-2, lower.tail = FALSE)/(n-2))
 	r <- sqrt(sum(qval / (n - qval)))
 
 	if(r >= 1)
@@ -105,12 +107,8 @@ get_r_from_pn_less_accurate <- function(p, n)
 	return(r)
 }
 
-#' @importFrom stats coefficients cor lm rnorm
 test_r_from_pn <- function()
 {
-	requireNamespace("ggplot2", quietly = TRUE)
-	# requireNamespace("tidyr", quietly = TRUE) # not used
-
 	param <- expand.grid(
 		n = c(10, 100, 1000, 10000, 100000),
 		rsq = 10^seq(-4,-0.5, length.out=30)
@@ -119,10 +117,10 @@ test_r_from_pn <- function()
 	for(i in 1:nrow(param))
 	{
 		message(i)
-		x <- scale(rnorm(param$n[i]))
-		y <- x * sqrt(param$rsq[i]) + scale(rnorm(param$n[i])) * sqrt(1 - param$rsq[i])
-		param$rsq_emp[i] <- cor(x, y)^2
-		param$pval[i] <- max(coefficients(summary(lm(y ~ x)))[2,4], 1e-300)
+		x <- scale(stats::rnorm(param$n[i]))
+		y <- x * sqrt(param$rsq[i]) + scale(stats::rnorm(param$n[i])) * sqrt(1 - param$rsq[i])
+		param$rsq_emp[i] <- stats::cor(x, y)^2
+		param$pval[i] <- max(stats::coefficients(summary(stats::lm(y ~ x)))[2,4], 1e-300)
 		param$rsq1[i] <- get_r_from_pn_less_accurate(param$pval[i], param$n[i])^2
 		param$rsq2[i] <- get_r_from_pn(param$pval[i], param$n[i])^2
 	}
@@ -139,34 +137,32 @@ test_r_from_pn <- function()
 }
 
 
-#' Calculate p-value from rsq and sample size
+#' Calculate p-value from R-squared and sample size
 #'
 #' @param r2 Rsq
 #' @param n Sample size
 #'
 #' @export
 #' @return P-value
-#' @importFrom stats pf df
 get_p_from_r2n <- function(r2, n)
 {
 	fval <- r2 * (n-2) / (1 - r2)
-	pval <- pf(fval, 1, n-1, lower.tail=FALSE)
+	pval <- stats::pf(fval, 1, n-1, lower.tail=FALSE)
 	return(pval)
 }
 
 
-#' Calculate variance explained from p vals and sample size
+#' Calculate variance explained from p-values and sample size
 #'
 #' This method is an approximation, and may be numerically unstable.
 #' Ideally you should estimate r directly from independent replication samples.
-#' Use get_r_from_lor for binary traits.
+#' Use [get_r_from_lor()] for binary traits.
 #'
 #' @param p Array of pvals
 #' @param n Array of sample sizes
 #'
 #' @export
 #' @return Vector of r values (all arbitrarily positive)
-#' @importFrom stats optim qf
 get_r_from_pn <- function(p, n)
 {
 	optim.get_p_from_rn <- function(x, sample_size, pvalue)
@@ -180,7 +176,7 @@ get_r_from_pn <- function(p, n)
 		n <- rep(n, length(p))
 	}
 
-	Fval <- suppressWarnings(qf(p, 1, n-1, lower.tail=FALSE))
+	Fval <- suppressWarnings(stats::qf(p, 1, n-1, lower.tail=FALSE))
 	R2 <- Fval / (n - 2 + Fval)
 	index <- !is.finite(Fval)
 	if(any(index))
@@ -193,14 +189,14 @@ get_r_from_pn <- function(p, n)
 				R2[index[i]] <- NA
 				warning("P-value of 0 cannot be converted to R value")
 			} else {
-				R2[index[i]] <- suppressWarnings(optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par)
+				R2[index[i]] <- suppressWarnings(stats::optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par)
 			}
 		}
 	}
 	return(sqrt(R2))
 }
 
-#' Estimate Rsq from beta, standard error and sample size
+#' Estimate R-squared from beta, standard error and sample size
 #'
 #' @param b Array of effect sizes
 #' @param se Array of standard errors
@@ -357,7 +353,7 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 
 #' Estimate the effective sample size in a case control study
 #'
-#' Taken from https://www.nature.com/articles/nprot.2014.071
+#' Taken from <https://www.nature.com/articles/nprot.2014.071>
 #'
 #' @param ncase Vector of number of cases
 #' @param ncontrol Vector of number of controls

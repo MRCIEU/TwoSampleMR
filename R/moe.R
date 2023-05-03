@@ -1,4 +1,3 @@
-#' @importFrom stats influence.measures ks.test median pnorm residuals shapiro.test var
 system_metrics <- function(dat)
 {
 	# Number of SNPs
@@ -14,8 +13,8 @@ system_metrics <- function(dat)
 	Fstat <- dat$beta.exposure^2 / dat$se.exposure^2
 	Fstat[is.infinite(Fstat)] <- 300
 	metrics$meanF <- mean(Fstat, na.rm=TRUE)
-	metrics$varF <- var(Fstat, na.rm=TRUE)
-	metrics$medianF <- median(Fstat, na.rm=TRUE)
+	metrics$varF <- stats::var(Fstat, na.rm=TRUE)
+	metrics$medianF <- stats::median(Fstat, na.rm=TRUE)
 
 	# IF more than 1 SNP
 
@@ -46,8 +45,8 @@ system_metrics <- function(dat)
 		dfbeta_thresh <- 2 * nrow(dat)^-0.5
 		cooksthresh1 <- 4 / (nrow(dat) - 2)
 		cooksthresh2 <- 4 / (nrow(dat) - 3)
-		inf1 <- influence.measures(ruck$lmod_ivw)$infmat
-		inf2 <- influence.measures(ruck$lmod_egger)$infmat
+		inf1 <- stats::influence.measures(ruck$lmod_ivw)$infmat
+		inf2 <- stats::influence.measures(ruck$lmod_egger)$infmat
 		metrics$dfb1_ivw <- sum(inf1[,1] > dfbeta_thresh) / nrow(dat)
 		metrics$dfb2_ivw <- sum(inf1[,2] > dfbeta_thresh) / nrow(dat)
 		metrics$dfb3_ivw <- sum(inf1[,3] > dfbeta_thresh) / nrow(dat)
@@ -68,10 +67,10 @@ system_metrics <- function(dat)
 		metrics$homosc_egg <- car::ncvTest(ruck$lmod_egger)$ChiSquare
 
 		# Normality of residuals
-		metrics$shap_ivw <- shapiro.test(residuals(ruck$lmod_ivw))$statistic
-		metrics$shap_egger <- shapiro.test(residuals(ruck$lmod_egger))$statistic
-		metrics$ks_ivw <- ks.test(residuals(ruck$lmod_ivw), "pnorm")$statistic
-		metrics$ks_egger <- ks.test(residuals(ruck$lmod_egger), "pnorm")$statistic
+		metrics$shap_ivw <- stats::shapiro.test(stats::residuals(ruck$lmod_ivw))$statistic
+		metrics$shap_egger <- stats::shapiro.test(stats::residuals(ruck$lmod_egger))$statistic
+		metrics$ks_ivw <- stats::ks.test(stats::residuals(ruck$lmod_ivw), "pnorm")$statistic
+		metrics$ks_egger <- stats::ks.test(stats::residuals(ruck$lmod_egger), "pnorm")$statistic
 
 	}
 	return(metrics)
@@ -155,13 +154,11 @@ get_rsq <- function(dat)
 #' Based on the method described here \url{https://www.biorxiv.org/content/early/2017/08/23/173682}.
 #' Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.
 #'
-#' @md
-#' @param res Output from [`mr_wrapper`]. 
+#' @param res Output from [mr_wrapper()].
 #' @param rf The trained random forest for the methods. This is available to download at <https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0>.
 #' 
-#' @md
 #' @details
-#' The `mr_moe` function modifies the `estimates` item in the list of results from the [`mr_wrapper`] function. It does three things:
+#' The `mr_moe()` function modifies the `estimates` item in the list of results from the [mr_wrapper()] function. It does three things:
 #' 1. Adds the MOE column, which is a predictor for each method for how well it performs in terms of high power and low type 1 error (scaled 0-1, where 1 is best performance). 
 #' 2. It renames the methods to be the estimating method + the instrument selection method. There are 4 instrument selection methods: Tophits (i.e. no filtering), directional filtering (DF, an unthresholded version of Steiger filtering), heterogeneity filtering (HF, removing instruments that make substantial (p < 0.05) contributions to Cochran's Q statistic), and DF + HF which is where DF is applied and the HF applied on top of that. 
 #' 3. It orders the table to be in order of best performing method.
@@ -193,7 +190,6 @@ get_rsq <- function(dat)
 #'}
 mr_moe <- function(res, rf)
 {
-	requireNamespace("dplyr", quietly = TRUE)
 	if (!requireNamespace("randomForest", quietly = TRUE)) {
 	  stop(
 	    "Package \"randomForest\" must be installed to use this function.",
@@ -214,7 +210,6 @@ mr_moe <- function(res, rf)
 
 mr_moe_single <- function(res, rf)
 {
-  requireNamespace("dplyr", quietly = TRUE)
   if (!requireNamespace("randomForest", quietly = TRUE)) {
     stop(
       "Package \"randomForest\" must be installed to use this function.",

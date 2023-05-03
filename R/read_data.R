@@ -2,9 +2,9 @@
 
 #' Read outcome data
 #'
-#' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se.
+#' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests.
+#' Infers p-values when possible from beta and se.
 #'
-#' @md
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param snps SNPs to extract. If `NULL`, which the default, then doesn't extract any and keeps all.
 #' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`.
@@ -61,11 +61,11 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 
 #' Read exposure data
 #'
-#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
+#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests.
+#' Infers p-values when possible from beta and se.
 #'
-#' @md
 #' @param filename Filename. Must have header with at least SNP column present.
-#' @param clump Whether to perform LD clumping with [`clump_data`] on the exposure data. The default is `FALSE`.
+#' @param clump Whether to perform LD clumping with [clump_data()] on the exposure data. The default is `FALSE`.
 #' @param sep Specify delimeter in file. The default is a space, i.e. `" "`.
 #' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome". The default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
@@ -126,9 +126,7 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. 
 #' Infers p-values when possible from beta and se. 
-#' If it is the exposure then looks up SNPs in biomaRt to get basic info.
 #'
-#' @md
 #' @param dat Data frame. Must have header with at least SNP column present.
 #' @param type Is this the exposure or the outcome data that is being read in? The default is `"exposure"`.
 #' @param snps SNPs to extract. If NULL then doesn't extract any and keeps all. The default is `NULL`.
@@ -156,7 +154,6 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' @export
 #' @return data frame
-#' @importFrom stats pnorm
 format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, 
                         phenotype_col="Phenotype", snp_col="SNP", 
                         beta_col="beta", se_col="se", eaf_col="eaf", 
@@ -362,7 +359,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
 			if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat))
 			{
 				index <- is.na(dat$pval.outcome)
-				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
+				dat$pval.outcome[index] <- stats::pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
 				dat$pval_origin.outcome[index] <- "inferred"
 			}
 		}
@@ -372,7 +369,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
 	if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat) & ! "pval.outcome" %in% names(dat))
 	{
 		message("Inferring p-values")
-		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE) * 2
+		dat$pval.outcome <- stats::pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE) * 2
 		dat$pval_origin.outcome <- "inferred"
 	}
 	
@@ -515,9 +512,8 @@ check_units <- function(x, id, col)
 
 #' Get data selected from GWAS catalog into correct format
 #'
-#' DEPRECATED. Please use \code{\link{format_data}} instead.
+#' DEPRECATED. Please use [format_data()] instead.
 #'
-#' @md
 #' @param gwas_catalog_subset The GWAS catalog subset.
 #' @param type The default is `"exposure"`.
 #'
@@ -538,9 +534,8 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 
 #' Get data from eQTL catalog into correct format
 #'
-#' See \code{\link{format_data}}.
+#' See [format_data()].
 #'
-#' @md
 #' @param gtex_eqtl_subset Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
@@ -566,9 +561,8 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 
 #' Get data from metabolomic QTL results
 #'
-#' See \code{\link{format_data}}.
+#' See [format_data()].
 #' 
-#' @md
 #' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
@@ -594,9 +588,8 @@ format_metab_qtls <- function(metab_qtls_subset, type="exposure")
 
 #' Get data from proteomic QTL results
 #'
-#' See \code{\link{format_data}}.
+#' See [format_data()].
 #'
-#' @md
 #' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
@@ -622,9 +615,8 @@ format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 
 #' Get data from methylation QTL results
 #'
-#' See \code{\link{format_data}}.
+#' See [format_data()].
 #'
-#' @md
 #' @param aries_mqtl_subset Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
@@ -671,12 +663,12 @@ create_ids <- function(x)
 
 #' Combine data
 #'
-#' Taking exposure or outcome data (returned from \code{\link{format_data}})
+#' Taking exposure or outcome data (returned from [format_data()])
 #' combine multiple datasets together so they can be analysed in one
 #' batch. Removes duplicate SNPs, preferentially keeping those usable
 #' in MR analysis.
 #'
-#' @param x List of data frames returned from \code{\link{format_data}}.
+#' @param x List of data frames returned from [format_data()].
 #'
 #' @export
 #' @return data frame
@@ -714,9 +706,9 @@ combine_data <- function(x)
 
 #' Convert outcome data to exposure data
 #'
-#' Helper function to convert results from \code{\link{extract_outcome_data}} to \code{exposure_dat} format.
+#' Helper function to convert results from [extract_outcome_data()] to \code{exposure_dat} format.
 #'
-#' @param outcome_dat Output from \code{\link{extract_outcome_data}}.
+#' @param outcome_dat Output from [extract_outcome_data()].
 #'
 #' @export
 #' @return data frame

@@ -7,11 +7,11 @@
 mv_harmonise_data(exposure_dat, outcome_dat, harmonise_strictness = 2)
 }
 \arguments{
-\item{exposure_dat}{Output from \code{\link{mv_extract_exposures}}.}
+\item{exposure_dat}{Output from \code{\link[=mv_extract_exposures]{mv_extract_exposures()}}.}
 
 \item{outcome_dat}{Output from \code{extract_outcome_data(exposure_dat$SNP, id_output)}.}
 
-\item{harmonise_strictness}{See the \code{action} option of \code{\link{harmonise_data}}. The default is \code{2}.}
+\item{harmonise_strictness}{See the \code{action} option of \code{\link[=harmonise_data]{harmonise_data()}}. The default is \code{2}.}
 }
 \value{
 List of vectors and matrices required for mv analysis.

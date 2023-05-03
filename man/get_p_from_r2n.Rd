@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_rsq.r
 \name{get_p_from_r2n}
 \alias{get_p_from_r2n}
-\title{Calculate p-value from rsq and sample size}
+\title{Calculate p-value from R-squared and sample size}
 \usage{
 get_p_from_r2n(r2, n)
 }
@@ -15,5 +15,5 @@ get_p_from_r2n(r2, n)
 P-value
 }
 \description{
-Calculate p-value from rsq and sample size
+Calculate p-value from R-squared and sample size
 }

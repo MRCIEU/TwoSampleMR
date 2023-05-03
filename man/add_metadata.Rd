@@ -9,7 +9,7 @@ add_metadata(dat, cols = c("sample_size", "ncase", "ncontrol", "unit", "sd"))
 \arguments{
 \item{dat}{Either exposure data, outcome data or harmonised data}
 
-\item{cols}{Which metadata fields to add. Default = c("sample_size", "ncase", "ncontrol", "unit", "sd")}
+\item{cols}{Which metadata fields to add. Default = \code{c("sample_size", "ncase", "ncontrol", "unit", "sd")}}
 }
 \value{
 Data frame

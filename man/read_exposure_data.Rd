@@ -31,7 +31,7 @@ read_exposure_data(
 \arguments{
 \item{filename}{Filename. Must have header with at least SNP column present.}
 
-\item{clump}{Whether to perform LD clumping with \code{\link{clump_data}} on the exposure data. The default is \code{FALSE}.}
+\item{clump}{Whether to perform LD clumping with \code{\link[=clump_data]{clump_data()}} on the exposure data. The default is \code{FALSE}.}
 
 \item{sep}{Specify delimeter in file. The default is a space, i.e. \code{" "}.}
 
@@ -75,5 +75,6 @@ read_exposure_data(
 data frame
 }
 \description{
-Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
+Reads in exposure data. Checks and organises columns for use with MR or enrichment tests.
+Infers p-values when possible from beta and se.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_rsq.r
 \name{get_r_from_pn}
 \alias{get_r_from_pn}
-\title{Calculate variance explained from p vals and sample size}
+\title{Calculate variance explained from p-values and sample size}
 \usage{
 get_r_from_pn(p, n)
 }
@@ -17,5 +17,5 @@ Vector of r values (all arbitrarily positive)
 \description{
 This method is an approximation, and may be numerically unstable.
 Ideally you should estimate r directly from independent replication samples.
-Use get_r_from_lor for binary traits.
+Use \code{\link[=get_r_from_lor]{get_r_from_lor()}} for binary traits.
 }

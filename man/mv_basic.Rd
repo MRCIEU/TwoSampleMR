@@ -7,7 +7,7 @@
 mv_basic(mvdat, pval_threshold = 5e-08)
 }
 \arguments{
-\item{mvdat}{Output from \code{\link{mv_harmonise_data}}.}
+\item{mvdat}{Output from \code{\link[=mv_harmonise_data]{mv_harmonise_data()}}.}
 
 \item{pval_threshold}{P-value threshold to include instruments. The default is \code{5e-8}.}
 }
@@ -15,5 +15,6 @@ mv_basic(mvdat, pval_threshold = 5e-08)
 List of results
 }
 \description{
-Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
+Performs initial multivariable MR analysis from Burgess et al 2015.
+For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 }

@@ -27,5 +27,5 @@ List with the following elements:
 }
 }
 \description{
-Same as \code{\link{mr_ivw}} but no correction for under dispersion.
+Same as \code{\link[=mr_ivw]{mr_ivw()}} but no correction for under dispersion.
 }

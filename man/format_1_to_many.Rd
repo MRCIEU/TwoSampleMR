@@ -39,7 +39,7 @@ format_1_to_many(
 data frame.
 }
 \description{
-This function formats user-supplied results for the \code{\link{forest_plot_1_to_many}} function.
+This function formats user-supplied results for the \code{\link[=forest_plot_1_to_many]{forest_plot_1_to_many()}} function.
 The user supplies their results in the form of a data frame.
 The data frame is assumed to contain at least three columns of data:
 \enumerate{

@@ -9,11 +9,11 @@ harmonise_ld_dat(x, ld)
 \arguments{
 \item{x}{Exposure dataset or harmonised dataset}
 
-\item{ld}{Output from ld_matrix}
+\item{ld}{Output from \code{\link[=ld_matrix]{ld_matrix()}}}
 }
 \value{
 List of exposure dataset and harmonised LD matrix
 }
 \description{
-LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be exposure dataset or harmonised dartaset
+LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be exposure dataset or harmonised dartaset.
 }

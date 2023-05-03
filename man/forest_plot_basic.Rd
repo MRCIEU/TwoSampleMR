@@ -40,6 +40,6 @@ ggplot object
 }
 \description{
 This function is used to create a basic forest plot.
-It requires the output from \code{\link{format_mr_results}}.
+It requires the output from \code{\link[=format_mr_results]{format_mr_results()}}.
 }
 \keyword{internal}

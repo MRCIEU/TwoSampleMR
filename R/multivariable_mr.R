@@ -5,7 +5,7 @@
 #' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
 #' @param clump_r2 The default is `0.01`.
 #' @param clump_kb The default is `10000`.
-#' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
+#' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
@@ -16,7 +16,6 @@
 #' @return data frame in `exposure_dat` format
 mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR")
 {
-	requireNamespace("reshape2", quietly = TRUE)
 	stopifnot(length(id_exposure) > 1)
 	id_exposure <- ieugwasr::legacy_ids(id_exposure)
 
@@ -154,10 +153,9 @@ mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_
 
 #' Harmonise exposure and outcome for multivariable MR
 #'
-#' @md
-#' @param exposure_dat Output from [`mv_extract_exposures`].
+#' @param exposure_dat Output from [mv_extract_exposures()].
 #' @param outcome_dat Output from `extract_outcome_data(exposure_dat$SNP, id_output)`.
-#' @param harmonise_strictness See the `action` option of [`harmonise_data`]. The default is `2`.
+#' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
 #'
 #' @export
 #' @return List of vectors and matrices required for mv analysis. 
@@ -229,10 +227,10 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 
 #' Perform basic multivariable MR
 #'
-#' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
+#' Performs initial multivariable MR analysis from Burgess et al 2015.
+#' For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @md
-#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param mvdat Output from [mv_harmonise_data()].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
 #' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
@@ -240,7 +238,6 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats lm pnorm
 mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
@@ -267,20 +264,20 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		{
 			if(instrument_specific)
 			{
-				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ beta.exposure[index, -c(i), drop=FALSE])$res
-				mod <- summary(lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
+				marginal_outcome[index,i] <- stats::lm(beta.outcome[index] ~ beta.exposure[index, -c(i), drop=FALSE])$res
+				mod <- summary(stats::lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
 			} else {
-				marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i), drop=FALSE])$res
-				mod <- summary(lm(marginal_outcome[,i] ~ beta.exposure[,i]))
+				marginal_outcome[,i] <- stats::lm(beta.outcome ~ beta.exposure[, -c(i), drop=FALSE])$res
+				mod <- summary(stats::lm(marginal_outcome[,i] ~ beta.exposure[,i]))
 			}
 		} else {
 			if(instrument_specific)
 			{
-				marginal_outcome[index,i] <- lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i), drop=FALSE])$res
-				mod <- summary(lm(marginal_outcome[index,i] ~ 0 + beta.exposure[index, i]))
+				marginal_outcome[index,i] <- stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i), drop=FALSE])$res
+				mod <- summary(stats::lm(marginal_outcome[index,i] ~ 0 + beta.exposure[index, i]))
 			} else {
-				marginal_outcome[,i] <- lm(beta.outcome ~ 0 + beta.exposure[, -c(i), drop=FALSE])$res
-				mod <- summary(lm(marginal_outcome[,i] ~ 0 + beta.exposure[,i]))
+				marginal_outcome[,i] <- stats::lm(beta.outcome ~ 0 + beta.exposure[, -c(i), drop=FALSE])$res
+				mod <- summary(stats::lm(marginal_outcome[,i] ~ 0 + beta.exposure[,i]))
 			}			
 		}
 		if(sum(index) > (nexp + as.numeric(intercept)))
@@ -291,7 +288,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			effs[i] <- NA
 			se[i] <- NA
 		}
-		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * stats::pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -323,10 +320,10 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 
 #' Perform IVW multivariable MR
 #'
-#' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
+#' Performs modified multivariable MR analysis.
+#' For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 #' 
-#' @md
-#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param mvdat Output from [mv_harmonise_data()].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
 #' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
@@ -334,7 +331,6 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats lm pnorm
 mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# This is a matrix of 
@@ -365,16 +361,16 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		{
 			if(instrument_specific)
 			{
-				mod <- summary(lm(beta.outcome[index] ~ 0 + beta.exposure[index, ,drop=FALSE], weights=w[index]))
+				mod <- summary(stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, ,drop=FALSE], weights=w[index]))
 			} else {
-				mod <- summary(lm(beta.outcome ~ 0 + beta.exposure, weights=w))
+				mod <- summary(stats::lm(beta.outcome ~ 0 + beta.exposure, weights=w))
 			}
 		} else {
 			if(instrument_specific)
 			{
-				mod <- summary(lm(beta.outcome[index] ~ beta.exposure[index, ,drop=FALSE], weights=w[index]))
+				mod <- summary(stats::lm(beta.outcome[index] ~ beta.exposure[index, ,drop=FALSE], weights=w[index]))
 			} else {
-				mod <- summary(lm(beta.outcome ~ beta.exposure, weights=w))
+				mod <- summary(stats::lm(beta.outcome ~ beta.exposure, weights=w))
 			}
 		}
 
@@ -386,7 +382,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			effs[i] <- mod$coef[as.numeric(intercept) + i, 1]
 			se[i] <- mod$coef[as.numeric(intercept) + i, 2]
 		}
-		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * stats::pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -416,15 +412,14 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 
 #' Perform basic multivariable MR
 #' 
-#' Performs initial multivariable MR analysis from Burgess et al 2015. For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
+#' Performs initial multivariable MR analysis from Burgess et al 2015.
+#' For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
-#' @md
-#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param mvdat Output from [mv_harmonise_data()].
 #' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats lm pnorm
 mv_basic <- function(mvdat, pval_threshold=5e-8)
 {
 	# This is a matrix of 
@@ -447,14 +442,14 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 		index <- pval.exposure[,i] < pval_threshold
 
 		# Get outcome effects adjusted for all effects on all other exposures
-		marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
+		marginal_outcome[,i] <- stats::lm(beta.outcome ~ beta.exposure[, -c(i)])$res
 
 		# Get the effect of the exposure on the residuals of the outcome
-		mod <- summary(lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
+		mod <- summary(stats::lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
 
 		effs[i] <- mod$coef[2, 1]
 		se[i] <- mod$coef[2, 2]
-		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * stats::pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -478,15 +473,14 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 
 #' Perform IVW multivariable MR
 #'
-#' Performs modified multivariable MR analysis. For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
+#' Performs modified multivariable MR analysis.
+#' For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
 #'
-#' @md
-#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param mvdat Output from [mv_harmonise_data()].
 #' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats pnorm
 mv_ivw <- function(mvdat, pval_threshold=5e-8)
 {
 	# This is a matrix of 
@@ -513,11 +507,11 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 		# marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
 
 		# Get the effect of the exposure on the residuals of the outcome
-		mod <- summary(lm(beta.outcome[index] ~ 0 + beta.exposure[index, ], weights=w[index]))
+		mod <- summary(stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, ], weights=w[index]))
 
 		effs[i] <- mod$coef[i, 1]
 		se[i] <- mod$coef[i, 2]
-		pval[i] <- 2 * pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
+		pval[i] <- 2 * stats::pnorm(abs(effs[i])/se[i], lower.tail = FALSE)
 		nsnp[i] <- sum(index)
 
 		# Make scatter plot
@@ -539,11 +533,10 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 
 #' Apply LASSO feature selection to mvdat object
 #'
-#' @param mvdat Output from [`mv_harmonise_data`].
+#' @param mvdat Output from [mv_harmonise_data()].
 #'
 #' @export
 #' @return data frame of retained features
-#' @importFrom glmnet cv.glmnet coef.glmnet
 mv_lasso_feature_selection <- function(mvdat)
 {
 	message("Performing feature selection")
@@ -562,9 +555,8 @@ mv_lasso_feature_selection <- function(mvdat)
 #' \item Subset the mvdat to only retain relevant features and instruments.
 #' \item Perform MVMR on remaining data.
 #' }
-#' @md
-#' @param mvdat Output from [`mv_harmonise_data`].
-#' @param features Dataframe of features to retain, must have column with name 'exposure' that has list of exposures tor etain from mvdat. The default is `mvdat_lasso_feature_selection(mvdat)`.
+#' @param mvdat Output from [mv_harmonise_data()].
+#' @param features Dataframe of features to retain, must have column with name 'exposure' that has list of exposures to retain from mvdat. The default is `mvdat_lasso_feature_selection(mvdat)`.
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, the default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
 #' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
@@ -572,7 +564,6 @@ mv_lasso_feature_selection <- function(mvdat)
 #'
 #' @export
 #' @return List of results
-#' @importFrom stats lm
 mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
 	# Update mvdat object
@@ -593,4 +584,3 @@ mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), interce
 
 	mv_multiple(mvdat, intercept=intercept, instrument_specific=instrument_specific, pval_threshold=pval_threshold, plots=plots)
 }
-

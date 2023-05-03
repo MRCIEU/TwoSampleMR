@@ -15,13 +15,11 @@
 #' generated.
 #' All output files including cache and figures will appear in the
 #' same folder as \code{output_filename}.
-#' @param  ... Arguments to be passed to \code{\link[knitr:knit]{knitr::knit}}
+#' @param  ... Arguments to be passed to [knitr::knit()]
 #' @return NULL
 #' @keywords internal
 knit_report <- function(input_filename, output_filename, ...)
 {
-	requireNamespace("knitr", quietly = TRUE)
-    requireNamespace("markdown", quietly = TRUE)
     output_filename <- normalizePath(output_filename)
 
     output_dir <- dirname(output_filename)
@@ -46,12 +44,10 @@ knit_report <- function(input_filename, output_filename, ...)
         return(knitr::knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
     else if (is.pdf)
     {        
-        requireNamespace("rmarkdown", quietly = TRUE)
         return(rmarkdown::render(input_filename, rmarkdown::pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
     {        
-        requireNamespace("rmarkdown", quietly = TRUE)
         return(rmarkdown::render(input_filename, rmarkdown::word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else
@@ -61,11 +57,10 @@ knit_report <- function(input_filename, output_filename, ...)
 
 #' Generate MR report
 #'
-#' Using the output from the \code{mr} function this report will generate a report containing tables and graphs summarising the results.
+#' Using the output from the [mr()] function this report will generate a report containing tables and graphs summarising the results.
 #' A separate report is produced for each exposure - outcome pair that was analysed.
 #'
-#' @md
-#' @param dat Output from \code{\link{harmonise_data}}
+#' @param dat Output from [harmonise_data()]
 #' @param output_path Directory in which reports should be saved.
 #' @param output_type Choose `"html"` or `"md"`. Default is `"html"`.
 #' All output files including cache and figures will appear in the
@@ -73,7 +68,7 @@ knit_report <- function(input_filename, output_filename, ...)
 #' @param author Author name.
 #' @param study Study title.
 #' @param path The filepath to the report template.
-#' @param ... Extra options to be passed to \code{\link[knitr:knit]{knitr::knit}}.
+#' @param ... Extra options to be passed to [knitr::knit()].
 #'
 #' @export
 #' @return NULL

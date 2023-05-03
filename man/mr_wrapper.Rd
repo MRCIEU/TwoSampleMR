@@ -9,7 +9,7 @@ mr_wrapper(dat, parameters = default_parameters())
 \arguments{
 \item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 
-\item{parameters}{Parameters to pass to MR functions. Output from default_parameters() used as default.}
+\item{parameters}{Parameters to pass to MR functions. Output from \code{\link[=default_parameters]{default_parameters()}} used as default.}
 }
 \value{
 list

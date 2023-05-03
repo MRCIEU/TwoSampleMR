@@ -11,9 +11,9 @@ ldsc_h2(id, ancestry = "infer", snpinfo = NULL, splitsize = 20000)
 
 \item{ancestry}{ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies}
 
-\item{snpinfo}{Output from ieugwasr::afl2_list("hapmap3"), or NULL for it to be done automatically}
+\item{snpinfo}{Output from \code{ieugwasr::afl2_list("hapmap3")}, or \code{NULL} for it to be done automatically}
 
-\item{splitsize}{How many SNPs to extract at one time. Default=20000}
+\item{splitsize}{How many SNPs to extract at one time. Default=\code{20000}}
 }
 \value{
 model fit
@@ -28,5 +28,5 @@ Guo,B. and Wu,B. (2018) Principal component based adaptive association test of m
 
 Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961.
 
-https://github.com/baolinwu/MTAR
+\url{https://github.com/baolinwu/MTAR}
 }

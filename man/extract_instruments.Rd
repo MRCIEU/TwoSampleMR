@@ -16,7 +16,7 @@ extract_instruments(
 )
 }
 \arguments{
-\item{outcomes}{Array of outcome IDs (see \code{\link{available_outcomes}}).}
+\item{outcomes}{Array of outcome IDs (see \code{\link[=available_outcomes]{available_outcomes()}}).}
 
 \item{p1}{Significance threshold. The default is \code{5e-8}.}
 
@@ -28,7 +28,7 @@ extract_instruments(
 
 \item{kb}{Clumping distance cutoff. The default is \code{10000}.}
 
-\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data. The default is \code{ieugwasr::check_access_token()}.}
+\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data. The default is \code{\link[ieugwasr:check_access_token]{ieugwasr::check_access_token()}}.}
 
 \item{force_server}{Force the analysis to extract results from the server rather than the MRInstruments package.}
 }
