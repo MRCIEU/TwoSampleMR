@@ -561,7 +561,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @param lo Lower limit of X axis to plot. 
 #' @param up upper limit of X axis to plot. 
 #' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points `"black"`. 
-#' @param shape_points the shape of the data points to pass to geom_points(). Default is set to `15` (filled square).
+#' @param shape_points the shape of the data points to pass to [ggplot2::geom_point()]. Default is set to `15` (filled square).
 #' @param col_text_size The default is `5`.
 #' @param weight The default is `NULL`.
 #'
