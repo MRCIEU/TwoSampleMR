@@ -4,8 +4,8 @@
 #'
 #' Requires dev version of ggplot2
 #' 
-#' @param mr_results Output from \code{\link{mr}}.
-#' @param dat Output from \code{\link{harmonise_data}}.
+#' @param mr_results Output from [mr()].
+#' @param dat Output from [harmonise_data()].
 #' @export
 #' @return List of plots
 mr_scatter_plot <- function(mr_results, dat)

@@ -160,7 +160,7 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yy
 #'
 #' A statistical test for whether the assumption that exposure causes outcome is valid.
 #'
-#' @param dat Harmonised exposure and outcome data. Output from \code{\link{harmonise_data}}.
+#' @param dat Harmonised exposure and outcome data. Output from [harmonise_data()].
 #'
 #' @export
 #' @return List

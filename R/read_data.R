@@ -536,7 +536,7 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 
 #' Get data from eQTL catalog into correct format
 #'
-#' See \code{\link{format_data}}.
+#' See [format_data()].
 #'
 #' @param gtex_eqtl_subset Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
