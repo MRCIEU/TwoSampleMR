@@ -13,5 +13,5 @@ dat_to_RadialMR(dat)
 List of RadialMR format datasets
 }
 \description{
-Creates a list of RadialMR format datasets for each exposure - outcome pair.
+Creates a list of RadialMR format datasets for each exposure-outcome pair.
 }

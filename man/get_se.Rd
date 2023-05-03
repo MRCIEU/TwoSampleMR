@@ -2,18 +2,18 @@
 % Please edit documentation in R/query.R
 \name{get_se}
 \alias{get_se}
-\title{Get SE from effect size and pval}
+\title{Get SE from effect size and p-value}
 \usage{
 get_se(eff, pval)
 }
 \arguments{
 \item{eff}{effect size}
 
-\item{pval}{pvals}
+\item{pval}{p-values}
 }
 \value{
 array
 }
 \description{
-Get SE from effect size and pval
+Get SE from effect size and p-value
 }

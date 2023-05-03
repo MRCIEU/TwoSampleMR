@@ -11,7 +11,7 @@ dat_to_MRInput(dat, get_correlations = FALSE, pop = "EUR")
 
 \item{get_correlations}{Default \code{FALSE}. If \code{TRUE} then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.}
 
-\item{pop}{If get_correlations is TRUE then use the following}
+\item{pop}{If \code{get_correlations} is \code{TRUE} then use the following}
 }
 \value{
 List of MRInput objects for each exposure/outcome combination
