@@ -2,7 +2,7 @@
 #'
 #' Can be applied to exposure_dat, outcome_dat or harmonised_data.
 #' Note that it will be beneficial in some circumstances to add the meta data to
-#' the data object using [`add_metadata()`] before running this function. 
+#' the data object using [add_metadata()] before running this function. 
 #' Also adds effective sample size for case control data.
 #'
 #' @param dat exposure_dat, outcome_dat or harmonised_data

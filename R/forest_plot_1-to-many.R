@@ -16,7 +16,7 @@
 #' @param addcols Name of any additional columns to add to the plot. Character vector. The default is `NULL`.
 #' @param by Name of the column indicating a grouping variable to stratify results on. Default=`NULL`.
 #' @param exponentiate Convert log odds ratios to odds ratios? Default=`FALSE`.
-#' @param ao_slc Logical; retrieve trait subcategory information using [`available_outcomes()`]. Default=`FALSE`.
+#' @param ao_slc Logical; retrieve trait subcategory information using [available_outcomes()]. Default=`FALSE`.
 #' @param weight The default is `NULL`.
 #'
 #' @export
@@ -134,7 +134,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 
 #' Sort results for 1-to-many forest plot
 #'
-#' This function sorts user-supplied results for the [`forest_plot_1_to_many()`] function. The user supplies their results in the form of a data frame.    
+#' This function sorts user-supplied results for the [forest_plot_1_to_many()] function. The user supplies their results in the form of a data frame.    
 #' 
 #' @param mr_res Data frame of results supplied by the user.
 #' @param b Name of the column specifying the effect of the exposure on the outcome. The default is `"b"`.
@@ -228,7 +228,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 #' This function is used to create a basic forest plot.
 #' It requires the output from [format_1_to_many()].
 #'
-#' @param dat Output from [`format_1_to_many()`]
+#' @param dat Output from [format_1_to_many()]
 #' @param section Which category in dat to plot. If `NULL` then prints everything.
 #' @param colour_group Which exposure to plot. If `NULL` then prints everything grouping by colour.
 #' @param colour_group_first The default is `TRUE`.

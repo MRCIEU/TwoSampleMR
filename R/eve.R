@@ -317,7 +317,7 @@ mr_wrapper_single <- function(dat, parameters=default_parameters())
 #' Perform full set of MR analyses
 #'
 #'
-#' @param dat Output from [`harmonise_data()`].
+#' @param dat Output from [harmonise_data()].
 #' @param parameters Parameters to pass to MR functions. Output from [default_parameters()] used as default.
 #'
 #' @export
