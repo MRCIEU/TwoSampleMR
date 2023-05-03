@@ -155,13 +155,12 @@ get_rsq <- function(dat)
 #' Based on the method described here \url{https://www.biorxiv.org/content/early/2017/08/23/173682}.
 #' Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.
 #'
-#' @md
-#' @param res Output from [`mr_wrapper`]. 
+#' @param res Output from [mr_wrapper()].
 #' @param rf The trained random forest for the methods. This is available to download at <https://www.dropbox.com/s/5la7y38od95swcf/rf.rdata?dl=0>.
 #' 
 #' @md
 #' @details
-#' The `mr_moe` function modifies the `estimates` item in the list of results from the [`mr_wrapper`] function. It does three things:
+#' The `mr_moe()` function modifies the `estimates` item in the list of results from the [mr_wrapper()] function. It does three things:
 #' 1. Adds the MOE column, which is a predictor for each method for how well it performs in terms of high power and low type 1 error (scaled 0-1, where 1 is best performance). 
 #' 2. It renames the methods to be the estimating method + the instrument selection method. There are 4 instrument selection methods: Tophits (i.e. no filtering), directional filtering (DF, an unthresholded version of Steiger filtering), heterogeneity filtering (HF, removing instruments that make substantial (p < 0.05) contributions to Cochran's Q statistic), and DF + HF which is where DF is applied and the HF applied on top of that. 
 #' 3. It orders the table to be in order of best performing method.
