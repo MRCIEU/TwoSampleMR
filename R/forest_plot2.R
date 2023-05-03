@@ -207,7 +207,7 @@ create_label <- function(n1, nom)
 #' A basic forest plot
 #'
 #' This function is used to create a basic forest plot.
-#' It requires the output from \code{\link{format_mr_results}}.
+#' It requires the output from [format_mr_results()].
 #'
 #' @param dat Output from [`format_mr_results()`].
 #' @param section Which category in dat to plot. If `NULL` then prints everything.
