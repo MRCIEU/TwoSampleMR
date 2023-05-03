@@ -303,7 +303,7 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 	rucker_median <- data.frame(
 		Method = "Rucker median",
 		nsnp = nsnp,
-		Estimate = median(modsel$Estimate),
+		Estimate = stats::median(modsel$Estimate),
 		SE = stats::mad(modsel$Estimate),
 		CI_low = stats::quantile(modsel$Estimate, 0.025),
 		CI_upp = stats::quantile(modsel$Estimate, 0.975)
@@ -331,9 +331,9 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 		ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 		ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
 		ggplot2::geom_abline(slope=1, colour="grey") +
-		ggplot2::geom_abline(slope=1, intercept=-qchisq(Qthresh, 1, lower.tail=FALSE), linetype="dotted") +
-		ggplot2::geom_hline(yintercept = qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
-		ggplot2::geom_vline(xintercept = qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
+		ggplot2::geom_abline(slope=1, intercept=-stats::qchisq(Qthresh, 1, lower.tail=FALSE), linetype="dotted") +
+		ggplot2::geom_hline(yintercept = stats::qchisq(Qthresh, nsnp - 2, lower.tail=FALSE), linetype="dotted") +
+		ggplot2::geom_vline(xintercept = stats::qchisq(Qthresh, nsnp - 1, lower.tail=FALSE), linetype="dotted") +
 		ggplot2::labs(x="Q", y="Q'")
 
 	modsel$model_name <- "IVW"
