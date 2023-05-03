@@ -20,8 +20,6 @@
 #' @keywords internal
 knit_report <- function(input_filename, output_filename, ...)
 {
-	requireNamespace("knitr", quietly = TRUE)
-    requireNamespace("markdown", quietly = TRUE)
     output_filename <- normalizePath(output_filename)
 
     output_dir <- dirname(output_filename)
@@ -46,12 +44,10 @@ knit_report <- function(input_filename, output_filename, ...)
         return(knitr::knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
     else if (is.pdf)
     {        
-        requireNamespace("rmarkdown", quietly = TRUE)
         return(rmarkdown::render(input_filename, rmarkdown::pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
     {        
-        requireNamespace("rmarkdown", quietly = TRUE)
         return(rmarkdown::render(input_filename, rmarkdown::word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else
