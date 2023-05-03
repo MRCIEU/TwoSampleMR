@@ -19,7 +19,7 @@ mr_steiger2(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo = 1, ...)
 
 \item{r_yyo}{Measurement precision of outcome}
 
-\item{...}{Further arguments to be passed to wireframe}
+\item{...}{Further arguments to be passed to \code{\link[lattice:cloud]{lattice::wireframe()}}}
 }
 \value{
 List with the following elements:

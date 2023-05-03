@@ -11,7 +11,7 @@ steiger_sensitivity(rgx_o, rgy_o, ...)
 
 \item{rgy_o}{Observed variance of outcome explained by SNPs}
 
-\item{...}{Further arguments to be passed to wireframe}
+\item{...}{Further arguments to be passed to \code{\link[lattice:cloud]{lattice::wireframe()}}}
 }
 \value{
 List with the following elements:
