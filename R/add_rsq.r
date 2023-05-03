@@ -152,7 +152,7 @@ get_p_from_r2n <- function(r2, n)
 }
 
 
-#' Calculate variance explained from p vals and sample size
+#' Calculate variance explained from p-values and sample size
 #'
 #' This method is an approximation, and may be numerically unstable.
 #' Ideally you should estimate r directly from independent replication samples.
