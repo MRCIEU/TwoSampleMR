@@ -15,7 +15,7 @@
 #' generated.
 #' All output files including cache and figures will appear in the
 #' same folder as \code{output_filename}.
-#' @param  ... Arguments to be passed to \code{\link[knitr:knit]{knitr::knit}}
+#' @param  ... Arguments to be passed to [knitr::knit()]
 #' @return NULL
 #' @keywords internal
 knit_report <- function(input_filename, output_filename, ...)
