@@ -242,7 +242,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 #' @param up Upper limit of x axis.
 #' @param subheading_size text size for the subheadings. The subheadings correspond to the values of the section argument.
 #' @param colour_scheme the general colour scheme for the plot. Default is to make all text and data points `"black"`.
-#' @param shape_points the shape of the data points to pass to `ggplot2::geom_points()`. Default is set to `15` (filled square).
+#' @param shape_points the shape of the data points to pass to [ggplot2::geom_point()]. Default is set to `15` (filled square).
 #'
 #' @return ggplot object
 forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
