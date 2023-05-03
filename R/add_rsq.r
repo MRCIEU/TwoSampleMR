@@ -160,7 +160,6 @@ get_p_from_r2n <- function(r2, n)
 #'
 #' @export
 #' @return Vector of r values (all arbitrarily positive)
-#' @importFrom stats optim qf
 get_r_from_pn <- function(p, n)
 {
 	optim.get_p_from_rn <- function(x, sample_size, pvalue)
@@ -174,7 +173,7 @@ get_r_from_pn <- function(p, n)
 		n <- rep(n, length(p))
 	}
 
-	Fval <- suppressWarnings(qf(p, 1, n-1, lower.tail=FALSE))
+	Fval <- suppressWarnings(stats::qf(p, 1, n-1, lower.tail=FALSE))
 	R2 <- Fval / (n - 2 + Fval)
 	index <- !is.finite(Fval)
 	if(any(index))
@@ -187,7 +186,7 @@ get_r_from_pn <- function(p, n)
 				R2[index[i]] <- NA
 				warning("P-value of 0 cannot be converted to R value")
 			} else {
-				R2[index[i]] <- suppressWarnings(optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par)
+				R2[index[i]] <- suppressWarnings(stats::optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par)
 			}
 		}
 	}
