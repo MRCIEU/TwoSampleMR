@@ -7,7 +7,7 @@
 run_mr_presso(dat, NbDistribution = 1000, SignifThreshold = 0.05)
 }
 \arguments{
-\item{dat}{Output from \code{\link{harmonise_data}}.}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}.}
 
 \item{NbDistribution}{Number of bootstrap replications. The default is \code{1000}.}
 
