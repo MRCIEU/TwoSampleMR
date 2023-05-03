@@ -191,10 +191,10 @@ cleanup_outcome_data <- function(d)
 }
 
 
-#' Get SE from effect size and pval
+#' Get SE from effect size and p-value
 #'
 #' @param eff effect size
-#' @param pval pvals
+#' @param pval p-values
 #' @return array
 #' @export
 get_se <- function(eff, pval)

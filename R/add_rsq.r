@@ -137,7 +137,7 @@ test_r_from_pn <- function()
 }
 
 
-#' Calculate p-value from rsq and sample size
+#' Calculate p-value from R-squared and sample size
 #'
 #' @param r2 Rsq
 #' @param n Sample size

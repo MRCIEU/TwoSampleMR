@@ -6,7 +6,7 @@
 #'
 #' @param dat Output from the [harmonise_data()] function.
 #' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.
-#' @param pop If get_correlations is TRUE then use the following 
+#' @param pop If `get_correlations` is `TRUE` then use the following 
 #'
 #' @export
 #' @return List of MRInput objects for each exposure/outcome combination
@@ -69,7 +69,7 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE, pop="EUR")
 #' LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be exposure dataset or harmonised dartaset.
 #'
 #' @param x Exposure dataset or harmonised dataset
-#' @param ld Output from ld_matrix
+#' @param ld Output from [ld_matrix()]
 #'
 #' @export
 #' @return List of exposure dataset and harmonised LD matrix
@@ -158,7 +158,7 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 
 #' Convert dat to RadialMR format
 #'
-#' Creates a list of RadialMR format datasets for each exposure - outcome pair.
+#' Creates a list of RadialMR format datasets for each exposure-outcome pair.
 #'
 #' @param dat Output from [harmonise_data()].
 #'
