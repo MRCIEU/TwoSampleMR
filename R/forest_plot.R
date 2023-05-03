@@ -46,7 +46,6 @@
 #' 
 #' @keywords internal
 #' @return grid object giving the forest plot (or plot as pdf)
-#' @importFrom grDevices dev.off pdf
 mr_forest_plot_grouped <-
     function(name, eff_Col = "b", exposure_Name="exposure", outcome_Name="outcome", forest_Title = '', outfile_Name = 'annot_FP.pdf', left_Col_Names=c("Exposure", "Outcome"), left_Col_Titles = NULL, right_Col_Names = c("p", "Outcome.n.case", "Outcome.n.control", "Outcome.sample.size"), right_Col_Titles =
                  NULL, debug = FALSE,  log_ES = FALSE, decrease = TRUE,  returnRobj = TRUE, se_Col = "se") {
@@ -284,9 +283,9 @@ mr_forest_plot_grouped <-
         grid.newpage()
         grid.draw(group)
         if (returnRobj == FALSE) {
-            pdf(outfile_Name,width = 23.4, height = 16.5)
+            grDevices::pdf(outfile_Name,width = 23.4, height = 16.5)
             grid.draw(group)
-            dev.off()
+            grDevices::dev.off()
         } else {
             return(group)
         }
