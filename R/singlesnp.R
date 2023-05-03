@@ -1,6 +1,5 @@
 #' Perform 2 sample MR on each SNP individually
 #'
-#' @md
 #' @param dat Output from [`harmonise_data`].
 #' @param parameters List of parameters. The default is `default_parameters()`.
 #' @param single_method Function to use for MR analysis. The default is `"mr_wald_ratio"`.
