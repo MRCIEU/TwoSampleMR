@@ -215,4 +215,3 @@ mr_funnel_plot <- function(singlesnp_results)
 	})
 	res
 }
-
