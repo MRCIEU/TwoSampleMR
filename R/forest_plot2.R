@@ -447,7 +447,7 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 #' @param xlab x-axis label. If `in_columns=TRUE` then the exposure values are appended to the end of `xlab`. e.g. if `xlab="Effect of"` then x-labels will read `"Effect of exposure1"`, `"Effect of exposure2"` etc. Otherwise will be printed as is.
 #' @param xlim limit x-axis range. Provide vector of length 2, with lower and upper bounds. The default is `NULL`.
 #' @param trans Transformation to apply to x-axis. e.g. `"identity"`, `"log2"`, etc. The default is `"identity"`.
-#' @param ao_slc retrive sample size and subcategory from [available_outcomes()]. If set to `FALSE` then `mr_res` must contain the following additional columns: `sample_size` and `subcategory`. The default behaviour is to use [`available_outcomes()`] to retrieve sample size and subcategory.
+#' @param ao_slc retrieve sample size and subcategory from [available_outcomes()]. If set to `FALSE` then `mr_res` must contain the following additional columns: `sample_size` and `subcategory`. The default behaviour is to use [available_outcomes()] to retrieve sample size and subcategory.
 #' @param priority Name of category to prioritise at the top of the forest plot. The default is `"Cardiometabolic"`.
 #'
 #' @export
