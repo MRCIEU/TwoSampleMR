@@ -260,4 +260,3 @@ Changes:
 * One of the external packages that TwoSampleMR depends upon had changed, making the authorisation behaviour change. The authorisation was timing out after an hour and it was not refreshing after its timeout. This has now been fixed - the authorisation token will refresh after an hour.
 
 * The authorisation token used to be stored in a hidden file called .httr-oauth. This has now been changed - it will be stored in a visible file called 'mrbase.oauth'.
-
