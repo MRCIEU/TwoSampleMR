@@ -1,4 +1,4 @@
-#' I-square calculation
+#' I-squared calculation
 #'
 #' This function calculates the I-squared_GX statistic.
 #' 
