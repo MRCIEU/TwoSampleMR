@@ -109,7 +109,7 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 #'
 #' @param id ID to analyse
 #' @param ancestry ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies
-#' @param snpinfo Output from [ieugwasr::afl2_list("hapmap3")], or `NULL` for it to be done automatically
+#' @param snpinfo Output from `ieugwasr::afl2_list("hapmap3")`, or `NULL` for it to be done automatically
 #' @param splitsize How many SNPs to extract at one time. Default=`20000`
 #'
 #' @export
@@ -160,7 +160,7 @@ ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
 #' @param id1 ID 1 to analyse
 #' @param id2 ID 2 to analyse
 #' @param ancestry ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies
-#' @param snpinfo Output from [ieugwasr::afl2_list("hapmap3")], or `NULL` for it to be done automatically
+#' @param snpinfo Output from `ieugwasr::afl2_list("hapmap3")`, or `NULL` for it to be done automatically
 #' @param splitsize How many SNPs to extract at one time. Default=`20000`
 #'
 #' @export
