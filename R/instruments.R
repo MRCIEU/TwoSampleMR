@@ -3,7 +3,7 @@
 #' This function searches for GWAS significant SNPs (for a given p-value) for a specified set of outcomes.
 #' It then performs LD based clumping to return only independent significant associations.
 #'
-#' @param outcomes Array of outcome IDs (see [available_outcomes]).
+#' @param outcomes Array of outcome IDs (see [available_outcomes()]).
 #' @param p1 Significance threshold. The default is `5e-8`.
 #' @param clump Logical; whether to clump results. The default is `TRUE`.
 #' @param p2 Secondary clumping threshold. The default is `5e-8`.
