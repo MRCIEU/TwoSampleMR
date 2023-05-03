@@ -15,5 +15,5 @@ effective_n(ncase, ncontrol)
 Vector of effective sample size
 }
 \description{
-Taken from https://www.nature.com/articles/nprot.2014.071
+Taken from \url{https://www.nature.com/articles/nprot.2014.071}
 }
