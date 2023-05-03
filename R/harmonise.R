@@ -33,7 +33,6 @@
 #' If coded as D/I in one dataset and as a variant with equal length INDEL alleles in the other, the variant is dropped. 
 #' If one or both the datasets only has one allele (i.e. the effect allele) then harmonisation is naturally going to be more ambiguous and more variants will be dropped.
 #'
-#' @md
 #' @param exposure_dat Output from \code{read_exposure_data}.
 #' @param outcome_dat Output from \code{extract_outcome_data}.
 #' @param action Level of strictness in dealing with SNPs. 
