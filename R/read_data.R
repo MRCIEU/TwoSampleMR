@@ -4,7 +4,6 @@
 #'
 #' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se.
 #'
-#' @md
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param snps SNPs to extract. If `NULL`, which the default, then doesn't extract any and keeps all.
 #' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`.
@@ -63,7 +62,6 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #'
 #' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. Infers p-values when possible from beta and se. Looks up SNPs in biomaRt to get basic info.
 #'
-#' @md
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param clump Whether to perform LD clumping with [`clump_data`] on the exposure data. The default is `FALSE`.
 #' @param sep Specify delimeter in file. The default is a space, i.e. `" "`.
@@ -128,7 +126,6 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #' Infers p-values when possible from beta and se. 
 #' If it is the exposure then looks up SNPs in biomaRt to get basic info.
 #'
-#' @md
 #' @param dat Data frame. Must have header with at least SNP column present.
 #' @param type Is this the exposure or the outcome data that is being read in? The default is `"exposure"`.
 #' @param snps SNPs to extract. If NULL then doesn't extract any and keeps all. The default is `NULL`.
@@ -517,7 +514,6 @@ check_units <- function(x, id, col)
 #'
 #' DEPRECATED. Please use \code{\link{format_data}} instead.
 #'
-#' @md
 #' @param gwas_catalog_subset The GWAS catalog subset.
 #' @param type The default is `"exposure"`.
 #'
@@ -540,7 +536,6 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 #'
 #' See \code{\link{format_data}}.
 #'
-#' @md
 #' @param gtex_eqtl_subset Selected rows from \code{gtex_eqtl} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
@@ -568,7 +563,6 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 #'
 #' See \code{\link{format_data}}.
 #' 
-#' @md
 #' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
@@ -596,7 +590,6 @@ format_metab_qtls <- function(metab_qtls_subset, type="exposure")
 #'
 #' See \code{\link{format_data}}.
 #'
-#' @md
 #' @param proteomic_qtls_subset Selected rows from \code{proteomic_qtls} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
@@ -624,7 +617,6 @@ format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 #'
 #' See \code{\link{format_data}}.
 #'
-#' @md
 #' @param aries_mqtl_subset Selected rows from \code{aries_mqtl} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
