@@ -155,7 +155,6 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' @export
 #' @return data frame
-#' @importFrom stats pnorm
 format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, 
                         phenotype_col="Phenotype", snp_col="SNP", 
                         beta_col="beta", se_col="se", eaf_col="eaf", 
@@ -361,7 +360,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
 			if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat))
 			{
 				index <- is.na(dat$pval.outcome)
-				dat$pval.outcome[index] <- pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
+				dat$pval.outcome[index] <- stats::pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
 				dat$pval_origin.outcome[index] <- "inferred"
 			}
 		}
@@ -371,7 +370,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
 	if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat) & ! "pval.outcome" %in% names(dat))
 	{
 		message("Inferring p-values")
-		dat$pval.outcome <- pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE) * 2
+		dat$pval.outcome <- stats::pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE) * 2
 		dat$pval_origin.outcome <- "inferred"
 	}
 	
