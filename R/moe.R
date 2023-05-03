@@ -190,7 +190,6 @@ get_rsq <- function(dat)
 #'}
 mr_moe <- function(res, rf)
 {
-	requireNamespace("dplyr", quietly = TRUE)
 	if (!requireNamespace("randomForest", quietly = TRUE)) {
 	  stop(
 	    "Package \"randomForest\" must be installed to use this function.",
@@ -211,7 +210,6 @@ mr_moe <- function(res, rf)
 
 mr_moe_single <- function(res, rf)
 {
-  requireNamespace("dplyr", quietly = TRUE)
   if (!requireNamespace("randomForest", quietly = TRUE)) {
     stop(
       "Package \"randomForest\" must be installed to use this function.",
