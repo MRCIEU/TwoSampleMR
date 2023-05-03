@@ -43,7 +43,7 @@ forest_plot(
 
 \item{trans}{Transformation to apply to x-axis. e.g. \code{"identity"}, \code{"log2"}, etc. The default is \code{"identity"}.}
 
-\item{ao_slc}{retrive sample size and subcategory from \code{\link[=available_outcomes]{available_outcomes()}}. If set to \code{FALSE} then \code{mr_res} must contain the following additional columns: \code{sample_size} and \code{subcategory}. The default behaviour is to use \code{\link[=available_outcomes]{available_outcomes()}} to retrieve sample size and subcategory.}
+\item{ao_slc}{retrieve sample size and subcategory from \code{\link[=available_outcomes]{available_outcomes()}}. If set to \code{FALSE} then \code{mr_res} must contain the following additional columns: \code{sample_size} and \code{subcategory}. The default behaviour is to use \code{\link[=available_outcomes]{available_outcomes()}} to retrieve sample size and subcategory.}
 
 \item{priority}{Name of category to prioritise at the top of the forest plot. The default is \code{"Cardiometabolic"}.}
 }
