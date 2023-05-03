@@ -24,10 +24,6 @@
 #' @return data frame.
 format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FALSE,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL)
 {
-	# mr_res
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
-
 	if(!is.null(by)){
 		mr_res<-mr_res[,names(mr_res)!="subcategory"]
 		names(mr_res)[names(mr_res)==by]<-"subcategory"
