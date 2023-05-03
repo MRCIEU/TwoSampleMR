@@ -1,4 +1,3 @@
-#' @importFrom stats coefficients lm pchisq pnorm pt
 mr_mean_ivw <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -25,12 +24,12 @@ mr_mean_ivw <- function(d)
 			se=res$b,
 			ci_low=b-se*1.96,
 			ci_upp=b+se*1.96,
-			pval=pt(abs(b/se), 1, lower.tail=FALSE) * 2
+			pval=stats::pt(abs(b/se), 1, lower.tail=FALSE) * 2
 		)
 		return(list(estimates=out))
 	}
 
-	unw <- summary(lm(b_out ~ -1 + b_exp))
+	unw <- summary(stats::lm(b_out ~ -1 + b_exp))
 	unw_out <- dplyr::tibble(
 		id.exposure = id.exposure,
 		id.outcome = id.outcome,
@@ -40,22 +39,22 @@ mr_mean_ivw <- function(d)
 		se = unw$coefficients[2],
 		ci_low=b-se*1.96,
 		ci_upp=b+se*1.96,
-		pval=pt(abs(b/se), nrow(d)-1, lower.tail=FALSE) * 2
+		pval=stats::pt(abs(b/se), nrow(d)-1, lower.tail=FALSE) * 2
 	)
 
 	weights1 <- sqrt(b_exp^2 / se_out^2)
 	y1 <- ratios * weights1
 
-	ivw1 <- lm(y1 ~ -1 + weights1)
-	weights2 <- sqrt(((se_out^2 + coefficients(ivw1)[1]^2 * se_exp^2) / b_exp^2)^-1)
+	ivw1 <- stats::lm(y1 ~ -1 + weights1)
+	weights2 <- sqrt(((se_out^2 + stats::coefficients(ivw1)[1]^2 * se_exp^2) / b_exp^2)^-1)
 
 	y2 <- ratios * weights2
-	ivw2 <- summary(lm(y2 ~ -1 + weights2))
+	ivw2 <- summary(stats::lm(y2 ~ -1 + weights2))
 
-	ivwoutliers <- dplyr::tibble(id.exposure = id.exposure, id.outcome = id.outcome, SNP=d$SNP, Qj=weights2^2 * (ratios - coefficients(ivw2)[1])^2, Qpval=pchisq(Qj,1,lower.tail=FALSE))
+	ivwoutliers <- dplyr::tibble(id.exposure = id.exposure, id.outcome = id.outcome, SNP=d$SNP, Qj=weights2^2 * (ratios - stats::coefficients(ivw2)[1])^2, Qpval=stats::pchisq(Qj,1,lower.tail=FALSE))
 
 	Qivw2 <- sum(ivwoutliers$Qj)
-	Qivw2pval <- pchisq(Qivw2, nrow(d)-1, lower.tail=FALSE)
+	Qivw2pval <- stats::pchisq(Qivw2, nrow(d)-1, lower.tail=FALSE)
 
 	# Collate
 	re_out <- dplyr::tibble(
@@ -67,12 +66,12 @@ mr_mean_ivw <- function(d)
 		se = c(ivw2$coefficients[2]),
 		ci_low = b - se * 1.96,
 		ci_upp = b + se * 1.96,
-		pval = pt(abs(b / se), nrow(d)-1, lower.tail=FALSE) * 2
+		pval = stats::pt(abs(b / se), nrow(d)-1, lower.tail=FALSE) * 2
 	)
 
 	fe_out <- re_out
 	fe_out$se <- fe_out$se / max(1, ivw2$sigma)
-	fe_out$pval <- pnorm(abs(fe_out$b / fe_out$se), lower.tail=FALSE) * 2
+	fe_out$pval <- stats::pnorm(abs(fe_out$b / fe_out$se), lower.tail=FALSE) * 2
 	fe_out$method <- c("FE IVW")
 
 	out <- dplyr::bind_rows(unw_out, fe_out, re_out)
@@ -84,7 +83,7 @@ mr_mean_ivw <- function(d)
 		method = c("IVW"),
 		Q = c(Qivw2),
 		df = c(nrow(d)-1),
-		pval = pchisq(Q, df, lower.tail=FALSE)
+		pval = stats::pchisq(Q, df, lower.tail=FALSE)
 	)
 
 	ret <- list(estimates=out, heterogeneity = heterogeneity, outliers=ivwoutliers)
