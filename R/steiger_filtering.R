@@ -27,7 +27,6 @@ steiger_filtering <- function(dat)
 
 
 
-#' @importFrom stats pnorm
 steiger_filtering_internal <- function(dat)
 {
 	if(! "units.outcome" %in% names(dat))
@@ -52,7 +51,7 @@ steiger_filtering_internal <- function(dat)
 		r34 = sqrt(dat$rsq.outcome)
 	)
 	dat$steiger_dir <- dat$rsq.exposure > dat$rsq.outcome
-	dat$steiger_pval <- pnorm(-abs(st$z)) * 2
+	dat$steiger_pval <- stats::pnorm(-abs(st$z)) * 2
 
 	return(dat)
 }
