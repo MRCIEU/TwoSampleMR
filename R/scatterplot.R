@@ -9,8 +9,6 @@
 mr_scatter_plot <- function(mr_results, dat)
 {
 	# dat <- subset(dat, paste(id.outcome, id.exposure) %in% paste(mr_results$id.outcome, mr_results$id.exposure))
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
 	mrres <- plyr::dlply(dat, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)
@@ -52,6 +50,5 @@ mr_scatter_plot <- function(mr_results, dat)
 
 blank_plot <- function(message)
 {
-	requireNamespace("ggplot2", quietly=TRUE)
 	ggplot2::ggplot(data.frame(a=0,b=0,n=message)) + ggplot2::geom_text(ggplot2::aes(x=a,y=b,label=n)) + ggplot2::labs(x=NULL,y=NULL) + ggplot2::theme(axis.text=ggplot2::element_blank(), axis.ticks=ggplot2::element_blank())
 }
