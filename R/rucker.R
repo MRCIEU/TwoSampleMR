@@ -1,6 +1,6 @@
 #' I-squared calculation
 #'
-#' This function calculates the I-squared_GX statistic.
+#' This function calculates the \eqn{I^2_{GX}} statistic.
 #' 
 #' @param y Vector of effects.
 #' @param s Vector of standard errors.
