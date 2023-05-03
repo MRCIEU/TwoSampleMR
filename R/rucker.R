@@ -92,7 +92,6 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	return(res)
 }
 
-#' @importFrom stats coefficients cooks.distance lm mad pchisq pnorm pt qnorm
 mr_rucker_internal <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
@@ -126,44 +125,44 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 
 
 	# IVW FE
-	lmod_ivw <- lm(y ~ 0 + x)
+	lmod_ivw <- stats::lm(y ~ 0 + x)
 	mod_ivw <- summary(lmod_ivw)
-	b_ivw_fe <- coefficients(mod_ivw)[1,1]
+	b_ivw_fe <- stats::coefficients(mod_ivw)[1,1]
 
 	# Q_ivw <- sum((y - x*b_ivw_fe)^2)
 	Q_ivw <- mod_ivw$sigma^2 * (nsnp - 1)
 	Q_df_ivw <- length(b_exp) - 1
-	Q_pval_ivw <- pchisq(Q_ivw, Q_df_ivw, lower.tail = FALSE)
+	Q_pval_ivw <- stats::pchisq(Q_ivw, Q_df_ivw, lower.tail = FALSE)
 	phi_ivw <- Q_ivw / (nsnp - 1)
 
-	se_ivw_fe <- coefficients(mod_ivw)[1,2] / max(mod_ivw$sigma, 1)
+	se_ivw_fe <- stats::coefficients(mod_ivw)[1,2] / max(mod_ivw$sigma, 1)
 	if(parameters$test_dist == "z")
 	{
-		pval_ivw_fe <- pnorm(abs(b_ivw_fe/se_ivw_fe), lower.tail=FALSE) * 2
+		pval_ivw_fe <- stats::pnorm(abs(b_ivw_fe/se_ivw_fe), lower.tail=FALSE) * 2
 	} else {
-		pval_ivw_fe <- pt(abs(b_ivw_fe/se_ivw_fe), nsnp-1, lower.tail=FALSE) * 2
+		pval_ivw_fe <- stats::pt(abs(b_ivw_fe/se_ivw_fe), nsnp-1, lower.tail=FALSE) * 2
 	}
 
 
 	# IVW MRE
 	b_ivw_re <- b_ivw_fe
 	# se_ivw_re <- sqrt(phi_ivw / sum(w))
-	se_ivw_re <- coefficients(mod_ivw)[1,2]
+	se_ivw_re <- stats::coefficients(mod_ivw)[1,2]
 	# pval_ivw_re <- pt(abs(b_ivw_re/se_ivw_re), nsnp-1, lower.tail=FALSE) * 2
 	if(parameters$test_dist == "z")
 	{
-		pval_ivw_re <- pnorm(abs(coefficients(mod_ivw)[1,1]/coefficients(mod_ivw)[1,2]), lower.tail=FALSE) * 2
+		pval_ivw_re <- stats::pnorm(abs(stats::coefficients(mod_ivw)[1,1]/stats::coefficients(mod_ivw)[1,2]), lower.tail=FALSE) * 2
 	} else {
-		pval_ivw_re <- coefficients(mod_ivw)[1,4]
+		pval_ivw_re <- stats::coefficients(mod_ivw)[1,4]
 	}
 
 
 	# Egger FE
-	lmod_egger <- lm(y ~ 0 + i + x)
+	lmod_egger <- stats::lm(y ~ 0 + i + x)
 	mod_egger <- summary(lmod_egger)
 
-	b1_egger_fe <- coefficients(mod_egger)[2,1]
-	b0_egger_fe <- coefficients(mod_egger)[1,1]
+	b1_egger_fe <- stats::coefficients(mod_egger)[2,1]
+	b0_egger_fe <- stats::coefficients(mod_egger)[1,1]
 
 	# This is equivalent to mod$sigma^2
 	# Q_egger <- sum(
@@ -171,30 +170,30 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	# )
 	Q_egger <- mod_egger$sigma^2 * (nsnp - 2)
 	Q_df_egger <- nsnp - 2
-	Q_pval_egger <- pchisq(Q_egger, Q_df_egger, lower.tail=FALSE)
+	Q_pval_egger <- stats::pchisq(Q_egger, Q_df_egger, lower.tail=FALSE)
 	phi_egger <- Q_egger / (nsnp - 2)
 
-	se1_egger_fe <- coefficients(mod_egger)[2,2] / max(mod_egger$sigma, 1)
-	pval1_egger_fe <- pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
-	se0_egger_fe <- coefficients(mod_egger)[1,2] / max(mod_egger$sigma, 1)
+	se1_egger_fe <- stats::coefficients(mod_egger)[2,2] / max(mod_egger$sigma, 1)
+	pval1_egger_fe <- stats::pt(abs(b1_egger_fe/se1_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+	se0_egger_fe <- stats::coefficients(mod_egger)[1,2] / max(mod_egger$sigma, 1)
 	if(parameters$test_dist == "z")
 	{
-		pval0_egger_fe <- pnorm(abs(b0_egger_fe/se0_egger_fe), lower.tail=FALSE) * 2	
+		pval0_egger_fe <- stats::pnorm(abs(b0_egger_fe/se0_egger_fe), lower.tail=FALSE) * 2	
 	} else {
-		pval0_egger_fe <- pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
+		pval0_egger_fe <- stats::pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
 	}
 
 	# Egger RE
-	b1_egger_re <- coefficients(mod_egger)[2,1]
-	se1_egger_re <- coefficients(mod_egger)[2,2]
-	pval1_egger_re <- coefficients(mod_egger)[2,4]
-	b0_egger_re <- coefficients(mod_egger)[1,1]
-	se0_egger_re <- coefficients(mod_egger)[1,2]
+	b1_egger_re <- stats::coefficients(mod_egger)[2,1]
+	se1_egger_re <- stats::coefficients(mod_egger)[2,2]
+	pval1_egger_re <- stats::coefficients(mod_egger)[2,4]
+	b0_egger_re <- stats::coefficients(mod_egger)[1,1]
+	se0_egger_re <- stats::coefficients(mod_egger)[1,2]
 	if(parameters$test_dist == "z")
 	{
-		pval0_egger_re <- pnorm(coefficients(mod_egger)[1,1]/coefficients(mod_egger)[1,2], lower.tail=FALSE)
+		pval0_egger_re <- stats::pnorm(stats::coefficients(mod_egger)[1,1]/stats::coefficients(mod_egger)[1,2], lower.tail=FALSE)
 	} else {
-		pval0_egger_re <- coefficients(mod_egger)[1,4]
+		pval0_egger_re <- stats::coefficients(mod_egger)[1,4]
 	}
 
 	results <- data.frame(
@@ -203,12 +202,12 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 		Estimate = c(b_ivw_fe, b_ivw_re, b1_egger_fe, b1_egger_re),
 		SE = c(se_ivw_fe, se_ivw_re, se1_egger_fe, se1_egger_re)
 	)
-	results$CI_low <- results$Estimate - qnorm(1-alpha/2) * results$SE
-	results$CI_upp <- results$Estimate + qnorm(1-alpha/2) * results$SE
+	results$CI_low <- results$Estimate - stats::qnorm(1-alpha/2) * results$SE
+	results$CI_upp <- results$Estimate + stats::qnorm(1-alpha/2) * results$SE
 	results$P <- c(pval_ivw_fe, pval_ivw_re, pval1_egger_fe, pval1_egger_re)
 
 	Qdiff <- max(0, Q_ivw - Q_egger)
-	Qdiff_p <- pchisq(Qdiff, 1, lower.tail=FALSE)
+	Qdiff_p <- stats::pchisq(Qdiff, 1, lower.tail=FALSE)
 
 
 	Q <- data.frame(
@@ -223,8 +222,8 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 		Estimate = c(b0_egger_fe, b0_egger_fe),
 		SE = c(se0_egger_fe, se0_egger_re)
 	)
-	intercept$CI_low <- intercept$Estimate - qnorm(1-alpha/2) * intercept$SE
-	intercept$CI_upp <- intercept$Estimate + qnorm(1-alpha/2) * intercept$SE
+	intercept$CI_low <- intercept$Estimate - stats::qnorm(1-alpha/2) * intercept$SE
+	intercept$CI_upp <- intercept$Estimate + stats::qnorm(1-alpha/2) * intercept$SE
 	intercept$P <- c(pval0_egger_fe, pval0_egger_re)
 
 	if(Q_pval_ivw <= Qthresh)
@@ -249,9 +248,9 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 
 	if(res %in% c("A", "B"))
 	{
-		cd <- cooks.distance(lmod_ivw)
+		cd <- stats::cooks.distance(lmod_ivw)
 	} else {
-		cd <- cooks.distance(lmod_egger)
+		cd <- stats::cooks.distance(lmod_egger)
 	}
 
 	return(list(rucker=results, intercept=intercept, Q=Q, res=res, selected=selected, cooksdistance=cd, lmod_ivw=lmod_ivw, lmod_egger=lmod_egger))
@@ -268,7 +267,6 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 #'
 #' @return List
 #' @export
-#' @importFrom stats median pt qchisq qnorm quantile rnorm sd
 mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 {
 	requireNamespace("ggplot2", quietly=TRUE)
@@ -286,8 +284,8 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 	l <- list()
 	for(i in 1:nboot)
 	{
-		dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
-		dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
+		dat2$beta.exposure <- stats::rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
+		dat2$beta.outcome <- stats::rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
 		l[[i]] <- mr_rucker(dat2, parameters)
 	}
 
@@ -309,21 +307,21 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 		Method = "Rucker median",
 		nsnp = nsnp,
 		Estimate = median(modsel$Estimate),
-		SE = mad(modsel$Estimate),
-		CI_low = quantile(modsel$Estimate, 0.025),
-		CI_upp = quantile(modsel$Estimate, 0.975)
+		SE = stats::mad(modsel$Estimate),
+		CI_low = stats::quantile(modsel$Estimate, 0.025),
+		CI_upp = stats::quantile(modsel$Estimate, 0.975)
 	)
-	rucker_median$P <- 2 * pt(abs(rucker_median$Estimate/rucker_median$SE), nsnp-1, lower.tail=FALSE)
+	rucker_median$P <- 2 * stats::pt(abs(rucker_median$Estimate/rucker_median$SE), nsnp-1, lower.tail=FALSE)
 
 	rucker_mean <- data.frame(
 		Method = "Rucker mean",
 		nsnp = nsnp,
 		Estimate = mean(modsel$Estimate),
-		SE = sd(modsel$Estimate)
+		SE = stats::sd(modsel$Estimate)
 	)
-	rucker_mean$CI_low <- rucker_mean$Estimate - qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
-	rucker_mean$CI_upp <- rucker_mean$Estimate + qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
-	rucker_mean$P <- 2 * pt(abs(rucker_mean$Estimate/rucker_mean$SE), nsnp-1, lower.tail=FALSE)
+	rucker_mean$CI_low <- rucker_mean$Estimate - stats::qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
+	rucker_mean$CI_upp <- rucker_mean$Estimate + stats::qnorm(Qthresh/2, lower.tail=TRUE) * rucker_mean$SE
+	rucker_mean$P <- 2 * stats::pt(abs(rucker_mean$Estimate/rucker_mean$SE), nsnp-1, lower.tail=FALSE)
 
 
 	res <- rbind(rucker$rucker, rucker_point, rucker_mean, rucker_median)
@@ -433,7 +431,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 			Method = "Rucker median (JK)",
 			nsnp = nsnp,
 			Estimate = median(modsel$Estimate),
-			SE = mad(modsel$Estimate),
+			SE = stats::mad(modsel$Estimate),
 			CI_low = quantile(modsel$Estimate, 0.025),
 			CI_upp = quantile(modsel$Estimate, 0.975)
 		)
