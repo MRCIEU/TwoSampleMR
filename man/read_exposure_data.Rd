@@ -31,7 +31,7 @@ read_exposure_data(
 \arguments{
 \item{filename}{Filename. Must have header with at least SNP column present.}
 
-\item{clump}{Whether to perform LD clumping with \code{\link{clump_data}} on the exposure data. The default is \code{FALSE}.}
+\item{clump}{Whether to perform LD clumping with \code{\link[=clump_data]{clump_data()}} on the exposure data. The default is \code{FALSE}.}
 
 \item{sep}{Specify delimeter in file. The default is a space, i.e. \code{" "}.}
 

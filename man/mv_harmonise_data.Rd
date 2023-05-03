@@ -7,7 +7,7 @@
 mv_harmonise_data(exposure_dat, outcome_dat, harmonise_strictness = 2)
 }
 \arguments{
-\item{exposure_dat}{Output from \code{\link{mv_extract_exposures}}.}
+\item{exposure_dat}{Output from \code{\link[=mv_extract_exposures]{mv_extract_exposures()}}.}
 
 \item{outcome_dat}{Output from \code{extract_outcome_data(exposure_dat$SNP, id_output)}.}
 

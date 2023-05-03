@@ -16,7 +16,7 @@ extract_instruments(
 )
 }
 \arguments{
-\item{outcomes}{Array of outcome IDs (see \code{\link{available_outcomes}}).}
+\item{outcomes}{Array of outcome IDs (see \code{\link[=available_outcomes]{available_outcomes()}}).}
 
 \item{p1}{Significance threshold. The default is \code{5e-8}.}
 
