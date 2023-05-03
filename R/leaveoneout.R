@@ -86,8 +86,6 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #' @return List of plots
 mr_leaveoneout_plot <- function(leaveoneout_results)
 {
-	requireNamespace("ggplot2", quietly=TRUE)
-	requireNamespace("plyr", quietly=TRUE)
 	res <- plyr::dlply(leaveoneout_results, c("id.exposure", "id.outcome"), function(d)
 	{
 		d <- plyr::mutate(d)
