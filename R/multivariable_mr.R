@@ -587,4 +587,3 @@ mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), interce
 
 	mv_multiple(mvdat, intercept=intercept, instrument_specific=instrument_specific, pval_threshold=pval_threshold, plots=plots)
 }
-
