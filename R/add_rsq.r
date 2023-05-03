@@ -89,13 +89,12 @@ add_rsq_one <- function(dat, what="exposure")
 }
 
 
-#' @importFrom stats qchisq
 get_r_from_pn_less_accurate <- function(p, n)
 {
 	# qval <- qf(p, 1, n-2, low=FALSE)
 	p[p == 1] <- 0.999
 	p[p == 0] <- 1e-200
-	qval <- qchisq(p, 1, lower.tail = FALSE) / (qchisq(p, n-2, lower.tail = FALSE)/(n-2))
+	qval <- stats::qchisq(p, 1, lower.tail = FALSE) / (stats::qchisq(p, n-2, lower.tail = FALSE)/(n-2))
 	r <- sqrt(sum(qval / (n - qval)))
 
 	if(r >= 1)
