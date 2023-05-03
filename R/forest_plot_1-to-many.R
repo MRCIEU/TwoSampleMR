@@ -537,7 +537,10 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 #' 1-to-many forest plot 
 #'
-#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes. Plots effect estimates and 95 percent confidence intervals. The ordering of results in the plot is determined by the order supplied by the user. Users may find sort_1_to_many() helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
+#' Plot results from an analysis of multiple exposures against a single outcome or a single exposure against multiple outcomes.
+#' Plots effect estimates and 95 percent confidence intervals.
+#' The ordering of results in the plot is determined by the order supplied by the user.
+#' Users may find [sort_1_to_many()] helpful for sorting their results prior to using the 1-to-many forest plot. The plot function works best for 50 results and is not designed to handle more than 100 results. 
 #' 
 #' @md
 #' @param mr_res Data frame of results supplied by the user. The default is `"mr_res"`.
