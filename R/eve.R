@@ -90,7 +90,6 @@ mr_mean_ivw <- function(d)
 	return(ret)
 }
 
-#' @importFrom stats coefficients lm pchisq pnorm pt
 mr_mean_egger <- function(d)
 {
 	d <- subset(d, mr_keep)
@@ -109,19 +108,19 @@ mr_mean_egger <- function(d)
 	y1 <- ratios * weights1
 
 	# Egger
-	egger1 <- lm(y1 ~ weights1)
-	weights2 <- sqrt(((se_out^2 + coefficients(egger1)[2]^2 * se_exp^2) / b_exp^2)^-1)
+	egger1 <- stats::lm(y1 ~ weights1)
+	weights2 <- sqrt(((se_out^2 + stats::coefficients(egger1)[2]^2 * se_exp^2) / b_exp^2)^-1)
 
 	y2 <- ratios * weights2
-	egger2 <- summary(lm(y2 ~ weights2))
+	egger2 <- summary(stats::lm(y2 ~ weights2))
 	eggeroutliers <- dplyr::tibble(
 		SNP=d$SNP, 
-		Qj = weights2^2 * (ratios - coefficients(egger2)[1,1] / weights2 - coefficients(egger2)[2,1])^2, 
-		Qpval=pchisq(Qj,1,lower.tail=FALSE)
+		Qj = weights2^2 * (ratios - coefficients(egger2)[1,1] / weights2 - stats::coefficients(egger2)[2,1])^2, 
+		Qpval=stats::pchisq(Qj,1,lower.tail=FALSE)
 	)
 
 	Qegger2 <- sum(eggeroutliers$Qj)
-	Qegger2pval <- pchisq(Qegger2, nrow(d)-1, lower.tail=FALSE)
+	Qegger2pval <- stats::pchisq(Qegger2, nrow(d)-1, lower.tail=FALSE)
 
 
 	# Collate
@@ -134,12 +133,12 @@ mr_mean_egger <- function(d)
 		se = c(egger2$coefficients[2,2]),
 		ci_low = b - se * 1.96,
 		ci_upp = b + se * 1.96,
-		pval = pt(abs(b / se), nrow(d)-2, lower.tail=FALSE) * 2
+		pval = stats::pt(abs(b / se), nrow(d)-2, lower.tail=FALSE) * 2
 	)
 
 	fe_out <- re_out
 	fe_out$se <- fe_out$se / max(1, egger2$sigma)
-	fe_out$pval <- pnorm(abs(fe_out$b / fe_out$se), lower.tail=FALSE) * 2
+	fe_out$pval <- stats::pnorm(abs(fe_out$b / fe_out$se), lower.tail=FALSE) * 2
 	fe_out$method <- c("FE Egger")
 
 	out <- dplyr::bind_rows(fe_out, re_out)
@@ -151,7 +150,7 @@ mr_mean_egger <- function(d)
 		method = c("Egger"),
 		Q = c(Qegger2),
 		df = c(nrow(d)-2),
-		pval = pchisq(Q, df, lower.tail=FALSE)
+		pval = stats::pchisq(Q, df, lower.tail=FALSE)
 	)
 
 	directional_pleiotropy <- dplyr::tibble(
@@ -161,7 +160,7 @@ mr_mean_egger <- function(d)
 		nsnp = nrow(d),
 		b = c(egger2$coefficients[1,1], egger2$coefficients[1,1]),
 		se = c(egger2$coefficients[1,2] / max(1, egger2$sigma), egger2$coefficients[1,2]),
-		pval = pt(abs(b/se), nrow(d)-2, lower.tail=FALSE) * 2
+		pval = stats::pt(abs(b/se), nrow(d)-2, lower.tail=FALSE) * 2
 	)
 
 	ret <- list(estimates=out, heterogeneity = heterogeneity, directional_pleiotropy = directional_pleiotropy, outliers=eggeroutliers)
