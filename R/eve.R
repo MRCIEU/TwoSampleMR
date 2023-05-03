@@ -115,7 +115,7 @@ mr_mean_egger <- function(d)
 	egger2 <- summary(stats::lm(y2 ~ weights2))
 	eggeroutliers <- dplyr::tibble(
 		SNP=d$SNP, 
-		Qj = weights2^2 * (ratios - coefficients(egger2)[1,1] / weights2 - stats::coefficients(egger2)[2,1])^2, 
+		Qj = weights2^2 * (ratios - stats::coefficients(egger2)[1,1] / weights2 - stats::coefficients(egger2)[2,1])^2, 
 		Qpval=stats::pchisq(Qj,1,lower.tail=FALSE)
 	)
 
