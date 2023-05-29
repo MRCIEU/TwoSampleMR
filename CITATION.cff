@@ -22,7 +22,7 @@ authors:
 title: "TwoSampleMR R package"
 type: software
 version: 0.5.7
-date-released: 2021-03-25
+date-released: 2023-05-29
 doi: "10.5281/zenodo.4636570"
 url: "https://mrcieu.github.io/TwoSampleMR/index.html"
 repository-code: "https://github.com/MRCIEU/TwoSampleMR"
