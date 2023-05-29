@@ -1,7 +1,7 @@
 TwoSampleMR v0.5.7 
 ==============
 
-(Release date: TBC)
+(Release date: 2023-05-29)
 
 * Move car package to Suggests to allow TwoSampleMR to install on R between versions 4.0.0 and 4.1.0
 * In DESCRIPTION use pkgdepends syntax for MRPRESSO package due its repository name being different to the package name so that installing TwoSampleMR under pak continues to work
