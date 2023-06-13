@@ -20,3 +20,9 @@ test_that("steiger filtering", {
 	w <- steiger_filtering(w)
 	expect_true("steiger_pval" %in% names(w))
 })
+
+
+test_that("steiger sensitivity uconf", {
+	r <- steiger_sensitivity_conf(bxy=0.1, bxyo=0.2, bgx=0.5, vx=1, vy=1, vg=0.5, beta_a=1, beta_b=10)
+	expect_equal(r$prop, 1)
+})
