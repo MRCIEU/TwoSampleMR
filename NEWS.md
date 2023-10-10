@@ -1,3 +1,11 @@
+# TwoSampleMR v0.5.8
+
+(Release date: 2023-11-16)
+
+* Improved speed of harmonisation using data.table functions (thanks @nicksunderland)
+* Updated URL to R-CMD-check README badge
+* Updates to GitHub Actions workflows
+
 TwoSampleMR v0.5.7 
 ==============
 
