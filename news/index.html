@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,22 +50,29 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Changelog</h1>
-      
+      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.8" id="twosamplemr-v058">TwoSampleMR v0.5.8<a class="anchor" aria-label="anchor" href="#twosamplemr-v058"></a></h2>
+<p>(Release date: 2023-11-16)</p>
+<ul><li>Improved speed of harmonisation using data.table functions (thanks <a href="https://github.com/nicksunderland" class="external-link">@nicksunderland</a>)</li>
+<li>Updated URL to R-CMD-check README badge</li>
+<li>Updates to GitHub Actions workflows</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.7" id="twosamplemr-v057">TwoSampleMR v0.5.7<a class="anchor" aria-label="anchor" href="#twosamplemr-v057"></a></h2>
 <p>(Release date: 2023-05-29)</p>
 <ul><li>Move car package to Suggests to allow TwoSampleMR to install on R between versions 4.0.0 and 4.1.0</li>
 <li>In DESCRIPTION use pkgdepends syntax for MRPRESSO package due its repository name being different to the package name so that installing TwoSampleMR under pak continues to work</li>
 <li>Various minor code tweaks to fix 2 R CMD check notes</li>
-<li>Add Cairo package to Suggests list (thanks @hdraisma)</li>
-<li>Fix error in outcome data vignette (thanks @hdraisma)</li>
+<li>Add Cairo package to Suggests list (thanks <a href="https://github.com/hdraisma" class="external-link">@hdraisma</a>)</li>
+<li>Fix error in outcome data vignette (thanks <a href="https://github.com/hdraisma" class="external-link">@hdraisma</a>)</li>
 <li>Some p-values that should have been ~0 were being stored as 1 in the elasticsearch database. This has now been fixed and those datasets have been clumped again to re-define the tophits. A full list of affected GWAS is available here: <a href="https://github.com/MRCIEU/opengwas-infpval-fix" class="external-link uri">https://github.com/MRCIEU/opengwas-infpval-fix</a>
 </li>
-<li>Updated steiger filtering to use effective sample size for case control studies (thanks to @niekverw)</li>
-<li>Fixed issue with tri-allelic SNPs in harmonisation. Credit to Clare Horscroft (@chorscroft) for spotting the error and fixing</li>
-<li>Fixed an issue with experimental version of local multivariable MR method. Credit to Mischa Lundberg (@MischaLundberg).</li>
+<li>Updated steiger filtering to use effective sample size for case control studies (thanks to <a href="https://github.com/niekverw" class="external-link">@niekverw</a>)</li>
+<li>Fixed issue with tri-allelic SNPs in harmonisation. Credit to Clare Horscroft (<a href="https://github.com/chorscroft" class="external-link">@chorscroft</a>) for spotting the error and fixing</li>
+<li>Fixed an issue with experimental version of local multivariable MR method. Credit to Mischa Lundberg (<a href="https://github.com/MischaLundberg" class="external-link">@MischaLundberg</a>).</li>
 <li>Catching edge cases for retrieving sample size meta data</li>
 <li>Updating default rsq estimation function to use beta and standard error instead of p-value, should improve numerical stability</li>
 <li>Allow chr and pos to be read in from local summary data files</li>
@@ -77,11 +84,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.6" id="twosamplemr-v056">TwoSampleMR v0.5.6<a class="anchor" aria-label="anchor" href="#twosamplemr-v056"></a></h2>
 <p>(Release date: 2021-03-25)</p>
-<ul><li>Fix to scatter plot (thanks to Yossi Farjoun @yfarjoun)</li>
-<li>Update to mr.raps parameters (thanks to Qingyuan Zhao @qingyuanzhao)</li>
-<li>Bug fix to MVMR (thanks to Conor Judge @conorjudge)</li>
-<li>Fix to harmonise_data (thanks to Leland Taylor @letaylor)</li>
-<li>Documentation (thanks to @jinghuazhao)</li>
+<ul><li>Fix to scatter plot (thanks to Yossi Farjoun <a href="https://github.com/yfarjoun" class="external-link">@yfarjoun</a>)</li>
+<li>Update to mr.raps parameters (thanks to Qingyuan Zhao <a href="https://github.com/qingyuanzhao" class="external-link">@qingyuanzhao</a>)</li>
+<li>Bug fix to MVMR (thanks to Conor Judge <a href="https://github.com/conorjudge" class="external-link">@conorjudge</a>)</li>
+<li>Fix to harmonise_data (thanks to Leland Taylor <a href="https://github.com/letaylor" class="external-link">@letaylor</a>)</li>
+<li>Documentation (thanks to <a href="https://github.com/jinghuazhao" class="external-link">@jinghuazhao</a>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.5" id="twosamplemr-v055">TwoSampleMR v0.5.5<a class="anchor" aria-label="anchor" href="#twosamplemr-v055"></a></h2>

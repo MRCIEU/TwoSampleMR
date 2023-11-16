@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,14 +80,14 @@
 Hemani</h4>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/HEAD/vignettes/outcome.Rmd" class="external-link"><code>vignettes/outcome.Rmd</code></a></small>
       <div class="d-none name"><code>outcome.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TwoSampleMR</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/TwoSampleMR" class="external-link">TwoSampleMR</a></span><span class="op">)</span></span></code></pre></div>
 <p>Once instruments for the exposure trait have been specified, those
 variants need to be extracted from the outcome trait.</p>
 <div class="section level2">
@@ -102,7 +102,7 @@ following:</p>
 <code class="sourceCode R"><span><span class="va">ao</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/available_outcomes.html">available_outcomes</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; API: public: http://gwas-api.mrcieu.ac.uk/</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ao</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 22</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 25</span></span></span>
 <span><span class="co">#&gt;   id      trait ncase group_name  year author consortium sex     pmid population</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ieu-b-… Schi…  <span style="text-decoration: underline;">1</span>234 public      <span style="text-decoration: underline;">2</span>022 Trube… PGC        Male… 3.54<span style="color: #949494;">e</span>7 Hispanic …</span></span>
@@ -111,9 +111,10 @@ following:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> ieu-b-… Schi… <span style="text-decoration: underline;">64</span>322 public      <span style="text-decoration: underline;">2</span>022 Trube… PGC        Male… 3.54<span style="color: #949494;">e</span>7 Mixed     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> ieu-b-… Schi… <span style="text-decoration: underline;">76</span>755 public      <span style="text-decoration: underline;">2</span>022 Trube… PGC        Male… 3.54<span style="color: #949494;">e</span>7 Mixed     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> ieu-b-… Schi…  <span style="text-decoration: underline;">5</span>998 public      <span style="text-decoration: underline;">2</span>022 Trube… PGC        Male… 3.54<span style="color: #949494;">e</span>7 African A…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more variables: unit &lt;chr&gt;, sample_size &lt;int&gt;, build &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more variables: unit &lt;chr&gt;, sample_size &lt;int&gt;, build &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ncontrol &lt;int&gt;, category &lt;chr&gt;, subcategory &lt;chr&gt;, ontology &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   note &lt;chr&gt;, mr &lt;int&gt;, nsnp &lt;int&gt;, priority &lt;int&gt;, sd &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;">#   note &lt;chr&gt;, mr &lt;int&gt;, nsnp &lt;int&gt;, doi &lt;chr&gt;, coverage &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   study_design &lt;chr&gt;, priority &lt;int&gt;, sd &lt;dbl&gt;</span></span></span></code></pre></div>
 <p>For information about authentication see <a href="https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication" class="external-link uri">https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication</a>.</p>
 <p>The <code>available_outcomes</code> function returns a table of all
 the available studies in the database. Each study has a unique ID.
@@ -172,7 +173,7 @@ SNPs from a GWAS on coronary heart disease.</p>
 can search the available studies:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ao</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"heart disease"</span>, <span class="va">ao</span><span class="op">$</span><span class="va">trait</span><span class="op">)</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 31 × 22</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 31 × 25</span></span></span>
 <span><span class="co">#&gt;    id    trait ncase group_name  year author consortium sex      pmid population</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> finn… Majo… <span style="text-decoration: underline;">21</span>012 public      <span style="text-decoration: underline;">2</span>021 NA     NA         Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  European  </span></span>
@@ -186,9 +187,10 @@ can search the available studies:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ukb-… I25 …  <span style="text-decoration: underline;">1</span>205 public      <span style="text-decoration: underline;">2</span>020 Pan-U… NA         Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  South Asi…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> finn… Othe… <span style="text-decoration: underline;">62</span>081 public      <span style="text-decoration: underline;">2</span>021 NA     NA         Male… <span style="color: #BB0000;">NA</span>   <span style="color: #949494;"> </span>  European  </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 21 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more variables: unit &lt;chr&gt;, sample_size &lt;int&gt;, build &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more variables: unit &lt;chr&gt;, sample_size &lt;int&gt;, build &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ncontrol &lt;int&gt;, category &lt;chr&gt;, subcategory &lt;chr&gt;, ontology &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   note &lt;chr&gt;, mr &lt;int&gt;, nsnp &lt;int&gt;, priority &lt;int&gt;, sd &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;">#   note &lt;chr&gt;, mr &lt;int&gt;, nsnp &lt;int&gt;, doi &lt;chr&gt;, coverage &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   study_design &lt;chr&gt;, priority &lt;int&gt;, sd &lt;dbl&gt;</span></span></span></code></pre></div>
 <p>The most recent CARDIOGRAM GWAS is ID number <code>ieu-a-7</code>. We
 can extract the BMI SNPs from this GWAS as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">

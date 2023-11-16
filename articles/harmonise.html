@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,14 +80,14 @@
 Hemani</h4>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/HEAD/vignettes/harmonise.Rmd" class="external-link"><code>vignettes/harmonise.Rmd</code></a></small>
       <div class="d-none name"><code>harmonise.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TwoSampleMR</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/TwoSampleMR" class="external-link">TwoSampleMR</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -236,26 +236,20 @@ analyses for the same trait. For example, there are multiple GWAS
 summary datasets for body mass index and coronary heart disease:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ao</span><span class="op">[</span><span class="va">ao</span><span class="op">$</span><span class="va">trait</span> <span class="op">==</span> <span class="st">"Body mass index"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trait"</span>, <span class="st">"id"</span>, <span class="st">"pmid"</span>, <span class="st">"author"</span>, <span class="st">"sample_size"</span>, <span class="st">"nsnp"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 17 × 6</span></span></span>
-<span><span class="co">#&gt;    trait           id                   pmid author      sample_size     nsnp</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Body mass index ieu-a-94         23<span style="text-decoration: underline;">754</span>948 Randall JC        <span style="text-decoration: underline;">60</span>586  2<span style="text-decoration: underline;">736</span>876</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Body mass index ieu-a-2          25<span style="text-decoration: underline;">673</span>413 Locke AE         <span style="text-decoration: underline;">339</span>224  2<span style="text-decoration: underline;">555</span>511</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Body mass index ieu-a-95         23<span style="text-decoration: underline;">754</span>948 Randall JC        <span style="text-decoration: underline;">73</span>137  2<span style="text-decoration: underline;">736</span>876</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Body mass index ieu-a-974        25<span style="text-decoration: underline;">673</span>413 Locke AE         <span style="text-decoration: underline;">171</span>977  2<span style="text-decoration: underline;">494</span>613</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Body mass index bbj-a-3          28<span style="text-decoration: underline;">892</span>062 Ishigaki K        <span style="text-decoration: underline;">72</span>390  6<span style="text-decoration: underline;">108</span>953</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Body mass index ebi-a-GCST006368 30<span style="text-decoration: underline;">108</span>127 Hoffmann TJ      <span style="text-decoration: underline;">315</span>347 27<span style="text-decoration: underline;">854</span>527</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Body mass index ieu-b-4815             <span style="color: #BB0000;">NA</span> Howe LJ           <span style="text-decoration: underline;">51</span>852       <span style="color: #BB0000;">NA</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Body mass index bbj-a-2          28<span style="text-decoration: underline;">892</span>062 Ishigaki K        <span style="text-decoration: underline;">85</span>894  6<span style="text-decoration: underline;">108</span>953</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Body mass index ieu-b-4816             <span style="color: #BB0000;">NA</span> Howe LJ           <span style="text-decoration: underline;">99</span>998  7<span style="text-decoration: underline;">191</span>606</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Body mass index ieu-a-785        25<span style="text-decoration: underline;">673</span>413 Locke AE         <span style="text-decoration: underline;">152</span>893  2<span style="text-decoration: underline;">477</span>659</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> Body mass index ebi-a-GCST002783 25<span style="text-decoration: underline;">673</span>413 Locke AE         <span style="text-decoration: underline;">236</span>781  2<span style="text-decoration: underline;">529</span>499</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> Body mass index bbj-a-1          28<span style="text-decoration: underline;">892</span>062 Ishigaki K       <span style="text-decoration: underline;">158</span>284  5<span style="text-decoration: underline;">961</span>600</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> Body mass index ebi-a-GCST004904 28<span style="text-decoration: underline;">892</span>062 Akiyama M        <span style="text-decoration: underline;">158</span>284  5<span style="text-decoration: underline;">952</span>516</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> Body mass index ebi-a-GCST006802 26<span style="text-decoration: underline;">961</span>502 Wood AR          <span style="text-decoration: underline;">119</span>688  8<span style="text-decoration: underline;">580</span>466</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> Body mass index ieu-a-835        25<span style="text-decoration: underline;">673</span>413 Locke AE         <span style="text-decoration: underline;">322</span>154  2<span style="text-decoration: underline;">554</span>668</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> Body mass index ebi-a-GCST008025 31<span style="text-decoration: underline;">217</span>584 Wojcik GL         <span style="text-decoration: underline;">21</span>955 34<span style="text-decoration: underline;">343</span>880</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> Body mass index ieu-a-1089       26<span style="text-decoration: underline;">961</span>502 Wood             <span style="text-decoration: underline;">120</span>286  8<span style="text-decoration: underline;">654</span>252</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 24 × 6</span></span></span>
+<span><span class="co">#&gt;    trait           id                     pmid author         sample_size   nsnp</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Body mass index ebi-a-GCST90103751 35<span style="text-decoration: underline;">051</span>171 Wong HS              <span style="text-decoration: underline;">21</span>930 6.37<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Body mass index ebi-a-GCST90095039 35<span style="text-decoration: underline;">399</span>580 Fern&lt;U+00E1&gt;n…      <span style="text-decoration: underline;">330</span>793 2.40<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Body mass index ebi-a-GCST90095034 35<span style="text-decoration: underline;">399</span>580 Fern&lt;U+00E1&gt;n…       <span style="text-decoration: underline;">56</span>161 8.76<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Body mass index ebi-a-GCST90029007 29<span style="text-decoration: underline;">892</span>013 Loh PR              <span style="text-decoration: underline;">532</span>396 1.20<span style="color: #949494;">e</span>7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Body mass index ebi-a-GCST90025994 34<span style="text-decoration: underline;">226</span>706 Barton AR           <span style="text-decoration: underline;">457</span>756 4.24<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Body mass index ebi-a-GCST90018947 34<span style="text-decoration: underline;">594</span>039 Sakaue S            <span style="text-decoration: underline;">359</span>983 1.91<span style="color: #949494;">e</span>7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Body mass index ebi-a-GCST90018727 34<span style="text-decoration: underline;">594</span>039 Sakaue S            <span style="text-decoration: underline;">163</span>835 1.25<span style="color: #949494;">e</span>7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Body mass index ieu-a-94           23<span style="text-decoration: underline;">754</span>948 Randall JC           <span style="text-decoration: underline;">60</span>586 2.74<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Body mass index ieu-a-2            25<span style="text-decoration: underline;">673</span>413 Locke AE            <span style="text-decoration: underline;">339</span>224 2.56<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Body mass index ieu-a-95           23<span style="text-decoration: underline;">754</span>948 Randall JC           <span style="text-decoration: underline;">73</span>137 2.74<span style="color: #949494;">e</span>6</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 14 more rows</span></span></span>
 <span><span class="va">ao</span><span class="op">[</span><span class="va">ao</span><span class="op">$</span><span class="va">trait</span> <span class="op">==</span> <span class="st">"Coronary heart disease"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trait"</span>, <span class="st">"id"</span>, <span class="st">"pmid"</span>, <span class="st">"author"</span>, <span class="st">"ncase"</span>, <span class="st">"ncontrol"</span>, <span class="st">"nsnp"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 7</span></span></span>
 <span><span class="co">#&gt;   trait                  id                   pmid author  ncase ncontrol   nsnp</span></span>

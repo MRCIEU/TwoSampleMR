@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,14 +80,14 @@
 and Philip Haycock</h4>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/HEAD/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
       <div class="d-none name"><code>perform_mr.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TwoSampleMR</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/TwoSampleMR" class="external-link">TwoSampleMR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -122,10 +122,10 @@ randomisation. To do this, simply run:</p>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
 <span><span class="co">#&gt;           se         pval</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2 0.07572053 3.204835e-07</span></span>
+<span><span class="co">#&gt; 2 0.07310254 1.196550e-07</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4 0.15417744 3.030830e-02</span></span>
-<span><span class="co">#&gt; 5 0.09260442 7.060435e-05</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.15840993 3.487438e-02</span></span>
+<span><span class="co">#&gt; 5 0.09784029 1.565693e-04</span></span></code></pre></div>
 <p>This returns a data frame of estimates of the causal effect of the
 exposure on the outcome for a range of different MR methods.</p>
 <p>If there were multiple exposures against multiple outcomes in
@@ -750,7 +750,7 @@ object.</p>
 <h2 id="mr-steiger-directionality-test">MR Steiger directionality test<a class="anchor" aria-label="anchor" href="#mr-steiger-directionality-test"></a>
 </h2>
 <p>This is an implementation of the method described here:</p>
-<p><a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081" class="external-link">Hemani
+<p><a href="https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081" class="external-link">Hemani
 G, Tilling K, Davey Smith G.<br><strong>Orienting the causal
 relationship between imprecisely measured traits using GWAS summary
 data.</strong><br> PLoS Genetics. 2017. 13(11): e1007081.</a></p>
@@ -964,7 +964,7 @@ obtaining the LD matrix for the instruments</p>
 <p>We recently developed MR-MoE, a method to choose the most appropriate
 amongst several MR tests using a machine learning algorithm. Note that
 the method is still under review, but full details are described here:
-<a href="http://www.biorxiv.org/content/early/2017/08/23/173682" class="external-link">biorxiv.org/content/early/2017/08/23/173682</a>.</p>
+<a href="https://doi.org/10.1101/173682" class="external-link uri">https://doi.org/10.1101/173682</a>.</p>
 <p>MR-MoE operates by taking a set of harmonised data, inferring some
 characteristics about the dataset, and using those characteristics to
 predict how well each of the different MR methods will perform on the
@@ -1068,10 +1068,10 @@ outcome name using the split_outcome function:</p>
 <span><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
 <span><span class="co">#&gt;                      method nsnp         b         se         pval</span></span>
 <span><span class="co">#&gt; 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07181732 7.094452e-08</span></span>
+<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07380482 1.574325e-07</span></span>
 <span><span class="co">#&gt; 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15162663 2.770977e-02</span></span>
-<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.10377275 3.414564e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15879705 3.530742e-02</span></span>
+<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.09325457 7.843036e-05</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="split-exposure-names">Split exposure names<a class="anchor" aria-label="anchor" href="#split-exposure-names"></a>
@@ -1102,10 +1102,10 @@ confidence intervals using:</p>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
 <span><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653</span></span>
-<span><span class="co">#&gt; 2 0.07181732 7.094452e-08 0.24624453 0.5277684 1.472566 1.279212 1.695145</span></span>
+<span><span class="co">#&gt; 2 0.07380482 1.574325e-07 0.24234904 0.5316639 1.472566 1.274239 1.701762</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328</span></span>
-<span><span class="co">#&gt; 4 0.15162663 2.770977e-02 0.04296724 0.6373436 1.405166 1.043904 1.891450</span></span>
-<span><span class="co">#&gt; 5 0.10377275 3.414564e-04 0.18543028 0.5922195 1.475246 1.203736 1.807997</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.15879705 3.530742e-02 0.02891321 0.6513976 1.405166 1.029335 1.918220</span></span>
+<span><span class="co">#&gt; 5 0.09325457 7.843036e-05 0.20604593 0.5716038 1.475246 1.228810 1.771105</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="subset-on-method">Subset on method<a class="anchor" aria-label="anchor" href="#subset-on-method"></a>
