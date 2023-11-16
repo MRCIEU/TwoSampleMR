@@ -640,7 +640,7 @@ MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
 
 ## MR-MoE: Using a mixture of experts machine learning approach
 
-We recently developed MR-MoE, a method to choose the most appropriate amongst several MR tests using a machine learning algorithm. Note that the method is still under review, but full details are described here: [biorxiv.org/content/early/2017/08/23/173682](http://www.biorxiv.org/content/early/2017/08/23/173682).
+We recently developed MR-MoE, a method to choose the most appropriate amongst several MR tests using a machine learning algorithm. Note that the method is still under review, but full details are described here: <https://doi.org/10.1101/173682>.
 
 MR-MoE operates by taking a set of harmonised data, inferring some characteristics about the dataset, and using those characteristics to predict how well each of the different MR methods will perform on the dataset, in terms of maximising power while minimising false discovery rates. 
 
