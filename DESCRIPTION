@@ -22,6 +22,8 @@ Description: A package for performing Mendelian randomization using GWAS
     functionality in this package, but for any serious work we strongly
     recommend using this R package.
 License: MIT + file LICENSE
+URL: https://github.com/MRCIEU/TwoSampleMR,
+    https://mrcieu.github.io/TwoSampleMR/
 Depends:
     R (>= 4.0.0)
 Imports:
