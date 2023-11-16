@@ -16,5 +16,5 @@ utils::globalVariables(c(
   "steiger_filtered", "theme", "theme_bw", "tibble", "tot", "type", "unit", "up", "up_ci",
   "use_by_default", "value", "vgu", "vgx", "word_document",
   "complete.cases", ".", "eaf", "id", "l2", "l2.x", "n1", "n2", "rsid", "z",
-  "orig_SNP", "df"
+  "orig_SNP", "df", "SNP_index"
 ))

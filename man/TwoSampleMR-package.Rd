@@ -9,7 +9,7 @@
 \description{
 A package for performing Mendelian randomization using GWAS summary data.
 It uses the \href{https://gwas.mrcieu.ac.uk/}{IEU GWAS database} to obtain data automatically,
-and a wide range of methods to run the analysis. You can use the \href{http://www.mrbase.org/}{MR-Base web app}
+and a wide range of methods to run the analysis. You can use the \href{https://www.mrbase.org/}{MR-Base web app}
 to try out a limited range of the functionality in this package,
 but for any serious work we strongly recommend using this R package.
 }

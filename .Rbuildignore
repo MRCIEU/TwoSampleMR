@@ -16,3 +16,4 @@ cache$
 ^index\.md$
 ^README\.Rmd$
 ^CITATION\.cff$
+^README\.html$

@@ -39,7 +39,7 @@ The function looks up the rs IDs in biomart to validate them and retrieve chromo
 
 ### GWAS catalog
 
-The GWAS catalog ([http://www.ebi.ac.uk/gwas/](http://www.ebi.ac.uk/gwas/)) is a collection of `r data(gwas_catalog); nrow(gwas_catalog)` reported associations against `r length(unique(gwas_catalog$Phenotype))` traits. These have the potential to be used as instruments in 2SMR. We have downloaded the GWAS catalog and made important formatting changes in order to simplify usage of these data for MR. **Please note that the reformatting of this data may be unreliable**.
+The GWAS catalog ([https://www.ebi.ac.uk/gwas/](https://www.ebi.ac.uk/gwas/)) is a collection of `r data(gwas_catalog); nrow(gwas_catalog)` reported associations against `r length(unique(gwas_catalog$Phenotype))` traits. These have the potential to be used as instruments in 2SMR. We have downloaded the GWAS catalog and made important formatting changes in order to simplify usage of these data for MR. **Please note that the reformatting of this data may be unreliable**.
 
 To use the GWAS catalog:
 
