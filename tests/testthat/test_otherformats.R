@@ -1,5 +1,4 @@
 context("other formats")
-library(TwoSampleMR)
 
 dat <- make_dat("ieu-a-2", "ieu-a-7")
 

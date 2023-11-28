@@ -1,5 +1,4 @@
 context("leaveoneout")
-library(TwoSampleMR)
 
 dat <- make_dat(2, 7)
 

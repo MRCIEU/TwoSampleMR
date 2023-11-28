@@ -1,5 +1,4 @@
 context("harmonise")
-library(TwoSampleMR)
 
 exp_dat <- extract_instruments("ieu-a-2")
 out_dat <- extract_outcome_data(exp_dat$SNP, "ieu-a-7")

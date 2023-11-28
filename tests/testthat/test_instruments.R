@@ -1,5 +1,4 @@
 context("Instruments")
-library(TwoSampleMR)
 
 test_that("server and mrinstruments", {
 

@@ -1,5 +1,4 @@
 context("add rsq")
-library(TwoSampleMR)
 
 test_that("exposure data 1", {
 	d <- extract_instruments('ieu-a-2') %>% add_rsq()

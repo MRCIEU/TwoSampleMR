@@ -1,5 +1,4 @@
 context("plots")
-library(TwoSampleMR)
 
 test_that("scatter plot", {
 	dat <- make_dat(2,7)
