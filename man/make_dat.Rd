@@ -4,14 +4,18 @@
 \alias{make_dat}
 \title{Convenient function to create a harmonised dataset}
 \usage{
-make_dat(exposures = c(2, 301), outcomes = c(7, 1001), proxies = TRUE)
+make_dat(
+  exposures = c("ieu-a-2", "ieu-a-301"),
+  outcomes = c("ieu-a-7", "ieu-a-1001"),
+  proxies = TRUE
+)
 }
 \arguments{
-\item{exposures}{The default is \code{c(2, 301)} (BMI and LDL).}
+\item{exposures}{The default is \code{c("ieu-a-2", "ieu-a-301")} (BMI and LDL).}
 
-\item{outcomes}{The default is \code{c(7, 1001)} (EDU and CHD).}
+\item{outcomes}{The default is \code{c("ieu-a-7", "ieu-a-1001")} (CHD and EDU).}
 
-\item{proxies}{Look for proxies? Default = TRUE}
+\item{proxies}{Look for proxies? Default = \code{TRUE}}
 }
 \value{
 Harmonised data frame
