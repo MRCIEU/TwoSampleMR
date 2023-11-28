@@ -1,5 +1,6 @@
 # TwoSampleMR v0.5.9
 
+* Fixed a minor issue in `dat_to_RadialMR()`
 * Minor improvements to `make_dat()` default arguments and helpfile
 * Minor improvements to package tests
 
