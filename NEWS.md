@@ -1,3 +1,8 @@
+# TwoSampleMR v0.5.9
+
+* Minor improvements to `make_dat()` default arguments and helpfile
+* Minor improvements to package tests
+
 # TwoSampleMR v0.5.8
 
 (Release date: 2023-11-16)
