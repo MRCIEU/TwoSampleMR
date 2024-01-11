@@ -7,10 +7,10 @@
 
 [![R-CMD-check](https://github.com/MRCIEU/TwoSampleMR/actions/workflows/check-full.yaml/badge.svg)](https://github.com/MRCIEU/TwoSampleMR/actions/workflows/check-full.yaml)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
 [![Codecov test
-coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg)](https://codecov.io/gh/MRCIEU/TwoSampleMR?branch=master)
+coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MRCIEU/TwoSampleMR?branch=master)
 <!-- badges: end -->
 
 A package for performing Mendelian randomization using GWAS summary
@@ -56,4 +56,4 @@ is available here: <https://hub.docker.com/r/mrcieu/twosamplemr>
 <!-- Additional content -->
 
 **Full documentation available here:**
-<https://mrcieu.github.io/TwoSampleMR>
+<https://mrcieu.github.io/TwoSampleMR/>
