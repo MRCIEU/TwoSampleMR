@@ -15,7 +15,7 @@ mr_moe(res, rf)
 List
 }
 \description{
-Based on the method described here \url{https://www.biorxiv.org/content/early/2017/08/23/173682}.
+Based on the method described here \url{https://www.biorxiv.org/content/10.1101/173682v2}.
 Once all MR methods have been applied to a summary set, you can then use the mixture of experts to predict the method most likely to be the most accurate.
 }
 \details{

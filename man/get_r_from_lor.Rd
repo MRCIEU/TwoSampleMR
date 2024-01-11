@@ -34,5 +34,5 @@ Vector of signed r values
 }
 \description{
 This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis.
-Genetic Epidemiology 36: 214–224 (2012) \url{https://doi.org/10.1002/gepi.21614}.
+Genetic Epidemiology 36: 214–224 (2012) \doi{10.1002/gepi.21614}.
 }
