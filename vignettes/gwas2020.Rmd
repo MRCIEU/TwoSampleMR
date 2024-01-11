@@ -109,7 +109,7 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 
 ## How to request new data
 
-We have setup a github issues page here: https://github.com/MRCIEU/igd-data-requests/issues
+We have setup a github issues page here: https://github.com/MRCIEU/opengwas-requests/issues
 
 Please visit here to make a log of new data requests, or to contribute new data.
 
