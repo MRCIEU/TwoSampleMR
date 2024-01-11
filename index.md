@@ -10,7 +10,7 @@ A package for performing Mendelian randomization using GWAS summary data. It use
 
 ## January 2020 major update 
 
-**We have made substantial changes to the package, database and reference panels.** For full details of the changes, please visit https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html
+**We have made substantial changes to the package, database and reference panels.** For full details of the changes, please visit <https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html>
 
 ## Installation
 
