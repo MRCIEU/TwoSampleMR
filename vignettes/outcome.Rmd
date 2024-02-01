@@ -24,11 +24,11 @@ knitr::opts_chunk$set(
 library(TwoSampleMR)
 ```
 
-Once instruments for the exposure trait have been specified, those variants need to be extracted from the outcome trait. 
+Once instruments for the exposure trait have been specified, those variants need to be extracted from the outcome trait.
 
 ## Available studies in IEU GWAS database
 
-The IEU GWAS database (IGD) contains complete GWAS summary statistics from a large number of studies. You can browse them here: 
+The IEU GWAS database (IGD) contains complete GWAS summary statistics from a large number of studies. You can browse them here:
 
 https://gwas.mrcieu.ac.uk/
 
