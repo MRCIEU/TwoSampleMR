@@ -99,7 +99,6 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 
 - The IEU GWAS database: https://gwas.mrcieu.ac.uk
 - API to the IEU GWAS database: https://gwas-api.mrcieu.ac.uk
-- Updated TwoSampleMR package branch (not merged to master yet): https://github.com/MRCIEU/TwoSampleMR/tree/ieugwasr
 - ieugwasr package, for R access to the API: https://mrcieu.github.io/ieugwasr/
 - ieugwaspy package, for python access to the API: https://github.com/MRCIEU/ieugwaspy/ (Under construction)
 - gwasvcf package, R interface to GWAS VCF files: https://mrcieu.github.io/gwasvcf/
