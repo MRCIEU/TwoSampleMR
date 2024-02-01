@@ -21,7 +21,7 @@ system_metrics <- function(dat)
 	if(nrow(dat) > 1)
 	{
 		# Egger-Isq
-		metrics$egger_isq <- Isq(dat$beta.exposure, dat$se.exposure)
+		metrics$egger_isq <- Isq(abs(dat$beta.exposure), dat$se.exposure)
 	}
 
 	if(nrow(dat) > 2)

@@ -1,6 +1,7 @@
 #' I-squared calculation
 #'
-#' This function calculates the \eqn{I^2_{GX}} statistic.
+#' This function calculates the \eqn{I^2} statistic. 
+#' To use it for the \eqn{I^2_{GX}} metric ensure that the effects are all the same sign (e.g. \code{abs(y)}).
 #' 
 #' @param y Vector of effects.
 #' @param s Vector of standard errors.
