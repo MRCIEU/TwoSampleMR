@@ -8,8 +8,8 @@
 <meta name="description" content="TwoSampleMR">
 <title>Major changes to the IEU GWAS resources for 2020 • TwoSampleMR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Major changes to the IEU GWAS resources for 2020">
@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,9 +123,9 @@ full information on how to deal with this, see here: <a href="https://mrcieu.git
 <h3 id="ukbiobank-data-has-been-curated">UKBiobank data has been curated<a class="anchor" aria-label="anchor" href="#ukbiobank-data-has-been-curated"></a>
 </h3>
 <p>We conducted a large GWAS analysis using a pipeline that
-systematically analysed every <a href="https://www.ncbi.nlm.nih.gov/pubmed/29040602" class="external-link">PHESANT</a>
-phenotype in UK Biobank. There were previously ~20k traits with complete
-GWAS data, but a majority of these were binary traits based on very few
+systematically analysed every <a href="https://pubmed.ncbi.nlm.nih.gov/29040602/" class="external-link">PHESANT</a> phenotype
+in UK Biobank. There were previously ~20k traits with complete GWAS
+data, but a majority of these were binary traits based on very few
 numbers of cases. We have now filtered out unreliable datasets, there
 are 2514 traits remaining, with any binary traits removed that had fewer
 than 1000 cases. Another issue is the combination of small numbers of
@@ -289,8 +289,6 @@ contribute code.</p>
 </li>
 <li>API to the IEU GWAS database: <a href="https://gwas-api.mrcieu.ac.uk" class="external-link uri">https://gwas-api.mrcieu.ac.uk</a>
 </li>
-<li>Updated TwoSampleMR package branch (not merged to master yet): <a href="https://github.com/MRCIEU/TwoSampleMR/tree/ieugwasr" class="external-link uri">https://github.com/MRCIEU/TwoSampleMR/tree/ieugwasr</a>
-</li>
 <li>ieugwasr package, for R access to the API: <a href="https://mrcieu.github.io/ieugwasr/" class="external-link uri">https://mrcieu.github.io/ieugwasr/</a>
 </li>
 <li>ieugwaspy package, for python access to the API: <a href="https://github.com/MRCIEU/ieugwaspy/" class="external-link uri">https://github.com/MRCIEU/ieugwaspy/</a> (Under
@@ -310,7 +308,7 @@ summary data: <a href="https://github.com/MRCIEU/gwas2vcf" class="external-link 
 <div class="section level2">
 <h2 id="how-to-request-new-data">How to request new data<a class="anchor" aria-label="anchor" href="#how-to-request-new-data"></a>
 </h2>
-<p>We have setup a github issues page here: <a href="https://github.com/MRCIEU/igd-data-requests/issues" class="external-link uri">https://github.com/MRCIEU/igd-data-requests/issues</a></p>
+<p>We have setup a github issues page here: <a href="https://github.com/MRCIEU/opengwas-requests/issues" class="external-link uri">https://github.com/MRCIEU/opengwas-requests/issues</a></p>
 <p>Please visit here to make a log of new data requests, or to
 contribute new data.</p>
 </div>

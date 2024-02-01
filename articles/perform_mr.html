@@ -8,8 +8,8 @@
 <meta name="description" content="TwoSampleMR">
 <title>Perform MR • TwoSampleMR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Perform MR">
@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,10 +122,10 @@ randomisation. To do this, simply run:</p>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
 <span><span class="co">#&gt;           se         pval</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2 0.07428908 1.893846e-07</span></span>
+<span><span class="co">#&gt; 2 0.07206626 7.867215e-08</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4 0.15499731 3.116830e-02</span></span>
-<span><span class="co">#&gt; 5 0.10602454 4.458373e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.15315845 2.925614e-02</span></span>
+<span><span class="co">#&gt; 5 0.10028449 2.190187e-04</span></span></code></pre></div>
 <p>This returns a data frame of estimates of the causal effect of the
 exposure on the outcome for a range of different MR methods.</p>
 <p>If there were multiple exposures against multiple outcomes in
@@ -751,9 +751,9 @@ object.</p>
 </h2>
 <p>This is an implementation of the method described here:</p>
 <p><a href="https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081" class="external-link">Hemani
-G, Tilling K, Davey Smith G.<br><strong>Orienting the causal
-relationship between imprecisely measured traits using GWAS summary
-data.</strong><br> PLoS Genetics. 2017. 13(11): e1007081.</a></p>
+G, Tilling K, Davey Smith G. <strong>Orienting the causal relationship
+between imprecisely measured traits using GWAS summary data.</strong>
+PLoS Genetics. 2017. 13(11): e1007081.</a></p>
 <p>In MR it is assumed that the instruments influence the exposure first
 and then the outcome through the exposure. But sometimes this is
 difficult to evaluate, for example is a cis-acting SNP influencing gene
@@ -924,7 +924,7 @@ independent (i.e. they are not in linkage disequilibrium, LD). This is
 to avoid ‘double counting’ effects. An alternative approach is to
 estimate the MR effects accounting for the correlation between
 variants.</p>
-<p>The TwoSampleMR package has not implemented this yet, but the <a href="https://cran.r-project.org/web/packages/MendelianRandomization/index.html" class="external-link">MendelianRandomization</a>
+<p>The TwoSampleMR package has not implemented this yet, but the <a href="https://CRAN.R-project.org/package=MendelianRandomization" class="external-link">MendelianRandomization</a>
 R package by Olena Yavorska and Stephen Burgess does have this
 functionality. We can use the TwoSampleMR package to extract, format and
 harmonise data, and then convert to the format required by the
@@ -1068,10 +1068,10 @@ outcome name using the split_outcome function:</p>
 <span><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
 <span><span class="co">#&gt;                      method nsnp         b         se         pval</span></span>
 <span><span class="co">#&gt; 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07577463 3.267328e-07</span></span>
+<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07179562 7.030432e-08</span></span>
 <span><span class="co">#&gt; 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15807563 3.450246e-02</span></span>
-<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.09863554 1.750476e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15377820 2.989385e-02</span></span>
+<span><span class="co">#&gt; 5             Weighted mode   79 0.3888249 0.09942478 1.951000e-04</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="split-exposure-names">Split exposure names<a class="anchor" aria-label="anchor" href="#split-exposure-names"></a>
@@ -1100,12 +1100,12 @@ confidence intervals using:</p>
 <span><span class="co">#&gt; 3 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091</span></span>
 <span><span class="co">#&gt; 4 Body mass index || id:ieu-a-2               Simple mode   79 0.3401554</span></span>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3888249</span></span>
-<span><span class="co">#&gt;           se         pval     lo_ci     up_ci       or or_lci95 or_uci95</span></span>
-<span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.2203308 0.7846562 1.652838 1.246489 2.191653</span></span>
-<span><span class="co">#&gt; 2 0.07577463 3.267328e-07 0.2384882 0.5355248 1.472566 1.269329 1.708344</span></span>
-<span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.3303024 0.5615158 1.561909 1.391389 1.753328</span></span>
-<span><span class="co">#&gt; 4 0.15807563 3.450246e-02 0.0303272 0.6499837 1.405166 1.030792 1.915510</span></span>
-<span><span class="co">#&gt; 5 0.09863554 1.750476e-04 0.1954992 0.5821505 1.475246 1.215918 1.789884</span></span></code></pre></div>
+<span><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
+<span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653</span></span>
+<span><span class="co">#&gt; 2 0.07179562 7.030432e-08 0.24628708 0.5277259 1.472566 1.279267 1.695073</span></span>
+<span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328</span></span>
+<span><span class="co">#&gt; 4 0.15377820 2.989385e-02 0.03875015 0.6415607 1.405166 1.039511 1.899443</span></span>
+<span><span class="co">#&gt; 5 0.09942478 1.951000e-04 0.19395230 0.5836975 1.475246 1.214038 1.792654</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="subset-on-method">Subset on method<a class="anchor" aria-label="anchor" href="#subset-on-method"></a>
