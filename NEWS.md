@@ -4,6 +4,7 @@
 * Minor improvements to `make_dat()` default arguments and helpfile
 * Minor improvements to package tests
 * Amendments to GitHub Actions workflows
+* Updated several URLs which had changed
 
 # TwoSampleMR v0.5.8
 
