@@ -14,7 +14,7 @@
 * Updated URL to R-CMD-check README badge
 * Updates to GitHub Actions workflows
 
-TwoSampleMR v0.5.7 
+TwoSampleMR v0.5.7
 ==============
 
 (Release date: 2023-05-29)
