@@ -1,3 +1,13 @@
+# TwoSampleMR v0.5.9
+
+(Release date: 2024-02-01)
+
+* Fixed a minor issue in `dat_to_RadialMR()`
+* Minor improvements to `make_dat()` default arguments and helpfile
+* Minor improvements to package tests
+* Amendments to GitHub Actions workflows
+* Updated several URLs which had changed
+
 # TwoSampleMR v0.5.8
 
 (Release date: 2023-11-16)
@@ -6,7 +16,7 @@
 * Updated URL to R-CMD-check README badge
 * Updates to GitHub Actions workflows
 
-TwoSampleMR v0.5.7 
+TwoSampleMR v0.5.7
 ==============
 
 (Release date: 2023-05-29)

@@ -1,5 +1,4 @@
 context("ld")
-library(TwoSampleMR)
 
 
 a <- extract_instruments(2, clump=FALSE)

@@ -2,15 +2,15 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/MRCIEU/TwoSampleMR/actions/workflows/check-full.yaml/badge.svg)](https://github.com/MRCIEU/TwoSampleMR/actions/workflows/check-full.yaml)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) [![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
-[![Codecov test coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg)](https://codecov.io/gh/MRCIEU/TwoSampleMR?branch=master)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
+[![Codecov test coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MRCIEU/TwoSampleMR?branch=master)
 <!-- badges: end -->
 
 A package for performing Mendelian randomization using GWAS summary data. It uses the [IEU GWAS database](https://gwas.mrcieu.ac.uk/) to obtain data automatically, and a wide range of methods to run the analysis. You can use the [MR-Base web app](https://www.mrbase.org/) to try out a limited range of the functionality in this package, but for any serious work we strongly recommend using this R package.
 
 ## January 2020 major update 
 
-**We have made substantial changes to the package, database and reference panels.** For full details of the changes, please visit https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html
+**We have made substantial changes to the package, database and reference panels.** For full details of the changes, please visit <https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html>
 
 ## Installation
 

@@ -1,5 +1,4 @@
 context("outcome")
-library(TwoSampleMR)
 
 test_that("outcomes", {
 	

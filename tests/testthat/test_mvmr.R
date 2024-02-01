@@ -1,5 +1,4 @@
 context("mvmr")
-library(TwoSampleMR)
 
 test_that("control", {
 	lipids <- mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302"))

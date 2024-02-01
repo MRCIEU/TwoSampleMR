@@ -1,5 +1,4 @@
 context("heterogeneity")
-library(TwoSampleMR)
 
 dat <- make_dat()
 

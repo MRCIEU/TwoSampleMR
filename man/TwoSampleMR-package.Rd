@@ -2,17 +2,32 @@
 % Please edit documentation in R/TwoSampleMR-package.R
 \docType{package}
 \name{TwoSampleMR-package}
-\alias{TwoSampleMR-package}
 \alias{TwoSampleMR}
-\alias{twosamplemr}
-\title{TwoSampleMR: Two Sample MR functions and interface to MR Base database}
+\alias{TwoSampleMR-package}
+\title{TwoSampleMR: Two Sample MR Functions and Interface to MR Base Database}
 \description{
-A package for performing Mendelian randomization using GWAS summary data.
-It uses the \href{https://gwas.mrcieu.ac.uk/}{IEU GWAS database} to obtain data automatically,
-and a wide range of methods to run the analysis. You can use the \href{https://www.mrbase.org/}{MR-Base web app}
-to try out a limited range of the functionality in this package,
-but for any serious work we strongly recommend using this R package.
+A package for performing Mendelian randomization using GWAS summary data. It uses the IEU GWAS database \url{https://gwas.mrcieu.ac.uk/} to automatically obtain data, and a wide range of methods to run the analysis. You can use the MR-Base web app \url{https://www.mrbase.org/} to try out a limited range of the functionality in this package, but for any serious work we strongly recommend using this R package.
 }
-\details{
-\strong{Full documentation available here:} \href{https://mrcieu.github.io/TwoSampleMR/}{https://mrcieu.github.io/TwoSampleMR}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/MRCIEU/TwoSampleMR}
+  \item \url{https://mrcieu.github.io/TwoSampleMR/}
+  \item Report bugs at \url{https://github.com/MRCIEU/TwoSampleMR/issues/}
 }
+
+}
+\author{
+\strong{Maintainer}: Gibran Hemani \email{g.hemani@bristol.ac.uk} (\href{https://orcid.org/0000-0003-0920-1055}{ORCID})
+
+Authors:
+\itemize{
+  \item Philip Haycock \email{philip.haycock@bristol.ac.uk} (\href{https://orcid.org/0000-0001-5001-3350}{ORCID})
+  \item Jie Zheng \email{Jie.Zheng@bristol.ac.uk} (\href{https://orcid.org/0000-0002-6623-6839}{ORCID})
+  \item Tom Gaunt \email{Tom.Gaunt@bristol.ac.uk} (\href{https://orcid.org/0000-0003-0924-3247}{ORCID})
+  \item Ben Elsworth \email{Ben.Elsworth@bristol.ac.uk} (\href{https://orcid.org/0000-0001-7328-4233}{ORCID})
+  \item Tom Palmer \email{tom.palmer@bristol.ac.uk} (\href{https://orcid.org/0000-0003-4655-4511}{ORCID})
+}
+
+}
+\keyword{internal}

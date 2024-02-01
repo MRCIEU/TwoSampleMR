@@ -63,7 +63,7 @@ mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 
 By default, all the methods that are labelled `TRUE` in the `use_by_default` column are used by the `mr()` function.
 
-* * * 
+* * *
 
 ## Sensitivity analyses
 
@@ -123,7 +123,7 @@ res_loo <- mr_leaveoneout(dat)
 
 By default the method used is the inverse variance weighted method, but this can be changed by using the `method` argument.
 
-* * * 
+* * *
 
 ## Plots
 
@@ -217,7 +217,8 @@ p4[[1]]
 
 A 1-to-many MR analysis interrogates the effect of a single exposure on multiple outcomes or multiple exposures on a single outcome. The results of this analysis can be visualised using the 1-to-many forest plot, with or without stratification on a categorical variable. From a visual point of view, the function works best for 50 or fewer results and is not really designed to handle more than a 100 results. If your number of results is much greater than 50, it may be better to split these across two separate plots. For example, if you have 100 sets of results you could divide these equally across two plots and then combine the two plots together in another programme like Powerpoint. The function assumes the results are already in the right order for plotting. As such, users are advised to sort their results according to how they would like them to appear in the plot. Users can use their own code to do this or they can use the `sort_1_to_many()` function.  
 
-### Step 1: generate 1-to-many MR results  
+### Step 1: generate 1-to-many MR results
+
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
 exp_dat <- extract_instruments(outcomes = c(2, 100, 1032, 104, 1, 72, 999))
 table(exp_dat$exposure)
@@ -265,7 +266,7 @@ forest_plot_1_to_many(
 )
 ```
 
-It is also possible to add additional columns and column titles and to choose the size of the text in the columns: 
+It is also possible to add additional columns and column titles and to choose the size of the text in the columns:
 
 ```{r cache=FALSE, warning=FALSE, message=FALSE, eval=FALSE}
 res$pval<-formatC(res$pval, format = "e", digits = 2)
@@ -316,9 +317,9 @@ forest_plot_1_to_many(
 )
 ```
 
-#### Example 2. MR results for multiple MR methods grouped by multiple exposures 
+#### Example 2. MR results for multiple MR methods grouped by multiple exposures
 
-In this next example we plot the results from an analysis of the effect of multiple exposures on coronary heart disease using multiple methods, with results grouped by exposure. We also want the result for the IVW method to be given priority and to go above the other methods. We also want the exposure with the largest IVW effect size to go the top of the plot. We also set the TraitM argument to the column describing the MR method. This is because we are grouping the results on the exposures. Normally the row labels would correspond to the exposures but in this example we want the row names to correspond to the MR method. 
+In this next example we plot the results from an analysis of the effect of multiple exposures on coronary heart disease using multiple methods, with results grouped by exposure. We also want the result for the IVW method to be given priority and to go above the other methods. We also want the exposure with the largest IVW effect size to go the top of the plot. We also set the TraitM argument to the column describing the MR method. This is because we are grouping the results on the exposures. Normally the row labels would correspond to the exposures but in this example we want the row names to correspond to the MR method.
 
 ```{r cache=FALSE, warning=FALSE, fig.height=10, eval=FALSE}
 res <- mr(dat2)
@@ -353,7 +354,7 @@ forest_plot_1_to_many(
 
 #### Example 3. Stratify results on a grouping variable
 
-In this next example we plot the same results as above but with results stratified by a grouping variable. We also select one MR method for each unique exposure-outcome combination and sort the results by decreasing effect size within each group (i.e. largest effect at the top). 
+In this next example we plot the same results as above but with results stratified by a grouping variable. We also select one MR method for each unique exposure-outcome combination and sort the results by decreasing effect size within each group (i.e. largest effect at the top).
 
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
 res <- mr(dat2) 
@@ -383,9 +384,9 @@ forest_plot_1_to_many(
 )
 ```
 
-In the above example we made up an arbitrary grouping variable called "subcategory" with values "Group 1" and "Group 2". Typically, however, the grouping variable might correspond to something like a trait ontology (e.g. anthropometric and glycemic traits) or study design (e.g. MR and observational studies). 
+In the above example we made up an arbitrary grouping variable called "subcategory" with values "Group 1" and "Group 2". Typically, however, the grouping variable might correspond to something like a trait ontology (e.g. anthropometric and glycemic traits) or study design (e.g. MR and observational studies).
 
-#### Example 4. Effect of BMI on 103 diseases 
+#### Example 4. Effect of BMI on 103 diseases
 
 The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:
 
@@ -456,7 +457,7 @@ plot1
 dev.off() 
 ```
 
-* * * 
+* * *
 
 ## MR.RAPS: Many weak instruments analysis
 
@@ -481,7 +482,7 @@ res <-
 
 ## Reports
 
-A report can be generated that performs all MR analyses, sensitivity analyses, and plots, and presents them in a single self-contained html web page, word document, or pdf document. 
+A report can be generated that performs all MR analyses, sensitivity analyses, and plots, and presents them in a single self-contained html web page, word document, or pdf document.
 
 ```{r eval=FALSE}
 mr_report(dat)
@@ -497,9 +498,7 @@ This function will create a separate report file for every exposure-outcome comb
 
 This is an implementation of the method described here:
 
-[Hemani G, Tilling K, Davey Smith G.<br/>
-**Orienting the causal relationship between imprecisely measured traits using GWAS summary data.**<br/>
-PLoS Genetics. 2017. 13(11): e1007081.](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
+[Hemani G, Tilling K, Davey Smith G. **Orienting the causal relationship between imprecisely measured traits using GWAS summary data.** PLoS Genetics. 2017. 13(11): e1007081.](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1007081)
 
 In MR it is assumed that the instruments influence the exposure first and then the outcome through the exposure. But sometimes this is difficult to evaluate, for example is a cis-acting SNP influencing gene expression levels or DNA methylation levels first? The causal direction between the hypothesised exposure and outcomes can be tested using the Steiger test [@hemani-plosgen-2017]. For example:
 
@@ -510,7 +509,7 @@ knitr::kable(out)
 
 It calculates the variance explained in the exposure and the outcome by the instrumenting SNPs, and tests if the variance in the outcome is less than the exposure.
 
-This test is, like many others, liable to give inaccurate causal directions under some measurement error parameters in the exposure and the outcome (e.g. if the outcome has much lower measurement precision then its proportion of variance explained will be underestimated). Sensitivity can be applied to evaluate the extent to which the inferred causal direction is liable to measurement error, in two ways. 
+This test is, like many others, liable to give inaccurate causal directions under some measurement error parameters in the exposure and the outcome (e.g. if the outcome has much lower measurement precision then its proportion of variance explained will be underestimated). Sensitivity can be applied to evaluate the extent to which the inferred causal direction is liable to measurement error, in two ways.
 
 1. Provide estimates of measurement error for the exposure and the outcome, and obtain an adjusted estimate of the causal direction
 2. For all possible values of measurement error, identify the proportion of the parameter space which supports the inferred causal direction
@@ -549,7 +548,7 @@ id_exposure <- c("ieu-a-299", "ieu-a-300", "ieu-a-302")
 id_outcome <- "ieu-a-7"
 ```
 
-First obtain the instruments for each lipid fraction. This entails obtaining a combined set of SNPs including all instruments, and getting those SNPs for each lipid fraction. Therefore, if there are e.g. 20 instruments for each of 3 lipid fractions, but combined there are 30 unique SNPs, then we need to extract each of the 30 SNPs from each lipid fraction (exposure). 
+First obtain the instruments for each lipid fraction. This entails obtaining a combined set of SNPs including all instruments, and getting those SNPs for each lipid fraction. Therefore, if there are e.g. 20 instruments for each of 3 lipid fractions, but combined there are 30 unique SNPs, then we need to extract each of the 30 SNPs from each lipid fraction (exposure).
 
 ```{r eval=FALSE}
 exposure_dat <- mv_extract_exposures(id_exposure)
@@ -587,9 +586,9 @@ With these three different parameters there are eight different ways to do MV an
 
 ### Note about visualisation
 
-Plots can be generated using the `plots = TRUE` argument for `mv_multiple()` and `mv_residual()`. 
+Plots can be generated using the `plots = TRUE` argument for `mv_multiple()` and `mv_residual()`.
 
-The current plots being generated are not necessarily adequate because while they show the slope through the raw points, they do not demonstrate that the raw points might be effectively different between plots because they are conditional on the other exposures. 
+The current plots being generated are not necessarily adequate because while they show the slope through the raw points, they do not demonstrate that the raw points might be effectively different between plots because they are conditional on the other exposures.
 
 ### Using your own summary data
 
@@ -601,7 +600,7 @@ If you want to perform analysis with your local summary data (i.e. not in the Op
 
 In the examples shown so far it is assumed that instruments are independent (i.e. they are not in linkage disequilibrium, LD). This is to avoid 'double counting' effects. An alternative approach is to estimate the MR effects accounting for the correlation between variants.
 
-The TwoSampleMR package has not implemented this yet, but the [MendelianRandomization](https://cran.r-project.org/web/packages/MendelianRandomization/index.html) R package by Olena Yavorska and Stephen Burgess does have this functionality. We can use the TwoSampleMR package to extract, format and harmonise data, and then convert to the format required by the MendelianRandomization package. The IEU GWAS database server has the individual level genetic data for ~500 Europeans in 1000 genomes data, and can obtain the LD matrix for a set of SNPs using these data. For example:
+The TwoSampleMR package has not implemented this yet, but the [MendelianRandomization](https://CRAN.R-project.org/package=MendelianRandomization) R package by Olena Yavorska and Stephen Burgess does have this functionality. We can use the TwoSampleMR package to extract, format and harmonise data, and then convert to the format required by the MendelianRandomization package. The IEU GWAS database server has the individual level genetic data for ~500 Europeans in 1000 genomes data, and can obtain the LD matrix for a set of SNPs using these data. For example:
 
 ```{r eval=FALSE}
 snplist <- c("rs234", "rs1205")
@@ -642,7 +641,7 @@ MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
 
 We recently developed MR-MoE, a method to choose the most appropriate amongst several MR tests using a machine learning algorithm. Note that the method is still under review, but full details are described here: <https://doi.org/10.1101/173682>.
 
-MR-MoE operates by taking a set of harmonised data, inferring some characteristics about the dataset, and using those characteristics to predict how well each of the different MR methods will perform on the dataset, in terms of maximising power while minimising false discovery rates. 
+MR-MoE operates by taking a set of harmonised data, inferring some characteristics about the dataset, and using those characteristics to predict how well each of the different MR methods will perform on the dataset, in terms of maximising power while minimising false discovery rates.
 
 In order to run the analysis you must download an RData object that contains the trained random forests that are used to predict the efficacy of each method. This can be downloaded from here:
 
@@ -692,13 +691,13 @@ Looking at the `estimates`, we see that there is a column called `MOE` which is 
 
 * * *
 
-## Post MR results management 
+## Post MR results management
 
 The TwoSampleMR package also provides the following functions for managing or editing MR results.
 
 ### Split outcome names
 
-The outcome column in the output of mr() combines the original outcome name with the outcome trait ID. 
+The outcome column in the output of mr() combines the original outcome name with the outcome trait ID.
 
 ```{r}
 head(res)
@@ -713,27 +712,27 @@ split_outcome(res)
 
 ### Split exposure names
 
-Similarly to the outcome column, the exposure column in the output of `mr()` combines the original exposure name with the exposure trait ID. This can be split into separate columns for the id and exposure name using the split_exposure function. 
+Similarly to the outcome column, the exposure column in the output of `mr()` combines the original exposure name with the exposure trait ID. This can be split into separate columns for the id and exposure name using the split_exposure function.
 
 ### Generate odds ratios with 95% confidence intervals
 
-Users can convert log odds ratios into odds ratios with 95% confidence intervals using: 
+Users can convert log odds ratios into odds ratios with 95% confidence intervals using:
 
 ```{r}
 generate_odds_ratios(res)
 ```
 
-### Subset on method 
+### Subset on method
 
-It is sometimes useful to subset results on MR method, so that there is one unique result for each exposure-outcome combination: 
+It is sometimes useful to subset results on MR method, so that there is one unique result for each exposure-outcome combination:
 
 ```{r}
 subset_on_method(res)
 ```
 
-The default is to subset on the IVW method when >1 SNP is available and to use the Wald ratio method when a single SNP is available. Users can specify which multi-SNP method to subset on. 
+The default is to subset on the IVW method when >1 SNP is available and to use the Wald ratio method when a single SNP is available. Users can specify which multi-SNP method to subset on.
 
-### Combine all results 
+### Combine all results
 
 It is often useful to combine all results and study level characterists into a single dataframe or table, e.g. for sharing results with collaborators or when the user wishes to present all results in a single table or figure. This can be done using the `combine_all_mrresults()` function:
 
@@ -775,6 +774,6 @@ head(all_res[, c(
 )])
 ```
 
-This combines all results from `mr()`, `mr_heterogeneity()`, `mr_pleiotropy_test()` and `mr_singlesnp()` into a single dataframe. It also merges the results with outcome study level characteristics from the `available_outcomes()` function, including sample size characteristics. If requested, it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals). 
+This combines all results from `mr()`, `mr_heterogeneity()`, `mr_pleiotropy_test()` and `mr_singlesnp()` into a single dataframe. It also merges the results with outcome study level characteristics from the `available_outcomes()` function, including sample size characteristics. If requested, it also exponentiates results (e.g. if the user wants log odds ratio converted into odds ratios with 95 percent confidence intervals).
 
 ## References

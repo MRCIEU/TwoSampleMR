@@ -1,7 +1,6 @@
 context("leaveoneout")
-library(TwoSampleMR)
 
-dat <- make_dat(2, 7)
+dat <- make_dat("ieu-a-2", "ieu-a-7")
 
 test_that("leaveoneout", {
 	w <- mr_leaveoneout(dat)

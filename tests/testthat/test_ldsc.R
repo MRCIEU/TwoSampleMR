@@ -1,5 +1,4 @@
 context("LDSC")
-library(TwoSampleMR)
 
 
 test_that("get afl2", {

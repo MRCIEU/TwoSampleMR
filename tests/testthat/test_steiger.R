@@ -1,5 +1,4 @@
 context("steiger")
-library(TwoSampleMR)
 
 w <- make_dat(2, 7)
 

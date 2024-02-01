@@ -222,7 +222,7 @@ compareNA <- function(v1,v2) {
 #' Estimate proportion of variance of liability explained by SNP in general population
 #'
 #' This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis. 
-#' Genetic Epidemiology 36: 214–224 (2012) <https://doi.org/10.1002/gepi.21614>.
+#' Genetic Epidemiology 36: 214–224 (2012) \doi{10.1002/gepi.21614}.
 #'
 #' @param lor Vector of Log odds ratio.
 #' @param af Vector of allele frequencies.

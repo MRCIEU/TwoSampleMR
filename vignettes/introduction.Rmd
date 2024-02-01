@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ## Background
 
-Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components 
+Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components
 
 - data management and harmonisation
 - the statistical routines to estimate the causal effects
@@ -32,7 +32,7 @@ The general principles [@DaveySmith2003; @DaveySmithHemani2014], and statistical
 
 This package uses the [ieugwasr](https://github.com/mrcieu/ieugwasr) package to connect to the database of thousands of complete GWAS summary data.
 
-* * * 
+* * *
 
 ## Installation
 
@@ -45,7 +45,7 @@ install_github("MRCIEU/TwoSampleMR")
 
 If you don't have the `remotes` package install it from CRAN using `install.packages("remotes")`.
 
-* * * 
+* * *
 
 ## Overview
 
