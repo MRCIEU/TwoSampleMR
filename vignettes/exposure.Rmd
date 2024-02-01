@@ -149,7 +149,7 @@ bmi_exp_dat$exposure <- "BMI"
 
 ## Using an existing data frame
 
-If the data already exists as a data frame in R then it can be converted into the correct format using the `format_data` function. For example, here is some randomly created data:
+If the data already exists as a data frame in R then it can be converted into the correct format using the `format_data()` function. For example, here is some randomly created data:
 
 ```{r}
 random_df <- data.frame(
@@ -319,7 +319,7 @@ You can provide a list of SNP IDs, the SNPs will be extracted from 1000 genomes 
 bmi_exp_dat <- clump_data(bmi_exp_dat)
 ```
 
-The `clump_data` command takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the R/MRInstruments package the SNPs are already LD clumped.
+The `clump_data()` function takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the MRInstruments package the SNPs are already LD clumped.
 
 **Note:** The LD reference panel only includes SNPs (no INDELs). There are five super-populations from which LD can be calculated, by default European samples are used. Only SNPs with MAF > 0.01 within-population are available.
 
