@@ -19,7 +19,7 @@ There is backward compatibility built into the R packages that access the data, 
 
 ### Authentication
 
-Previously you would automatically be asked to authenticate any query to the database, through google. Now, we are making authentication voluntary - something that you do at the start of a session only if you need access to specific private datasets on the database. For the vast majority of use cases this is not required. 
+Previously you would automatically be asked to authenticate any query to the database, through google. Now, we are making authentication voluntary - something that you do at the start of a session only if you need access to specific private datasets on the database. For the vast majority of use cases this is not required.
 
 Another change is that the R package that managed the authentication has updated, and the file tokens generated are slightly different. For full information on how to deal with this, see here: https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication
 
@@ -35,7 +35,7 @@ Previously the data were QC'd to remove malformed results and then deposited as 
 
 ### LD reference panel is now harmonised
 
-We have updated the LD reference panel to be harmonised against human genome build 37, and as a consequence a few variants have been lost from the version that was previously used. 
+We have updated the LD reference panel to be harmonised against human genome build 37, and as a consequence a few variants have been lost from the version that was previously used.
 
 ### Instrument lists are up-to-date
 
@@ -65,11 +65,11 @@ Previously we were excluding these, but they are now retained
 
 ### Multi-allelic variants are retained
 
-Previously we were excluding these, but they are now retained. Be warned that if you extract a variant that has multiple alleles then you may get more than one row for that variant. 
+Previously we were excluding these, but they are now retained. Be warned that if you extract a variant that has multiple alleles then you may get more than one row for that variant.
 
 ### More data
 
-Automated download from the EBI repository, and an automated upload system and batch data processing system means that more data can be added faster to keep the database current. 
+Automated download from the EBI repository, and an automated upload system and batch data processing system means that more data can be added faster to keep the database current.
 
 ### Error messages are more informative
 
@@ -89,7 +89,7 @@ It is now possible to perform clumping, or create LD matrices, using your own lo
 
 ### Access the data directly
 
-Previously the data was only accessible through the database. Now the data can be downloaded in "GWAS VCF" format from here https://gwas.mrcieu.ac.uk/. (IEU members can access all the data on RDSF or bluecrystal4 directly). This means that if you want to perform very large or numerous operations, you can do it on HPC or locally in a more performant manner by using the data files directly. Please see the [gwasvcf R package](https://github.com/mrcieu/gwasvcf) on how to work with these data. 
+Previously the data was only accessible through the database. Now the data can be downloaded in "GWAS VCF" format from here https://gwas.mrcieu.ac.uk/. (IEU members can access all the data on RDSF or bluecrystal4 directly). This means that if you want to perform very large or numerous operations, you can do it on HPC or locally in a more performant manner by using the data files directly. Please see the [gwasvcf R package](https://github.com/mrcieu/gwasvcf) on how to work with these data.
 
 ### Connect the data to different analytical tools
 
