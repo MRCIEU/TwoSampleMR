@@ -34,7 +34,7 @@ bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
 ```
 
-but it is important to harmonise the effects. This means that the effect of a SNP on the exposure and the effect of that SNP on the outcome must each correspond to the same allele. 
+but it is important to harmonise the effects. This means that the effect of a SNP on the exposure and the effect of that SNP on the outcome must each correspond to the same allele.
 
 **Note:** The IEU GWAS database contains data that is already harmonised, meaning that the non-effect allele is aligned to the human genome reference sequence (build 37). It's still recommended to harmonise, but in principle everything should be on the forward strand and effect alleles always relating to the same allele. Some discrepancies could arise if there are multi-allelic variants that are represented as different bi-allelic variants in different studies.
 
@@ -47,7 +47,7 @@ dat <- harmonise_data(
 )
 ```
 
-This creates a new data frame that has the exposure data and outcome data combined. 
+This creates a new data frame that has the exposure data and outcome data combined.
 
 If there were 3 exposure traits and 3 outcome traits then there will be 9 sets of harmonisations being performed - harmonising the SNP effects of exposure trait 1 against outcome trait 1; exposure trait 1 against outcome trait 2; and so on.
 
@@ -133,7 +133,7 @@ This is similar to the above, except the allele frequency no longer gives us inf
 
 ### Options
 
-There are three options to harmonising the data. 
+There are three options to harmonising the data.
 
 1. Assume all alleles are presented on the forward strand
 2. Try to infer the forward strand alleles using allele frequency information
@@ -156,10 +156,10 @@ There are therefore multiple potential combinations of body mass index and coron
 dat <- power_prune(dat, method = 1, dist.outcome = "binary")
 ```
 
-This drops the duplicate exposure-outcome sets with the smaller outcome sample size (number of cases for binary outcomes). Remaining duplicates are then dropped on the basis of the exposure sample size. However, if there are a large number of SNPs available to instrument an exposure, the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. This can occur, for example, if the larger outcome GWAS has used a targeted genotyping array. In such instances, it may be better to prune studies on the basis of instrument strength (i.e. variation in exposure explained by the instrumental SNPs) as well as sample size. This can be done by setting the method argument to 2: 
+This drops the duplicate exposure-outcome sets with the smaller outcome sample size (number of cases for binary outcomes). Remaining duplicates are then dropped on the basis of the exposure sample size. However, if there are a large number of SNPs available to instrument an exposure, the outcome GWAS with the better SNP coverage may provide better power than the outcome GWAS with the larger sample size. This can occur, for example, if the larger outcome GWAS has used a targeted genotyping array. In such instances, it may be better to prune studies on the basis of instrument strength (i.e. variation in exposure explained by the instrumental SNPs) as well as sample size. This can be done by setting the method argument to 2:
 
 ```{r eval=FALSE}
 dat <- power_prune(dat, method = 2, dist.outcome = "binary")
 ```
 
-This procedure drops duplicate exposure-outcome sets on the basis of instrument strength and sample size, and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure should not be binary). The SNP-outcome effects can correspond to either a binary or continuous trait (default behaviour is to assume a binary distribution). If the exposure is binary then method 1 should be used. 
+This procedure drops duplicate exposure-outcome sets on the basis of instrument strength and sample size, and assumes that the SNP-exposure effects correspond to a continuous trait with a normal distribution (i.e. exposure should not be binary). The SNP-outcome effects can correspond to either a binary or continuous trait (default behaviour is to assume a binary distribution). If the exposure is binary then method 1 should be used.
