@@ -18,10 +18,12 @@
 #' @param clump_p1 Clumping sig level for index SNPs, default is `1`.
 #' @param clump_p2 Clumping sig level for secondary SNPs, default is `1`.
 #' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used version of the EUR panel with a slightly different set of markers
+#' @param bfile If this is provided then will use the API. Default = ‘NULL’
+#' @param plink_bin If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’
 #'
 #' @export
 #' @return Data frame
-clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1, pop="EUR")
+clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1, pop="EUR", bfile=NULL, plink_bin=NULL)
 {
 	# .Deprecated("ieugwasr::ld_clump()")
 
@@ -53,7 +55,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 	}
 
 	d <- data.frame(rsid=dat$SNP, pval=dat[[pval_column]], id=dat$id.exposure)
-	out <- ieugwasr::ld_clump(d, clump_kb=clump_kb, clump_r2=clump_r2, clump_p=clump_p1, pop=pop)
+	out <- ieugwasr::ld_clump(d, clump_kb=clump_kb, clump_r2=clump_r2, clump_p=clump_p1, pop=pop, bfile=bfile, plink_bin=plink_bin)
 	keep <- paste(dat$SNP, dat$id.exposure) %in% paste(out$rsid, out$id)
 	return(dat[keep, ])
 }
