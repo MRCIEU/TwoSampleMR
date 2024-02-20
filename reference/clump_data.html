@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.10</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,9 @@
 <span>  clump_r2 <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  clump_p1 <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  clump_p2 <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  pop <span class="op">=</span> <span class="st">"EUR"</span></span>
+<span>  pop <span class="op">=</span> <span class="st">"EUR"</span>,</span>
+<span>  bfile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plink_bin <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -94,6 +96,14 @@
 
 <dt>pop</dt>
 <dd><p>Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used version of the EUR panel with a slightly different set of markers</p></dd>
+
+
+<dt>bfile</dt>
+<dd><p>If this is provided then will use the API. Default = ‘NULL’</p></dd>
+
+
+<dt>plink_bin</dt>
+<dd><p>If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’</p></dd>
 
 </dl></div>
     <div class="section level2">
