@@ -56,10 +56,12 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 #' Attempt to perform MVMR using local data
 #'
-#' Under construction
+#' Allows you to read in summary data from text files to format the multivariable exposure dataset. 
+#' 
+#' Note that you can provide an array of column names for each column, which is of length `filenames_exposure`
 #'
 #' @param filenames_exposure Filenames for each exposure dataset. Must have header with at least SNP column present. Following arguments are used for determining how to read the filename and clumping etc.
-#' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`.
+#' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`. If length is 1 it will use the same `sep` value for each exposure dataset. You can provide a vector of values, one for each exposure dataset, if the values are different across datasets. The same applies to all dataset-formatting options listed below.
 #' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. Default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
 #' @param beta_col Required for MR. Name of column with effect sizes. THe default is `"beta"`.
@@ -83,36 +85,84 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #'
 #' @export
 #' @return List
-mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_col = "Phenotype", snp_col = "SNP", beta_col = "beta", se_col = "se", eaf_col = "eaf", effect_allele_col = "effect_allele", other_allele_col = "other_allele", pval_col = "pval", units_col = "units", ncase_col = "ncase", ncontrol_col = "ncontrol", samplesize_col = "samplesize", gene_col = "gene", id_col = "id", min_pval = 1e-200, log_pval = FALSE, pval_threshold=5e-8, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2)
-{
+mv_extract_exposures_local <- function(
+	filenames_exposure, 
+	sep = " ", 
+	phenotype_col = "Phenotype",
+	snp_col = "SNP",
+	beta_col = "beta",
+	se_col = "se",
+	eaf_col = "eaf",
+	effect_allele_col = "effect_allele",
+	other_allele_col = "other_allele",
+	pval_col = "pval",
+	units_col = "units",
+	ncase_col = "ncase",
+	ncontrol_col = "ncontrol",
+	samplesize_col = "samplesize",
+	gene_col = "gene",
+	id_col = "id",
+	min_pval = 1e-200,
+	log_pval = FALSE,
+	pval_threshold=5e-8,
+	plink_bin=NULL,
+	bfile=NULL,
+	clump_r2=0.001,
+	clump_kb=10000,
+	pop="EUR",
+	harmonise_strictness=2
+) {
 	message("WARNING: Experimental function")
+
+	n <- length(filenames_exposure)
+	if(length(sep) == 1) {sep <- rep(sep, n)}
+	if(length(phenotype_col) == 1) {phenotype_col <- rep(phenotype_col, n)}
+	if(length(snp_col) == 1) {snp_col <- rep(snp_col, n)}
+	if(length(beta_col) == 1) {beta_col <- rep(beta_col, n)}
+	if(length(se_col) == 1) {se_col <- rep(se_col, n)}
+	if(length(eaf_col) == 1) {eaf_col <- rep(eaf_col, n)}
+	if(length(effect_allele_col) == 1) {effect_allele_col <- rep(effect_allele_col, n)}
+	if(length(other_allele_col) == 1) {other_allele_col <- rep(other_allele_col, n)}
+	if(length(pval_col) == 1) {pval_col <- rep(pval_col, n)}
+	if(length(units_col) == 1) {units_col <- rep(units_col, n)}
+	if(length(ncase_col) == 1) {ncase_col <- rep(ncase_col, n)}
+	if(length(ncontrol_col) == 1) {ncontrol_col <- rep(ncontrol_col, n)}
+	if(length(samplesize_col) == 1) {samplesize_col <- rep(samplesize_col, n)}
+	if(length(gene_col) == 1) {gene_col <- rep(gene_col, n)}
+	if(length(id_col) == 1) {id_col <- rep(id_col, n)}
+	if(length(min_pval) == 1) {min_pval <- rep(min_pval, n)}
+	if(length(log_pval) == 1) {log_pval <- rep(log_pval, n)}
+
 	l_full <- list()
 	l_inst <- list()
 	for(i in 1:length(filenames_exposure))
 	{
 		l_full[[i]] <- read_outcome_data(filenames_exposure[i], 
-			sep = sep,
-			phenotype_col = phenotype_col,
-			snp_col = snp_col,
-			beta_col = beta_col,
-			se_col = se_col,
-			eaf_col = eaf_col,
-			effect_allele_col = effect_allele_col,
-			other_allele_col = other_allele_col,
-			pval_col = pval_col,
-			units_col = units_col,
-			ncase_col = ncase_col,
-			ncontrol_col = ncontrol_col,
-			samplesize_col = samplesize_col,
-			gene_col = gene_col,
-			id_col = id_col,
-			min_pval = min_pval,
-			log_pval = log_pval
+			sep = sep[i],
+			phenotype_col = phenotype_col[i],
+			snp_col = snp_col[i],
+			beta_col = beta_col[i],
+			se_col = se_col[i],
+			eaf_col = eaf_col[i],
+			effect_allele_col = effect_allele_col[i],
+			other_allele_col = other_allele_col[i],
+			pval_col = pval_col[i],
+			units_col = units_col[i],
+			ncase_col = ncase_col[i],
+			ncontrol_col = ncontrol_col[i],
+			samplesize_col = samplesize_col[i],
+			gene_col = gene_col[i],
+			id_col = id_col[i],
+			min_pval = min_pval[i],
+			log_pval = log_pval[i]
 		)
+		if(l_full[[i]]$outcome[1] == "outcome") l_full[[i]]$outcome <- paste0("exposure", i)
 		l_inst[[i]] <- subset(l_full[[i]], pval.outcome < pval_threshold)
+		l_inst[[i]] <- subset(l_inst[[i]], !duplicated(SNP))
 		l_inst[[i]] <- convert_outcome_to_exposure(l_inst[[i]])
 		l_inst[[i]] <- subset(l_inst[[i]], pval.exposure < pval_threshold)
-		l_inst[[i]] <- clump_data(l_inst[[i]], clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb)
+		l_inst[[i]] <- clump_data(l_inst[[i]], clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb, bfile=bfile, plink_bin=plink_bin, pop=pop)
+		message("Identified ", nrow(l_inst[[i]]), " hits for trait ", l_inst[[i]]$exposure[1])
 	}
 
 	exposure_dat <- dplyr::bind_rows(l_inst)
@@ -121,8 +171,10 @@ mv_extract_exposures_local <- function(filenames_exposure, sep = " ", phenotype_
 	temp$id.exposure <- 1
 	temp <- temp[order(temp$pval.exposure, decreasing=FALSE), ]
 	temp <- subset(temp, !duplicated(SNP))
-	temp <- clump_data(temp, clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb)
+	temp <- clump_data(temp, clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb, bfile=bfile, plink_bin=plink_bin, pop=pop)
 	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
+
+	message("Identified ", length(unique(temp$SNP)), " variants to include")
 
 	d1 <- lapply(l_full, function(x) {
 		subset(x, SNP %in% exposure_dat$SNP)

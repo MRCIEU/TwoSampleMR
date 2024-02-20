@@ -24,15 +24,18 @@ mv_extract_exposures_local(
   min_pval = 1e-200,
   log_pval = FALSE,
   pval_threshold = 5e-08,
+  plink_bin = NULL,
+  bfile = NULL,
   clump_r2 = 0.001,
   clump_kb = 10000,
+  pop = "EUR",
   harmonise_strictness = 2
 )
 }
 \arguments{
 \item{filenames_exposure}{Filenames for each exposure dataset. Must have header with at least SNP column present. Following arguments are used for determining how to read the filename and clumping etc.}
 
-\item{sep}{Specify delimeter in file. The default is space, i.e. \code{sep=" "}.}
+\item{sep}{Specify delimeter in file. The default is space, i.e. \code{sep=" "}. If length is 1 it will use the same \code{sep} value for each exposure dataset. You can provide a vector of values, one for each exposure dataset, if the values are different across datasets. The same applies to all dataset-formatting options listed below.}
 
 \item{phenotype_col}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value \code{"Outcome"}. Default is \code{"Phenotype"}.}
 
@@ -78,5 +81,8 @@ mv_extract_exposures_local(
 List
 }
 \description{
-Under construction
+Allows you to read in summary data from text files to format the multivariable exposure dataset.
+}
+\details{
+Note that you can provide an array of column names for each column, which is of length \code{filenames_exposure}
 }

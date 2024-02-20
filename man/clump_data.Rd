@@ -10,7 +10,9 @@ clump_data(
   clump_r2 = 0.001,
   clump_p1 = 1,
   clump_p2 = 1,
-  pop = "EUR"
+  pop = "EUR",
+  bfile = NULL,
+  plink_bin = NULL
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ clump_data(
 \item{clump_p2}{Clumping sig level for secondary SNPs, default is \code{1}.}
 
 \item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used version of the EUR panel with a slightly different set of markers}
+
+\item{bfile}{If this is provided then will use the API. Default = ‘NULL’}
+
+\item{plink_bin}{If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’}
 }
 \value{
 Data frame

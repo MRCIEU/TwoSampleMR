@@ -18,11 +18,17 @@ test_that("matrix", {
 	expect_equal(ncol(b), nrow(out))
 })
 
-
-
 a <- extract_instruments(c("ieu-a-2", "ieu-a-1001"), clump=FALSE)
 out <- clump_data(a)
 
 test_that("clump multiple", {
 	expect_equal(length(unique(a$id.exposure)), length(unique(out$id.exposure)))
 })
+
+test_that("clump local", {
+	skip_on_ci()
+	skip_on_cran()
+	skip_if_not(file.exists("/Users/gh13047/repo/opengwas-api-internal/opengwas-api/app/ld_files/EUR.bim"))
+	aclump <- clump_data(a, bfile="/Users/gh13047/repo/opengwas-api-internal/opengwas-api/app/ld_files/EUR", plink_bin="plink")
+})
+
