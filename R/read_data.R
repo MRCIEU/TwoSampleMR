@@ -202,7 +202,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
 		}
 	}
 
-	if ( log_pval )
+	if(log_pval)
 	{
 		dat$pval <- 10^-dat[[pval_col]]
 	}
