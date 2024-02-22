@@ -71,6 +71,10 @@ mv_extract_exposures_local(
 
 \item{pval_threshold}{Default=5e-8 for clumping}
 
+\item{plink_bin}{If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’}
+
+\item{bfile}{If this is provided then will use the API. Default = ‘NULL’}
+
 \item{clump_r2}{Default=0.001 for clumping}
 
 \item{clump_kb}{Default=10000 for clumping}

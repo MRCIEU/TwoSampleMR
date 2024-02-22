@@ -11,10 +11,12 @@
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
 #' @param pval_threshold Instrument detection p-value threshold. Default = 5e-8
 #' @param pop Which 1000 genomes super population to use for clumping
+#' @param plink_bin If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’
+#' @param bfile If this is provided then will use the API. Default = ‘NULL’
 #'
 #' @export
 #' @return data frame in `exposure_dat` format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR")
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR", plink_bin=NULL, bfile=NULL)
 {
 	stopifnot(length(id_exposure) > 1)
 	id_exposure <- ieugwasr::legacy_ids(id_exposure)
@@ -25,7 +27,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 	temp$id.exposure <- 1
 	temp <- temp[order(temp$pval.exposure, decreasing=FALSE), ]
 	temp <- subset(temp, !duplicated(SNP))
-	temp <- clump_data(temp, clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb, pop=pop)
+	temp <- clump_data(temp, clump_p1=pval_threshold, clump_r2=clump_r2, clump_kb=clump_kb, pop=pop, plink_bin=plink_bin, bfile=bfile)
 	exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
 
@@ -79,6 +81,8 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #' @param min_pval Minimum allowed p-value. The default is `1e-200`.
 #' @param log_pval The pval is -log10(P). The default is `FALSE`.
 #' @param pval_threshold Default=5e-8 for clumping
+#' @param plink_bin If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’
+#' @param bfile If this is provided then will use the API. Default = ‘NULL’
 #' @param clump_r2 Default=0.001 for clumping
 #' @param clump_kb Default=10000 for clumping
 #' @param harmonise_strictness See action argument in harmonise_data. Default=2

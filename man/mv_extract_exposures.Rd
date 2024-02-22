@@ -13,7 +13,9 @@ mv_extract_exposures(
   find_proxies = TRUE,
   force_server = FALSE,
   pval_threshold = 5e-08,
-  pop = "EUR"
+  pop = "EUR",
+  plink_bin = NULL,
+  bfile = NULL
 )
 }
 \arguments{
@@ -34,6 +36,10 @@ mv_extract_exposures(
 \item{pval_threshold}{Instrument detection p-value threshold. Default = 5e-8}
 
 \item{pop}{Which 1000 genomes super population to use for clumping}
+
+\item{plink_bin}{If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’}
+
+\item{bfile}{If this is provided then will use the API. Default = ‘NULL’}
 }
 \value{
 data frame in \code{exposure_dat} format
