@@ -29,7 +29,6 @@ library(TwoSampleMR)
 The exposure data and outcome data are now obtained, e.g.:
 
 ```{r}
-ao <- available_outcomes()
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
 ```
