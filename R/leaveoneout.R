@@ -112,7 +112,7 @@ mr_leaveoneout_plot <- function(leaveoneout_results)
 		ggplot2::ggplot(d, ggplot2::aes(y=SNP, x=b)) +
 		ggplot2::geom_vline(xintercept=0, linetype="dotted") +
 		# ggplot2::geom_errorbarh(ggplot2::aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=as.factor(tot), colour=as.factor(tot)), height=0) +
-		ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo, xmax=up, size=as.factor(tot), colour=as.factor(tot)), height=0) +
+		ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo, xmax=up, linewidth=as.factor(tot), colour=as.factor(tot)), height=0) +
 		ggplot2::geom_point(ggplot2::aes(colour=as.factor(tot))) +
 		ggplot2::geom_hline(ggplot2::aes(yintercept = which(levels(SNP) %in% "")), colour="grey") +
 		ggplot2::scale_colour_manual(values=c("black", "red")) +
