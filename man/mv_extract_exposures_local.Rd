@@ -79,6 +79,8 @@ mv_extract_exposures_local(
 
 \item{clump_kb}{Default=10000 for clumping}
 
+\item{pop}{Which 1000 genomes super population to use for clumping when using the server}
+
 \item{harmonise_strictness}{See action argument in harmonise_data. Default=2}
 }
 \value{

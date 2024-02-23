@@ -10,7 +10,7 @@
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
 #' @param pval_threshold Instrument detection p-value threshold. Default = 5e-8
-#' @param pop Which 1000 genomes super population to use for clumping
+#' @param pop Which 1000 genomes super population to use for clumping when using the server
 #' @param plink_bin If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’
 #' @param bfile If this is provided then will use the API. Default = ‘NULL’
 #'
@@ -85,6 +85,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #' @param bfile If this is provided then will use the API. Default = ‘NULL’
 #' @param clump_r2 Default=0.001 for clumping
 #' @param clump_kb Default=10000 for clumping
+#' @param pop Which 1000 genomes super population to use for clumping when using the server
 #' @param harmonise_strictness See action argument in harmonise_data. Default=2
 #'
 #' @export
@@ -118,6 +119,14 @@ mv_extract_exposures_local <- function(
 ) {
 	message("WARNING: Experimental function")
 
+	stopifnot(inherits(filenames_exposure, "character") | inherits(filenames_exposure, "list"))
+	if(inherits(filenames_exposure, "list")) {
+		stopifnot(all(sapply(filenames_exposure, function(x) inherits(x, "data.frame"))))
+		flag <- "data.frame"
+	} else {
+		flag <- "character"
+	}
+
 	n <- length(filenames_exposure)
 	if(length(sep) == 1) {sep <- rep(sep, n)}
 	if(length(phenotype_col) == 1) {phenotype_col <- rep(phenotype_col, n)}
@@ -141,25 +150,48 @@ mv_extract_exposures_local <- function(
 	l_inst <- list()
 	for(i in 1:length(filenames_exposure))
 	{
-		l_full[[i]] <- read_outcome_data(filenames_exposure[i], 
-			sep = sep[i],
-			phenotype_col = phenotype_col[i],
-			snp_col = snp_col[i],
-			beta_col = beta_col[i],
-			se_col = se_col[i],
-			eaf_col = eaf_col[i],
-			effect_allele_col = effect_allele_col[i],
-			other_allele_col = other_allele_col[i],
-			pval_col = pval_col[i],
-			units_col = units_col[i],
-			ncase_col = ncase_col[i],
-			ncontrol_col = ncontrol_col[i],
-			samplesize_col = samplesize_col[i],
-			gene_col = gene_col[i],
-			id_col = id_col[i],
-			min_pval = min_pval[i],
-			log_pval = log_pval[i]
-		)
+		if(flag == "character") {
+			l_full[[i]] <- read_outcome_data(filenames_exposure[i], 
+				sep = sep[i],
+				phenotype_col = phenotype_col[i],
+				snp_col = snp_col[i],
+				beta_col = beta_col[i],
+				se_col = se_col[i],
+				eaf_col = eaf_col[i],
+				effect_allele_col = effect_allele_col[i],
+				other_allele_col = other_allele_col[i],
+				pval_col = pval_col[i],
+				units_col = units_col[i],
+				ncase_col = ncase_col[i],
+				ncontrol_col = ncontrol_col[i],
+				samplesize_col = samplesize_col[i],
+				gene_col = gene_col[i],
+				id_col = id_col[i],
+				min_pval = min_pval[i],
+				log_pval = log_pval[i]
+			)
+		} else {
+			l_full[[i]] <- format_data(filenames_exposure[[i]], 
+				type="outcome",
+				phenotype_col = phenotype_col[i],
+				snp_col = snp_col[i],
+				beta_col = beta_col[i],
+				se_col = se_col[i],
+				eaf_col = eaf_col[i],
+				effect_allele_col = effect_allele_col[i],
+				other_allele_col = other_allele_col[i],
+				pval_col = pval_col[i],
+				units_col = units_col[i],
+				ncase_col = ncase_col[i],
+				ncontrol_col = ncontrol_col[i],
+				samplesize_col = samplesize_col[i],
+				gene_col = gene_col[i],
+				id_col = id_col[i],
+				min_pval = min_pval[i],
+				log_pval = log_pval[i]
+			)
+		}
+
 		if(l_full[[i]]$outcome[1] == "outcome") l_full[[i]]$outcome <- paste0("exposure", i)
 		l_inst[[i]] <- subset(l_full[[i]], pval.outcome < pval_threshold)
 		l_inst[[i]] <- subset(l_inst[[i]], !duplicated(SNP))

@@ -26,6 +26,18 @@ test_that("mv exposure local", {
         pval_col=c("p")
     )
 
+    exposure_dat2 <- mv_extract_exposures_local(
+        list(a1, a2),
+        sep = "\t",
+        snp_col=c("rsid"),
+        beta_col=c("beta"),
+        se_col=c("se"),
+        effect_allele_col=c("ea"),
+        other_allele_col=c("nea"),
+        pval_col=c("p")
+    )
+
     expect_true(nrow(exposure_dat) > 100)
+    expect_true(all.equal(exposure_dat, exposure_dat2))
 })
 

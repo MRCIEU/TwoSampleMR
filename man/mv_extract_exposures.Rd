@@ -35,7 +35,7 @@ mv_extract_exposures(
 
 \item{pval_threshold}{Instrument detection p-value threshold. Default = 5e-8}
 
-\item{pop}{Which 1000 genomes super population to use for clumping}
+\item{pop}{Which 1000 genomes super population to use for clumping when using the server}
 
 \item{plink_bin}{If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’}
 
