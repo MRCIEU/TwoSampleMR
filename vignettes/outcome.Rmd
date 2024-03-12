@@ -24,6 +24,27 @@ knitr::opts_chunk$set(
 library(TwoSampleMR)
 ```
 
+```{r, eval=FALSE, echo=FALSE}
+# Get data for the vignette
+ao <- available_outcomes()
+bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
+chd_out_dat1 <- extract_outcome_data(
+	snps = bmi_exp_dat$SNP,
+	outcomes = 'ieu-a-7'
+)
+chd_out_dat2 <- extract_outcome_data(
+	snps = c("rs234", "rs17097147"), 
+	outcomes = c('ieu-a-2', 'ieu-a-7')
+)
+save(ao, bmi_exp_dat, chd_out_dat1, chd_out_dat2, file = file.path("inst", "extdata", "vig_outcome.RData"))
+```
+
+```{r, echo=FALSE, eval=TRUE, warning=FALSE}
+load(system.file("extdata", "vig_outcome.RData", package = "TwoSampleMR"))
+```
+
+
+
 Once instruments for the exposure trait have been specified, those variants need to be extracted from the outcome trait.
 
 ## Available studies in IEU GWAS database
@@ -34,8 +55,11 @@ https://gwas.mrcieu.ac.uk/
 
 To obtain details about the available GWASs programmatically do the following:
 
-```{r}
+```{r, eval=FALSE}
 ao <- available_outcomes()
+```
+
+```{r}
 head(ao)
 ```
 
@@ -53,8 +77,11 @@ If we want to perform MR of BMI against coronary heart disease, we need to ident
 
 Let's get the Locke et al 2014 instruments for BMI as an example:
 
-```{r}
+```{r, eval=FALSE}
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
+```
+
+```{r}
 head(bmi_exp_dat)
 ```
 
@@ -66,8 +93,8 @@ ao[grepl("heart disease", ao$trait), ]
 
 The most recent CARDIOGRAM GWAS is ID number `ieu-a-7`. We can extract the BMI SNPs from this GWAS as follows:
 
-```{r}
-chd_out_dat <- extract_outcome_data(
+```{r, eval=FALSE}
+chd_out_dat1 <- extract_outcome_data(
 	snps = bmi_exp_dat$SNP,
 	outcomes = 'ieu-a-7'
 )
@@ -75,8 +102,12 @@ chd_out_dat <- extract_outcome_data(
 
 The `extract_outcome_data()` function is flexible. The `snps` argument only requires an array of rsIDs, and the `outcomes` argument can be a vector of outcomes, e.g.
 ```{r eval=FALSE}
-chd_out_dat <- extract_outcome_data(c("rs234", "rs17097147"), c('ieu-a-2', 'ieu-a-7'))
+chd_out_dat2 <- extract_outcome_data(
+	snps = c("rs234", "rs17097147"), 
+	outcomes = c('ieu-a-2', 'ieu-a-7')
+)
 ```
+
 will extract the two SNPs from each of the outcomes `ieu-a-2` and `ieu-a-7`.
 
 ## LD proxies

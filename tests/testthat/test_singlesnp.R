@@ -1,6 +1,8 @@
 context("singlesnp")
 
-dat <- make_dat("ieu-a-2", "ieu-a-7")
+# dat <- make_dat("ieu-a-2", "ieu-a-7")
+load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
+
 
 test_that("singlesnp", {
 	w <- mr_singlesnp(dat)

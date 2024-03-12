@@ -1,15 +1,17 @@
 context("mvmr local")
 
+# a <- ieugwasr::tophits("ieu-a-2")
+# b <- ieugwasr::tophits("ieu-a-1001")
+# rsid <- unique(c(a$rsid, b$rsid))
+# a1 <- ieugwasr::associations(rsid, "ieu-a-2")
+# a2 <- ieugwasr::associations(rsid, "ieu-a-1001")
+# save(a, b, rsid, a1, a2, file="inst/extdata/test_add_mvmr_local.RData")
+
+load(system.file("extdata", "test_add_mvmr_local.RData", package="TwoSampleMR"))
+
 test_that("mv exposure local", {
 	skip_on_ci()
 	skip_on_cran()
-
-    a <- ieugwasr::tophits("ieu-a-2")
-    b <- ieugwasr::tophits("ieu-a-1001")
-    rsid <- unique(c(a$rsid, b$rsid))
-    a1 <- ieugwasr::associations(rsid, "ieu-a-2")
-    a2 <- ieugwasr::associations(rsid, "ieu-a-1001")
-
     f1 <- tempfile()
     f2 <- tempfile()
     write.table(a1, file=f1, row=F, col=T, qu=F, sep="\t")
