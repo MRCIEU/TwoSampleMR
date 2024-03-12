@@ -1,7 +1,10 @@
 context("add rsq")
 
+load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
+
 test_that("exposure data 1", {
-	d <- extract_instruments('ieu-a-2') %>% add_rsq()
+	# exp_dat <- extract_instruments("ieu-a-2")
+	d <- exp_dat %>% add_rsq()
 	expect_true("rsq.exposure" %in% names(d))
 	expect_true("effective_n.exposure" %in% names(d))
 })
@@ -12,7 +15,7 @@ test_that("exposure data 2", {
 	expect_true("effective_n.exposure" %in% names(d))
 })
 
-exposure <- extract_instruments("ieu-a-2")[1:5,]
+exposure <- exp_dat[1:5,]
 
 test_that("outcome data 1", {
 	d <- extract_outcome_data(exposure$SNP, 'ieu-a-2') %>% add_rsq()

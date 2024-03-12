@@ -1,21 +1,23 @@
 context("steiger")
 
-w <- make_dat(2, 7)
+# w <- make_dat(2, 7)
+load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
+
 
 test_that("directionality", {
-	o <- directionality_test(w)
+	o <- directionality_test(dat)
 	expect_true(nrow(o) == 1)
 })
 
 
 test_that("directionality cc", {
-	w$r.outcome <- get_r_from_lor(w$beta.outcome, w$eaf.outcome, w$samplesize.outcome/2, w$samplesize.outcome/2, 0.1)
-	o <- directionality_test(w)
+	dat$r.outcome <- get_r_from_lor(dat$beta.outcome, dat$eaf.outcome, dat$samplesize.outcome/2, dat$samplesize.outcome/2, 0.1)
+	o <- directionality_test(dat)
 	expect_true(nrow(o) == 1)
 })
 
 
 test_that("steiger filtering", {
-	w <- steiger_filtering(w)
-	expect_true("steiger_pval" %in% names(w))
+	expect_warning(dat <- steiger_filtering(dat))
+	expect_true("steiger_pval" %in% names(dat))
 })

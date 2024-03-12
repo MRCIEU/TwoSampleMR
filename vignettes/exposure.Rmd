@@ -24,6 +24,18 @@ knitr::opts_chunk$set(
 library(TwoSampleMR)
 ```
 
+```{r, eval=FALSE, echo=FALSE}
+# Get data for the vignette
+ao <- available_outcomes()
+bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
+bmi_exp_dat <- clump_data(bmi2014_exp_dat)
+save(ao, bmi_exp_dat, bmi2014_exp_dat, file = file.path("inst", "extdata", "vig_exposure.RData"))
+```
+
+```{r, echo=FALSE, eval=TRUE, warning=FALSE}
+load(system.file("extdata", "vig_exposure.RData", package = "TwoSampleMR"))
+```
+
 ## Introduction
 
 A data frame of the instruments for an exposure is required. Each line has the information for one variant for one exposure. The minimum information required for MR analysis is the following:
@@ -69,6 +81,8 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886
 ```
 
 The exact path to the file will be different on everyone's computer, but it can be located like this:
+
+
 
 ```{r eval=TRUE}
 bmi_file <- system.file("extdata", "bmi.txt", package="TwoSampleMR")
@@ -281,8 +295,11 @@ ieugwasr::api_status()
 
 To obtain a list and details about the available GWASs do the following:
 
-```{r}
+```{r, eval=FALSE}
 ao <- available_outcomes()
+```
+
+```{r}
 head(ao)
 ```
 
@@ -296,8 +313,12 @@ head(subset(ao, select = c(trait, id)))
 
 To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:
 
-```{r}
+```{r, eval=FALSE}
 bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
+```
+
+```{r}
+str(bmi2014_exp_dat)
 ```
 
 This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can specify various parameters for this function:
@@ -315,9 +336,14 @@ For standard two sample MR it is important to ensure that the instruments for th
 
 You can provide a list of SNP IDs, the SNPs will be extracted from 1000 genomes data, LD calculated between them, and amongst those SNPs that have LD R-square above the specified threshold only the SNP with the lowest P-value will be retained. To do this, use the following command:
 
-```{r}
-bmi_exp_dat <- clump_data(bmi_exp_dat)
+```{r, eval=FALSE}
+bmi_exp_dat <- clump_data(bmi2014_exp_dat)
 ```
+
+```{r}
+str(bmi_exp_dat)
+```
+
 
 The `clump_data()` function takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the MRInstruments package the SNPs are already LD clumped.
 

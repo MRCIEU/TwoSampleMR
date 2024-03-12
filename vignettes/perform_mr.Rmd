@@ -26,13 +26,33 @@ library(TwoSampleMR)
 library(ggplot2)
 ```
 
+```{r, eval=FALSE, echo=FALSE}
+ao <- available_outcomes()
+bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
+chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
+id_exposure <- c("ieu-a-299", "ieu-a-300", "ieu-a-302")
+id_outcome <- "ieu-a-7"
+mv_exposure_dat <- mv_extract_exposures(id_exposure)
+mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, id_outcome)
+snplist <- c("rs234", "rs1205")
+ld_mat <- ld_matrix(snplist)
+save(ao, bmi_exp_dat, chd_out_dat, mv_exposure_dat, mv_outcome_dat, ld_mat, file = file.path("inst", "extdata", "vig_perform_mr.RData"))
+```
+
+```{r, echo=FALSE, eval=TRUE, warning=FALSE}
+load(system.file("extdata", "vig_perform_mr.RData", package = "TwoSampleMR"))
+```
+
 ## Introduction
 
 Let's continue with the example of BMI on CHD:
 
-```{r}
+```{r, eval=FALSE}
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
+```
+
+```{r}
 dat <- harmonise_data(bmi_exp_dat, chd_out_dat)
 ```
 
@@ -390,7 +410,7 @@ In the above example we made up an arbitrary grouping variable called "subcatego
 
 The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:
 
-```{r cache=TRUE, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
+```{r echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
 exp_dat <- extract_instruments(outcomes = 2) # extract instruments for BMI
 ao <- available_outcomes()
 ao <- ao[ao$category == "Disease", ] # identify diseases
@@ -414,7 +434,7 @@ res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by dec
 
 MR results for 103 diseases can be difficult to visualise in a single-column forest plot. In my own workflow I would split these across two plots and then join them together in a separate program, such as Powerpoint, and do further refinements there. I typically save my plots using the `pdf()` graphics device. In this particular example the disease labels probably require some cleaning up (some are a bit long) or alternatively the column text size could be made smaller. It is also possible to change the colour of the plot and the shape of the point estimates. Type `?forest_plot_1_to_many` for further details.
 
-```{r cache=TRUE, warning=FALSE, fig.height=10, eval=FALSE}
+```{r warning=FALSE, fig.height=10, eval=FALSE}
 res1 <- res[1:52, ]
 res2 <- res[53:103, ]
 
@@ -551,24 +571,24 @@ id_outcome <- "ieu-a-7"
 First obtain the instruments for each lipid fraction. This entails obtaining a combined set of SNPs including all instruments, and getting those SNPs for each lipid fraction. Therefore, if there are e.g. 20 instruments for each of 3 lipid fractions, but combined there are 30 unique SNPs, then we need to extract each of the 30 SNPs from each lipid fraction (exposure).
 
 ```{r eval=FALSE}
-exposure_dat <- mv_extract_exposures(id_exposure)
+mv_exposure_dat <- mv_extract_exposures(id_exposure)
 ```
 
 Next, also extract those SNPs from the outcome.
 
 ```{r eval=FALSE}
-outcome_dat <- extract_outcome_data(exposure_dat$SNP, id_outcome)
+mv_outcome_dat <- extract_outcome_data(exposure_dat$SNP, id_outcome)
 ```
 
 Once the data has been obtained, harmonise so that all are on the same reference allele.
 
-```{r eval=FALSE}
-mvdat <- mv_harmonise_data(exposure_dat, outcome_dat)
+```{r}
+mvdat <- mv_harmonise_data(mv_exposure_dat, mv_outcome_dat)
 ```
 
 Finally, perform the multivariable MR analysis
 
-```{r eval=FALSE}
+```{r}
 res <- mv_multiple(mvdat)
 ```
 
@@ -604,12 +624,16 @@ The TwoSampleMR package has not implemented this yet, but the [MendelianRandomiz
 
 ```{r eval=FALSE}
 snplist <- c("rs234", "rs1205")
-ld_matrix(snplist)
+ld_mat <- ld_matrix(snplist)
+```
+
+```{r}
+ld_mat
 ```
 
 Here `ld_matrix()` returns the LD correlation values (not R^2^) for each pair of variants present in the 1000 genomes data set.
 
-```{r eval=FALSE}
+```{r}
 dat <- harmonise_data(
   exposure_dat = bmi_exp_dat, 
   outcome_dat = chd_out_dat
@@ -618,7 +642,7 @@ dat <- harmonise_data(
 
 Convert to the `MRInput` format for the MendelianRandomization package:
 
-```{r eval=FALSE}
+```{r}
 dat2 <- dat_to_MRInput(dat)
 ```
 
@@ -665,10 +689,10 @@ dat <- harmonise_data(exposure_dat, outcome_dat)
 load("rf.rdata")
 
 # Obtain estimates from all methods, and generate data metrics
-res <- mr_wrapper(dat)
+res_all <- mr_wrapper(dat)
 
 # MR-MoE - predict the performance of each method
-res_moe <- mr_moe(res, rf)
+res_moe <- mr_moe(res_all, rf)
 ```
 
 The function does the following:

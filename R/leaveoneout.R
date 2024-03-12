@@ -121,7 +121,7 @@ mr_leaveoneout_plot <- function(leaveoneout_results)
 		ggplot2::theme(
 			legend.position="none", 
 			axis.text.y=ggplot2::element_text(size=8), 
-			axis.ticks.y=ggplot2::element_line(size=0),
+			axis.ticks.y=ggplot2::element_line(linewidth=0),
 			axis.title.x=ggplot2::element_text(size=8)) +
 		ggplot2::labs(y="", x=paste0("MR leave-one-out sensitivity analysis for\n'", d$exposure[1], "' on '", d$outcome[1], "'"))
 	})

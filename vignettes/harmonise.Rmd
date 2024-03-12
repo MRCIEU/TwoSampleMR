@@ -26,9 +26,21 @@ library(TwoSampleMR)
 
 ## Introduction
 
+```{r, echo=FALSE, eval=FALSE, warning=FALSE}
+# Get all required data
+ao <- available_outcomes()
+bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
+chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
+save(ao, bmi_exp_dat, chd_out_dat, file = file.path("inst", "extdata", "vig_harmonise.RData"))
+```
+
+```{r, echo=FALSE, eval=TRUE, warning=FALSE}
+load(system.file("extdata", "vig_harmonise.RData", package = "TwoSampleMR"))
+```
+
 The exposure data and outcome data are now obtained, e.g.:
 
-```{r}
+```{r, eval=FALSE}
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
 ```
@@ -143,6 +155,10 @@ By default, the `harmonise_data` function uses option 2, but this can be modifie
 ## Drop duplicate exposure-outcome summary sets
 
 After data harmonisation, users may find that their dataset contains duplicate exposure-outcome summary sets. This can arise, for example, when a GWAS consortium has released multiple results from separate GWAS analyses for the same trait. For example, there are multiple GWAS summary datasets for body mass index and coronary heart disease:
+
+```{r, eval=FALSE}
+ao <- available_outcomes()
+```
 
 ```{r}
 ao[ao$trait == "Body mass index", c("trait", "id", "pmid", "author", "sample_size", "nsnp")]

@@ -1,6 +1,7 @@
 context("leaveoneout")
 
-dat <- make_dat("ieu-a-2", "ieu-a-7")
+# dat <- make_dat("ieu-a-2", "ieu-a-7")
+load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
 
 test_that("leaveoneout", {
 	w <- mr_leaveoneout(dat)
