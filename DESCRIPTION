@@ -1,6 +1,6 @@
 Package: TwoSampleMR
 Title: Two Sample MR Functions and Interface to MR Base Database
-Version: 0.5.10
+Version: 0.5.11
 Authors@R: c(
     person("Gibran", "Hemani", , "g.hemani@bristol.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0920-1055")),
