@@ -217,12 +217,6 @@ TwoSampleMR v0.4.17
 (Release date: 2018-12-03)
 
 * Added facility to harmonise indels
-
-TwoSampleMR v0.4.17
-==============
-
-(Release date: 2018-12-03)
-
 * Documentation and options added to multivariable MR
 
 TwoSampleMR v0.3.4
