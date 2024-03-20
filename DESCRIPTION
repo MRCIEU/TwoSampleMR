@@ -32,7 +32,7 @@ Imports:
     cowplot,
     data.table,
     dplyr,
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     glmnet,
     gridExtra,
     gtable,
