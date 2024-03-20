@@ -42,4 +42,3 @@ test_that("mv exposure local", {
     expect_true(nrow(exposure_dat) > 100)
     expect_true(all.equal(exposure_dat, exposure_dat2))
 })
-

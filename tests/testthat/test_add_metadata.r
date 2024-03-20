@@ -70,4 +70,3 @@ test_that("ieu-b-109", {
 	expect_true("samplesize.exposure" %in% names(d10))
 	expect_true(all(!is.na(d10$samplesize.exposure)))
 })
-
