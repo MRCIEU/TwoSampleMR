@@ -1,3 +1,10 @@
+# TwoSampleMR v0.5.10
+
+(Release date: 2024-02-20)
+
+* Added `bfile` and `plink_bin` arguments to `clump_data()`
+* Improvements to file reading and dataset formatting capabilities of `mv_extract_exposures_local()` to create the multiple exposure dataset
+
 # TwoSampleMR v0.5.9
 
 (Release date: 2024-02-01)
