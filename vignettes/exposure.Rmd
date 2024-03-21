@@ -238,7 +238,7 @@ head(proteomic_qtls)
 
 For example, to obtain instruments for the ApoH protein:
 
-```{r}
+```{r warning=FALSE}
 apoh_exp_dat <-
   format_proteomic_qtls(subset(proteomic_qtls, analyte == "ApoH"))
 ```
