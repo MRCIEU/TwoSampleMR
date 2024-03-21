@@ -287,7 +287,7 @@ You can use this database to define the instruments for a particular exposure. Y
 
 You can check the status of the API:
 
-```{r}
+```{r, eval=FALSE}
 ieugwasr::api_status()
 ```
 
