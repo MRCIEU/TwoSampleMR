@@ -10,6 +10,7 @@ context("mvmr local")
 load(system.file("extdata", "test_add_mvmr_local.RData", package="TwoSampleMR"))
 
 test_that("mv exposure local", {
+  skip("Skip unless you have good access to the API.")
 	skip_on_ci()
 	skip_on_cran()
     f1 <- tempfile()
