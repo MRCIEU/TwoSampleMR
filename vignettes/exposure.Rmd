@@ -85,7 +85,7 @@ The exact path to the file will be different on everyone's computer, but it can 
 
 
 ```{r eval=TRUE}
-bmi_file <- system.file("extdata", "bmi.txt", package="TwoSampleMR")
+bmi_file <- system.file("extdata", "bmi.txt", package = "TwoSampleMR")
 ```
 
 You can read the data in like this:
