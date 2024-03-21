@@ -1,6 +1,9 @@
 # TwoSampleMR v0.5.11
 
+(Release date: 2024-03-##)
+
 * Add some datasets such that tests and continuous integration services don't have to reply on OpenGWAS.
+* Various improvements to helpfiles
 
 # TwoSampleMR v0.5.10
 
