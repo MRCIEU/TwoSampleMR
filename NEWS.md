@@ -1,10 +1,10 @@
 # TwoSampleMR v0.5.11
 
-(Release date: 2024-03-##)
+(Release date: 2024-03-21)
 
-* Amended `size` argument to `linewidth` in several places in `mr_leaveoneout_plot()` and `mr_forest_plot()` as per the ggplot2 version 3.4.0 update.
-* Add some datasets such that tests and continuous integration services don't have to reply on OpenGWAS.
-* Various improvements to helpfiles
+* In `mr_leaveoneout_plot()` and `mr_forest_plot()` amended `size` argument to `linewidth` as per ggplot2 version 3.4.0.
+* Add some datasets such that tests, continuous integration services, and creation of the vignettes don't rely on the availability of the OpenGWAS server.
+* Various improvements to helpfiles.
 
 # TwoSampleMR v0.5.10
 
