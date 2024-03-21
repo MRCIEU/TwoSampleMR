@@ -82,8 +82,6 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886
 
 The exact path to the file will be different on everyone's computer, but it can be located like this:
 
-
-
 ```{r eval=TRUE}
 bmi_file <- system.file("extdata", "bmi.txt", package = "TwoSampleMR")
 ```
