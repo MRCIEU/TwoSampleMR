@@ -18,54 +18,64 @@ context("add metadata")
 load(system.file("extdata", "test_add_metadata.RData", package="TwoSampleMR"))
 
 test_that("exposure data 1", {
+  skip("Skip unless you have good access to the API.")
 	d1 <- d1 %>% add_metadata()
 	expect_true("units.exposure" %in% names(d1))
 })
 
 test_that("exposure data 2", {
+  skip("Skip unless you have good access to the API.")
 	d2 <- d2 %>% add_metadata()
 	expect_true("units.exposure" %in% names(d2))
 })
 
 test_that("outcome data 1", {
+  skip("Skip unless you have good access to the API.")
 	d3 <- d3 %>% add_metadata()
 	expect_true("units.outcome" %in% names(d3))
 })
 
 test_that("outcome data 2", {
+  skip("Skip unless you have good access to the API.")
 	d4 <- d4 %>% add_metadata()
 	expect_true("units.outcome" %in% names(d4))
 })
 
 test_that("dat 2", {
+  skip("Skip unless you have good access to the API.")
 	d5 <- d5 %>% add_metadata()
 	expect_true("units.outcome" %in% names(d5) & "units.exposure" %in% names(d5))
 })
 
 test_that("no id1", {
+  skip("Skip unless you have good access to the API.")
 	d6$id.exposure <- "not a real id"
 	d6 <- add_metadata(d6)
 	expect_true(!"units.exposure" %in% names(d6))
 })
 
 test_that("no id2", {
+  skip("Skip unless you have good access to the API.")
 	d7$id.outcome <- "not a real id"
 	d7 <- add_metadata(d7)
 	expect_true(!"units.outcome" %in% names(d7))
 })
 
 test_that("ukb-d", {
+  skip("Skip unless you have good access to the API.")
 	d8 <- add_metadata(d8)
 	expect_true("units.outcome" %in% names(d8))
 })
 
 test_that("bbj-a-1", {
+  skip("Skip unless you have good access to the API.")
 	d9 <- d9 %>% add_metadata()
 	expect_true("samplesize.exposure" %in% names(d9))
 	expect_true(all(!is.na(d9$samplesize.exposure)))
 })
 
 test_that("ieu-b-109", {
+  skip("Skip unless you have good access to the API.")
 	d10 <- d10 %>% add_metadata()
 	expect_true("samplesize.exposure" %in% names(d10))
 	expect_true(all(!is.na(d10$samplesize.exposure)))
