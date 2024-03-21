@@ -2,6 +2,7 @@
 
 (Release date: 2024-03-##)
 
+* Amended `size` argument to `linewidth` in several places in `mr_leaveoneout_plot()` and `mr_forest_plot()` as per the ggplot2 version 3.4.0 update.
 * Add some datasets such that tests and continuous integration services don't have to reply on OpenGWAS.
 * Various improvements to helpfiles
 
