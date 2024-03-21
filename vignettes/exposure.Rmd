@@ -302,8 +302,15 @@ For information about authentication see <https://mrcieu.github.io/ieugwasr/arti
 
 The `available_outcomes()` function returns a table of all the available studies in the database. Each study has a unique ID. e.g., You might obtain
 
-```{r}
+```r
 head(subset(ao, select = c(trait, id)))
+#>           trait         id
+#> 1 Schizophrenia ieu-b-5103
+#> 2 Schizophrenia ieu-b-5102
+#> 3 Schizophrenia ieu-b-5101
+#> 4 Schizophrenia ieu-b-5100
+#> 5 Schizophrenia ieu-b-5099
+#> 6 Schizophrenia ieu-b-5098
 ```
 
 To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:
