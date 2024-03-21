@@ -1,9 +1,12 @@
 context("ld")
 
-
-a <- extract_instruments(2, clump=FALSE)
-out <- clump_data(a)
-
+test_that("extract some data", {
+  skip("Skip unless you have good access to the API.")
+  skip_on_ci()
+  skip_on_cran()
+  a <- extract_instruments(2, clump=FALSE)
+  out <- clump_data(a)
+})
 
 test_that("clump", {
 	skip_on_ci()
