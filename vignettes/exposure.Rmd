@@ -221,7 +221,7 @@ data(metab_qtls)
 head(metab_qtls)
 ```
 
-For example, to obtain instruments for the Alanine:
+For example, to obtain instruments for Alanine:
 
 ```{r}
 ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype == "Ala"))
