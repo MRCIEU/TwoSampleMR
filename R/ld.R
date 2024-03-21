@@ -12,7 +12,7 @@
 #' This function does put load on the OpenGWAS servers, which makes life more difficult for other users.
 #' We have implemented a method and made available the LD reference panels to perform clumping locally, see [ieugwasr::ld_clump()] and related vignettes for details.
 #'
-#' @param dat Output from [format_data()]. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If `id.exposure` or `pval.exposure` not present they will be generated.
+#' @param dat Output from [format_data()]. Must have a SNP name column (`SNP`), SNP chromosome column (`chr_name`), SNP position column (`chrom_start`). If `id.exposure` or `pval.exposure` not present they will be generated.
 #' @param clump_kb Clumping window, default is `10000`.
 #' @param clump_r2 Clumping r2 cutoff. Note that this default value has recently changed from `0.01` to `0.001`.
 #' @param clump_p1 Clumping sig level for index SNPs, default is `1`.
