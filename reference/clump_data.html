@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.11</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>dat</dt>
-<dd><p>Output from <code><a href="format_data.html">format_data()</a></code>. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated.</p></dd>
+<dd><p>Output from <code><a href="format_data.html">format_data()</a></code>. Must have a SNP name column (<code>SNP</code>), SNP chromosome column (<code>chr_name</code>), SNP position column (<code>chrom_start</code>). If <code>id.exposure</code> or <code>pval.exposure</code> not present they will be generated.</p></dd>
 
 
 <dt>clump_kb</dt>
@@ -95,15 +95,15 @@
 
 
 <dt>pop</dt>
-<dd><p>Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used version of the EUR panel with a slightly different set of markers</p></dd>
+<dd><p>Super-population to use as reference panel. Default = <code>"EUR"</code>. Options are <code>"EUR"</code>, <code>"SAS"</code>, <code>"EAS"</code>, <code>"AFR"</code>, <code>"AMR"</code>. <code>'legacy'</code> also available - which is a previously used version of the EUR panel with a slightly different set of markers</p></dd>
 
 
 <dt>bfile</dt>
-<dd><p>If this is provided then will use the API. Default = ‘NULL’</p></dd>
+<dd><p>If this is provided then will use the API. Default = <code>NULL</code></p></dd>
 
 
 <dt>plink_bin</dt>
-<dd><p>If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’</p></dd>
+<dd><p>If <code>NULL</code> and <code>bfile</code> is not <code>NULL</code> then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = <code>NULL</code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -117,9 +117,9 @@
     <p>This function interacts with the OpenGWAS API, which houses LD reference panels for the 5 super-populations in the 1000 genomes reference panel.
 It includes only bi-allelic SNPs with MAF &gt; 0.01, so it's quite possible that a variant you want to include in the clumping process will be absent.
 If it is absent, it will be automatically excluded from the results.</p>
-<p>You can check if your variants are present in the LD reference panel using <code><a href="https://rdrr.io/pkg/ieugwasr/man/ld_reflookup.html" class="external-link">ieugwasr::ld_reflookup()</a></code>.</p>
+<p>You can check if your variants are present in the LD reference panel using <code><a href="https://mrcieu.github.io/ieugwasr/reference/ld_reflookup.html" class="external-link">ieugwasr::ld_reflookup()</a></code>.</p>
 <p>This function does put load on the OpenGWAS servers, which makes life more difficult for other users.
-We have implemented a method and made available the LD reference panels to perform clumping locally, see <code><a href="https://rdrr.io/pkg/ieugwasr/man/ld_clump.html" class="external-link">ieugwasr::ld_clump()</a></code> and related vignettes for details.</p>
+We have implemented a method and made available the LD reference panels to perform clumping locally, see <code><a href="https://mrcieu.github.io/ieugwasr/reference/ld_clump.html" class="external-link">ieugwasr::ld_clump()</a></code> and related vignettes for details.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
