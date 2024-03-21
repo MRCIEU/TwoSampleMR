@@ -69,19 +69,19 @@ mv_extract_exposures_local(
 
 \item{log_pval}{The pval is -log10(P). The default is \code{FALSE}.}
 
-\item{pval_threshold}{Default=5e-8 for clumping}
+\item{pval_threshold}{Default=\code{5e-8} for clumping}
 
-\item{plink_bin}{If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’}
+\item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 
-\item{bfile}{If this is provided then will use the API. Default = ‘NULL’}
+\item{bfile}{If this is provided then will use the API. Default = \code{NULL}}
 
-\item{clump_r2}{Default=0.001 for clumping}
+\item{clump_r2}{Default=\code{0.001} for clumping}
 
-\item{clump_kb}{Default=10000 for clumping}
+\item{clump_kb}{Default=\code{10000} for clumping}
 
 \item{pop}{Which 1000 genomes super population to use for clumping when using the server}
 
-\item{harmonise_strictness}{See action argument in harmonise_data. Default=2}
+\item{harmonise_strictness}{See action argument in \code{\link[=harmonise_data]{harmonise_data()}}. Default=\code{2}}
 }
 \value{
 List

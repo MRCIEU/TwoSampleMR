@@ -31,7 +31,7 @@ library(TwoSampleMR)
 ao <- available_outcomes()
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
-save(ao, bmi_exp_dat, chd_out_dat, file = file.path("inst", "extdata", "vig_harmonise.RData"))
+save(ao, bmi_exp_dat, chd_out_dat, file = file.path("inst", "extdata", "vig_harmonise.RData"), compress = "xz")
 ```
 
 ```{r, echo=FALSE, eval=TRUE, warning=FALSE}

@@ -118,7 +118,7 @@ mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 		ggplot2::geom_point(ggplot2::aes(colour=as.factor(tot))) +
 		ggplot2::geom_hline(ggplot2::aes(yintercept = which(levels(SNP) %in% "")), colour="grey") +
 		ggplot2::scale_colour_manual(values=c("black", "red")) +
-		ggplot2::scale_size_manual(values=c(0.3, 1)) +
+		ggplot2::scale_linewidth_manual(values=c(0.3, 1)) +
 		# xlim(c(min(c(0, d$b), na.rm=T), max(c(0, d$b), na.rm=T))) +
 		ggplot2::theme(
 			legend.position="none", 

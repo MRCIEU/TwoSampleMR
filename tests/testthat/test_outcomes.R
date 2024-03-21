@@ -1,7 +1,11 @@
 context("outcome")
 
 test_that("outcomes", {
-	
+
+  skip("Skip unless you have good access to the API.")
+  skip_on_ci()
+  skip_on_cran()
+
 	a <- extract_instruments("ieu-a-7")
 	b <- extract_outcome_data(a$SNP, "ieu-a-2", proxies=FALSE)
 	expect_true(nrow(b) < 30 & nrow(b) > 15)

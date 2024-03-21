@@ -2,6 +2,8 @@ context("Instruments")
 
 test_that("server and mrinstruments", {
 
+  skip("Skip unless you have good access to the API.")
+  
 	# no no
 	exp_dat <- extract_instruments(outcomes=c("ieu-a-1032"))
 	expect_true(length(unique(exp_dat$id)) == 0)

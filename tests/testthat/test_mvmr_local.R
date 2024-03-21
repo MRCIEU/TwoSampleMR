@@ -5,11 +5,12 @@ context("mvmr local")
 # rsid <- unique(c(a$rsid, b$rsid))
 # a1 <- ieugwasr::associations(rsid, "ieu-a-2")
 # a2 <- ieugwasr::associations(rsid, "ieu-a-1001")
-# save(a, b, rsid, a1, a2, file="inst/extdata/test_add_mvmr_local.RData")
+# save(a, b, rsid, a1, a2, file="inst/extdata/test_add_mvmr_local.RData", compress = "xz")
 
 load(system.file("extdata", "test_add_mvmr_local.RData", package="TwoSampleMR"))
 
 test_that("mv exposure local", {
+  skip("Skip unless you have good access to the API.")
 	skip_on_ci()
 	skip_on_cran()
     f1 <- tempfile()
@@ -42,4 +43,3 @@ test_that("mv exposure local", {
     expect_true(nrow(exposure_dat) > 100)
     expect_true(all.equal(exposure_dat, exposure_dat2))
 })
-

@@ -29,7 +29,7 @@ library(TwoSampleMR)
 ao <- available_outcomes()
 bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 bmi_exp_dat <- clump_data(bmi2014_exp_dat)
-save(ao, bmi_exp_dat, bmi2014_exp_dat, file = file.path("inst", "extdata", "vig_exposure.RData"))
+save(ao, bmi_exp_dat, bmi2014_exp_dat, file = file.path("inst", "extdata", "vig_exposure.RData"), compress = "xz")
 ```
 
 ```{r, echo=FALSE, eval=TRUE, warning=FALSE}
@@ -82,10 +82,8 @@ BMI rs2241423 0.13 0.0204081632653061 G A 0.78 1e-18 kg/m2 LBXCOR1 227886
 
 The exact path to the file will be different on everyone's computer, but it can be located like this:
 
-
-
 ```{r eval=TRUE}
-bmi_file <- system.file("extdata", "bmi.txt", package="TwoSampleMR")
+bmi_file <- system.file("extdata", "bmi.txt", package = "TwoSampleMR")
 ```
 
 You can read the data in like this:
@@ -223,7 +221,7 @@ data(metab_qtls)
 head(metab_qtls)
 ```
 
-For example, to obtain instruments for the Alanine:
+For example, to obtain instruments for Alanine:
 
 ```{r}
 ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype == "Ala"))
@@ -240,7 +238,7 @@ head(proteomic_qtls)
 
 For example, to obtain instruments for the ApoH protein:
 
-```{r}
+```{r warning=FALSE}
 apoh_exp_dat <-
   format_proteomic_qtls(subset(proteomic_qtls, analyte == "ApoH"))
 ```
@@ -289,7 +287,7 @@ You can use this database to define the instruments for a particular exposure. Y
 
 You can check the status of the API:
 
-```{r}
+```{r, eval=FALSE}
 ieugwasr::api_status()
 ```
 
@@ -297,28 +295,48 @@ To obtain a list and details about the available GWASs do the following:
 
 ```{r, eval=FALSE}
 ao <- available_outcomes()
-```
-
-```{r}
 head(ao)
 ```
 
 For information about authentication see <https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication>.
 
-The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
+The `available_outcomes()` function returns a table of all the available studies in the database. Each study has a unique ID. e.g., You might obtain
 
-```{r}
+```r
 head(subset(ao, select = c(trait, id)))
+#>           trait         id
+#> 1 Schizophrenia ieu-b-5103
+#> 2 Schizophrenia ieu-b-5102
+#> 3 Schizophrenia ieu-b-5101
+#> 4 Schizophrenia ieu-b-5100
+#> 5 Schizophrenia ieu-b-5099
+#> 6 Schizophrenia ieu-b-5098
 ```
 
-To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:
+To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al. 2015 GIANT study, you specify the study ID as follows:
 
 ```{r, eval=FALSE}
 bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 ```
 
-```{r}
+```r
 str(bmi2014_exp_dat)
+#> 'data.frame':    79 obs. of  15 variables:
+#>  $ pval.exposure         : num  2.18e-08 4.57e-11 5.06e-14 5.45e-10 1.88e-28 ...
+#>  $ samplesize.exposure   : num  339152 339065 313621 338768 338123 ...
+#>  $ chr.exposure          : chr  "1" "1" "1" "1" ...
+#>  $ se.exposure           : num  0.003 0.0031 0.0087 0.0029 0.003 0.0037 0.0031 0.003 0.0038 0.003 ...
+#>  $ beta.exposure         : num  -0.0168 0.0201 0.0659 0.0181 0.0331 0.0497 -0.0227 0.0221 0.0209 0.0175 ...
+#>  $ pos.exposure          : int  47684677 78048331 110082886 201784287 72837239 177889480 49589847 96924097 164567689 181550962 ...
+#>  $ id.exposure           : chr  "ieu-a-2" "ieu-a-2" "ieu-a-2" "ieu-a-2" ...
+#>  $ SNP                   : chr  "rs977747" "rs17381664" "rs7550711" "rs2820292" ...
+#>  $ effect_allele.exposure: chr  "G" "C" "T" "C" ...
+#>  $ other_allele.exposure : chr  "T" "T" "C" "A" ...
+#>  $ eaf.exposure          : num  0.5333 0.425 0.0339 0.5083 0.6083 ...
+#>  $ exposure              : chr  "Body mass index || id:ieu-a-2" "Body mass index || id:ieu-a-2" "Body mass index || id:ieu-a-2" "Body mass index || id:ieu-a-2" ...
+#>  $ mr_keep.exposure      : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+#>  $ pval_origin.exposure  : chr  "reported" "reported" "reported" "reported" ...
+#>  $ data_source.exposure  : chr  "igd" "igd" "igd" "igd" ...
 ```
 
 This returns a set of LD clumped SNPs that are GWAS significant for BMI. You can specify various parameters for this function:
@@ -340,10 +358,26 @@ You can provide a list of SNP IDs, the SNPs will be extracted from 1000 genomes 
 bmi_exp_dat <- clump_data(bmi2014_exp_dat)
 ```
 
-```{r}
+```r
 str(bmi_exp_dat)
+#> 'data.frame':    30 obs. of  16 variables:
+#>  $ SNP                   : chr  "rs10767664" "rs13078807" "rs1514175" "rs1558902" ...
+#>  $ beta.exposure         : num  0.19 0.1 0.07 0.39 0.11 0.13 0.06 0.09 0.13 0.06 ...
+#>  $ se.exposure           : num  0.0306 0.0204 0.0204 0.0204 0.0204 ...
+#>  $ effect_allele.exposure: chr  "A" "G" "A" "A" ...
+#>  $ other_allele.exposure : chr  "T" "A" "G" "T" ...
+#>  $ eaf.exposure          : num  0.78 0.2 0.43 0.42 0.31 0.78 0.41 0.24 0.21 0.21 ...
+#>  $ pval.exposure         : num  5e-26 4e-11 8e-14 5e-120 3e-13 ...
+#>  $ units.exposure        : chr  "kg/m2" "kg/m2" "kg/m2" "kg/m2" ...
+#>  $ gene.exposure         : chr  "BDNF" "CADM2" "TNNI3K" "FTO" ...
+#>  $ samplesize.exposure   : int  225238 221431 207641 222476 247166 227886 209051 218439 209849 220081 ...
+#>  $ exposure              : chr  "BMI" "BMI" "BMI" "BMI" ...
+#>  $ mr_keep.exposure      : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+#>  $ pval_origin.exposure  : chr  "reported" "reported" "reported" "reported" ...
+#>  $ units.exposure_dat    : chr  "kg/m2" "kg/m2" "kg/m2" "kg/m2" ...
+#>  $ id.exposure           : chr  "FXhiAH" "FXhiAH" "FXhiAH" "FXhiAH" ...
+#>  $ data_source.exposure  : chr  "textfile" "textfile" "textfile" "textfile" ...
 ```
-
 
 The `clump_data()` function takes any data frame that has been formatted to be an exposure data type of data frame. Note that for the instruments in the MRInstruments package the SNPs are already LD clumped.
 

@@ -1,3 +1,18 @@
+# TwoSampleMR v0.5.11
+
+(Release date: 2024-03-21)
+
+* In `mr_leaveoneout_plot()` and `mr_forest_plot()` amended `size` argument to `linewidth` as per ggplot2 version 3.4.0.
+* Add some datasets such that tests, continuous integration services, and creation of the vignettes don't rely on the availability of the OpenGWAS server.
+* Various improvements to helpfiles.
+
+# TwoSampleMR v0.5.10
+
+(Release date: 2024-02-20)
+
+* Added `bfile` and `plink_bin` arguments to `clump_data()`
+* Improvements to file reading and dataset formatting capabilities of `mv_extract_exposures_local()` to create the multiple exposure dataset
+
 # TwoSampleMR v0.5.9
 
 (Release date: 2024-02-01)
@@ -217,12 +232,6 @@ TwoSampleMR v0.4.17
 (Release date: 2018-12-03)
 
 * Added facility to harmonise indels
-
-TwoSampleMR v0.4.17
-==============
-
-(Release date: 2018-12-03)
-
 * Documentation and options added to multivariable MR
 
 TwoSampleMR v0.3.4
