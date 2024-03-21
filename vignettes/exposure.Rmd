@@ -295,9 +295,6 @@ To obtain a list and details about the available GWASs do the following:
 
 ```{r, eval=FALSE}
 ao <- available_outcomes()
-```
-
-```{r}
 head(ao)
 ```
 
