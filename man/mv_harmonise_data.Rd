@@ -20,7 +20,7 @@ List of vectors and matrices required for mv analysis.
 \item{exposure_se}{is the same as \code{exposure_beta}, but for standard errors.}
 \item{exposure_pval}{the same as \code{exposure_beta}, but for p-values.}
 \item{expname}{A data frame with two variables, \code{id.exposure} and \code{exposure} which are character strings.}
-\item{outcome_beta}{an array of effects for the outcome, corresponding to the SNPs in exposure_beta.}
+\item{outcome_beta}{an array of effects for the outcome, corresponding to the SNPs in \code{exposure_beta}.}
 \item{outcome_se}{an array of standard errors for the outcome.}
 \item{outcome_pval}{an array of p-values for the outcome.}
 \item{outname}{A data frame with two variables, \code{id.outcome} and \code{outcome} which are character strings.}

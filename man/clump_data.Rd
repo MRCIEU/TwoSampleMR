@@ -16,7 +16,7 @@ clump_data(
 )
 }
 \arguments{
-\item{dat}{Output from \code{\link[=format_data]{format_data()}}. Must have a SNP name column (SNP), SNP chromosome column (chr_name), SNP position column (chrom_start). If id.exposure or pval.exposure not present they will be generated.}
+\item{dat}{Output from \code{\link[=format_data]{format_data()}}. Must have a SNP name column (\code{SNP}), SNP chromosome column (\code{chr_name}), SNP position column (\code{chrom_start}). If \code{id.exposure} or \code{pval.exposure} not present they will be generated.}
 
 \item{clump_kb}{Clumping window, default is \code{10000}.}
 
@@ -26,11 +26,11 @@ clump_data(
 
 \item{clump_p2}{Clumping sig level for secondary SNPs, default is \code{1}.}
 
-\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS, AFR, AMR. 'legacy' also available - which is a previously used version of the EUR panel with a slightly different set of markers}
+\item{pop}{Super-population to use as reference panel. Default = \code{"EUR"}. Options are \code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}. \code{'legacy'} also available - which is a previously used version of the EUR panel with a slightly different set of markers}
 
-\item{bfile}{If this is provided then will use the API. Default = ‘NULL’}
+\item{bfile}{If this is provided then will use the API. Default = \code{NULL}}
 
-\item{plink_bin}{If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’}
+\item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 }
 \value{
 Data frame

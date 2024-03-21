@@ -33,13 +33,13 @@ mv_extract_exposures(
 
 \item{force_server}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is \code{FALSE}.}
 
-\item{pval_threshold}{Instrument detection p-value threshold. Default = 5e-8}
+\item{pval_threshold}{Instrument detection p-value threshold. Default = \code{5e-8}}
 
 \item{pop}{Which 1000 genomes super population to use for clumping when using the server}
 
-\item{plink_bin}{If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’}
+\item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 
-\item{bfile}{If this is provided then will use the API. Default = ‘NULL’}
+\item{bfile}{If this is provided then will use the API. Default = \code{NULL}}
 }
 \value{
 data frame in \code{exposure_dat} format
