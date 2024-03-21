@@ -300,7 +300,7 @@ head(ao)
 
 For information about authentication see <https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication>.
 
-The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
+The `available_outcomes()` function returns a table of all the available studies in the database. Each study has a unique ID. e.g., You might obtain
 
 ```{r}
 head(subset(ao, select = c(trait, id)))
