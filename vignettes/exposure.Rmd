@@ -313,7 +313,7 @@ head(subset(ao, select = c(trait, id)))
 #> 6 Schizophrenia ieu-b-5098
 ```
 
-To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al 2015 GIANT study, you specify the study ID as follows:
+To extract instruments for a particular trait using a particular study, for example to obtain SNPs for body mass index using the Locke et al. 2015 GIANT study, you specify the study ID as follows:
 
 ```{r, eval=FALSE}
 bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
