@@ -9,10 +9,10 @@
 #' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
-#' @param pval_threshold Instrument detection p-value threshold. Default = 5e-8
+#' @param pval_threshold Instrument detection p-value threshold. Default = `5e-8`
 #' @param pop Which 1000 genomes super population to use for clumping when using the server
-#' @param plink_bin If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’
-#' @param bfile If this is provided then will use the API. Default = ‘NULL’
+#' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
+#' @param bfile If this is provided then will use the API. Default = `NULL`
 #'
 #' @export
 #' @return data frame in `exposure_dat` format
@@ -80,13 +80,13 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #' @param id_col Optional column name to give the dataset an ID. Will be generated automatically if not provided for every trait / unit combination. The default is `"id"`.
 #' @param min_pval Minimum allowed p-value. The default is `1e-200`.
 #' @param log_pval The pval is -log10(P). The default is `FALSE`.
-#' @param pval_threshold Default=5e-8 for clumping
-#' @param plink_bin If ‘NULL’ and ‘bfile’ is not ‘NULL’ then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = ‘NULL’
-#' @param bfile If this is provided then will use the API. Default = ‘NULL’
-#' @param clump_r2 Default=0.001 for clumping
-#' @param clump_kb Default=10000 for clumping
+#' @param pval_threshold Default=`5e-8` for clumping
+#' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
+#' @param bfile If this is provided then will use the API. Default = `NULL`
+#' @param clump_r2 Default=`0.001` for clumping
+#' @param clump_kb Default=`10000` for clumping
 #' @param pop Which 1000 genomes super population to use for clumping when using the server
-#' @param harmonise_strictness See action argument in harmonise_data. Default=2
+#' @param harmonise_strictness See action argument in [harmonise_data()]. Default=`2`
 #'
 #' @export
 #' @return List
