@@ -36,7 +36,7 @@ mv_exposure_dat <- mv_extract_exposures(id_exposure)
 mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, id_outcome)
 snplist <- c("rs234", "rs1205")
 ld_mat <- ld_matrix(snplist)
-save(ao, bmi_exp_dat, chd_out_dat, mv_exposure_dat, mv_outcome_dat, ld_mat, file = file.path("inst", "extdata", "vig_perform_mr.RData"))
+save(ao, bmi_exp_dat, chd_out_dat, mv_exposure_dat, mv_outcome_dat, ld_mat, file = file.path("inst", "extdata", "vig_perform_mr.RData"), compress = "xz")
 ```
 
 ```{r, echo=FALSE, eval=TRUE, warning=FALSE}

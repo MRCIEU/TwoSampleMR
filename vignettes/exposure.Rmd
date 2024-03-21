@@ -29,7 +29,7 @@ library(TwoSampleMR)
 ao <- available_outcomes()
 bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 bmi_exp_dat <- clump_data(bmi2014_exp_dat)
-save(ao, bmi_exp_dat, bmi2014_exp_dat, file = file.path("inst", "extdata", "vig_exposure.RData"))
+save(ao, bmi_exp_dat, bmi2014_exp_dat, file = file.path("inst", "extdata", "vig_exposure.RData"), compress = "xz")
 ```
 
 ```{r, echo=FALSE, eval=TRUE, warning=FALSE}

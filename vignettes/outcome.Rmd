@@ -36,7 +36,7 @@ chd_out_dat2 <- extract_outcome_data(
 	snps = c("rs234", "rs17097147"), 
 	outcomes = c('ieu-a-2', 'ieu-a-7')
 )
-save(ao, bmi_exp_dat, chd_out_dat1, chd_out_dat2, file = file.path("inst", "extdata", "vig_outcome.RData"))
+save(ao, bmi_exp_dat, chd_out_dat1, chd_out_dat2, file = file.path("inst", "extdata", "vig_outcome.RData"), compress = "xz")
 ```
 
 ```{r, echo=FALSE, eval=TRUE, warning=FALSE}

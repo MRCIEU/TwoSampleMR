@@ -13,7 +13,7 @@ context("add metadata")
 # d9 <- extract_instruments("bbj-a-1") 
 # d10 <- extract_instruments("ieu-b-109")
 
-# save(d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, file="inst/extdata/test_add_metadata.RData")
+# save(d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, file="inst/extdata/test_add_metadata.RData", compress = "xz")
 
 load(system.file("extdata", "test_add_metadata.RData", package="TwoSampleMR"))
 

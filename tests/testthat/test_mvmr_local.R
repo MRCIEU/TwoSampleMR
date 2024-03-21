@@ -5,7 +5,7 @@ context("mvmr local")
 # rsid <- unique(c(a$rsid, b$rsid))
 # a1 <- ieugwasr::associations(rsid, "ieu-a-2")
 # a2 <- ieugwasr::associations(rsid, "ieu-a-1001")
-# save(a, b, rsid, a1, a2, file="inst/extdata/test_add_mvmr_local.RData")
+# save(a, b, rsid, a1, a2, file="inst/extdata/test_add_mvmr_local.RData", compress = "xz")
 
 load(system.file("extdata", "test_add_mvmr_local.RData", package="TwoSampleMR"))
 
