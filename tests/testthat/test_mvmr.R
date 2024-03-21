@@ -1,6 +1,7 @@
 context("mvmr")
 
 test_that("control", {
+  skip("Skip unless you have good access to the API.")
 	skip_on_ci()
 	skip_on_cran()
 	lipids <- mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302"))
@@ -18,6 +19,7 @@ test_that("control", {
 
 
 test_that("dat", {
+  skip("Skip unless you have good access to the API.")
 	skip_on_ci()
 	skip_on_cran()
 	a <- mv_extract_exposures(c("ukb-b-5238", "ieu-a-1001"))
@@ -37,6 +39,7 @@ test_that("dat", {
 
 
 test_that("ordering", {
+  skip("Skip unless you have good access to the API.")
 	skip_on_ci()
 	skip_on_cran()
 	lipids1 <- mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302"))
