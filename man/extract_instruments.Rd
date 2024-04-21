@@ -11,7 +11,7 @@ extract_instruments(
   p2 = 5e-08,
   r2 = 0.001,
   kb = 10000,
-  access_token = ieugwasr::check_access_token(),
+  opengwas_jwt = ieugwasr::get_opengwas_jwt(),
   force_server = FALSE
 )
 }
@@ -28,7 +28,7 @@ extract_instruments(
 
 \item{kb}{Clumping distance cutoff. The default is \code{10000}.}
 
-\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data. The default is \code{\link[ieugwasr:check_access_token]{ieugwasr::check_access_token()}}.}
+\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
 
 \item{force_server}{Force the analysis to extract results from the server rather than the MRInstruments package.}
 }

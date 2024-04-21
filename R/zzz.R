@@ -2,9 +2,9 @@
 
         packageStartupMessage(
                 paste("TwoSampleMR version", utils::packageVersion("TwoSampleMR"), "\n"),
-                "[>] New: Option to use non-European LD reference panels for clumping etc\n",
-                "[>] Some studies temporarily quarantined to verify effect allele\n",
-                "[>] See news(package = 'TwoSampleMR') and https://gwas.mrcieu.ac.uk for further details\n"
+                "[>] New: Improved API performance and stability\n",
+				"[>] New: Authentication required for all OpenGWAS queries from 1st May 2024\n",
+				"[>] For guidance see https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication\n"
         )
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))

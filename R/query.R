@@ -1,14 +1,14 @@
 
 #' Get list of studies with available GWAS summary statistics through API
 #'
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data
-#'
+#' @param opengwas_jwt Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.#'
+#' 
 #' @export
 #' @return Dataframe of details for all available studies
-available_outcomes <- function(access_token = ieugwasr::check_access_token())
+available_outcomes <- function(opengwas_jwt = ieugwasr::get_opengwas_jwt())
 {
 	# .Deprecated("ieugwasr::gwasinfo()")
-	a <- ieugwasr::gwasinfo(access_token=access_token)	
+	a <- ieugwasr::gwasinfo(opengwas_jwt=opengwas_jwt)	
 	return(a)
 }
 
@@ -25,19 +25,19 @@ available_outcomes <- function(access_token = ieugwasr::check_access_token())
 #' @param align_alleles Try to align tag alleles to target alleles (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
 #' @param palindromes Allow palindromic SNPs (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
 #' @param maf_threshold MAF threshold to try to infer palindromic SNPs. The default is `0.3`.
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
+#' @param opengwas_jwt Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
 #' @param splitsize The default is `10000`.
 #' @param proxy_splitsize The default is `500`.
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
-extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = ieugwasr::check_access_token(), splitsize=10000, proxy_splitsize=500)
+extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, opengwas_jwt=ieugwasr::get_opengwas_jwt(), splitsize=10000, proxy_splitsize=500)
 {
 	# .Deprecated("ieugwasr::associations()")
 	outcomes <- ieugwasr::legacy_ids(unique(outcomes))
 
 	snps <- unique(snps)
-	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, access_token=access_token, splitsize = splitsize)
+	firstpass <- extract_outcome_data_internal(snps, outcomes, proxies = FALSE, opengwas_jwt=opengwas_jwt, splitsize = splitsize)
 
 	if(proxies)
 	{
@@ -52,7 +52,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 			if(length(missedsnps)>0)
 			{
 				message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
-				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, access_token = access_token, splitsize = proxy_splitsize)
+				temp <- extract_outcome_data_internal(missedsnps, outcomes[i], proxies = TRUE, rsq, align_alleles, palindromes, maf_threshold, opengwas_jwt = opengwas_jwt, splitsize = proxy_splitsize)
 				if(!is.null(temp))
 				{
 					firstpass <- plyr::rbind.fill(firstpass, temp)
@@ -66,7 +66,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 
 
 
-extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, access_token = ieugwasr::check_access_token(), splitsize=10000)
+extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, align_alleles = 1, palindromes = 1, maf_threshold = 0.3, opengwas_jwt=ieugwasr::get_opengwas_jwt(), splitsize=10000)
 {
 	snps <- unique(snps)
 	message("Extracting data for ", length(snps), " SNP(s) from ", length(unique(outcomes)), " GWAS(s)")
@@ -93,7 +93,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 			align_alleles = align_alleles,
 			palindromes = palindromes,
 			maf_threshold = maf_threshold,
-			access_token=access_token
+			opengwas_jwt=opengwas_jwt
 		)
 		if(!is.data.frame(d)) d <- data.frame()
 
@@ -119,7 +119,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 					align_alleles = align_alleles,
 					palindromes = palindromes,
 					maf_threshold = maf_threshold,
-					access_token=access_token
+					opengwas_jwt=opengwas_jwt
 				)
 				if(!is.data.frame(out)) out <- data.frame()
 				return(out)
@@ -150,7 +150,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 					align_alleles = align_alleles,
 					palindromes = palindromes,
 					maf_threshold = maf_threshold,
-					access_token=access_token
+					opengwas_jwt=opengwas_jwt
 				)
 
 				if(!is.data.frame(out)) out <- data.frame()

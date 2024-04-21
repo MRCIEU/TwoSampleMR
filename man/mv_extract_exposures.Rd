@@ -9,7 +9,7 @@ mv_extract_exposures(
   clump_r2 = 0.001,
   clump_kb = 10000,
   harmonise_strictness = 2,
-  access_token = ieugwasr::check_access_token(),
+  opengwas_jwt = ieugwasr::get_opengwas_jwt(),
   find_proxies = TRUE,
   force_server = FALSE,
   pval_threshold = 5e-08,
@@ -27,7 +27,7 @@ mv_extract_exposures(
 
 \item{harmonise_strictness}{See the \code{action} option of \code{\link[=harmonise_data]{harmonise_data()}}. The default is \code{2}.}
 
-\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data.}
+\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
 
 \item{find_proxies}{Look for proxies? This slows everything down but is more accurate. The default is \code{TRUE}.}
 

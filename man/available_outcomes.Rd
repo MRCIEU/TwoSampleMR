@@ -4,10 +4,10 @@
 \alias{available_outcomes}
 \title{Get list of studies with available GWAS summary statistics through API}
 \usage{
-available_outcomes(access_token = ieugwasr::check_access_token())
+available_outcomes(opengwas_jwt = ieugwasr::get_opengwas_jwt())
 }
 \arguments{
-\item{access_token}{Google OAuth2 access token. Used to authenticate level of access to data}
+\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.#'}
 }
 \value{
 Dataframe of details for all available studies
