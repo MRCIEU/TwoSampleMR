@@ -62,7 +62,6 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    MRCIEU/ieugwasr,
     gqi/MRMix,
     mrcieu/MRInstruments,
     MRPRESSO=rondolab/MR-PRESSO,
