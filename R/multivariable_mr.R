@@ -6,7 +6,7 @@
 #' @param clump_r2 The default is `0.01`.
 #' @param clump_kb The default is `10000`.
 #' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
-#' @param opengwas_jwt Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
+#' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
 #' @param pval_threshold Instrument detection p-value threshold. Default = `5e-8`

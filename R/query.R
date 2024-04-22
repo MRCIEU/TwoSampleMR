@@ -1,7 +1,7 @@
 
 #' Get list of studies with available GWAS summary statistics through API
 #'
-#' @param opengwas_jwt Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.#'
+#' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
 #' 
 #' @export
 #' @return Dataframe of details for all available studies
@@ -25,7 +25,7 @@ available_outcomes <- function(opengwas_jwt = ieugwasr::get_opengwas_jwt())
 #' @param align_alleles Try to align tag alleles to target alleles (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
 #' @param palindromes Allow palindromic SNPs (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
 #' @param maf_threshold MAF threshold to try to infer palindromic SNPs. The default is `0.3`.
-#' @param opengwas_jwt Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
+#' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
 #' @param splitsize The default is `10000`.
 #' @param proxy_splitsize The default is `500`.
 #'
