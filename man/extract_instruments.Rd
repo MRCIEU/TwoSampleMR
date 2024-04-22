@@ -28,7 +28,7 @@ extract_instruments(
 
 \item{kb}{Clumping distance cutoff. The default is \code{10000}.}
 
-\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
+\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to \url{https://api.opengwas.io} to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
 
 \item{force_server}{Force the analysis to extract results from the server rather than the MRInstruments package.}
 }

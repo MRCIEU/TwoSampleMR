@@ -27,7 +27,7 @@ mv_extract_exposures(
 
 \item{harmonise_strictness}{See the \code{action} option of \code{\link[=harmonise_data]{harmonise_data()}}. The default is \code{2}.}
 
-\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to https://api.opengwas.io to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
+\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to \url{https://api.opengwas.io} to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
 
 \item{find_proxies}{Look for proxies? This slows everything down but is more accurate. The default is \code{TRUE}.}
 
