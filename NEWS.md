@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.0
+
+(Release date: 2024-04-22)
+
+* TwoSampleMR now uses the CRAN version of the **ieugwasr** package. Importantly this includes the new authentication system for the OpenGWAS API. Please see <https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication> for more information about how to set this up.
+
 # TwoSampleMR v0.5.11
 
 (Release date: 2024-03-21)
