@@ -15,8 +15,8 @@ test_that("mv exposure local", {
 	skip_on_cran()
     f1 <- tempfile()
     f2 <- tempfile()
-    write.table(a1, file=f1, row=F, col=T, qu=F, sep="\t")
-    write.table(a2, file=f2, row=F, col=T, qu=F, sep="\t")
+    write.table(a1, file=f1, row.names = FALSE, col.names = TRUE, quote = FALSE, sep="\t")
+    write.table(a2, file=f2, row.names = FALSE, col.names = TRUE, quote = FALSE, sep="\t")
 
     exposure_dat <- mv_extract_exposures_local(
         c(f1, f2),

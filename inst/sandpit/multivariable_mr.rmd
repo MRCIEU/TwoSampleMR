@@ -5,8 +5,8 @@ library(knitr)
 load_all()
 
 
-lipids <- mv_extract_exposures(c(299,300,302), access_token=NULL)
-chd <- extract_outcome_data(lipids$SNP, 7, access_token = NULL)
+lipids <- mv_extract_exposures(c(299,300,302))
+chd <- extract_outcome_data(lipids$SNP, 7)
 control <- mv_harmonise_data(lipids, chd)
 ```
 
@@ -45,8 +45,8 @@ kable(mv_multiple(control, intercept=FALSE, instrument_specific=FALSE)$result)
 
 
 ```{r}
-a <- mv_extract_exposures(c("UKB-a:196", 1001), access_token=NULL)
-b <- extract_outcome_data(a$SNP, 297, access_token = NULL)
+a <- mv_extract_exposures(c("UKB-a:196", 1001))
+b <- extract_outcome_data(a$SNP, 297)
 dat <- mv_harmonise_data(a, b)
 ```
 

@@ -6,7 +6,7 @@
 #' @param clump_r2 The default is `0.01`.
 #' @param clump_kb The default is `10000`.
 #' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
-#' @param access_token Google OAuth2 access token. Used to authenticate level of access to data.
+#' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
 #' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
 #' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
 #' @param pval_threshold Instrument detection p-value threshold. Default = `5e-8`
@@ -16,13 +16,13 @@
 #'
 #' @export
 #' @return data frame in `exposure_dat` format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, access_token = ieugwasr::check_access_token(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR", plink_bin=NULL, bfile=NULL)
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, opengwas_jwt=ieugwasr::get_opengwas_jwt(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR", plink_bin=NULL, bfile=NULL)
 {
 	stopifnot(length(id_exposure) > 1)
 	id_exposure <- ieugwasr::legacy_ids(id_exposure)
 
 	# Get best instruments for each exposure
-	exposure_dat <- extract_instruments(id_exposure, p1 = pval_threshold, r2 = clump_r2, kb=clump_kb, access_token = access_token, force_server=force_server)
+	exposure_dat <- extract_instruments(id_exposure, p1 = pval_threshold, r2 = clump_r2, kb=clump_kb, opengwas_jwt = opengwas_jwt, force_server=force_server)
 	temp <- exposure_dat
 	temp$id.exposure <- 1
 	temp <- temp[order(temp$pval.exposure, decreasing=FALSE), ]
@@ -32,7 +32,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 
 	# Get effects of each instrument from each exposure
-	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure, access_token = access_token, proxies=find_proxies)
+	d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure, opengwas_jwt = opengwas_jwt, proxies=find_proxies)
 	stopifnot(length(unique(d1$id)) == length(unique(id_exposure)))
 	d1 <- subset(d1, mr_keep.outcome)
 	d2 <- subset(d1, id.outcome != id_exposure[1])

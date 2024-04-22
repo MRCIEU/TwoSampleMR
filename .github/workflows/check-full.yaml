@@ -31,6 +31,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      OPENGWAS_X_TEST_MODE_KEY: ${{ secrets.OPENGWAS_X_TEST_MODE_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +51,11 @@ jobs:
             randomForest=?ignore-before-r=4.1.0,
             car=?ignore-before-r=4.1.0,
           needs: check
+
+      - name: Create and populate .Renviron file
+        run: |
+          echo OPENGWAS_X_TEST_MODE_KEY="$OPENGWAS_X_TEST_MODE_KEY" >> ~/.Renviron
+        shell: bash
 
       - uses: r-lib/actions/check-r-package@v2
         with:

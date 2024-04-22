@@ -87,11 +87,13 @@ Each step is documented on other pages in the documentation.
 
 ## Authentication
 
-**The authentication method has changed recently due to the GoogleAuthR method changing.** The main differences are that:
+The statistical methods in TwoSampleMR can be used on any data, but there are a number of functions that connect to the OpenGWAS database for data extraction. These OpenGWAS data access functions require authentication.
 
-1. By default you will not be asked to authenticate and will only have access to public data
-2. If you do need to authenticate in order to access private datasets there is no longer a single file called `mrbase.oauth`, rather, there is a directory called `ieugwasr_oauth`.
+**Authentication is changing** The main differences are that:
 
-Detailed information is given here: <https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication>
+1. Authentication is required for most queries to OpenGWAS for everyone (i.e. no more anonymous usage)
+2. We are no longer using Google Oauth2. This has been replaced by a simple API key system.
+
+Detailed information is given here: <https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication>. 
 
 ## References

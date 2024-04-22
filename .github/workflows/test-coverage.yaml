@@ -12,6 +12,7 @@ jobs:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      OPENGWAS_X_TEST_MODE_KEY: ${{ secrets.OPENGWAS_X_TEST_MODE_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +24,11 @@ jobs:
         with:
           extra-packages: any::covr
           needs: coverage
+
+      - name: Create and populate .Renviron file
+        run: |
+          echo OPENGWAS_X_TEST_MODE_KEY="$OPENGWAS_X_TEST_MODE_KEY" >> ~/.Renviron
+        shell: bash
 
       - name: Test coverage
         run: |
