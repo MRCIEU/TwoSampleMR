@@ -50,7 +50,7 @@ jobs:
           extra-packages: >
             any::rcmdcheck,
             randomForest=?ignore-before-r=4.1.0,
-            car=?ignore-before-r=4.1.0,
+            car=?ignore-before-r=4.4.0,
             MendelianRandomization=?ignore-before-r=4.4.0
           needs: check
 
