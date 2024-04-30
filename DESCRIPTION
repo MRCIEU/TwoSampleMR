@@ -41,7 +41,6 @@ Imports:
     lattice,
     magrittr,
     MASS,
-    MendelianRandomization,
     meta,
     mr.raps,
     MRMix,
@@ -56,6 +55,7 @@ Suggests:
     Cairo,
     car,
     markdown,
+    MendelianRandomization,
     MRInstruments,
     randomForest,
     testthat

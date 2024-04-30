@@ -12,6 +12,12 @@
 #' @return List of MRInput objects for each exposure/outcome combination
 dat_to_MRInput <- function(dat, get_correlations=FALSE, pop="EUR")
 {
+  if (!requireNamespace("MendelianRandomization", quietly = TRUE)) {
+    stop(
+      "Package \"MendelianRandomization\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
 	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
 	{
 		x <- plyr::mutate(x)
