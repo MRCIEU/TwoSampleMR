@@ -13,6 +13,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       OPENGWAS_X_TEST_MODE_KEY: ${{ secrets.OPENGWAS_X_TEST_MODE_KEY }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -32,10 +34,12 @@ jobs:
 
       - name: Test coverage
         run: |
+          token <- Sys.getenv("CODECOV_TOKEN", "")
           covr::codecov(
             quiet = FALSE,
             clean = FALSE,
-            install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package")
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package"),
+            token = if (token != "") token
           )
         shell: Rscript {0}
 
@@ -43,7 +47,7 @@ jobs:
         if: always()
         run: |
           ## --------------------------------------------------------------------
-          find ${{ runner.temp }}/package -name 'testthat.Rout*' -exec cat '{}' \; || true
+          find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
 
       - name: Upload test results
