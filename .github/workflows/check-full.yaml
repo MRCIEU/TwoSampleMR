@@ -19,14 +19,15 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-14, r: 'release'}
-          - {os: macOS-latest,   r: 'release'}
+          - {os: macos-latest,   r: 'release'}
+          - {os: macos-13, r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
           - {os: ubuntu-latest,   r: 'oldrel-2'}
           - {os: ubuntu-latest,   r: 'oldrel-3'}
+          - {os: ubuntu-latest,   r: 'oldrel-4'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -49,7 +50,8 @@ jobs:
           extra-packages: >
             any::rcmdcheck,
             randomForest=?ignore-before-r=4.1.0,
-            car=?ignore-before-r=4.1.0,
+            car=?ignore-before-r=4.4.0,
+            MendelianRandomization=?ignore-before-r=4.4.0
           needs: check
 
       - name: Create and populate .Renviron file
