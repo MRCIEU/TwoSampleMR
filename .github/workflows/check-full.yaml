@@ -51,6 +51,7 @@ jobs:
             any::rcmdcheck,
             randomForest=?ignore-before-r=4.1.0,
             car=?ignore-before-r=4.1.0,
+            MendelianRandomization=?ignore-before-r=4.4.0
           needs: check
 
       - name: Create and populate .Renviron file
