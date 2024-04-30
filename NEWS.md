@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.1
+
+(Release date: 2024-04-30)
+
+* The **MendelianRandomization** package has been moved from a hard dependency to a soft dependency. This is because its dependency package **Matrix** now requires R >= 4.4.0. Making **MendelianRandomization** a soft dependency means we don't need to make TwoSampleMR have the same requirement.
+
 # TwoSampleMR v0.6.0
 
 (Release date: 2024-04-22)
