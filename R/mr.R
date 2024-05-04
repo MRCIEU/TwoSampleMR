@@ -1,4 +1,3 @@
-
 #' Perform all Mendelian randomization tests
 #'
 #' @param dat Harmonised exposure and outcome data. Output from [harmonise_data()].

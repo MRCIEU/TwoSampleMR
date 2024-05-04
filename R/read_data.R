@@ -1,5 +1,3 @@
-
-
 #' Read outcome data
 #'
 #' Reads in outcome data. Checks and organises columns for use with MR or enrichment tests.
