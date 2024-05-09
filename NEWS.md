@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.2
+
+(Release date: 2024-05-09)
+
+* `format_data()` now errors if it detects its `dat` object is of class `'data.table'` and issues a message informing the user to make their dat object simply a `'data.frame'` (thanks to Si Fang @sifang1678)
+
 # TwoSampleMR v0.6.1
 
 (Release date: 2024-04-30)

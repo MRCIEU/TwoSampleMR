@@ -1,4 +1,3 @@
-
 #' Get list of studies with available GWAS summary statistics through API
 #'
 #' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.

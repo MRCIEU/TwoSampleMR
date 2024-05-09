@@ -1,5 +1,3 @@
-
-
 #' Get heterogeneity statistics
 #' 
 #' Get heterogeneity statistics.

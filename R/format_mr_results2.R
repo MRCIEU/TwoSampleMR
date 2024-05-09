@@ -6,7 +6,6 @@
 #'
 #' @export
 #' @return data frame
-
 split_outcome <- function(mr_res)
 {
 	Pos<-grep("\\|\\|",mr_res$outcome) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
