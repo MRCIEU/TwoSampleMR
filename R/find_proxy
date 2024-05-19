@@ -8,6 +8,7 @@
 #' @param gb genome build (LDlinkR param)
 #' @param proxy_output_path a full path to save the proxy file when using ldlink
 #' @param proxy_file pre-calculated proxy file path (full); do provide this if the proxy file is already generated !!!
+#' @param token token of `LDlinkR`
 #'
 #' @return a updated missiv with `proxy.snp` `proxy.effect.allele` `proxy.other.allele` `r2` col
 #' @note this function can be used when many iv can not locate corresponding snp in the outcome in tsmr analysis
@@ -16,25 +17,25 @@
 #' miss_snp <- miss_iv$SNP
 #' outcome_snp <- iri_nc$SNP
 #' proxy_output_path <- "Full path to where you wanna store the LDlinkR output"
-#  proxy_iv <- find_proxy(miss_iv, miss_snp, outcome_snp,
-#              proxy_file = ".",
-#              proxy_output_path = NULL)
-#  # bak
-#  proxy_iv$target.snp <- proxy_iv$SNP # target snp
-#  proxy_iv$target.A1 <- proxy_iv$effect_allele.exposure
-#  proxy_iv$target.A2 <- proxy_iv$other_allele.exposure
-#  # replace for tsmr
-#  proxy_iv$SNP <- proxy_iv$proxy.snp
-#  proxy_iv$effect_allele.exposure <- proxy_iv$proxy.A1
-#  proxy_iv$other_allele.exposure <- proxy_iv$proxy.A2
-#  iv_f <- bind_rows(non_miss_iv, proxy_iv) # f for final
-#  dat_h_proxy <- harmonise_data(iv_f, out_nc_proxy)
-#  mr(dat_h_proxy) # nailed it!
-find_proxy <- function(miss_iv, miss_snp, outcome_snp, proxy_file, proxy_output_path, pop = "EUR", gb="grch38") {
+#'  proxy_iv <- find_proxy(miss_iv, miss_snp, outcome_snp,
+#'              proxy_file = "/Users/leoarrow/project/iridocyclitis/output/tsmr//combined_query_snp_list_grch38.txt",
+#'              proxy_output_path = NULL)
+#'  # bak
+#'  proxy_iv$target.snp <- proxy_iv$SNP # target snp
+#'  proxy_iv$target.A1 <- proxy_iv$effect_allele.exposure
+#'  proxy_iv$target.A2 <- proxy_iv$other_allele.exposure
+#'  # replace for tsmr
+#'  proxy_iv$SNP <- proxy_iv$proxy.snp
+#'  proxy_iv$effect_allele.exposure <- proxy_iv$proxy.A1
+#'  proxy_iv$other_allele.exposure <- proxy_iv$proxy.A2
+#'  iv_f <- bind_rows(non_miss_iv, proxy_iv) # f for final
+#'  dat_h_proxy <- harmonise_data(iv_f, out_nc_proxy)
+#'  mr(dat_h_proxy) # nailed it!
+find_proxy <- function(miss_iv, miss_snp, outcome_snp, proxy_file=NULL, proxy_output_path, pop="EUR", gb="grch38", token="") {
  require(LDlinkR); require(tidyverse); require(data.table)
  # sub-part 1: using ldlink to find proxy ---------
  # this part can be skipped if the file can be provided in advance.
- if (!exists("proxy_file")) {
+ if (is.null(proxy_file)) {
   # if you did not pre-calculate the proxy file, then calculate it here
   if(!exists("proxy_output_path")) {stop("Need to input where LDlink should generate the proxy file.")}
   wd <- getwd() # record work path
@@ -46,12 +47,13 @@ find_proxy <- function(miss_iv, miss_snp, outcome_snp, proxy_file, proxy_output_
   p <- LDlinkR::LDproxy_batch(miss_snp, # LDproxy_batch needs to write results in one txt file
                               pop = pop,  # pop = c("CEU", "TSI", "FIN", "GBR", "IBS"),
                               r2d = "r2",
-                              token = "8866c6877cb8",
+                              token = token,
                               append = T, # one txt file (T) or plural txt files for each snp (F)
                               genome_build = gd)
   setwd(wd) # back to the work path
   proxy <- fread(file.path(proxy_output_path, paste0("combined_query_snp_list_", gb, ".txt"))) %>% 
    filter(R2 > 0.6) %>% 
+   # Here, `query_A1` corresponds to `proxy_A1`; `query_A2` to `proxy_A2`
    tidyr::separate(Correlated_Alleles, sep = "[,=]", remove = FALSE, into = c("query_A1", "proxy_A1", "query_A2", "proxy_A2")) %>% 
    select(query_snp, RS_Number, R2,query_A1, proxy_A1, query_A2, proxy_A2) %>% 
    mutate(SNP_in_outcome = RS_Number %in% outcome_snp) %>% 
@@ -59,7 +61,7 @@ find_proxy <- function(miss_iv, miss_snp, outcome_snp, proxy_file, proxy_output_
   message(paste0(" - A total of <",dim(proxy)[1], "> potential proxy snp"))
   message(paste0(" - A total of <",length(unique(proxy$query_snp)), "> miss_iv have proxy snp"))
  } else {
-  proxy <- fread(proxy_file) %>% # fread("/Users/leoarrow/project/iridocyclitis/output/tsmr//combined_query_snp_list_grch38.txt")
+  proxy <- fread(proxy_file) %>% # e.g., fread("/Users/leoarrow/project/iridocyclitis/output/tsmr//combined_query_snp_list_grch38.txt")
    filter(R2 > 0.6) %>% 
    tidyr::separate(Correlated_Alleles, sep = "[,=]", remove = FALSE, into = c("query_A1", "proxy_A1", "query_A2", "proxy_A2")) %>% 
    select(query_snp, RS_Number, R2,query_A1, proxy_A1, query_A2, proxy_A2) %>% 
@@ -97,6 +99,7 @@ find_proxy <- function(miss_iv, miss_snp, outcome_snp, proxy_file, proxy_output_
    if (logi_allele_match1 || logi_allele_match2) {
     miss_iv$proxy.snp[miss_iv$SNP == snp] <- proxy_snp
     miss_iv$proxy.r2[miss_iv$SNP == snp] <- proxy_snp_line$R2
+    # if matched
     if (logi_allele_match1) {
      miss_iv$proxy.A1[miss_iv$SNP == snp] <- proxy_A1
      miss_iv$proxy.A2[miss_iv$SNP == snp] <- proxy_A2
@@ -105,6 +108,7 @@ find_proxy <- function(miss_iv, miss_snp, outcome_snp, proxy_file, proxy_output_
      miss_iv$proxy.A2[miss_iv$SNP == snp] <- proxy_A1
     }
     match <- T
+    # if not matched
    } else {
     i <- i+1
     if (i > nrow(tmp_proxy)) {
