@@ -1,0 +1,127 @@
+#' `find_proxy` finds the proxy snp for the miss iv
+#' Credit for this function @leoarrow1 (Ao Lu: https://github.com/leoarrow1)
+#'
+#' @param miss_iv iv datafram in tsmr exposure format, which can not locate snp in the outcome
+#' @param miss_snp snp in the miss_iv; can be inferred using miss_iv$SNP
+#' @param outcome_snp a str vector containing all snp in the outcome; this NOT the entire outcome gwas summary statistics
+#' @param pop reference panel from 1kg (LDlinkR param)
+#' @param gb genome build (LDlinkR param)
+#' @param proxy_output_path a full path to save the proxy file when using ldlink
+#' @param proxy_file pre-calculated proxy file path (full); do provide this if the proxy file is already generated !!!
+#'
+#' @return a updated missiv with `proxy.snp` `proxy.effect.allele` `proxy.other.allele` `r2` col
+#' @note this function can be used when many iv can not locate corresponding snp in the outcome in tsmr analysis
+#' @examples
+#' miss_iv <- iv[!iv$SNP %in% dat_h$SNP,] # iv is estracted iv via tsmr package;dat_h is a standard output of harmonise_data()
+#' miss_snp <- miss_iv$SNP
+#' outcome_snp <- iri_nc$SNP
+#' proxy_output_path <- "Full path to where you wanna store the LDlinkR output"
+#  proxy_iv <- find_proxy(miss_iv, miss_snp, outcome_snp,
+#              proxy_file = ".",
+#              proxy_output_path = NULL)
+#  # bak
+#  proxy_iv$target.snp <- proxy_iv$SNP # target snp
+#  proxy_iv$target.A1 <- proxy_iv$effect_allele.exposure
+#  proxy_iv$target.A2 <- proxy_iv$other_allele.exposure
+#  # replace for tsmr
+#  proxy_iv$SNP <- proxy_iv$proxy.snp
+#  proxy_iv$effect_allele.exposure <- proxy_iv$proxy.A1
+#  proxy_iv$other_allele.exposure <- proxy_iv$proxy.A2
+#  iv_f <- bind_rows(non_miss_iv, proxy_iv) # f for final
+#  dat_h_proxy <- harmonise_data(iv_f, out_nc_proxy)
+#  mr(dat_h_proxy) # nailed it!
+find_proxy <- function(miss_iv, miss_snp, outcome_snp, proxy_file, proxy_output_path, pop = "EUR", gb="grch38") {
+ require(LDlinkR); require(tidyverse); require(data.table)
+ # sub-part 1: using ldlink to find proxy ---------
+ # this part can be skipped if the file can be provided in advance.
+ if (!exists("proxy_file")) {
+  # if you did not pre-calculate the proxy file, then calculate it here
+  if(!exists("proxy_output_path")) {stop("Need to input where LDlink should generate the proxy file.")}
+  wd <- getwd() # record work path
+  setwd(proxy_output_path)
+  message(paste0("Save the proxy file into path >>> ", proxy_output_path))
+  message(paste0(" --- using parameter: ", pop, " (ref population)"))
+  message(paste0(" --- using parameter: ", gb, " (genome_build)"))
+  message(paste0("##### LDlinkR could take a while if there is many miss snp #####"))
+  p <- LDlinkR::LDproxy_batch(miss_snp, # LDproxy_batch needs to write results in one txt file
+                              pop = pop,  # pop = c("CEU", "TSI", "FIN", "GBR", "IBS"),
+                              r2d = "r2",
+                              token = "8866c6877cb8",
+                              append = T, # one txt file (T) or plural txt files for each snp (F)
+                              genome_build = gd)
+  setwd(wd) # back to the work path
+  proxy <- fread(file.path(proxy_output_path, paste0("combined_query_snp_list_", gb, ".txt"))) %>% 
+   filter(R2 > 0.6) %>% 
+   tidyr::separate(Correlated_Alleles, sep = "[,=]", remove = FALSE, into = c("query_A1", "proxy_A1", "query_A2", "proxy_A2")) %>% 
+   select(query_snp, RS_Number, R2,query_A1, proxy_A1, query_A2, proxy_A2) %>% 
+   mutate(SNP_in_outcome = RS_Number %in% outcome_snp) %>% 
+   filter(SNP_in_outcome == T)
+  message(paste0(" - A total of <",dim(proxy)[1], "> potential proxy snp"))
+  message(paste0(" - A total of <",length(unique(proxy$query_snp)), "> miss_iv have proxy snp"))
+ } else {
+  proxy <- fread(proxy_file) %>% # fread("/Users/leoarrow/project/iridocyclitis/output/tsmr//combined_query_snp_list_grch38.txt")
+   filter(R2 > 0.6) %>% 
+   tidyr::separate(Correlated_Alleles, sep = "[,=]", remove = FALSE, into = c("query_A1", "proxy_A1", "query_A2", "proxy_A2")) %>% 
+   select(query_snp, RS_Number, R2,query_A1, proxy_A1, query_A2, proxy_A2) %>% 
+   mutate(SNP_in_outcome = RS_Number %in% outcome_snp) %>% 
+   filter(SNP_in_outcome == T)
+  message(paste0(" - A total of <",dim(proxy)[1], "> potential proxy snp"))
+  message(paste0(" - A total of <",length(unique(proxy$query_snp)), "> miss_iv have proxy snp"))
+ }
+ 
+ # sub-part 2: match proxy ---------
+ for (snp in miss_iv$SNP) { # for loop for snp in miss_iv$SNP
+  message(paste(" - Locating proxy for: ", snp))
+  miss_iv_line <- miss_iv[miss_iv$SNP == snp, ]
+  miss_iv_A1 <- miss_iv_line$effect_allele.exposure
+  miss_iv_A2 <- miss_iv_line$other_allele.exposure
+  tmp_proxy <- proxy[proxy$query_snp == snp,] %>% dplyr::arrange(-R2, .by_group = T)
+  if (nrow(tmp_proxy) == 0) {message(paste(" - Could not find proxy for: ", snp)); next}
+  # For potential proxy snps
+  match <- F
+  i <- 1 # i for index
+  while (!match) 
+  { # while loop for proxy snp
+   # snp check
+   proxy_snp_line <- tmp_proxy[i,]
+   query_snp <- proxy_snp_line$query_snp
+   proxy_snp <- proxy_snp_line$RS_Number
+   if (query_snp == proxy_snp) {i <- i+1; next} # just in case
+   # allele check
+   query_A1 <- proxy_snp_line$query_A1
+   query_A2 <- proxy_snp_line$query_A2
+   proxy_A1 <- proxy_snp_line$proxy_A1
+   proxy_A2 <- proxy_snp_line$proxy_A2
+   logi_allele_match1 <- (miss_iv_A1 == query_A1 & miss_iv_A2 == query_A2) # condition 1
+   logi_allele_match2 <- (miss_iv_A1 == query_A2 & miss_iv_A2 == query_A1) # condition 2
+   if (logi_allele_match1 || logi_allele_match2) {
+    miss_iv$proxy.snp[miss_iv$SNP == snp] <- proxy_snp
+    miss_iv$proxy.r2[miss_iv$SNP == snp] <- proxy_snp_line$R2
+    if (logi_allele_match1) {
+     miss_iv$proxy.A1[miss_iv$SNP == snp] <- proxy_A1
+     miss_iv$proxy.A2[miss_iv$SNP == snp] <- proxy_A2
+    } else {
+     miss_iv$proxy.A1[miss_iv$SNP == snp] <- proxy_A2
+     miss_iv$proxy.A2[miss_iv$SNP == snp] <- proxy_A1
+    }
+    match <- T
+   } else {
+    i <- i+1
+    if (i > nrow(tmp_proxy)) {
+     message(paste(" - Could not find proxy for: ", snp))
+     break
+    }
+   }
+  # proxy while loop end here
+  }
+  if (!match) {message(paste(" - No suitable proxy found for: ", snp))}
+ # snp for loop end here
+ }
+ message(" ######## Done #########")
+ miss_iv_with_proxy <- miss_iv %>% filter(!is.na(proxy.snp))
+ located_proxy_length <- length(miss_iv_with_proxy$proxy.snp)
+ miss_iv_length <- length(miss_iv$SNP)
+ message(paste0(" - A total of <", located_proxy_length, "> proxy located."))
+ message(paste0(" - A total of <", miss_iv_length-located_proxy_length, "> proxy not located."))
+ return(miss_iv_with_proxy)
+}
