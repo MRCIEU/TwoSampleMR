@@ -1,11 +1,17 @@
 .onAttach <- function(libname, pkgname) {
 
-        packageStartupMessage(
-                paste("TwoSampleMR version", utils::packageVersion("TwoSampleMR"), "\n"),
-                "[>] New: Improved API performance and stability\n",
-				"[>] New: Authentication required for all OpenGWAS queries from 1st May 2024\n",
-				"[>] For guidance see https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication\n"
-        )
+	packageStartupMessage(paste("TwoSampleMR version", utils::packageVersion("TwoSampleMR"), "\n"))
+
+	b <- suppressWarnings(try(jsonlite::read_json("https://raw.githubusercontent.com/MRCIEU/opengwas/main/messages-twosamplemr.json"), silent=TRUE))
+	if(!inherits(b, 'try-error'))
+	{
+		if(length(b) > 0) {
+			o <- lapply(b, function(x) {
+				# packageStartupMessage(" Message date: ", x[["date"]])
+				sapply(x[["message"]], function(j) packageStartupMessage(paste(" ", j)))
+			})
+		}
+	}
 
 	a <- suppressWarnings(try(readLines("https://raw.githubusercontent.com/MRCIEU/TwoSampleMR/master/DESCRIPTION"), silent=TRUE))
 
