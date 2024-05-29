@@ -1,5 +1,7 @@
 # TwoSampleMR v0.6.3
 
+(Release date: 2024-05-23)
+
 * Update package startup message
 
 # TwoSampleMR v0.6.2
