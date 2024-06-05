@@ -60,7 +60,7 @@ outcome_dat <- data.frame(
 	stringsAsFactors=FALSE
 )
 
-dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
+dat <- TwoSampleMR::harmonise_data(exposure_dat, outcome_dat)
 
 a <- read.table("inst/data/alleles.txt", he=T, stringsAsFactors=FALSE)
 SNP <- a$SNP
