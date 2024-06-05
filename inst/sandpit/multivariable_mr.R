@@ -89,5 +89,3 @@ kable(mv_ivw(dat)$result)
 ```{r}
 kable(mv_basic(dat)$result)
 ```
-
-

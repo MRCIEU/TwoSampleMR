@@ -1,5 +1,3 @@
-
-
 # Assumptions - effect allele is present in exposure and outcome
 # Possibilities
 
