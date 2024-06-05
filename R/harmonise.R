@@ -660,4 +660,3 @@ check_required_columns <- function(dat, type="exposure")
 	}
 	return(NULL)
 }
-
