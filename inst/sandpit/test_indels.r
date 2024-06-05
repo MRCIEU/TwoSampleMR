@@ -15,9 +15,9 @@ al <- matrix(c(
 "I", "D", "D", "I"
 ), nrow=4) %>% t
 
-recode_indels_22(al[,1], al[,2], al[,3], al[,4]) %>% cbind(al, .)
-recode_indels_21(al[,1], al[,2], al[,3]) %>% cbind(al, .)
-recode_indels_12(al[,1], al[,3], al[,4]) %>% cbind(al, .)
+TwoSampleMR:::recode_indels_22(al[,1], al[,2], al[,3], al[,4]) %>% cbind(al, .)
+TwoSampleMR:::recode_indels_21(al[,1], al[,2], al[,3]) %>% cbind(al, .)
+TwoSampleMR:::recode_indels_12(al[,1], al[,3], al[,4]) %>% cbind(al, .)
 
 
 
@@ -97,5 +97,3 @@ x <- data.frame(
 )
 
 format_data(x)
-
-

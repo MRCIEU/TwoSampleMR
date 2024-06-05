@@ -17,4 +17,3 @@ forest_plot(mr_result, in_columns=TRUE, by_category=FALSE, exponentiate=TRUE, tr
 
 forest_plot(mr_result, in_columns=FALSE, by_category=TRUE)
 forest_plot(mr_result, in_columns=FALSE, by_category=FALSE)
-

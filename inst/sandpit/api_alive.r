@@ -115,4 +115,3 @@ toggle_api("release")
 pout2 <- extract_outcome_data(snplist[1:5000], 1001, proxies=TRUE)
 Sys.time()-t1
 # 40sec
-

@@ -1,3 +1,11 @@
+# TwoSampleMR v0.6.4
+
+(Release date: 2024-06-05)
+
+* Update installation instructions in README.md
+
+* Fixed a bug in which the wrong indels recoding function was called (thanks @ruochiz)
+
 # TwoSampleMR v0.6.3
 
 (Release date: 2024-05-23)

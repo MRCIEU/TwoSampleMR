@@ -10,6 +10,3 @@ o2 <- dat_to_MRInput(dat, get_correlations=TRUE)
 
 MendelianRandomization::mr_ivw(o1[[1]])
 MendelianRandomization::mr_ivw(o2[[1]])
-
-
-

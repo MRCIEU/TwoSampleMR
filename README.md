@@ -11,6 +11,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
 [![Codecov test
 coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MRCIEU/TwoSampleMR?branch=master)
+[![TwoSampleMR status
+badge](https://mrcieu.r-universe.dev/badges/TwoSampleMR)](https://mrcieu.r-universe.dev/TwoSampleMR)
 <!-- badges: end -->
 
 A package for performing Mendelian randomization using GWAS summary
@@ -28,7 +30,19 @@ reference panels.** For full details of the changes, please visit
 
 ## Installation
 
-To install the latest version of TwoSampleMR, perform as normal:
+Users running Windows and macOS, to install the latest version of
+TwoSampleMR please install from our MRC IEU r-universe
+
+``` r
+install.packages("TwoSampleMR", repos = c("https://mrcieu.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+Users running Linux or WebR please see the [following
+instructions](https://github.com/MRCIEU/mrcieu.r-universe.dev#readme).
+
+To update the package run the same command again.
+
+### Installing from source
 
 ``` r
 install.packages("remotes")
@@ -37,16 +51,6 @@ remotes::install_github("MRCIEU/TwoSampleMR")
 
 To update the package just run the
 `remotes::install_github("MRCIEU/TwoSampleMR")` command again.
-
-We recommend using this new version going forwards but for a limited
-time we are enabling backwards compatibility, in case you are in the
-middle of analysis or need to reproduce old analysis. In order to use
-the legacy version of the package and the database, install using:
-
-``` r
-install.packages("remotes")
-remotes::install_github("MRCIEU/TwoSampleMR@0.4.26")
-```
 
 ## Docker
 

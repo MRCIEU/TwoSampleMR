@@ -67,7 +67,3 @@ WHERE a.snp=b.id AND a.study=c.id
 AND b.name IN ('rs10900000', 'rs10000010', 'rs10000092')
 AND c.filename IN ('cardiogramplusc4d_180814_update_data.txt.uniform.af.txt', 'All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz.uniform.af.txt', 'MAGIC_INSULIN_SECRETION_DI_for_release_HMrel27.txt.uniform.af.txt')
 ORDER BY filename;
-
-
-
-

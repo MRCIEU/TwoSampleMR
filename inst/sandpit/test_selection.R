@@ -181,4 +181,3 @@ mu_g2x <- min(rbeta(1, 1, 300), 0.05) * sample(c(1,-1), 1)
 
 
 a <- run_sim(nid1 = nid1, nid2 = nid2, nidu = nidu, ninst1 = ninst1, ninst2 = ninst2, ninstu = ninstu, var_xy = var_xy, var_ux = var_ux, var_uy = var_uy, var_g1x = var_g1x, var_g2y = var_g2y, var_guu = var_guu, var_g1y = var_g1y, var_g2x = var_g2x, mu_g1y = mu_g1y, mu_g2x = mu_g2x)
-

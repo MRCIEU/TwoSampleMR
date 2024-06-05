@@ -188,4 +188,3 @@ mr_leaveoneout_plot(l)[[2]]
 ### Enrichment
 
 You can also perform a Fisher's combined test to see if there is an enrichment of p-values in the outcome data (e.g. are the SNPs that influence the exposure also likely to influence the outcome, this is not an MR analysis).
-

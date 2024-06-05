@@ -29,4 +29,3 @@ mr(dat, method_list=c("mr_ivw", "mr_sign"))
 mr_scatter_plot(mr(dat, method_list=c("mr_ivw", "mr_sign")), dat)
 
 # Could consider doing a parametric bootstrap type analysis
-

@@ -1,5 +1,3 @@
-
-
 # Assumptions - effect allele is present in exposure and outcome
 # Possibilities
 
@@ -29,7 +27,7 @@
 
 
 
-a <- read.table("inst/data/alleles.txt", he=T, stringsAsFactors=FALSE)
+a <- read.table("inst/extdata/alleles.txt", he=T, stringsAsFactors=FALSE)
 SNP <- a$SNP
 A1 <- a$A1
 A2 <- a$A2
@@ -62,9 +60,9 @@ outcome_dat <- data.frame(
 	stringsAsFactors=FALSE
 )
 
-dat <- harmonise_exposure_outcome(exposure_dat, outcome_dat)
+dat <- TwoSampleMR::harmonise_data(exposure_dat, outcome_dat)
 
-a <- read.table("inst/data/alleles.txt", he=T, stringsAsFactors=FALSE)
+a <- read.table("inst/extdata/alleles.txt", he=T, stringsAsFactors=FALSE)
 SNP <- a$SNP
 A1 <- a$A1
 A2 <- a$A2
@@ -76,5 +74,5 @@ fA <- a$fA
 fB <- a$fB
 
 fA[4] <- NA
-harmonise_21(SNP, A1, A2, B1, betaA, betaB, fA, rep(NA, length(SNP)), 0.08, 2)
-harmonise_22(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, 0.08, 3)
+TwoSampleMR:::harmonise_21(SNP, A1, A2, B1, betaA, betaB, fA, rep(NA, length(SNP)), 0.08, 2)
+TwoSampleMR:::harmonise_22(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, 0.08, 3)
