@@ -27,7 +27,7 @@
 
 
 
-a <- read.table("inst/data/alleles.txt", he=T, stringsAsFactors=FALSE)
+a <- read.table("inst/extdata/alleles.txt", he=T, stringsAsFactors=FALSE)
 SNP <- a$SNP
 A1 <- a$A1
 A2 <- a$A2
