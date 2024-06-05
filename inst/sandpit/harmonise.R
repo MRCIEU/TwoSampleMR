@@ -74,5 +74,5 @@ fA <- a$fA
 fB <- a$fB
 
 fA[4] <- NA
-harmonise_21(SNP, A1, A2, B1, betaA, betaB, fA, rep(NA, length(SNP)), 0.08, 2)
-harmonise_22(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, 0.08, 3)
+TwoSampleMR:::harmonise_21(SNP, A1, A2, B1, betaA, betaB, fA, rep(NA, length(SNP)), 0.08, 2)
+TwoSampleMR:::harmonise_22(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, 0.08, 3)
