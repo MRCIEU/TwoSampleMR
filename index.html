@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,15 +84,19 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>To install the latest version of TwoSampleMR, perform as normal:</p>
+<p>Users running Windows and macOS, to install the latest version of TwoSampleMR please install from our MRC IEU r-universe</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"TwoSampleMR"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://mrcieu.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Users running Linux or WebR please see the <a href="https://github.com/MRCIEU/mrcieu.r-universe.dev#readme" class="external-link">following instructions</a>.</p>
+<p>To update the package run the same command again.</p>
+<div class="section level3">
+<h3 id="installing-from-source">Installing from source<a class="anchor" aria-label="anchor" href="#installing-from-source"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR"</span><span class="op">)</span></span></code></pre></div>
 <p>To update the package just run the <code>remotes::install_github("MRCIEU/TwoSampleMR")</code> command again.</p>
-<p>We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR@0.4.26"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="docker">Docker<a class="anchor" aria-label="anchor" href="#docker"></a>
@@ -143,6 +147,7 @@
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/49515156" class="external-link"><img src="https://zenodo.org/badge/49515156.svg" alt="DOI"></a></li>
 <li><a href="https://app.codecov.io/gh/MRCIEU/TwoSampleMR?branch=master" class="external-link"><img src="https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://mrcieu.r-universe.dev/TwoSampleMR" class="external-link"><img src="https://mrcieu.r-universe.dev/badges/TwoSampleMR" alt="TwoSampleMR status badge"></a></li>
 </ul>
 </div>
 
