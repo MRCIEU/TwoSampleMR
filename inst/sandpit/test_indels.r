@@ -97,5 +97,3 @@ x <- data.frame(
 )
 
 format_data(x)
-
-
