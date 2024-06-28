@@ -2,6 +2,7 @@
 
 (Release date: 2024-##-##)
 
+* Bumped version of roxygen2 for creating package documentation
 # TwoSampleMR v0.6.4
 
 (Release date: 2024-06-05)
