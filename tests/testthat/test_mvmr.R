@@ -1,8 +1,11 @@
 context("mvmr")
 
+skip_on_ci()
+skip_on_cran()
+skip_if_offline()
+skip_if_offline(host = "api.opengwas.io")
+
 test_that("control", {
-	skip_on_ci()
-	skip_on_cran()
 	lipids <- mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302"))
 	chd <- extract_outcome_data(lipids$SNP, "ieu-a-7")
 	control <- mv_harmonise_data(lipids, chd)
@@ -18,8 +21,6 @@ test_that("control", {
 
 
 test_that("dat", {
-	skip_on_ci()
-	skip_on_cran()
 	a <- mv_extract_exposures(c("ukb-b-5238", "ieu-a-1001"))
 	b <- extract_outcome_data(a$SNP, "ieu-a-297")
 	dat <- mv_harmonise_data(a, b)
@@ -37,8 +38,6 @@ test_that("dat", {
 
 
 test_that("ordering", {
-	skip_on_ci()
-	skip_on_cran()
 	lipids1 <- mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302"))
 	chd1 <- extract_outcome_data(lipids1$SNP, "ieu-a-7")
 	control1 <- mv_harmonise_data(lipids1, chd1)
