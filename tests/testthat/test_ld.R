@@ -1,10 +1,9 @@
 context("ld")
 
 test_that("extract some data", {
-  skip("Skip unless you have good access to the API.")
-  skip_on_ci()
   skip_on_cran()
   a <- extract_instruments(2, clump=FALSE)
+  if(inherits(a, "response")) skip("Server issues")
   out <- clump_data(a)
 })
 
