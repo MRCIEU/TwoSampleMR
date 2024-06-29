@@ -5,11 +5,10 @@ skip_if_offline(host = "api.opengwas.io")
 skip_on_cran()
 skip_on_ci()
 
-test_that("extract some data", {
-  a <- extract_instruments(2, clump=FALSE)
-  if(length(a) == 0) skip("Server issues")
-  out <- clump_data(a)
-})
+# extract some data
+a <- extract_instruments(2, clump=FALSE)
+if(length(a) == 0) skip("Server issues")
+out <- clump_data(a)
 
 test_that("clump", {
   skip_if_not(exists('a'), "a not created in test above")
