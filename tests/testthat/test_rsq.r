@@ -10,6 +10,9 @@ test_that("exposure data 1", {
 })
 
 test_that("exposure data 2", {
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+  skip_on_cran()
   skip_on_ci()
   d <- extract_instruments(c('ieu-a-2', 'ieu-a-7'))
   if(inherits(d, "response")) skip("Server issues")
@@ -21,6 +24,9 @@ test_that("exposure data 2", {
 exposure <- exp_dat[1:5,]
 
 test_that("outcome data 1", {
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+  skip_on_cran()
   skip_on_ci()
   d <- extract_outcome_data(exposure$SNP, 'ieu-a-2')
   if(inherits(d, "response")) skip("Server issues")
@@ -30,6 +36,9 @@ test_that("outcome data 1", {
 })
 
 test_that("outcome data 2", {
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+  skip_on_cran()
   skip_on_ci()
   d <- extract_outcome_data(exposure$SNP, c('ieu-a-2', 'ieu-a-7'))
   if(inherits(d, "response")) skip("Server issues")
@@ -39,6 +48,9 @@ test_that("outcome data 2", {
 })
 
 test_that("dat 2", {
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+  skip_on_cran()
   skip_on_ci()
   d <- make_dat(proxies=FALSE)
   if(inherits(d, "response")) skip("Server issues")
@@ -48,6 +60,9 @@ test_that("dat 2", {
 })
 
 test_that("dat ukb-d", {
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+  skip_on_cran()
   skip_on_cran()
   skip_on_ci()
   d <- make_dat(exposure="ukb-d-30710_irnt", proxies=FALSE)
@@ -64,6 +79,9 @@ test_that("effective n", {
 })
 
 test_that("get_population_allele_frequency", {
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+  skip_on_cran()
   skip_on_ci()
 	d <- extract_instruments("ieu-a-7")
 	if(inherits(d, "response")) skip("Server issues")
@@ -80,6 +98,8 @@ test_that("get_population_allele_frequency", {
 test_that("bbj-a-1", {
   skip_on_cran()
   skip_on_ci()
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
   d <- extract_instruments('bbj-a-1')
   if(inherits(d, "response")) skip("Server issues")
   d <- d %>% add_metadata() %>% add_rsq()
@@ -87,6 +107,9 @@ test_that("bbj-a-1", {
 })
 
 test_that("bsen vs pn", {
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+  skip_on_cran()
   skip_on_ci()
   d <- extract_instruments("ieu-a-2")
   if(inherits(d, "response")) skip("Server issues")
