@@ -12,6 +12,8 @@ test_that("extract some data", {
 })
 
 test_that("clump", {
+  skip_if_not(exists('a'), "a not created in test above")
+  skip_if_not(exists('out'), "out not created in test above")
 	expect_equal(ncol(a), ncol(out))
 	expect_true(nrow(a) > nrow(out))
 	expect_true(nrow(out) > 0)
