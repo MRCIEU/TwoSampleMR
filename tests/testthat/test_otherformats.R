@@ -14,6 +14,8 @@ test_that("MRInput", {
 test_that("MRInput with cor", {
   skip_on_cran()
   skip_on_ci()
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
 	expect_warning(w <- dat_to_MRInput(dat, get_correlations=TRUE)[[1]])
 	expect_true(nrow(w@correlation) == length(w@betaX))
 })
