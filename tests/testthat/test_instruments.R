@@ -2,6 +2,9 @@ context("Instruments")
 
 test_that("server and mrinstruments", {
 
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+  skip_on_cran()
   skip_on_ci()
   
 	# no no
