@@ -10,6 +10,7 @@ test_that("exposure data 1", {
 })
 
 test_that("exposure data 2", {
+  skip_on_ci()
   d <- extract_instruments(c('ieu-a-2', 'ieu-a-7'))
   if(inherits(d, "response")) skip("Server issues")
   d <- d %>% add_rsq()
@@ -20,6 +21,7 @@ test_that("exposure data 2", {
 exposure <- exp_dat[1:5,]
 
 test_that("outcome data 1", {
+  skip_on_ci()
   d <- extract_outcome_data(exposure$SNP, 'ieu-a-2')
   if(inherits(d, "response")) skip("Server issues")
   d <- d %>% add_rsq()
@@ -28,6 +30,7 @@ test_that("outcome data 1", {
 })
 
 test_that("outcome data 2", {
+  skip_on_ci()
   d <- extract_outcome_data(exposure$SNP, c('ieu-a-2', 'ieu-a-7'))
   if(inherits(d, "response")) skip("Server issues")
   d <- d %>% add_rsq()
@@ -36,6 +39,7 @@ test_that("outcome data 2", {
 })
 
 test_that("dat 2", {
+  skip_on_ci()
   d <- make_dat(proxies=FALSE)
   if(inherits(d, "response")) skip("Server issues")
   d <- d %>% add_rsq()
@@ -45,6 +49,7 @@ test_that("dat 2", {
 
 test_that("dat ukb-d", {
   skip_on_cran()
+  skip_on_ci()
   d <- make_dat(exposure="ukb-d-30710_irnt", proxies=FALSE)
   if(inherits(d, "response")) skip("Server issues")
   d <- d %>% add_rsq()
@@ -59,6 +64,7 @@ test_that("effective n", {
 })
 
 test_that("get_population_allele_frequency", {
+  skip_on_ci()
 	d <- extract_instruments("ieu-a-7")
 	if(inherits(d, "response")) skip("Server issues")
 	d <- add_metadata(d)
@@ -73,6 +79,7 @@ test_that("get_population_allele_frequency", {
 
 test_that("bbj-a-1", {
   skip_on_cran()
+  skip_on_ci()
   d <- extract_instruments('bbj-a-1')
   if(inherits(d, "response")) skip("Server issues")
   d <- d %>% add_metadata() %>% add_rsq()
@@ -80,6 +87,7 @@ test_that("bbj-a-1", {
 })
 
 test_that("bsen vs pn", {
+  skip_on_ci()
   d <- extract_instruments("ieu-a-2")
   if(inherits(d, "response")) skip("Server issues")
 	r1 <- get_r_from_bsen(d$beta.exposure, d$se.exposure, d$samplesize.exposure)

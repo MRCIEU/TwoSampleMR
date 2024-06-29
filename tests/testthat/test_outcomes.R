@@ -3,6 +3,7 @@ context("outcome")
 test_that("outcomes", {
 
   skip_on_cran()
+  skip_on_ci()
 
 	a <- extract_instruments("ieu-a-7")
 	if(inherits(a, "response")) skip("Server issues")

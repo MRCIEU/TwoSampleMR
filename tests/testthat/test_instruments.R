@@ -2,7 +2,7 @@ context("Instruments")
 
 test_that("server and mrinstruments", {
 
-  skip("Skip unless you have good access to the API.")
+  skip_on_ci()
   
 	# no no
 	exp_dat <- extract_instruments(outcomes=c("ieu-a-1032"))

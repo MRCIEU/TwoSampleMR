@@ -8,7 +8,6 @@ test_that("extract some data", {
 })
 
 test_that("clump", {
-  skip("Skip unless you have good access to the API.")
 	skip_on_ci()
 	skip_on_cran()
 	expect_equal(ncol(a), ncol(out))
@@ -18,7 +17,6 @@ test_that("clump", {
 
 
 test_that("matrix", {
-  skip("Skip unless you have good access to the API.")
 	skip_on_ci()
 	skip_on_cran()
 	b <- ld_matrix(out$SNP)
@@ -28,7 +26,6 @@ test_that("matrix", {
 
 
 test_that("clump multiple", {
-  skip("Skip unless you have good access to the API.")
 	skip_on_ci()
 	skip_on_cran()
 	a <- extract_instruments(c("ieu-a-2", "ieu-a-1001"), clump=FALSE)
