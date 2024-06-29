@@ -37,7 +37,6 @@ test_that("clump multiple", {
 })
 
 test_that("clump local", {
-  skip("Skip unless you're GH running this test locally.")
 	skip_on_ci()
 	skip_on_cran()
 	skip_if_not(file.exists("/Users/gh13047/repo/opengwas-api-internal/opengwas-api/app/ld_files/EUR.bim"))
