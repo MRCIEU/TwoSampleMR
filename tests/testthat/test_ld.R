@@ -3,7 +3,7 @@ context("ld")
 test_that("extract some data", {
   skip_on_cran()
   a <- extract_instruments(2, clump=FALSE)
-  if(inherits(a, "response")) skip("Server issues")
+  if(length(a) == 0) skip("Server issues")
   out <- clump_data(a)
 })
 
