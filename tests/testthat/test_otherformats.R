@@ -12,8 +12,6 @@ test_that("MRInput", {
 })
 
 test_that("MRInput with cor", {
-  skip("Skip unless you have good access to the API.")
-  skip_on_ci()
   skip_on_cran()
 	expect_warning(w <- dat_to_MRInput(dat, get_correlations=TRUE)[[1]])
 	expect_true(nrow(w@correlation) == length(w@betaX))
