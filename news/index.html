@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,10 +54,17 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.5" id="twosamplemr-v065">TwoSampleMR v0.6.5<a class="anchor" aria-label="anchor" href="#twosamplemr-v065"></a></h2>
+<p>(Release date: 2024-06-30)</p>
+<ul><li>Bumped version of <strong>roxygen2</strong> for creating package documentation</li>
+<li>Update the earliest version of R in the <code>R CMD check</code> GitHub Actions workflow to be 4.3.2. This is because the <strong>meta</strong> dependency depends on <strong>lme4</strong>, and the recent 1.1-35.4 release of <strong>lme4</strong> requires <strong>Matrix</strong> 1.6-2 which was released a few days after R 4.3.2.</li>
+<li>Made package tests more robust to non-response from the OpenGWAS API</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.4" id="twosamplemr-v064">TwoSampleMR v0.6.4<a class="anchor" aria-label="anchor" href="#twosamplemr-v064"></a></h2>
 <p>(Release date: 2024-06-05)</p>
-<ul><li><p>Update installation instructions in README.md</p></li>
-<li><p>Fixed a bug in which the wrong indels recoding function was called (thanks <a href="https://github.com/ruochiz" class="external-link">@ruochiz</a>)</p></li>
+<ul><li>Update installation instructions in README.md</li>
+<li>Fixed a bug in which the wrong indels recoding function was called (thanks <a href="https://github.com/ruochiz" class="external-link">@ruochiz</a>)</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.3" id="twosamplemr-v063">TwoSampleMR v0.6.3<a class="anchor" aria-label="anchor" href="#twosamplemr-v063"></a></h2>
