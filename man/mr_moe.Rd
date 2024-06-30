@@ -32,9 +32,9 @@ Note that the mixture of experts has only been trained on datasets with at least
 \dontrun{
 # Example of body mass index on coronary heart disease
 # Extract and harmonise data
-a <- extract_instruments(2)
+a <- extract_instruments("ieu-a-2")
 b <- extract_outcome_data(a$SNP, 7)
-dat <- harmonise_data(a,b)
+dat <- harmonise_data(a, b)
 
 # Apply all MR methods
 r <- mr_wrapper(dat)
