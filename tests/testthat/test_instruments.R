@@ -8,35 +8,43 @@ test_that("server and mrinstruments", {
   skip_on_ci()
   
 	# no no
-	exp_dat <- extract_instruments(outcomes=c("ieu-a-1032"))
+  exp_dat <- try(extract_instruments(outcomes=c("ieu-a-1032")))
+  if (class(exp_dat) == "try-error") skip("Server issues")
 	expect_true(length(unique(exp_dat$id)) == 0)
 
 	# no yes
-	exp_dat <- extract_instruments(outcomes=c("ebi-a-GCST004634"))
+	exp_dat <- try(extract_instruments(outcomes=c("ebi-a-GCST004634")))
+	if (class(exp_dat) == "try-error") skip("Server issues")
 	expect_true(length(unique(exp_dat$id)) == 1)
 
 	# yes no
-	exp_dat <- extract_instruments(outcomes=c("ieu-a-2", "ieu-a-1032"))
+	exp_dat <- try(extract_instruments(outcomes=c("ieu-a-2", "ieu-a-1032")))
+	if (class(exp_dat) == "try-error") skip("Server issues")
 	expect_true(length(unique(exp_dat$id)) == 1)
 
 	# yes yes
-	exp_dat <- extract_instruments(outcomes=c("ieu-a-2", "ebi-a-GCST004634"))
+	exp_dat <- try(extract_instruments(outcomes=c("ieu-a-2", "ebi-a-GCST004634")))
+	if (class(exp_dat) == "try-error") skip("Server issues")
 	expect_true(length(unique(exp_dat$id)) == 2)
 
-	exp_dat <- extract_instruments(outcomes=c("ieu-a-1032", "ebi-a-GCST004634"))
+	exp_dat <- try(extract_instruments(outcomes=c("ieu-a-1032", "ebi-a-GCST004634")))
+	if (class(exp_dat) == "try-error") skip("Server issues")
 	expect_true(length(unique(exp_dat$id)) == 1)
 
-	exp_dat <- extract_instruments(outcomes=c(2,100,"ieu-a-1032",104,72,999))
+	exp_dat <- try(extract_instruments(outcomes=c(2,100,"ieu-a-1032",104,72,999)))
+	if (class(exp_dat) == "try-error") skip("Server issues")
 	expect_true(length(unique(exp_dat$id)) == 5)
 
-	exp_dat <- extract_instruments(outcomes=c(2,100,"ieu-a-1032",104,72,999, "ebi-a-GCST004634"))
+	exp_dat <- try(extract_instruments(outcomes=c(2,100,"ieu-a-1032",104,72,999, "ebi-a-GCST004634")))
+	if (class(exp_dat) == "try-error") skip("Server issues")
 	expect_true(length(unique(exp_dat$id)) == 6)
 })
 
 load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
 
 test_that("read data", {
-	# exp_dat <- extract_instruments("ieu-a-2")
+	exp_dat <- try(extract_instruments("ieu-a-2"))
+	if (class(exp_dat) == "try-error") skip("Server issues")
 	names(exp_dat) <- gsub(".exposure", "", names(exp_dat))
 	fn <- tempfile()
 	write.table(exp_dat, file=fn, row=FALSE, col=TRUE, qu=FALSE, sep="\t")
