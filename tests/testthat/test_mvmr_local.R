@@ -10,15 +10,15 @@ context("mvmr local")
 load(system.file("extdata", "test_add_mvmr_local.RData", package="TwoSampleMR"))
 
 test_that("mv exposure local", {
-  skip("Skip unless you have good access to the API.")
-	skip_on_ci()
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
 	skip_on_cran()
     f1 <- tempfile()
     f2 <- tempfile()
     write.table(a1, file=f1, row.names = FALSE, col.names = TRUE, quote = FALSE, sep="\t")
     write.table(a2, file=f2, row.names = FALSE, col.names = TRUE, quote = FALSE, sep="\t")
 
-    exposure_dat <- mv_extract_exposures_local(
+    exposure_dat <- try(mv_extract_exposures_local(
         c(f1, f2),
         sep = "\t",
         snp_col=c("rsid"),
@@ -27,9 +27,11 @@ test_that("mv exposure local", {
         effect_allele_col=c("ea"),
         other_allele_col=c("nea"),
         pval_col=c("p")
-    )
+    ))
+    if (inherits(exposure_dat, "try-error")) skip("Server issues")
+    expect_true(nrow(exposure_dat) > 100)
 
-    exposure_dat2 <- mv_extract_exposures_local(
+    exposure_dat2 <- try(mv_extract_exposures_local(
         list(a1, a2),
         sep = "\t",
         snp_col=c("rsid"),
@@ -38,8 +40,7 @@ test_that("mv exposure local", {
         effect_allele_col=c("ea"),
         other_allele_col=c("nea"),
         pval_col=c("p")
-    )
-
-    expect_true(nrow(exposure_dat) > 100)
+    ))
+    if (inherits(exposure_dat2, "try-error")) skip("Server issues")
     expect_true(all.equal(exposure_dat, exposure_dat2))
 })

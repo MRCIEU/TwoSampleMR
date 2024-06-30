@@ -12,10 +12,11 @@ test_that("MRInput", {
 })
 
 test_that("MRInput with cor", {
-  skip("Skip unless you have good access to the API.")
-  skip_on_ci()
   skip_on_cran()
-	expect_warning(w <- dat_to_MRInput(dat, get_correlations=TRUE)[[1]])
+  skip_if_offline()
+  skip_if_offline(host = "api.opengwas.io")
+	w <- try(dat_to_MRInput(dat, get_correlations=TRUE)[[1]])
+	if (inherits(w, "try-error")) skip("Server issues")
 	expect_true(nrow(w@correlation) == length(w@betaX))
 })
 

@@ -3,12 +3,10 @@ context("singlesnp")
 # dat <- make_dat("ieu-a-2", "ieu-a-7")
 load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
 
-
 test_that("singlesnp", {
 	w <- mr_singlesnp(dat)
 	expect_true(nrow(w) == sum(dat$mr_keep) + 2)
 })
-
 
 test_that("singlesnp_plot", {
 	w <- mr_singlesnp(dat)

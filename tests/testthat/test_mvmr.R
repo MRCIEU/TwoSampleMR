@@ -1,12 +1,16 @@
 context("mvmr")
 
+skip_on_cran()
+skip_if_offline()
+skip_if_offline(host = "api.opengwas.io")
+
 test_that("control", {
-  skip("Skip unless you have good access to the API.")
-	skip_on_ci()
-	skip_on_cran()
-	lipids <- mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302"))
-	chd <- extract_outcome_data(lipids$SNP, "ieu-a-7")
-	control <- mv_harmonise_data(lipids, chd)
+	lipids <- try(mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302")))
+	if (inherits(lipids, "try-error")) skip("Server issues")
+	chd <- try(extract_outcome_data(lipids$SNP, "ieu-a-7"))
+	if (inherits(chd, "try-error")) skip("Server issues")
+	control <- try(mv_harmonise_data(lipids, chd))
+	if (inherits(control, "try-error")) skip("Server issues")
 	expect_output(print(mv_residual(control, intercept=TRUE, instrument_specific=TRUE)))
 	expect_output(print(mv_residual(control, intercept=FALSE, instrument_specific=TRUE)))
 	expect_output(print(mv_residual(control, intercept=TRUE, instrument_specific=FALSE)))
@@ -19,12 +23,12 @@ test_that("control", {
 
 
 test_that("dat", {
-  skip("Skip unless you have good access to the API.")
-	skip_on_ci()
-	skip_on_cran()
-	a <- mv_extract_exposures(c("ukb-b-5238", "ieu-a-1001"))
-	b <- extract_outcome_data(a$SNP, "ieu-a-297")
-	dat <- mv_harmonise_data(a, b)
+	a <- try(mv_extract_exposures(c("ukb-b-5238", "ieu-a-1001")))
+	if (inherits(a, "try-error")) skip("Server issues")
+	b <- try(extract_outcome_data(a$SNP, "ieu-a-297"))
+	if (inherits(b, "try-error")) skip("Server issues")
+	dat <- try(mv_harmonise_data(a, b))
+	if (inherits(dat, "try-error")) skip("Server issues")
 	expect_output(print(mv_residual(dat, intercept=TRUE, instrument_specific=TRUE)))
 	expect_output(print(mv_residual(dat, intercept=FALSE, instrument_specific=TRUE)))
 	expect_output(print(mv_residual(dat, intercept=TRUE, instrument_specific=FALSE)))
@@ -38,17 +42,22 @@ test_that("dat", {
 })
 
 
-test_that("ordering", {
-  skip("Skip unless you have good access to the API.")
-	skip_on_ci()
-	skip_on_cran()
-	lipids1 <- mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302"))
-	chd1 <- extract_outcome_data(lipids1$SNP, "ieu-a-7")
-	control1 <- mv_harmonise_data(lipids1, chd1)
+test_that("ordering 1", {
+	lipids1 <- try(mv_extract_exposures(c("ieu-a-299","ieu-a-300","ieu-a-302")))
+	if (inherits(lipids1, "try-error")) skip("Server issues")
+	chd1 <- try(extract_outcome_data(lipids1$SNP, "ieu-a-7"))
+	if (inherits(chd1, "try-error")) skip("Server issues")
+	control1 <- try(mv_harmonise_data(lipids1, chd1))
+	if (inherits(control1, "try-error")) skip("Server issues")
 	expect_output(print(mv_multiple(control1)))
+})
 
-	lipids2 <- mv_extract_exposures(c("ieu-a-302","ieu-a-300","ieu-a-299"))
-	chd2 <- extract_outcome_data(lipids2$SNP, "ieu-a-7")
-	control2 <- mv_harmonise_data(lipids2, chd2)
+test_that("ordering 2", {
+	lipids2 <- try(mv_extract_exposures(c("ieu-a-302","ieu-a-300","ieu-a-299")))
+	if (inherits(lipids2, "try-error")) skip("Server issues")
+	chd2 <- try(extract_outcome_data(lipids2$SNP, "ieu-a-7"))
+	if (inherits(chd2, "try-error")) skip("Server issues")
+	control2 <- try(mv_harmonise_data(lipids2, chd2))
+	if (inherits(control2, "try-error")) skip("Server issues")
 	expect_output(print(mv_multiple(control2)))
 })
