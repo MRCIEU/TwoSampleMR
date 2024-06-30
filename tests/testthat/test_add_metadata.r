@@ -3,7 +3,6 @@ context("add metadata")
 skip_if_offline()
 skip_if_offline(host = "api.opengwas.io")
 skip_on_cran()
-skip_on_ci()
 
 # get required data
 # d1 <- extract_instruments('ieu-a-2')

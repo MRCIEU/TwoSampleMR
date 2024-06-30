@@ -12,7 +12,6 @@ load(system.file("extdata", "test_add_mvmr_local.RData", package="TwoSampleMR"))
 test_that("mv exposure local", {
   skip_if_offline()
   skip_if_offline(host = "api.opengwas.io")
-	skip_on_ci()
 	skip_on_cran()
     f1 <- tempfile()
     f2 <- tempfile()

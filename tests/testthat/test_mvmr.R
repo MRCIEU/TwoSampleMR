@@ -1,6 +1,5 @@
 context("mvmr")
 
-skip_on_ci()
 skip_on_cran()
 skip_if_offline()
 skip_if_offline(host = "api.opengwas.io")

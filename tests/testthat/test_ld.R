@@ -3,7 +3,6 @@ context("ld")
 skip_if_offline()
 skip_if_offline(host = "api.opengwas.io")
 skip_on_cran()
-skip_on_ci()
 
 # extract some data
 a <- try(extract_instruments("ieu-a-2", clump=FALSE))
