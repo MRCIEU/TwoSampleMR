@@ -6,9 +6,11 @@ skip_on_cran()
 skip_on_ci()
 
 # extract some data
-a <- extract_instruments(2, clump=FALSE)
-if(length(a) == 0) skip("Server issues")
-out <- clump_data(a)
+a <- try(extract_instruments("ieu-a-2", clump=FALSE))
+if (class(a) == "try-error") skip("Server issues")
+out <- try(clump_data(a))
+if (class(out) == "try-error") skip("Server issues")
+
 
 test_that("clump", {
   skip_if_not(exists('a'), "a not created in test above")
@@ -21,14 +23,16 @@ test_that("clump", {
 
 test_that("matrix", {
   skip_if_not(exists('out'), "out not created in test above")
-	b <- ld_matrix(out$SNP)
+	b <- try(ld_matrix(out$SNP))
+	if (inherits(b, "try-error")) skip("Server issues")
 	expect_equal(nrow(b), nrow(out))
 	expect_equal(ncol(b), nrow(out))
 })
 
 
 test_that("clump multiple", {
-	a <- extract_instruments(c("ieu-a-2", "ieu-a-1001"), clump=FALSE)
+	a <- try(extract_instruments(c("ieu-a-2", "ieu-a-1001"), clump=FALSE))
+	if (class(a) == "try-error") skip("Server issues")
 	out <- clump_data(a)
 	expect_equal(length(unique(a$id.exposure)), length(unique(out$id.exposure)))
 })
