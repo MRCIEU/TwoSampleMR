@@ -1,6 +1,6 @@
 # TwoSampleMR v0.6.5
 
-(Release date: 2024-##-##)
+(Release date: 2024-06-30)
 
 * Bumped version of **roxygen2** for creating package documentation
 * Update the earliest version of R in the `R CMD check` GitHub Actions workflow to be 4.3.2. This is because the **meta** dependency depends on **lme4**, and the recent 1.1-35.4 release of **lme4** requires **Matrix** 1.6-2 which was released a few days after R 4.3.2.
