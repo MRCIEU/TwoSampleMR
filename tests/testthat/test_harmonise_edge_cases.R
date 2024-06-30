@@ -6,7 +6,6 @@ set.seed(1)
 old <- options(stringsAsFactors = FALSE)
 on.exit(options(old), add = TRUE)
 
-
 df <- data.frame(
     "SNP" = c("9_69001927_C_T", "9_69459263_A_G", "9_69508544_G_A"),
     "effect_allele" = c("T", "G", "A"),
@@ -47,7 +46,6 @@ df_out <- format_data(
     samplesize_col = "n"
 )
 
-
 test_that("harmonise_data works when exposure and outcome df are 1 row.", {
     for (i in seq(1,3)) {
         result <- harmonise_data(
@@ -58,7 +56,6 @@ test_that("harmonise_data works when exposure and outcome df are 1 row.", {
         expect_equal(nrow(result), 1)
     }
 })
-
 
 test_that("harmonise_data works when there are no matching SNPs.", {
     for (i in seq(1,3)) {
