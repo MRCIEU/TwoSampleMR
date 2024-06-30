@@ -1,6 +1,6 @@
 context("steiger")
 
-# w <- make_dat(2, 7)
+# dat <- make_dat("ieu-a-2", "ieu-a-7")
 load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
 
 test_that("directionality", {
