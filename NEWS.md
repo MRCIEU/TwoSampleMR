@@ -1,6 +1,9 @@
 # TwoSampleMR v0.6.6
 
 (Release date 2024-##-##)
+
+* Improve a test
+
 # TwoSampleMR v0.6.5
 
 (Release date: 2024-06-30)
