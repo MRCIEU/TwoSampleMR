@@ -9,4 +9,6 @@ output: github_document
 
 <!-- Additional content -->
 
+## Documentation
+
 **Full documentation available here:** https://mrcieu.github.io/TwoSampleMR/
