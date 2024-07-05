@@ -4,6 +4,7 @@
 
 * Improve a test
 * Improve permissions in GitHub Actions workflows
+* Bump minimum required version of **ieugwasr** to 1.0.1
 
 # TwoSampleMR v0.6.5
 
