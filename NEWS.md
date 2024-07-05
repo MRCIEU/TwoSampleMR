@@ -3,6 +3,7 @@
 (Release date 2024-##-##)
 
 * Improve a test
+* Improve permissions in GitHub Actions workflows
 
 # TwoSampleMR v0.6.5
 
