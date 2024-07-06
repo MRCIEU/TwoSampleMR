@@ -215,7 +215,7 @@ Qp       = 1-pchisq(Q,DF1)
 
 if(QQ[i] <= qchisq(1-alpha,DF1)){Mod[i]=1}
 if(QQ[i] >= qchisq(1-alpha,DF1)){Mod[i]=2}
-if(QQ[i] >= qchisq(1-alpha,DF1) & QQ[i] - QQd[i] >= qchisq(1-alpha,1)){Mod[i]=3}
-if(QQ[i] >= qchisq(1-alpha,DF1)& QQ[i] - QQd[i] >= qchisq(1-alpha,1)& QQd[i] >=qchisq(1-alpha,DF2)){Mod[i]=4}
+if(QQ[i] >= qchisq(1-alpha,DF1) && QQ[i] - QQd[i] >= qchisq(1-alpha,1)){Mod[i]=3}
+if(QQ[i] >= qchisq(1-alpha,DF1) && QQ[i] - QQd[i] >= qchisq(1-alpha,1) && QQd[i] >=qchisq(1-alpha,DF2)){Mod[i]=4}
 
 }
