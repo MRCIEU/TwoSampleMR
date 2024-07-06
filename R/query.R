@@ -81,7 +81,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		stop("'proxies' argument should be TRUE or FALSE")
 	}
 
-	if((length(snps) < splitsize & length(outcomes) < splitsize) | (length(outcomes) < splitsize & length(snps) < splitsize))
+	if((length(snps) < splitsize && length(outcomes) < splitsize) || (length(outcomes) < splitsize && length(snps) < splitsize))
 	{
 
 		d <- ieugwasr::associations(
@@ -160,7 +160,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		d <- plyr::rbind.fill(d)
 
 	}
-	if(is.null(nrow(d)) | nrow(d) == 0)
+	if(is.null(nrow(d)) || nrow(d) == 0)
 	{
 		# message("None of the requested SNPs were available in the specified GWASs.")
 		return(NULL)
