@@ -495,7 +495,7 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 
 	i <- 1
 	l <- list()
-	while(any(index) & sum(!index) > 3)
+	while(any(index) && sum(!index) > 3)
 	{
 		dat <- dat[!index, ]
 		cooks_threshold <- 4/nrow(dat)
