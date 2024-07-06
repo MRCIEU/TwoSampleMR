@@ -6,7 +6,7 @@ download.file("https://www.ebi.ac.uk/gwas/api/search/downloads/alternative", gwa
 
 # a <- read.table("~/Downloads/gwas_catalog_v1.0-downloaded_2015-09-21_2.txt", he=T, sep="\t", quote='"', comment="", stringsAsFactors=FALSE)
 
-a<-read.table(gwascat.file,header=TRUE,sep='\t',quote="",comment.char="",as.is=TRUE,stringsAsFactors=F)
+a<-read.table(gwascat.file,header=TRUE,sep='\t',quote="",comment.char="",as.is=TRUE,stringsAsFactors=FALSE)
 # a<-read.table("~/Downloads/gwascatalog.txt",header=TRUE,sep='\t',quote="",comment.char="",as.is=TRUE,stringsAsFactors=F)
 # a<-read.table(gwascat.file,he=T, sep="\t", quote='"', comment="", stringsAsFactors=FALSE)
 # a<-read.table("~/Downloads/gwascatalog.txt",he=T, sep="\t", quote='"', comment="", stringsAsFactors=FALSE)
@@ -78,7 +78,7 @@ as.numeric(test2)
 
 
 c<-b
-b<-b[grep(",",b$ci95,invert=T),]
+b<-b[grep(",",b$ci95,invert=TRUE),]
 
 
 pos.start<-regexpr("\\[",b$X95..CI..TEXT.)+1
@@ -204,7 +204,7 @@ alleles <- data.frame(t(sapply(strsplit(temp$allele, split="/"), function(x) x[1
 alleles$effect_allele <- temp$Allele
 
 i4 <- sapply(seq_len(nrow(alleles)), function(i) alleles[i, which(alleles[i, 1:2] != alleles[i, 3])[1]])
-i4 <- sapply(i4, function(x) if(is.null(x)) NA else x)
+i4 <- sapply(i4, function(x) if (is.null(x)) NA else x)
 b1$other_allele <- i4
 b1$eaf[b1$eaf >= 1 | b1$eaf <= 0] <- NA
 

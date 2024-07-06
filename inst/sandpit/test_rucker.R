@@ -40,7 +40,7 @@ dev.off()
 res1 <- array(0, 100)
 res2 <- array(0, 100)
 res3 <- array(0, 100)
-for(i in 1:100)
+for (i in 1:100)
 {
 	message(i)
 	bp3 <- bp
@@ -56,7 +56,7 @@ for(i in 1:100)
 }
 
 res4 <- array(0, 100)
-for(i in 1:100)
+for (i in 1:100)
 {
 	message(i)
 	bp3 <- bp
@@ -161,7 +161,7 @@ param <- expand.grid(
 dim(param)
 
 out <- list()
-for(i in seq_len(nrow(param)))
+for (i in seq_len(nrow(param)))
 {
 	effs <- make_effs(ninst1=param$nsnp[i], var_xy=param$var_xy[i], var_g1x=param$var_g1x[i], mu_g1y=param$mu_g1y[i])
 	pop1 <- make_pop(effs, param$nid1[i])
@@ -192,12 +192,12 @@ signif(cooks.distance(lmI), 3)   # ~= Ci in Table 3, p.184
 
 
 
-for(i in 1:BootSim){
+for (i in 1:BootSim) {
 BXG = rnorm(length(BetaXG),BetaXG,seBetaXG)
 BYG = rnorm(length(BetaYG),BetaYG,seBetaYG)
 
-if(weights==1){W = BXG^2/seBetaYG^2}
-if(weights==2){W = 1/(seBetaYG^2/BXG^2 + (BYG^2)*seBetaXG^2/BXG^4)}
+if (weights==1) {W = BXG^2/seBetaYG^2}
+if (weights==2) {W = 1/(seBetaYG^2/BXG^2 + (BYG^2)*seBetaXG^2/BXG^4)}
 
             BIVw = BIV*sqrt(W)
             sW   = sqrt(W)
@@ -213,9 +213,9 @@ QQd[i]   = DF2*phi_E
 
 Qp       = 1-pchisq(Q,DF1)
 
-if(QQ[i] <= qchisq(1-alpha,DF1)){Mod[i]=1}
-if(QQ[i] >= qchisq(1-alpha,DF1)){Mod[i]=2}
-if(QQ[i] >= qchisq(1-alpha,DF1) && QQ[i] - QQd[i] >= qchisq(1-alpha,1)){Mod[i]=3}
-if(QQ[i] >= qchisq(1-alpha,DF1) && QQ[i] - QQd[i] >= qchisq(1-alpha,1) && QQd[i] >=qchisq(1-alpha,DF2)){Mod[i]=4}
+if (QQ[i] <= qchisq(1-alpha,DF1)) {Mod[i]=1}
+if (QQ[i] >= qchisq(1-alpha,DF1)) {Mod[i]=2}
+if (QQ[i] >= qchisq(1-alpha,DF1) && QQ[i] - QQd[i] >= qchisq(1-alpha,1)) {Mod[i]=3}
+if (QQ[i] >= qchisq(1-alpha,DF1) && QQ[i] - QQd[i] >= qchisq(1-alpha,1) && QQd[i] >=qchisq(1-alpha,DF2)) {Mod[i]=4}
 
 }

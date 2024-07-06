@@ -28,42 +28,42 @@ d <- fetch(rs, n=10)
 dim(d)
 
 
-ssh -L 3306:localhost:3306 gh13047@epi-franklin.epi.bris.ac.uk
-mysql -u gh13047 -h 127.0.0.1 -P 3306 -p
-ri.K-2Gbvd
+# ssh -L 3306:localhost:3306 gh13047@epi-franklin.epi.bris.ac.uk
+# mysql -u gh13047 -h 127.0.0.1 -P 3306 -p
+# ri.K-2Gbvd
 
-mysql -u mruser -h 127.0.0.1 -P 3306 -p
-TMG_F1WnTL
+# mysql -u mruser -h 127.0.0.1 -P 3306 -p
+# TMG_F1WnTL
 
-use mrbase;
-
-describe assoc;
-describe snps;
-describe study;
-
-SELECT COUNT(*) FROM study;
-SELECT COUNT(*) FROM snps;
+# use mrbase;
+# 
+# describe assoc;
+# describe snps;
+# describe study;
+# 
+# SELECT COUNT(*) FROM study;
+# SELECT COUNT(*) FROM snps;
 # SELECT COUNT(*) FROM assoc;
 # 1.7 billion rows
 
-SELECT * FROM study limit 10;
-SELECT * FROM snps WHERE name='rs13078807';
-SELECT * FROM assoc WHERE snp=207707;
-
-SELECT * FROM assoc limit 10;
-SELECT * FROM assoc WHERE snp=2223704;
-
-SELECT a.*, b.*, c.*
-FROM assoc a, snps b, study c
-WHERE a.snp=b.id AND a.study=c.id
-AND (b.name='rs10900000' OR b.name='rs10000010' OR b.name='rs10000092')
-AND (c.filename='cardiogramplusc4d_180814_update_data.txt.uniform.af.txt' OR c.filename='All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz.uniform.af.txt')
-ORDER BY filename;
-
-
-SELECT a.*, b.*, c.*
-FROM assoc a, snps b, study c
-WHERE a.snp=b.id AND a.study=c.id
-AND b.name IN ('rs10900000', 'rs10000010', 'rs10000092')
-AND c.filename IN ('cardiogramplusc4d_180814_update_data.txt.uniform.af.txt', 'All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz.uniform.af.txt', 'MAGIC_INSULIN_SECRETION_DI_for_release_HMrel27.txt.uniform.af.txt')
-ORDER BY filename;
+# SELECT * FROM study limit 10;
+# SELECT * FROM snps WHERE name='rs13078807';
+# SELECT * FROM assoc WHERE snp=207707;
+# 
+# SELECT * FROM assoc limit 10;
+# SELECT * FROM assoc WHERE snp=2223704;
+# 
+# SELECT a.*, b.*, c.*
+# FROM assoc a, snps b, study c
+# WHERE a.snp=b.id AND a.study=c.id
+# AND (b.name='rs10900000' OR b.name='rs10000010' OR b.name='rs10000092')
+# AND (c.filename='cardiogramplusc4d_180814_update_data.txt.uniform.af.txt' OR c.filename='All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz.uniform.af.txt')
+# ORDER BY filename;
+# 
+# 
+# SELECT a.*, b.*, c.*
+# FROM assoc a, snps b, study c
+# WHERE a.snp=b.id AND a.study=c.id
+# AND b.name IN ('rs10900000', 'rs10000010', 'rs10000092')
+# AND c.filename IN ('cardiogramplusc4d_180814_update_data.txt.uniform.af.txt', 'All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz.uniform.af.txt', 'MAGIC_INSULIN_SECRETION_DI_for_release_HMrel27.txt.uniform.af.txt')
+# ORDER BY filename;

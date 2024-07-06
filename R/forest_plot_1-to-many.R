@@ -201,7 +201,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 		mr_res<-mr_res[order(mr_res$b.sort,decreasing=TRUE),]
 		groups<-unique(mr_res[,group])
 		List<-NULL
-		for(i in 1:length(groups)){
+		for(i in seq_along(groups)){
 			Test<-mr_res[mr_res[,group]==groups[i],]
 			Test1<-Test[Test[,trait_m] != priority,]
 			Test2<-Test[Test[,trait_m] == priority,]
