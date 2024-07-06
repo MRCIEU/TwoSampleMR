@@ -162,7 +162,7 @@ mr_forest_plot_grouped <-
                     data_Fm$eff_col <- log(as.numeric(data_Fm[,eff_col]))
                 }
                 # ggplot code to generate the forest plot using geom_segments and geom_points and to make a relatively minimal theme
-                raw_forest  <- ggplot(data = data_Fm, aes( y = space_col, yend = space_col, x = as.numeric(lb_col), xend = as.numeric(ub_col) )) + geom_segment() + geom_point(aes( y = space_col,  x = as.numeric(eff_col), size = 4 )) + theme_bw() + theme( axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title = element_blank(), panel.grid = element_blank(), rect = element_blank(), title = element_text(size = 23), legend.position = 'none' ) + expand_limits(y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + labs(title = title_text) # returns ggplot2 object with the (un-annotated) forest plot
+                raw_forest  <- ggplot2::ggplot(data = data_Fm, ggplot2::aes( y = space_col, yend = space_col, x = as.numeric(lb_col), xend = as.numeric(ub_col) )) + ggplot2::geom_segment() + ggplot2::geom_point(ggplot2::aes( y = space_col,  x = as.numeric(eff_col), size = 4 )) + ggplot2::theme_bw() + ggplot2::theme( axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank(), axis.title = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(), rect = ggplot2::element_blank(), title = ggplot2::element_text(size = 23), legend.position = 'none' ) + ggplot2::expand_limits(y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + ggplot2::labs(title = title_text) # returns ggplot2 object with the (un-annotated) forest plot
                 return(raw_forest)
             }
 
@@ -183,7 +183,7 @@ mr_forest_plot_grouped <-
                 text_widths <- c(-1, max(10,0.5 * max(sapply( as.character(data_Fm[,text_col]),nchar ))))
 
                 # GGplot rendering of the annotation column
-                lefttext  <- ggplot(data = data_Fm, aes( y = space_col, x = 0, label = text_col, fontface = attr_list )) + geom_text(hjust = 0) + theme_bw() + theme( axis.text.y = element_blank(), axis.ticks.y = element_blank(),axis.text.x = element_text(colour = "white"),axis.ticks.x = element_line(colour = "white"), axis.title = element_blank(), rect = element_blank(), panel.grid = element_blank(), title = element_text(size = 23) ) + expand_limits(x = text_widths,  y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + labs(title = title_text, size = 40)  # returns two-item list with left_text, the GGplot annotations, and text_widths, the x-axis limits of the plot
+                lefttext  <- ggplot2::ggplot(data = data_Fm, ggplot2::aes( y = space_col, x = 0, label = text_col, fontface = attr_list )) + ggplot2::geom_text(hjust = 0) + ggplot2::theme_bw() + ggplot2::theme( axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank(),axis.text.x = ggplot2::element_text(colour = "white"),axis.ticks.x = ggplot2::element_line(colour = "white"), axis.title = ggplot2::element_blank(), rect = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(), title = ggplot2::element_text(size = 23) ) + ggplot2::expand_limits(x = text_widths,  y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + ggplot2::labs(title = title_text, size = 40)  # returns two-item list with left_text, the GGplot annotations, and text_widths, the x-axis limits of the plot
                 return(list(left_text = lefttext, text_widths = text_widths))
             }
 
