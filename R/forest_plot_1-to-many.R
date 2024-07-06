@@ -270,7 +270,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		dat$up_ci <- pmin(dat$up_ci, xlim[2], na.rm=TRUE)
 	}
 
-	if(is.null(up) | is.null(lo) ){
+	if(is.null(up) || is.null(lo) ){
 		up <- max(dat$up_ci, na.rm=TRUE)
 		lo <- min(dat$lo_ci, na.rm=TRUE)
 	}
@@ -294,7 +294,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=colour_scheme), size=dat$weight,fill=colour_scheme)
 	}
 
-	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
+	if((!is.null(colour_group) && colour_group_first) || is.null(colour_group))
 	{
 		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome2,colour=colour_scheme), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
 		main_title <- ifelse(is.null(section), "", section)
