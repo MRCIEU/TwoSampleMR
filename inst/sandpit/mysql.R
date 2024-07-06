@@ -1,11 +1,11 @@
-mysql -u epxjz -h epi-franklin.epi.bris.ac.uk -p
-wv-92n_YjB
+# mysql -u epxjz -h epi-franklin.epi.bris.ac.uk -p
+# wv-92n_YjB
 
-mysql -u mruser -h epi-franklin.epi.bris.ac.uk -p
-TMG_F1WnTL
+# mysql -u mruser -h epi-franklin.epi.bris.ac.uk -p
+# TMG_F1WnTL
 
-mysql -u gh13047 -h epi-franklin.epi.bris.ac.uk -p
-ri.K-2Gbvd
+# mysql -u gh13047 -h epi-franklin.epi.bris.ac.uk -p
+# ri.K-2Gbvd
 
 mydb <- dbConnect(MySQL(), user='epxjz', password='wv-92n_YjB', dbname='mrbase', host='epi-franklin.epi.bris.ac.uk')
 dbListTables(mydb)

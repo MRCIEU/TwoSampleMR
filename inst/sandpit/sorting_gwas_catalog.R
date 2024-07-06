@@ -2,7 +2,7 @@
 # In EXCEL substitute missing cells for NA
 
 gwascat.file<-paste("~/gwascatalog_",Sys.Date(),".txt",sep="") #for newest version
-download.file("https://www.ebi.ac.uk/gwas/api/search/downloads/alternative", gwascat.file,  method="curl",quiet = FALSE,cacheOK = F)
+download.file("https://www.ebi.ac.uk/gwas/api/search/downloads/alternative", gwascat.file,  method="curl",quiet = FALSE,cacheOK = FALSE)
 
 # a <- read.table("~/Downloads/gwas_catalog_v1.0-downloaded_2015-09-21_2.txt", he=T, sep="\t", quote='"', comment="", stringsAsFactors=FALSE)
 
@@ -17,8 +17,8 @@ b <- subset(a, select=c(DISEASE.TRAIT, PUBMEDID, FIRST.AUTHOR, DATE, SNPS,STRONG
 b$RISK.ALLELE.FREQUENCY <- as.numeric(b$RISK.ALLELE.FREQUENCY)
 
 #exclude SNPs with missing rsids
-b<-b[grep("rs",b$SNPS,ignore.case=T,),] #exclude SNPs without an rsid 
-b[grep("-",b$STRONGEST.SNP.RISK.ALLELE,ignore.case=T,invert=T),]
+b<-b[grep("rs",b$SNPS,ignore.case=TRUE,),] #exclude SNPs without an rsid 
+b[grep("-",b$STRONGEST.SNP.RISK.ALLELE,ignore.case=TRUE,invert=TRUE),]
 
 # Get effect allele
 pos.allele<-gregexpr("[ATGC]",b$STRONGEST.SNP.RISK.ALLELE)
@@ -46,7 +46,7 @@ b$type<-NA
 b$type[unlist(lapply(c("older","higher","taller","increase","better","more", # higher
 		"younger","lower","shorter","decrease","dcrease","decrea","fewer","worse", #lower
 		"SD","unit","kg/m2","cm","msec","variance explained","% variance"), #other
-		FUN=function(x) grep(x,b$units,ignore.case=T)))]<-"continuous"
+		FUN=function(x) grep(x,b$units,ignore.case=TRUE)))]<-"continuous"
 
 # Assume that anything with OR.or.BETA < 0.5 is not an odds ratio / is a continuous phenotype
 b$type[which(b$OR.or.BETA<0.5 & is.na(b$units))]<-"continuous?"
@@ -57,9 +57,9 @@ b$type[which((b$OR.or.BETA>1.0 | b$OR.or.BETA<2.0) & is.na(b$units))] <-"binary?
 
 b$direction<-NA
 b$direction[unlist(lapply(c("older","higher","taller","increase","better","more"), # higher
-		FUN=function(x) grep(x,b$units,ignore.case=T)))] <- "higher"
+		FUN=function(x) grep(x,b$units,ignore.case=TRUE)))] <- "higher"
 b$direction[unlist(lapply(c("younger","lower","shorter","decrease","dcrease","decrea","fewer","worse"), #lower
-		FUN=function(x) grep(x,b$units,ignore.case=T)))] <- "lower"
+		FUN=function(x) grep(x,b$units,ignore.case=TRUE)))] <- "lower"
 
 # Try to get standard errors and units from confidence intervals
 # calculate two sets of standard errors, assuming OR.or.BETA is and isn't an odds ratio
