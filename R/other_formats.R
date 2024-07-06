@@ -205,7 +205,7 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
   if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) &
 		!is.na(se_out)) < 2)
 		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
-	d <- RadialMR::format_radial(BXG=b_exp, BYG=b_out, seBXG=se_exp, seBYG=se_out, RSID=1:length(b_exp))
+	d <- RadialMR::format_radial(BXG=b_exp, BYG=b_out, seBXG=se_exp, seBYG=se_out, RSID=seq_along(b_exp))
 	out <- RadialMR::ivw_radial(d, alpha=0.05, weights=3)
 	b <- out$coef[1,1]
 	se <- out$coef[1,2]

@@ -10,7 +10,7 @@ bp <- read.table(system.file(package="TwoSampleMR", "data/DebbieData_2.txt"))
 names(bp) <- c("beta.exposure", "se.exposure", "beta.outcome", "se.outcome")
 bp$mr_keep <- TRUE
 bp$id.exposure <- bp$id.outcome <- bp$exposure <- bp$outcome <- 1
-bp$SNP <- paste0("SNP", 1:nrow(bp))
+bp$SNP <- paste0("SNP", seq_len(nrow(bp)))
 
 a <- mr_all(bp)
 
@@ -44,7 +44,7 @@ for(i in 1:100)
 {
 	message(i)
 	bp3 <- bp
-	index <- sample(1:nrow(bp3), replace=FALSE)
+	index <- sample(seq_len(nrow(bp3)), replace = FALSE)
 	bp3$beta.outcome <- bp3$beta.outcome[index]
 	bp3$se.outcome <- bp3$se.outcome[index]
 	r1 <- mr_rucker_cooksdistance(bp3)
@@ -60,7 +60,7 @@ for(i in 1:100)
 {
 	message(i)
 	bp3 <- bp
-	index <- sample(1:nrow(bp3), replace=FALSE)
+	index <- sample(seq_len(nrow(bp3)), replace = FALSE)
 	bp3$beta.outcome <- bp3$beta.outcome[index]
 	bp3$se.outcome <- bp3$se.outcome[index]
 	res4[i] <- with(bp3, mr_ivw(beta.exposure, beta.outcome, se.exposure, se.outcome))$pval
@@ -161,7 +161,7 @@ param <- expand.grid(
 dim(param)
 
 out <- list()
-for(i in 1:nrow(param))
+for(i in seq_len(nrow(param)))
 {
 	effs <- make_effs(ninst1=param$nsnp[i], var_xy=param$var_xy[i], var_g1x=param$var_g1x[i], mu_g1y=param$mu_g1y[i])
 	pop1 <- make_pop(effs, param$nid1[i])

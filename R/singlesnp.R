@@ -45,7 +45,7 @@ mr_singlesnp <- function(dat, parameters=default_parameters(), single_method="mr
 			with(x, get(single_method)(beta.exposure[i], beta.outcome[i], se.exposure[i], se.outcome[i], parameters))
 		})
 		nom <- c()
-		for(i in 1:length(all_method))
+		for(i in seq_along(all_method))
 		{
 			l[[nsnp+i]] <- with(x, get(all_method[i])(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
 

@@ -22,7 +22,7 @@ b[grep("-",b$STRONGEST.SNP.RISK.ALLELE,ignore.case=T,invert=T),]
 
 # Get effect allele
 pos.allele<-gregexpr("[ATGC]",b$STRONGEST.SNP.RISK.ALLELE)
-b$effect_allele<-lapply(1:length(b$STRONGEST.SNP.RISK.ALLELE),FUN=function(x) substr(b$STRONGEST.SNP.RISK.ALLELE[x],unlist(pos.allele[x]),unlist(pos.allele[x])))
+b$effect_allele<-lapply(seq_along(b$STRONGEST.SNP.RISK.ALLELE),FUN=function(x) substr(b$STRONGEST.SNP.RISK.ALLELE[x],unlist(pos.allele[x]),unlist(pos.allele[x])))
 
 # Get year
 b$DATE <- as.Date(b$DATE, format="%d-%b-%y")
@@ -31,7 +31,7 @@ b$year <- format(b$DATE, "%Y")
 # Try to get the units 
 Start<-unlist(lapply(b$X95..CI..TEXT.,FUN=function(x) unlist(gregexpr("] ",x))+2))
 Stop<-nchar(b$X95..CI..TEXT.)
-b$units<-unlist(lapply(1:length(Start) ,FUN=function(x) substr(b$X95..CI..TEXT.[x],Start[x],Stop[x])))
+b$units<-unlist(lapply(seq_along(Start) ,FUN=function(x) substr(b$X95..CI..TEXT.[x],Start[x],Stop[x])))
 b$units[which(unlist(regexpr("[:A-Za-z:]",b$units))==-1)]<-NA
 b$units[which(b$units=="[NR]")]<-NA
 b$units[which(b$units=="NR")]<-NA
@@ -69,7 +69,7 @@ b$direction[unlist(lapply(c("younger","lower","shorter","decrease","dcrease","de
 pos<-regexpr("-",c("1.174-1,457" , "1.46,2.33", "0.49,0.098", "1.28,2.202","1.1-1.2"))
 test1<-substr(c("1.174-1,457" , "1.46,2.33", "0.49,0.098", "1.28,2.202","1.1-1.2"),1,pos-1)
 nums<-gregexpr("[:0-9:]",c("1.174-1,457" , "1.46,2.33", "0.49,0.098", "1.28,2.202","1.1-1.2"))
-end<-lapply(1:length(nums),FUN=function(x) unlist(nums[x])[length(unlist(nums[x]))]) # this finds the position of the last number in the sequence
+end<-lapply(seq_along(nums),FUN=function(x) unlist(nums[x])[length(unlist(nums[x]))]) # this finds the position of the last number in the sequence
 test2<-substr(c("1.174-1,457" , "1.46,2.33", "0.49,0.098", "1.28,2.202","1.1-1.2"),pos+1,end)
 
 test1
@@ -87,9 +87,9 @@ ci95<-substr(b$X95..CI..TEXT.,pos.start,pos.end)
 ci95
 ci95[which(ci95=="")]<-NA
 pos<-regexpr("-",ci95)
-ci95[!is.na(ci95)][grep("-",ci95[!is.na(ci95)],invert=T)]
+ci95[!is.na(ci95)][grep("-",ci95[!is.na(ci95)],invert=TRUE)]
 nums<-gregexpr("[:0-9:]",ci95)
-end<-lapply(1:length(nums),FUN=function(x) unlist(nums[x])[length(unlist(nums[x]))]) # this finds the position of the last number in the sequence
+end<-lapply(seq_along(nums),FUN=function(x) unlist(nums[x])[length(unlist(nums[x]))]) # this finds the position of the last number in the sequence
 num1<-substr(ci95,1,pos-1)
 num2<-substr(ci95,pos+1,end)
 unique(num2)
@@ -197,13 +197,13 @@ Attr<-listAttributes(Mart)
 ensembl<-getBM(attributes=c("refsnp_id","chr_name","chrom_start","allele", "minor_allele", "minor_allele_freq"),filters="snp_filter",values=b1$SNP[i3],mart=Mart)
 ensembl <- subset(ensembl, !duplicated(refsnp_id))
 temp <- subset(b1, select=c(SNP, Allele))
-temp$index <- 1:nrow(temp)
+temp$index <- seq_len(nrow(temp))
 temp <- merge(temp, ensembl, by.x="SNP", by.y="refsnp_id", all.x=TRUE)
 temp <- temp[order(temp$index),]
 alleles <- data.frame(t(sapply(strsplit(temp$allele, split="/"), function(x) x[1:2])), stringsAsFactors=FALSE)
 alleles$effect_allele <- temp$Allele
 
-i4 <- sapply(1:nrow(alleles), function(i) alleles[i,which(alleles[i,1:2] != alleles[i,3])[1]])
+i4 <- sapply(seq_len(nrow(alleles)), function(i) alleles[i, which(alleles[i, 1:2] != alleles[i, 3])[1]])
 i4 <- sapply(i4, function(x) if(is.null(x)) NA else x)
 b1$other_allele <- i4
 b1$eaf[b1$eaf >= 1 | b1$eaf <= 0] <- NA

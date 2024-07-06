@@ -40,7 +40,7 @@ extract_outcome_data <- function(snps, outcomes, proxies = TRUE, rsq = 0.8, alig
 
 	if(proxies)
 	{
-		for(i in 1:length(outcomes))
+		for(i in seq_along(outcomes))
 		{
 			if(is.null(firstpass))
 			{
@@ -102,7 +102,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		n <- length(snps)		
 		splits <- data.frame(snps=snps, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
 		d <- list()
-		for(i in 1:length(outcomes))
+		for(i in seq_along(outcomes))
 		{
 			message(i, " of ", length(outcomes), " outcomes")
 			
@@ -132,7 +132,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		n <- length(outcomes)
 		splits <- data.frame(outcomes=outcomes, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
 		d <- list()
-		for(i in 1:length(snps))
+		for(i in seq_along(snps))
 		{
 			message(i, " of ", length(snps), " snps")
 			
