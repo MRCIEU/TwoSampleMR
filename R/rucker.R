@@ -84,7 +84,7 @@ mr_rucker <- function(dat, parameters=default_parameters())
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
 	attributes(res)$outcome <- d$outcome
-	for(j in 1:nrow(d))
+	for(j in seq_len(nrow(d)))
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
 		message(x$exposure[1], " - ", x$outcome[1])
@@ -369,7 +369,7 @@ mr_rucker_jackknife <- function(dat, parameters=default_parameters())
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
 	attributes(res)$outcome <- d$outcome
-	for(j in 1:nrow(d))
+	for(j in seq_len(nrow(d)))
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
 		message(x$exposure[1], " - ", x$outcome[1])
@@ -406,7 +406,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 		{
 			# dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
 			# dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
-			dat2 <- dat[sample(1:nrow(dat), nrow(dat), replace=TRUE), ]
+			dat2 <- dat[sample(seq_len(nrow(dat)), nrow(dat), replace = TRUE), ]
 			l[[i]] <- mr_rucker_internal(dat2, parameters)
 		}
 
@@ -495,7 +495,7 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 
 	i <- 1
 	l <- list()
-	while(any(index) & sum(!index) > 3)
+	while(any(index) && sum(!index) > 3)
 	{
 		dat <- dat[!index, ]
 		cooks_threshold <- 4/nrow(dat)

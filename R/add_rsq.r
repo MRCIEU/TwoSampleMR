@@ -68,7 +68,7 @@ add_rsq_one <- function(dat, what="exposure")
 			} else {
 				message("Try adding metadata with add_metadata()")
 			}
-		} else if(all(grepl("SD", dat[[paste0("units.", what)]])) & all(!is.na(dat[[paste0("eaf.", what)]]))) {
+		} else if(all(grepl("SD", dat[[paste0("units.", what)]])) && all(!is.na(dat[[paste0("eaf.", what)]]))) {
 			dat[[paste0("rsq.", what)]] <- NA
 			dat[[paste0("rsq.", what)]] <- 2 * dat[[paste0("beta.", what)]]^2 * dat[[paste0("eaf.", what)]] * (1-dat[[paste0("eaf.", what)]])
 			dat[[paste0("effective_n.", what)]] <- dat[[paste0("samplesize.", what)]]
@@ -109,12 +109,19 @@ get_r_from_pn_less_accurate <- function(p, n)
 
 test_r_from_pn <- function()
 {
+  if (!requireNamespace("tidyr", quietly = TRUE)) {
+    stop(
+      "Package \"tidyr\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }	
+
 	param <- expand.grid(
 		n = c(10, 100, 1000, 10000, 100000),
 		rsq = 10^seq(-4,-0.5, length.out=30)
 	)
 
-	for(i in 1:nrow(param))
+	for(i in seq_len(nrow(param)))
 	{
 		message(i)
 		x <- scale(stats::rnorm(param$n[i]))
@@ -125,7 +132,7 @@ test_r_from_pn <- function()
 		param$rsq2[i] <- get_r_from_pn(param$pval[i], param$n[i])^2
 	}
 
-	param <- gather(param, key=out, value=value, rsq1, rsq2)
+	param <- tidyr::gather(param, key=out, value=value, rsq1, rsq2)
 
 	p <- ggplot2::ggplot(param, ggplot2::aes(x=rsq_emp, value)) +
 	  ggplot2::geom_abline(slope=1, linetype="dotted") +
@@ -170,7 +177,7 @@ get_r_from_pn <- function(p, n)
 		abs(-log10(suppressWarnings(get_p_from_r2n(x, sample_size))) - -log10(pvalue))
 	}
 
-	if(length(p) > 1 & length(n) == 1)
+	if(length(p) > 1 && length(n) == 1)
 	{
 		message("Assuming n the same for all p values")
 		n <- rep(n, length(p))
@@ -182,7 +189,7 @@ get_r_from_pn <- function(p, n)
 	if(any(index))
 	{
 		index <- which(index)
-		for(i in 1:length(index))
+		for(i in seq_along(index))
 		{
 			if(p[index[i]] == 0)
 			{
@@ -240,15 +247,15 @@ get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", 
 	stopifnot(length(ncase) == 1 | length(ncase) == length(lor))
 	stopifnot(length(ncontrol) == 1 | length(ncontrol) == length(lor))
 	stopifnot(length(prevalence) == 1 | length(prevalence) == length(lor))
-	if(length(prevalence) == 1 & length(lor) != 1)
+	if(length(prevalence) == 1 && length(lor) != 1)
 	{
 		prevalence <- rep(prevalence, length(lor))
 	}
-	if(length(ncase) == 1 & length(lor) != 1)
+	if(length(ncase) == 1 && length(lor) != 1)
 	{
 		ncase <- rep(ncase, length(lor))
 	}
-	if(length(ncontrol) == 1 & length(lor) != 1)
+	if(length(ncontrol) == 1 && length(lor) != 1)
 	{
 		ncontrol <- rep(ncontrol, length(lor))
 	}
@@ -340,7 +347,7 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence)
 {
 	stopifnot(length(af) == length(odds_ratio))
 	stopifnot(length(prop) == length(odds_ratio))
-	for(i in 1:length(odds_ratio))
+	for(i in seq_along(odds_ratio))
 	{
 		co <- contingency(af[i], prop[i], odds_ratio[i])
 		af_controls <- co[1,2] / (co[1,2] + co[2,2])

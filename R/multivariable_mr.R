@@ -148,7 +148,7 @@ mv_extract_exposures_local <- function(
 
 	l_full <- list()
 	l_inst <- list()
-	for(i in 1:length(filenames_exposure))
+	for(i in seq_along(filenames_exposure))
 	{
 		if(flag == "character") {
 			l_full[[i]] <- read_outcome_data(filenames_exposure[i], 
@@ -462,7 +462,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			}
 		}
 
-		if(instrument_specific & sum(index) <= (nexp + as.numeric(intercept)))
+		if(instrument_specific && sum(index) <= (nexp + as.numeric(intercept)))
 		{
 			effs[i] <- NA
 			se[i] <- NA

@@ -34,10 +34,10 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 		stop("Expecting data frame returned from format_data")
 	}
 
-	if("pval.exposure" %in% names(dat) & "pval.outcome" %in% names(dat))
+	if("pval.exposure" %in% names(dat) && "pval.outcome" %in% names(dat))
 	{
 		message("pval.exposure and pval.outcome columns present. Using pval.exposure for clumping.")
-	} else if(!"pval.exposure" %in% names(dat) & "pval.outcome" %in% names(dat))
+	} else if(!"pval.exposure" %in% names(dat) && "pval.outcome" %in% names(dat))
 	{
 		message("pval.exposure column not present, using pval.outcome column for clumping.")
 		pval_column <- "pval.outcome"
@@ -91,4 +91,3 @@ ld_matrix <- function(snps, with_alleles=TRUE, pop="EUR")
 	# .Deprecated("ieugwasr::ld_matrix()")
 	ieugwasr::ld_matrix(variants=snps, with_alleles=with_alleles, pop=pop)
 }
-

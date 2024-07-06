@@ -37,7 +37,7 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 	}
 
 	dat <- subset(mr_res, (nsnp==1 & method==single_snp_method) | (nsnp > 1 & method == multi_snp_method))
-	dat$index <- 1:nrow(dat)
+	dat$index <- seq_len(nrow(dat))
 	
 	if(ao_slc)
 	{ 
@@ -173,7 +173,7 @@ simple_cap <- function(x) {
 #'
 #' @export
 #' @return Character or array of character
-trim <- function( x ) {
+trim <- function(x) {
   gsub("(^[[:space:]]+|[[:space:]]+$)", "", x)
 }
 
@@ -263,7 +263,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 		dat <- subset(dat, exposure == colour_group)
 		if(!is.null(threshold))
 		{
-			point_plot <- ggplot2::geom_point(size=2, aes(colour = pval < threshold))
+			point_plot <- ggplot2::geom_point(size=2, ggplot2::aes(colour = pval < threshold))
 		} else {
 			point_plot <- ggplot2::geom_point(size=2)
 		}
@@ -276,7 +276,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 		}
 	}
 
-	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
+	if((!is.null(colour_group) && colour_group_first) || is.null(colour_group))
 	{
 		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
 		main_title <- ifelse(is.null(section), "", section)
@@ -296,10 +296,10 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	}
 
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-	l$col[1:nrow(l) %% 2 == 0] <- "b"
+	l$col[seq_len(nrow(l)) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
-	dat <- dat[nrow(dat):1, ]
+	dat <- dat[rev(seq_len(nrow(dat))), ]
 
 	p <- ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
@@ -392,7 +392,7 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 	}
 
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-	l$col[1:nrow(l) %% 2 == 0] <- "b"
+	l$col[seq_len(nrow(l)) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 
@@ -506,7 +506,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			)
 			count <- 2
 			columns <- unique(dat$exposure)
-			for(i in 1:length(columns))
+			for(i in seq_along(columns))
 			{
 				l[[count]] <- forest_plot_basic(
 					dat, 
@@ -539,7 +539,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		sec <- unique(as.character(dat$category))
 		h <- rep(0, length(sec))
 		l <- list()
-		for(i in 1:length(sec))
+		for(i in seq_along(sec))
 		{
 			l[[i]] <- forest_plot_basic(
 				dat, 
@@ -570,7 +570,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		l <- list()
 		h <- rep(0, length(sec))
 		count <- 1
-		for(i in 1:length(sec))
+		for(i in seq_along(sec))
 		{
 			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 			l[[count]] <- forest_plot_names(
@@ -579,7 +579,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 				bottom = i==length(sec)
 			)
 			count <- count + 1
-			for(j in 1:length(columns))
+			for(j in seq_along(columns))
 			{
 				l[[count]] <- forest_plot_basic(
 					dat, 
@@ -611,4 +611,3 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		)
 	}
 }
-

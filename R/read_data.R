@@ -364,7 +364,7 @@ if (inherits(dat, "data.table")) {
 		dat$pval_origin.outcome <- "reported"
 		if(any(is.na(dat$pval.outcome)))
 		{
-			if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat))
+			if("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat))
 			{
 				index <- is.na(dat$pval.outcome)
 				dat$pval.outcome[index] <- stats::pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
@@ -374,7 +374,7 @@ if (inherits(dat, "data.table")) {
 	}
 	
 	# If no pval column then create it from beta and se if available
-	if("beta.outcome" %in% names(dat) & "se.outcome" %in% names(dat) & ! "pval.outcome" %in% names(dat))
+	if("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat) && ! "pval.outcome" %in% names(dat))
 	{
 		message("Inferring p-values")
 		dat$pval.outcome <- stats::pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE) * 2
@@ -412,7 +412,7 @@ if (inherits(dat, "data.table")) {
 			dat$samplesize.outcome <- as.numeric(dat$samplesize.outcome)
 		}
 
-		if("ncontrol.outcome" %in% names(dat) & "ncase.outcome" %in% names(dat))
+		if("ncontrol.outcome" %in% names(dat) && "ncase.outcome" %in% names(dat))
 		{
 			index <- is.na(dat$samplesize.outcome) & !is.na(dat$ncase.outcome) & !is.na(dat$ncontrol.outcome)
 			if(any(index))
@@ -421,7 +421,7 @@ if (inherits(dat, "data.table")) {
 				dat$samplesize.outcome[index] <- dat$ncase.outcome[index] + dat$ncontrol.outcome[index]			
 			}
 		}
-	} else if("ncontrol.outcome" %in% names(dat) & "ncase.outcome" %in% names(dat))
+	} else if("ncontrol.outcome" %in% names(dat) && "ncase.outcome" %in% names(dat))
 	{
 		message("Generating sample size from ncase and ncontrol")
 		dat$samplesize.outcome <- dat$ncase.outcome + dat$ncontrol.outcome

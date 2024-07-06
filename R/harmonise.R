@@ -72,7 +72,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 
 	fix.tab <- list()
 	mr_cols <- c("beta.exposure", "beta.outcome", "se.exposure", "se.outcome")
-	for(i in 1:nrow(combs))
+	for(i in seq_len(nrow(combs)))
 	{
 		x <- subset(res.tab, id.exposure == combs$id.exposure[i] & id.outcome == combs$id.outcome[i])
 		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
@@ -550,7 +550,7 @@ harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action)
 harmonise <- function(dat, tolerance, action)
 {
 	dat$orig_SNP<-dat$SNP
-	dat <- data.table::data.table(dat)[, SNP_index := 1:.N, by="SNP"]
+	dat <- data.table::data.table(dat)[, SNP_index := seq_len(.N), by="SNP"]
 	dat$SNP <- paste0(dat$SNP, "_", dat$SNP_index)
 	SNP <- dat$SNP
 	A1 <- dat$effect_allele.exposure

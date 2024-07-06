@@ -69,7 +69,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 			BetaIV.boot_NOME <- stats::rnorm(length(BetaIV.in), mean=BetaIV.in, sd=seBetaIV.in[,2])
 
 			#Simple mode, not assuming NOME
-			beta.boot[i,1:length(phi)] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
+			beta.boot[i, seq_along(phi)] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=rep(1, length(BetaIV)), phi=phi)
 			#Weighted mode, not assuming NOME
 			beta.boot[i,(length(phi)+1):(2*length(phi))] <- beta(BetaIV.in=BetaIV.boot, seBetaIV.in=seBetaIV.in[,1], phi=phi)
 			#Penalised mode, not assuming NOME

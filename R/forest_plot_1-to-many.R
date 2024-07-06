@@ -44,7 +44,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 	Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
 	Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters),paste0("D",Letters)))
 	mr_res$outcome2<-mr_res[,TraitM]
-	mr_res[,TraitM]<-paste(Letters[1:length(mr_res[,TraitM])],mr_res[,TraitM])
+	mr_res[,TraitM]<-paste(Letters[seq_along(mr_res[,TraitM])],mr_res[,TraitM])
 
 	mr_res$subcategory<-trim(mr_res$subcategory)
 	mr_res$exposure<-""
@@ -59,7 +59,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 	}
 
 	dat<-mr_res
-	dat$index <- 1:nrow(dat)
+	dat$index <- seq_len(nrow(dat))
 	
 	if(ao_slc)
 	{ 
@@ -166,9 +166,9 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 		Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
 		Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
 		groups<-unique(mr_res[,group])
-		mr_res$Index<-unlist(lapply(1:length(unique(mr_res[,group])),FUN=function(x) rep(Letters[Letters==Letters[x]],length(which(mr_res[,group]==groups[x])))))
+		mr_res$Index<-unlist(lapply(seq_along(unique(mr_res[,group])),FUN=function(x) rep(Letters[Letters==Letters[x]],length(which(mr_res[,group]==groups[x])))))
 		mr_res<-mr_res[order(mr_res[,b],decreasing=TRUE),]
-		mr_res$Index2<-Letters[1:nrow(mr_res)]
+		mr_res$Index2 <- Letters[seq_len(nrow(mr_res))]
 		mr_res$Index3<-paste(mr_res$Index,mr_res$Index2,sep="")
 		mr_res<-mr_res[order(mr_res$Index3),]
 		mr_res<-mr_res[,!names(mr_res) %in% c("Index","Index2","Index3")]
@@ -201,7 +201,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 		mr_res<-mr_res[order(mr_res$b.sort,decreasing=TRUE),]
 		groups<-unique(mr_res[,group])
 		List<-NULL
-		for(i in 1:length(groups)){
+		for(i in seq_along(groups)){
 			Test<-mr_res[mr_res[,group]==groups[i],]
 			Test1<-Test[Test[,trait_m] != priority,]
 			Test2<-Test[Test[,trait_m] == priority,]
@@ -270,7 +270,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		dat$up_ci <- pmin(dat$up_ci, xlim[2], na.rm=TRUE)
 	}
 
-	if(is.null(up) | is.null(lo) ){
+	if(is.null(up) || is.null(lo) ){
 		up <- max(dat$up_ci, na.rm=TRUE)
 		lo <- min(dat$lo_ci, na.rm=TRUE)
 	}
@@ -294,7 +294,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=colour_scheme), size=dat$weight,fill=colour_scheme)
 	}
 
-	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
+	if((!is.null(colour_group) && colour_group_first) || is.null(colour_group))
 	{
 		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome2,colour=colour_scheme), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
 		main_title <- ifelse(is.null(section), "", section)
@@ -311,10 +311,10 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 
 	dat$lab<-dat$outcome
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-	l$col[1:nrow(l) %% 2 == 0] <- "b"
+	l$col[seq_len(nrow(l)) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
-	dat <- dat[nrow(dat):1, ]
+	dat <- dat[rev(seq_len(nrow(dat))), ]
 
 	p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), colour=colour_scheme,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
@@ -495,7 +495,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 	dat$lab<-dat$outcome
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-	l$col[1:nrow(l) %% 2 == 0] <- "b"
+	l$col[seq_len(nrow(l)) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 
@@ -602,7 +602,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 	l <- list()
 	h <- rep(0, length(sec))
 	count <- 1
-	for(i in 1:length(sec))
+	for(i in seq_along(sec))
 	{
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 
@@ -621,7 +621,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 
 		if(!is.null(addcols)){
 
-			for(j in 1:length(addcols)){
+			for(j in seq_along(addcols)){
 					l[[count]]<-forest_plot_addcol(
 					dat,
 					sec[i],
@@ -639,7 +639,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 		}
 
 
-		for(j in 1:length(columns))
+		for(j in seq_along(columns))
 		{
 			l[[count]] <- forest_plot_basic2(
 				dat, 

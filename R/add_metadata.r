@@ -15,14 +15,14 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 	get_info <- function(id, what="exposure", cols)
 	{
 		info <- ieugwasr::gwasinfo(id)
-		if(nrow(info) == 0)
+		if (nrow(info) == 0)
 		{
 			message(what, ": none of the IDs found in database")
 			return(NULL)
 		}
-		for(col in cols)
+		for (col in cols)
 		{
-			if(!col %in% names(info))
+			if (!col %in% names(info))
 			{
 				info[[col]] <- NA
 			}
@@ -30,7 +30,7 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 		info <- subset(info, select=c("id", cols))
 		names(info) <- paste0(names(info), ".", what)
 		names(info)[names(info) == paste0("sample_size.", what)] <- paste0("samplesize.", what)
-		if("sample_size" %in% cols)
+		if ("sample_size" %in% cols)
 		{
 			index <- grepl("ukb-d", info$id) & is.na(info[[paste0("samplesize.", what)]])
 			info[[paste0("samplesize.", what)]][index] <- 300000
@@ -39,21 +39,21 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 	}
 
 	order_col <- random_string()
-	dat[[order_col]] <- 1:nrow(dat)
-	if("id.exposure" %in% names(dat))
+	dat[[order_col]] <- seq_len(nrow(dat))
+	if ("id.exposure" %in% names(dat))
 	{
 		exposure_id <- unique(dat[["id.exposure"]])
 		info <- get_info(id=exposure_id, what="exposure", cols=cols)
-		if(!is.null(info))
+		if (!is.null(info))
 		{
-			for(x in names(info))
+			for (x in names(info))
 			{
-				if(! x %in% names(dat))
+				if (! x %in% names(dat))
 				{
 					dat[[x]] <- NA
 				}
 
-				for(id in unique(info[["id.exposure"]]))
+				for (id in unique(info[["id.exposure"]]))
 				{
 					dat[[x]][is.na(dat[[x]]) & dat[["id.exposure"]] == id] <- info[[x]][info[["id.exposure"]] == id]
 				}
@@ -61,20 +61,20 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
 		}
 	}
 
-	if("id.outcome" %in% names(dat))
+	if ("id.outcome" %in% names(dat))
 	{
 		outcome_id <- unique(dat[["id.outcome"]])
 		info <- get_info(id=outcome_id, what="outcome", cols=cols)
-		if(!is.null(info))
+		if (!is.null(info))
 		{
-			for(x in names(info))
+			for (x in names(info))
 			{
-				if(! x %in% names(dat))
+				if (! x %in% names(dat))
 				{
 					dat[[x]] <- NA
 				}
 
-				for(id in unique(info[["id.outcome"]]))
+				for (id in unique(info[["id.outcome"]]))
 				{
 					dat[[x]][is.na(dat[[x]]) & dat[["id.outcome"]] == id] <- info[[x]][info[["id.outcome"]] == id]
 				}

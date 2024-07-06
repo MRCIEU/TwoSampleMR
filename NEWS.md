@@ -1,3 +1,13 @@
+# TwoSampleMR v0.6.6
+
+(Release date 2024-07-06)
+
+* Improve a test
+* Improve permissions in GitHub Actions workflows
+* Bump minimum required version of **ieugwasr** to 1.0.1
+* Made some amends to the code to bring it more in line with **lintr** recommendations
+* Added omitted **tidyr** soft dependency
+
 # TwoSampleMR v0.6.5
 
 (Release date: 2024-06-30)

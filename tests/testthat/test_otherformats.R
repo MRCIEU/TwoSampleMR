@@ -15,8 +15,9 @@ test_that("MRInput with cor", {
   skip_on_cran()
   skip_if_offline()
   skip_if_offline(host = "api.opengwas.io")
-	w <- try(dat_to_MRInput(dat, get_correlations=TRUE)[[1]])
-	if (inherits(w, "try-error")) skip("Server issues")
+	w <- tryCatch(dat_to_MRInput(dat, get_correlations=TRUE)[[1]],
+	              error = skip("Server issues"),
+	              warning = expect_warning())
 	expect_true(nrow(w@correlation) == length(w@betaX))
 })
 

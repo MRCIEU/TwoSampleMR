@@ -98,7 +98,7 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
     combinations <- plyr::ddply(dat, c("id.exposure", "id.outcome"), plyr::summarise, n=length(exposure), exposure=exposure[1], outcome=outcome[1])
 
     output_file <- array("", nrow(combinations))
-    for(i in 1:nrow(combinations))
+    for(i in seq_len(nrow(combinations)))
     {
         title <- paste(combinations$exposure[i], "against", combinations$outcome[i])
         tablist <- lapply(m[c("mr", "enrichment", "directionality_test", "mr_heterogeneity", "mr_pleiotropy_test")], function(x)

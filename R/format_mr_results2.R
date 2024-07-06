@@ -141,7 +141,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 	Class<-unlist(lapply(names(res), FUN=function(x) class(res[,x])))	
 	if(any(Class == "factor")) { 
 		Pos<-which(unlist(lapply(names(res), FUN=function(x) class(res[,x])))=="factor")
-		for(i in 1:length(Pos)){
+		for(i in seq_along(Pos)){
 			res[,Pos[i]]<-as.character(res[,Pos[i]])
 		}
 	}
@@ -150,7 +150,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 	Class<-unlist(lapply(names(het), FUN=function(x) class(het[,x])))
 	if(any(Class == "factor")) { 
 		Pos<-which(unlist(lapply(names(het), FUN=function(x) class(het[,x])))=="factor")
-		for(i in 1:length(Pos)){
+		for(i in seq_along(Pos)){
 			het[,Pos[i]]<-as.character(het[,Pos[i]])
 		}
 	}
@@ -159,7 +159,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 	Class<-unlist(lapply(names(sin), FUN=function(x) class(sin[,x])))
 	if(any(Class == "factor")) { 
 		Pos<-which(unlist(lapply(names(sin), FUN=function(x) class(sin[,x])))=="factor")
-		for(i in 1:length(Pos)){
+		for(i in seq_along(Pos)){
 			sin[,Pos[i]]<-as.character(sin[,Pos[i]])
 		}
 	}
@@ -263,7 +263,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 		id.sets<-paste(split_exposure(dat)$exposure,split_outcome(dat)$outcome)
 		id.set.unique<-unique(id.sets)
 		dat$id.set<-as.numeric(factor(id.sets))
-		for(i in 1:length(id.set.unique)){
+		for(i in seq_along(id.set.unique)){
 			# print(i)
 			print(paste("finding summary set for --", id.set.unique[i],"-- with largest sample size", sep=""))
 			dat1<-dat[id.sets == id.set.unique[i],]
@@ -310,7 +310,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 		id.sets<-paste(split_exposure(dat)$exposure,split_outcome(dat)$outcome)
 		id.set.unique<-unique(id.sets)
 		dat$id.set<-as.numeric(factor(id.sets))
-		for(i in 1:length(id.set.unique)){
+		for(i in seq_along(id.set.unique)){
 			print(i)
 			print(id.set.unique[i])
 			dat1<-dat[id.sets == id.set.unique[i],]
@@ -319,7 +319,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 			id.subset.unique<-unique(id.subset)
 			dat1$id.subset<-as.numeric(factor(id.subset))
 			L1<-NULL
-			for(j in 1:length(id.subset.unique)){
+			for(j in seq_along(id.subset.unique)){
 				# print(j)
 				print(paste("identifying best powered summary set: ",id.subset.unique[j],sep=""))
 				dat2<-dat1[id.subset ==id.subset.unique[j], ]
@@ -345,7 +345,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 				}
 				if(dist.outcome == "binary"){
 					iv.se<-1/sqrt(unique(n.cas)*unique(n.con)*r2sum) #standard error of the IV should be proportional to this
-					if(any(is.na(n.cas)) | any(is.na(n.con))) {
+					if(any(is.na(n.cas)) || any(is.na(n.con))) {
 						warning("dist.outcome set to binary but number of cases or controls is missing. Will try using total sample size instead but power pruning will be less accurate")
 						iv.se<- 1/sqrt(unique(dat2$samplesize.outcome)*r2sum) 
 					}
@@ -367,7 +367,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 		dat2<-dat2[order(dat2$id.set,dat2$iv.se),]
 		id.sets<-unique(dat2$id.set)
 		id.keep<-NULL
-		for(i in 1:length(id.sets)){
+		for(i in seq_along(id.sets)){
 			# print(i)
 			# print(id.sets[i])
 			id.temp<-unique(dat2[dat2$id.set==id.sets[i],c("id.set","id.subset")])

@@ -7,7 +7,7 @@ find_invalid_instruments <- function(d1, d2, d3, steiger_thresh=0.05)
 	index <- d1$pval < 5e-8
 
 	l0 <- list()
-	for(i in 1:nrow(d1))
+	for (i in seq_len(nrow(d1)))
 	{
 		l0[[i]] <- mr_steiger(
 			d2$pval[i], 
@@ -17,7 +17,7 @@ find_invalid_instruments <- function(d1, d2, d3, steiger_thresh=0.05)
 		)
 	}
 	l1 <- list()
-	for(i in 1:nrow(d1))
+	for (i in seq_len(nrow(d1)))
 	{
 		l1[[i]] <- mr_steiger(
 			d3$pval[i],
@@ -27,7 +27,7 @@ find_invalid_instruments <- function(d1, d2, d3, steiger_thresh=0.05)
 		)
 	}
 	l2 <- list()
-	for(i in 1:nrow(d1))
+	for (i in seq_len(nrow(d1)))
 	{
 		l2[[i]] <- mr_steiger(
 			d3$pval[i],
@@ -153,7 +153,7 @@ run_sim <- function(nid1, nid2, nidu, ninst1, ninst2, ninstu, var_xy, var_ux, va
 
 
 
-for(i in 1:)
+# for(i in 1:)
 
 # Sizes
 ninst1 <- 50
