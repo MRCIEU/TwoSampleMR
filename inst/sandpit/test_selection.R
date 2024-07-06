@@ -153,7 +153,7 @@ run_sim <- function(nid1, nid2, nidu, ninst1, ninst2, ninstu, var_xy, var_ux, va
 
 
 
-for(i in 1:)
+# for(i in 1:)
 
 # Sizes
 ninst1 <- 50
