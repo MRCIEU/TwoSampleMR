@@ -170,7 +170,7 @@ get_r_from_pn <- function(p, n)
 		abs(-log10(suppressWarnings(get_p_from_r2n(x, sample_size))) - -log10(pvalue))
 	}
 
-	if(length(p) > 1 & length(n) == 1)
+	if(length(p) > 1 && length(n) == 1)
 	{
 		message("Assuming n the same for all p values")
 		n <- rep(n, length(p))
@@ -240,15 +240,15 @@ get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", 
 	stopifnot(length(ncase) == 1 | length(ncase) == length(lor))
 	stopifnot(length(ncontrol) == 1 | length(ncontrol) == length(lor))
 	stopifnot(length(prevalence) == 1 | length(prevalence) == length(lor))
-	if(length(prevalence) == 1 & length(lor) != 1)
+	if(length(prevalence) == 1 && length(lor) != 1)
 	{
 		prevalence <- rep(prevalence, length(lor))
 	}
-	if(length(ncase) == 1 & length(lor) != 1)
+	if(length(ncase) == 1 && length(lor) != 1)
 	{
 		ncase <- rep(ncase, length(lor))
 	}
-	if(length(ncontrol) == 1 & length(lor) != 1)
+	if(length(ncontrol) == 1 && length(lor) != 1)
 	{
 		ncontrol <- rep(ncontrol, length(lor))
 	}
