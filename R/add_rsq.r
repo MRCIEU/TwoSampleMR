@@ -68,7 +68,7 @@ add_rsq_one <- function(dat, what="exposure")
 			} else {
 				message("Try adding metadata with add_metadata()")
 			}
-		} else if(all(grepl("SD", dat[[paste0("units.", what)]])) & all(!is.na(dat[[paste0("eaf.", what)]]))) {
+		} else if(all(grepl("SD", dat[[paste0("units.", what)]])) && all(!is.na(dat[[paste0("eaf.", what)]]))) {
 			dat[[paste0("rsq.", what)]] <- NA
 			dat[[paste0("rsq.", what)]] <- 2 * dat[[paste0("beta.", what)]]^2 * dat[[paste0("eaf.", what)]] * (1-dat[[paste0("eaf.", what)]])
 			dat[[paste0("effective_n.", what)]] <- dat[[paste0("samplesize.", what)]]

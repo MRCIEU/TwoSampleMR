@@ -166,9 +166,9 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 		Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
 		Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters)))
 		groups<-unique(mr_res[,group])
-		mr_res$Index<-unlist(lapply(1:length(unique(mr_res[,group])),FUN=function(x) rep(Letters[Letters==Letters[x]],length(which(mr_res[,group]==groups[x])))))
+		mr_res$Index<-unlist(lapply(seq_along(unique(mr_res[,group])),FUN=function(x) rep(Letters[Letters==Letters[x]],length(which(mr_res[,group]==groups[x])))))
 		mr_res<-mr_res[order(mr_res[,b],decreasing=TRUE),]
-		mr_res$Index2<-Letters[1:nrow(mr_res)]
+		mr_res$Index2 <- Letters[seq_len(nrow(mr_res))]
 		mr_res$Index3<-paste(mr_res$Index,mr_res$Index2,sep="")
 		mr_res<-mr_res[order(mr_res$Index3),]
 		mr_res<-mr_res[,!names(mr_res) %in% c("Index","Index2","Index3")]
@@ -495,7 +495,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 
 	dat$lab<-dat$outcome
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-	l$col[1:nrow(l) %% 2 == 0] <- "b"
+	l$col[seq_len(nrow(l)) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 

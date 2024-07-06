@@ -201,7 +201,7 @@ mr_forest_plot_grouped <-
                     title_list <- col_names
                 }
 
-                for (i in 1:length(col_names)) {
+                for (i in seq_along(col_names)) {
                     # loop to get the widths of each annotation column and to group the annotation objects together
                     col <- anot_col( data_Fm = data_Fm, text_col = col_names[i], space_col = space_col, title_text = title_list[[i]] )
                     relative_widths[i] <- col$text_widths[2] - col$text_widths[1]
@@ -239,7 +239,7 @@ mr_forest_plot_grouped <-
             right_RW <- right_Hs$relative_widths
             right_Grobs <- right_Hs
             right_Grobs$relative_widths <- NULL
-            for (i in 1:length(right_Grobs)) {
+            for (i in seq_along(right_Grobs)) {
                 grob_Bag[paste('r',names(right_Grobs)[i], sep = '')] <- right_Grobs[i]
             }
 

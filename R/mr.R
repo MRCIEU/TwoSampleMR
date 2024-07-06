@@ -717,7 +717,7 @@ weighted_median <- function(b_iv, weights)
 weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nboot)
 {
 	med <- rep(0, nboot)
-	for(i in 1:nboot){
+	for(i in seq_len(nboot)){
 		b_exp.boot = stats::rnorm(length(b_exp), mean=b_exp, sd=se_exp)
 		b_out.boot = stats::rnorm(length(b_out), mean=b_out, sd=se_out)
 		betaIV.boot = b_out.boot/b_exp.boot
