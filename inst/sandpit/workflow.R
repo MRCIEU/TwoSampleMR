@@ -1,4 +1,4 @@
-ssh -L 3306:localhost:3306 gh13047@epi-franklin.epi.bris.ac.uk
+# ssh -L 3306:localhost:3306 gh13047@epi-franklin.epi.bris.ac.uk
 
 
 # From GWAS catalog and mysql
