@@ -276,7 +276,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 		}
 	}
 
-	if((!is.null(colour_group) & colour_group_first) | is.null(colour_group))
+	if((!is.null(colour_group) && colour_group_first) || is.null(colour_group))
 	{
 		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
 		main_title <- ifelse(is.null(section), "", section)
