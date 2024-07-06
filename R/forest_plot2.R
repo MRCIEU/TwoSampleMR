@@ -611,4 +611,3 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		)
 	}
 }
-
