@@ -153,7 +153,7 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
 	attributes(res)$outcome <- d$outcome
-	for(j in 1:nrow(d))
+	for(j in seq_len(nrow(d)))
 	{
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
 		message(x$exposure[1], " - ", x$outcome[1])

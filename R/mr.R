@@ -402,7 +402,7 @@ mr_two_sample_ml <- function(b_exp, b_out, se_exp, se_out, parameters)
 		return(list(b=NA, se=NA, pval=NA, nsnp=NA, Q=NA, Q_df=NA, Q_pval=NA))
 	}
 	loglikelihood <- function(param) {
-		return(1/2*sum((b_exp-param[1:length(b_exp)])^2/se_exp^2)+1/2*sum((b_out-param[length(b_exp)+1]*param[1:length(b_exp)])^2/se_out^2))
+		return(1/2*sum((b_exp-param[seq_along(b_exp)])^2/se_exp^2)+1/2*sum((b_out-param[length(b_exp)+1]*param[seq_along(b_exp)])^2/se_out^2))
 	}
 	opt <- try(stats::optim(
 		c(b_exp, sum(b_exp*b_out/se_out^2)/sum(b_exp^2/se_out^2)),

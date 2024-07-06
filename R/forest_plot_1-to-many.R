@@ -44,7 +44,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 	Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
 	Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters),paste0("D",Letters)))
 	mr_res$outcome2<-mr_res[,TraitM]
-	mr_res[,TraitM]<-paste(Letters[1:length(mr_res[,TraitM])],mr_res[,TraitM])
+	mr_res[,TraitM]<-paste(Letters[seq_along(mr_res[,TraitM])],mr_res[,TraitM])
 
 	mr_res$subcategory<-trim(mr_res$subcategory)
 	mr_res$exposure<-""
@@ -59,7 +59,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 	}
 
 	dat<-mr_res
-	dat$index <- 1:nrow(dat)
+	dat$index <- seq_len(nrow(dat))
 	
 	if(ao_slc)
 	{ 
@@ -602,7 +602,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 	l <- list()
 	h <- rep(0, length(sec))
 	count <- 1
-	for(i in 1:length(sec))
+	for(i in seq_along(sec))
 	{
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 
@@ -621,7 +621,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 
 		if(!is.null(addcols)){
 
-			for(j in 1:length(addcols)){
+			for(j in seq_along(addcols)){
 					l[[count]]<-forest_plot_addcol(
 					dat,
 					sec[i],
@@ -639,7 +639,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 		}
 
 
-		for(j in 1:length(columns))
+		for(j in seq_along(columns))
 		{
 			l[[count]] <- forest_plot_basic2(
 				dat, 

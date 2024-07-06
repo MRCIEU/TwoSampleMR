@@ -37,7 +37,7 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 	}
 
 	dat <- subset(mr_res, (nsnp==1 & method==single_snp_method) | (nsnp > 1 & method == multi_snp_method))
-	dat$index <- 1:nrow(dat)
+	dat$index <- seq_len(nrow(dat))
 	
 	if(ao_slc)
 	{ 
@@ -506,7 +506,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			)
 			count <- 2
 			columns <- unique(dat$exposure)
-			for(i in 1:length(columns))
+			for(i in seq_along(columns))
 			{
 				l[[count]] <- forest_plot_basic(
 					dat, 
@@ -539,7 +539,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		sec <- unique(as.character(dat$category))
 		h <- rep(0, length(sec))
 		l <- list()
-		for(i in 1:length(sec))
+		for(i in seq_along(sec))
 		{
 			l[[i]] <- forest_plot_basic(
 				dat, 
@@ -570,7 +570,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		l <- list()
 		h <- rep(0, length(sec))
 		count <- 1
-		for(i in 1:length(sec))
+		for(i in seq_along(sec))
 		{
 			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 			l[[count]] <- forest_plot_names(
@@ -579,7 +579,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 				bottom = i==length(sec)
 			)
 			count <- count + 1
-			for(j in 1:length(columns))
+			for(j in seq_along(columns))
 			{
 				l[[count]] <- forest_plot_basic(
 					dat, 
