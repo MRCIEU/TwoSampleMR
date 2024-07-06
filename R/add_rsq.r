@@ -109,6 +109,13 @@ get_r_from_pn_less_accurate <- function(p, n)
 
 test_r_from_pn <- function()
 {
+  if (!requireNamespace("tidyr", quietly = TRUE)) {
+    stop(
+      "Package \"tidyr\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }	
+
 	param <- expand.grid(
 		n = c(10, 100, 1000, 10000, 100000),
 		rsq = 10^seq(-4,-0.5, length.out=30)
@@ -125,7 +132,7 @@ test_r_from_pn <- function()
 		param$rsq2[i] <- get_r_from_pn(param$pval[i], param$n[i])^2
 	}
 
-	param <- gather(param, key=out, value=value, rsq1, rsq2)
+	param <- tidyr::gather(param, key=out, value=value, rsq1, rsq2)
 
 	p <- ggplot2::ggplot(param, ggplot2::aes(x=rsq_emp, value)) +
 	  ggplot2::geom_abline(slope=1, linetype="dotted") +

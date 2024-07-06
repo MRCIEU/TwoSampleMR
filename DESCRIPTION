@@ -59,7 +59,8 @@ Suggests:
     MendelianRandomization,
     MRInstruments,
     randomForest,
-    testthat
+    testthat,
+    tidyr
 VignetteBuilder: 
     knitr
 Remotes:

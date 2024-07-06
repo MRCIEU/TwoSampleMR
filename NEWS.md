@@ -6,6 +6,7 @@
 * Improve permissions in GitHub Actions workflows
 * Bump minimum required version of **ieugwasr** to 1.0.1
 * Made some amends to the code to bring it more in line with **lintr** recommendations
+* Added omitted **tidyr** soft dependency
 
 # TwoSampleMR v0.6.5
 
