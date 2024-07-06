@@ -311,10 +311,10 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 
 	dat$lab<-dat$outcome
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-	l$col[1:nrow(l) %% 2 == 0] <- "b"
+	l$col[seq_len(nrow(l)) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
-	dat <- dat[nrow(dat):1, ]
+	dat <- dat[rev(seq_len(nrow(dat))), ]
 
 	p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), colour=colour_scheme,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +

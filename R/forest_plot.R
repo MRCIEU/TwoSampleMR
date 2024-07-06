@@ -162,7 +162,7 @@ mr_forest_plot_grouped <-
                     data_Fm$eff_col <- log(as.numeric(data_Fm[,eff_col]))
                 }
                 # ggplot code to generate the forest plot using geom_segments and geom_points and to make a relatively minimal theme
-                raw_forest  <- ggplot2::ggplot(data = data_Fm, ggplot2::aes( y = space_col, yend = space_col, x = as.numeric(lb_col), xend = as.numeric(ub_col) )) + ggplot2::geom_segment() + ggplot2::geom_point(ggplot2::aes( y = space_col,  x = as.numeric(eff_col), size = 4 )) + ggplot2::theme_bw() + ggplot2::theme( axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank(), axis.title = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(), rect = ggplot2::element_blank(), title = ggplot2::element_text(size = 23), legend.position = 'none' ) + ggplot2::expand_limits(y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + ggplot2::labs(title = title_text) # returns ggplot2 object with the (un-annotated) forest plot
+                raw_forest  <- ggplot2::ggplot(data = data_Fm, ggplot2::aes( y = space_col, yend = space_col, x = as.numeric(lb_col), xend = as.numeric(ub_col) )) + ggplot2::geom_segment() + ggplot2::geom_point(ggplot2::aes( y = space_col,  x = as.numeric(eff_col), size = 4 )) + ggplot2::theme_bw() + ggplot2::theme( axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank(), axis.title = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(), rect = ggplot2::element_blank(), title = ggplot2::element_text(size = 23), legend.position = 'none') + ggplot2::expand_limits(y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + ggplot2::labs(title = title_text) # returns ggplot2 object with the (un-annotated) forest plot
                 return(raw_forest)
             }
 
@@ -230,7 +230,7 @@ mr_forest_plot_grouped <-
             left_Grobs <- left_Hs
             left_Grobs$relative_widths <- NULL
 
-            for (i in 1:length(left_Grobs)) {
+            for (i in seq_along(left_Grobs)) {
                 grob_Bag[paste('l',names(left_Grobs)[i],sep = '')] <- left_Grobs[i]
             }
 

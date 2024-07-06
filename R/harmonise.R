@@ -550,7 +550,7 @@ harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action)
 harmonise <- function(dat, tolerance, action)
 {
 	dat$orig_SNP<-dat$SNP
-	dat <- data.table::data.table(dat)[, SNP_index := 1:.N, by="SNP"]
+	dat <- data.table::data.table(dat)[, SNP_index := seq_len(.N), by="SNP"]
 	dat$SNP <- paste0(dat$SNP, "_", dat$SNP_index)
 	SNP <- dat$SNP
 	A1 <- dat$effect_allele.exposure

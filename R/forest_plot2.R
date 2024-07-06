@@ -173,7 +173,7 @@ simple_cap <- function(x) {
 #'
 #' @export
 #' @return Character or array of character
-trim <- function( x ) {
+trim <- function(x) {
   gsub("(^[[:space:]]+|[[:space:]]+$)", "", x)
 }
 
@@ -392,7 +392,7 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 	}
 
 	l <- data.frame(lab=sort(unique(dat$lab)), col="a", stringsAsFactors=FALSE)
-	l$col[1:nrow(l) %% 2 == 0] <- "b"
+	l$col[seq_len(nrow(l)) %% 2 == 0] <- "b"
 
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 
