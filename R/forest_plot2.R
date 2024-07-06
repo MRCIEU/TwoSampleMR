@@ -263,7 +263,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 		dat <- subset(dat, exposure == colour_group)
 		if(!is.null(threshold))
 		{
-			point_plot <- ggplot2::geom_point(size=2, aes(colour = pval < threshold))
+			point_plot <- ggplot2::geom_point(size=2, ggplot2::aes(colour = pval < threshold))
 		} else {
 			point_plot <- ggplot2::geom_point(size=2)
 		}
