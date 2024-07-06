@@ -406,7 +406,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 		{
 			# dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
 			# dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
-			dat2 <- dat[sample(1:nrow(dat), nrow(dat), replace=TRUE), ]
+			dat2 <- dat[sample(seq_len(nrow(dat)), nrow(dat), replace = TRUE), ]
 			l[[i]] <- mr_rucker_internal(dat2, parameters)
 		}
 
