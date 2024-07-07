@@ -1,8 +1,10 @@
 url: https://mrcieu.github.io/TwoSampleMR/
 template:
-  params:
-    bootswatch: united
   bootstrap: 5
+  light-switch: true
+  bslib:
+    bootswatch: united
+    pkgdown-navbar-bg: '#e95420'
 
 navbar:
   left:
@@ -26,9 +28,6 @@ navbar:
       href: reference/index.html
     - text: "Changelog"
       href: "news/index.html"
-  right:
-    - text: "Source"
-      href: https://github.com/mrcieu/TwoSampleMR
 
 articles:
   - title: "Guide"
