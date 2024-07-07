@@ -2,6 +2,8 @@
 
 (Release date 2024-##-##)
 
+* Add dark mode to pkgdown site
+
 # TwoSampleMR v0.6.6
 
 (Release date 2024-07-06)
