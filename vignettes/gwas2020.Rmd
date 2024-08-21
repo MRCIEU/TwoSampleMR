@@ -73,7 +73,7 @@ Automated download from the EBI repository, and an automated upload system and b
 
 ### Error messages are more informative
 
-Previously if a query to the database failed it didn't give a reason, hopefully there is more clarity regarding what is happening now. You can also check the status of the server here: https://gwas-api.mrcieu.ac.uk/
+Previously if a query to the database failed it didn't give a reason, hopefully there is more clarity regarding what is happening now. You can also check the status of the server here: https://api.opengwas.io/api/
 
 ### Easier programmatic access to the database
 
@@ -81,7 +81,7 @@ We are trying to make it as flexible as possible to access the data. The TwoSamp
 
 - [ieugwasr R package](https://mrcieu.github.io/ieugwasr/): All the TwoSampleMR functions that access the data are done by calling this package now. It is a simple wrapper around the API that controls access to the database.
 - [ieugwaspy python package](https://github.com/MRCIEU/ieugwaspy/): Similar functionality to ieugwasr (Under construction).
-- [API](https://gwas-api.mrcieu.ac.uk/): You can use the API directly, e.g. for building your own services or applications.
+- [API](https://api.opengwas.io/api/): You can use the API directly, e.g. for building your own services or applications.
 
 ### Local LD operations
 
@@ -98,7 +98,7 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 ## Key links
 
 - The IEU GWAS database: https://gwas.mrcieu.ac.uk
-- API to the IEU GWAS database: https://gwas-api.mrcieu.ac.uk
+- API to the IEU GWAS database: https://api.opengwas.io/api/
 - ieugwasr package, for R access to the API: https://mrcieu.github.io/ieugwasr/
 - ieugwaspy package, for python access to the API: https://github.com/MRCIEU/ieugwaspy/ (Under construction)
 - gwasvcf package, R interface to GWAS VCF files: https://mrcieu.github.io/gwasvcf/
