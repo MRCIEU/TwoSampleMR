@@ -56,6 +56,7 @@ jobs:
           extra-packages: >
             any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0
           needs: check
+          upgrade: 'TRUE'
 
       - name: Create and populate .Renviron file
         run: |
