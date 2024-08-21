@@ -2,6 +2,8 @@
 
 (Release date 2024-##-##)
 
+* Update OpenGWAS API URLs
+* Minor tweak to `R CMD check` GitHub Actions work 
 * Add dark mode to pkgdown site
 
 # TwoSampleMR v0.6.6
