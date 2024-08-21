@@ -1,3 +1,11 @@
+# TwoSampleMR v0.6.7
+
+(Release date 2024-08-21)
+
+* Update OpenGWAS API URLs
+* Minor tweak to `R CMD check` GitHub Actions due to the rjson hard dependency of the MendelianRandomization package now requiring R >= 4.4.0
+* Add dark mode to pkgdown site
+
 # TwoSampleMR v0.6.6
 
 (Release date 2024-07-06)
