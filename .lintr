@@ -5,7 +5,6 @@ linters: linters_with_defaults(
     trailing_whitespace_linter = NULL,
     infix_spaces_linter = NULL,
     quotes_linter = NULL,
-    trailing_blank_lines_linter = NULL,
     brace_linter = NULL,
     commas_linter = NULL,
     whitespace_linter = NULL,
