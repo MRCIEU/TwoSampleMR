@@ -166,7 +166,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		return(NULL)
 	}
 	d <- format_d(d)
-	if (nrow(d)>0){
+	if (nrow(d)>0) {
 		d$data_source.outcome <- "igd"
 		return(d)
 	} else {

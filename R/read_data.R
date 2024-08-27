@@ -216,7 +216,7 @@ if (inherits(dat, "data.table")) {
 	}
 
 	# Remove duplicated SNPs
-	dat <- plyr::ddply(dat, type, function(x){
+	dat <- plyr::ddply(dat, type, function(x) {
 		x <- plyr::mutate(x)
 		dup <- duplicated(x$SNP)
 		if(any(dup))

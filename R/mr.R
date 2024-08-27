@@ -523,7 +523,7 @@ linreg <- function(x, y, w=rep(x,1))
 	bhat <- stats::cov(x*w,y*w, use="pair") / stats::var(x*w, na.rm=TRUE)
 	ahat <- mean(y, na.rm=TRUE) - mean(x, na.rm=TRUE) * bhat
 	yhat <- ahat + bhat * x
-	se <- sqrt(sum((yp - yhat)^2) / (sum(!is.na(yhat)) - 2) / t(x)%*%x )
+	se <- sqrt(sum((yp - yhat)^2) / (sum(!is.na(yhat)) - 2) / t(x)%*%x)
 
 	sum(w * (y-yhat)^2)
 	se <- sqrt(sum(w*(y-yhat)^2) /  (sum(!is.na(yhat)) - 2) / (sum(w*x^2)))
