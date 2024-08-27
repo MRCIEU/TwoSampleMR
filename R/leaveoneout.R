@@ -77,7 +77,7 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 
 
 #' Plot results from leaveoneout analysis
-#' 
+#'
 #' Plot results from leaveoneout analysis.
 #'
 #' @param leaveoneout_results Output from [mr_leaveoneout()].
@@ -119,8 +119,8 @@ mr_leaveoneout_plot <- function(leaveoneout_results)
 		ggplot2::scale_linewidth_manual(values=c(0.3, 1)) +
 		# xlim(c(min(c(0, d$b), na.rm=T), max(c(0, d$b), na.rm=T))) +
 		ggplot2::theme(
-			legend.position="none", 
-			axis.text.y=ggplot2::element_text(size=8), 
+			legend.position="none",
+			axis.text.y=ggplot2::element_text(size=8),
 			axis.ticks.y=ggplot2::element_line(linewidth=0),
 			axis.title.x=ggplot2::element_text(size=8)) +
 		ggplot2::labs(y="", x=paste0("MR leave-one-out sensitivity analysis for\n'", d$exposure[1], "' on '", d$outcome[1], "'"))

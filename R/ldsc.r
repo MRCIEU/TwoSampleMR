@@ -54,9 +54,9 @@ ldsc_h2_internal <- function(Z, r2, N, W=NULL)
 #'
 #' Guo,B. and Wu,B. (2018) Principal component based adaptive association test of multiple traits using GWAS summary statistics. bioRxiv 269597; doi: 10.1101/269597
 #'
-#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961. 
+#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961.
 #'
-#' https://github.com/baolinwu/MTAR 
+#' https://github.com/baolinwu/MTAR
 #' @keywords internal
 ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 {
@@ -112,7 +112,7 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 #'
 #' Guo,B. and Wu,B. (2018) Principal component based adaptive association test of multiple traits using GWAS summary statistics. bioRxiv 269597; doi: 10.1101/269597
 #'
-#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961. 
+#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961.
 #'
 #' <https://github.com/baolinwu/MTAR>
 ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
@@ -136,7 +136,7 @@ ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
         ancestry <- ieugwasr::infer_ancestry(d, snpinfo)$pop[1]
     }
 
-    d <- snpinfo %>% 
+    d <- snpinfo %>%
         dplyr::select(rsid, l2=paste0("L2.", ancestry)) %>%
         dplyr::inner_join(., d, by="rsid") %>%
         dplyr::filter(complete.cases(.))
@@ -188,11 +188,11 @@ ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
         ancestry <- ancestry1$pop[1]
     }
 
-    d1 <- snpinfo %>% 
+    d1 <- snpinfo %>%
         dplyr::select(rsid, l2=paste0("L2.", ancestry)) %>%
         dplyr::inner_join(., d1, by="rsid")
 
-    d2 <- snpinfo %>% 
+    d2 <- snpinfo %>%
         dplyr::select(rsid, l2=paste0("L2.", ancestry)) %>%
         dplyr::inner_join(., d2, by="rsid")
 
