@@ -43,11 +43,11 @@ knit_report <- function(input_filename, output_filename, ...)
     else if (is.md)
         return(knitr::knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
     else if (is.pdf)
-    {        
+    {
         return(rmarkdown::render(input_filename, rmarkdown::pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
     }
     else if (is.docx)
-    {        
+    {
         return(rmarkdown::render(input_filename, rmarkdown::word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
     }
     else
