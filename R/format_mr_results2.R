@@ -9,7 +9,7 @@
 split_outcome <- function(mr_res)
 {
 	Pos<-grep("\\|\\|",mr_res$outcome) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
-	if(sum(Pos)!=0){
+	if (sum(Pos)!=0) {
 		Outcome<-as.character(mr_res$outcome[Pos])
 		Vars<-strsplit(Outcome,split= "\\|\\|")
 		Vars<-unlist(Vars)
@@ -36,7 +36,7 @@ split_exposure <- function(mr_res)
 	# Pos2<-grep("\\|\\|",mr_res$exposure,invert=T) 
 	# mr_res2 <-mr_res[Pos2,]
 	# mr_res1<-mr_res[Pos,]
-	if(sum(Pos)!=0){
+	if (sum(Pos)!=0) {
 		Exposure<-as.character(mr_res$exposure[Pos])
 		Vars<-strsplit(as.character(Exposure),split= "\\|\\|")
 		Vars<-unlist(Vars)
@@ -181,7 +181,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 	if(ao_slc)
 	{
 		ao<-available_outcomes()
-		names(ao)[names(ao)=="nsnp" ]<-"nsnps.outcome.array"
+		names(ao)[names(ao)=="nsnp"]<-"nsnps.outcome.array"
 		res<-merge(res,ao[,!names(ao) %in% c("unit","priority","sd","path","note","filename","access","mr")],by.x="id.outcome",by.y="id")
 	}
 
@@ -197,7 +197,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 		}
 	}
 
-	if(Exp){
+	if (Exp) {
 		res$or<-exp(res$b)
 		res$or_lci95<-exp(res$b-res$se*1.96)
 		res$or_uci95<-exp(res$b+res$se*1.96)
@@ -212,11 +212,11 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 
 	res<-merge(res,plt,by=c("id.outcome","id.exposure","Method"),all.x=TRUE)
 
-	if(split.exposure){
+	if (split.exposure) {
 		res<-split_exposure(res)
 	}
 	
-	if(split.outcome){
+	if (split.outcome) {
 		res<-split_outcome(res)
 	}
 
@@ -258,12 +258,12 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 {
 
 	# dat[,c("eaf.exposure","beta.exposure","se.exposure","samplesize.outcome","ncase.outcome","ncontrol.outcome")]
-	if(method==1){
+	if (method==1) {
 		L<-NULL 
 		id.sets<-paste(split_exposure(dat)$exposure,split_outcome(dat)$outcome)
 		id.set.unique<-unique(id.sets)
 		dat$id.set<-as.numeric(factor(id.sets))
-		for(i in seq_along(id.set.unique)){
+		for (i in seq_along(id.set.unique)) {
 			# print(i)
 			print(paste("finding summary set for --", id.set.unique[i],"-- with largest sample size", sep=""))
 			dat1<-dat[id.sets == id.set.unique[i],]
@@ -271,14 +271,14 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 			id.subset.unique<-unique(id.subset)
 			dat1$id.subset<-as.numeric(factor(id.subset))
 			ncase<-dat1$ncase.outcome
-			if(is.null(ncase)){
+			if (is.null(ncase)) {
 				ncase<-NA
 			}
-			if(any(is.na(ncase))){
+			if (any(is.na(ncase))) {
 				ncase<-dat1$samplesize.outcome
 				if(dist.outcome=="binary") warning(paste("dist.outcome set to binary but case sample size is missing. Will use total sample size instead but power pruning may be less accurate"))
 			}
-			if(any(is.na(ncase))) stop("sample size missing for at least 1 summary set")
+			if (any(is.na(ncase))) stop("sample size missing for at least 1 summary set")
 			dat1<-dat1[order(ncase,decreasing=TRUE),]
 			# id.expout<-paste(split_exposure(dat)$exposure,split_outcome(dat)$outcome)
 			ncase<-ncase[order(ncase,decreasing=TRUE)]
@@ -305,19 +305,19 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 		return(dat)
 	}
 
-	if(method==2){
+	if (method==2) {
 		L<-NULL 
 		id.sets<-paste(split_exposure(dat)$exposure,split_outcome(dat)$outcome)
 		id.set.unique<-unique(id.sets)
 		dat$id.set<-as.numeric(factor(id.sets))
-		for(i in seq_along(id.set.unique)){
+		for (i in seq_along(id.set.unique)) {
 			dat1<-dat[id.sets == id.set.unique[i],]
 			# unique(dat1[,c("exposure","outcome")])
 			id.subset<-paste(dat1$exposure,dat1$id.exposure,dat1$outcome,dat1$id.outcome)
 			id.subset.unique<-unique(id.subset)
 			dat1$id.subset<-as.numeric(factor(id.subset))
 			L1<-NULL
-			for(j in seq_along(id.subset.unique)){
+			for (j in seq_along(id.subset.unique)) {
 				# print(j)
 				print(paste("identifying best powered summary set: ",id.subset.unique[j],sep=""))
 				dat2<-dat1[id.subset ==id.subset.unique[j], ]
@@ -327,21 +327,22 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 				z<-dat2$beta.exposure/dat2$se.exposure
 				n<-dat2$samplesize.exposure
 				b<-z/sqrt(2*p*(1-p)*(n+z^2))										
-				if(any(is.na(dat2$ncase.outcome))) stop(paste("number of cases missing for summary set: ",id.subset.unique[j],sep=""))
+				if (any(is.na(dat2$ncase.outcome))) stop(paste("number of cases missing for summary set: ",id.subset.unique[j],sep=""))
 				n.cas<-dat2$ncase.outcome
 				n.con<-dat2$ncontrol.outcome
 				var<-1 # variance of risk factor assumed to be 1 
 				r2<-2*b^2*p*(1-p)/var
-				if(any(is.na(r2))) warning("beta or allele frequency missing for some SNPs, which could affect accuracy of power pruning")
+				if (any(is.na(r2))) warning("beta or allele frequency missing for some SNPs, which could affect accuracy of power pruning")
 				r2<-r2[!is.na(r2)]
 				# k<-length(p[!is.na(p)]) #number of SNPs in the instrument / associated with the risk factor
 				# n<-min(n) #sample size of the exposure/risk factor GWAS
 				r2sum<-sum(r2) # sum of the r-squares for each SNP in the instrument
 				# F<-r2sum*(n-1-k)/((1-r2sum*k )
-				if(dist.outcome == "continuous"){
+
+				if (dist.outcome == "continuous") {
 					iv.se<- 1/sqrt(mean(dat2$samplesize.outcome)*r2sum) #standard error of the IV should be proportional to this
 				}
-				if(dist.outcome == "binary"){
+				if (dist.outcome == "binary") {
 					if(any(is.na(n.cas)) || any(is.na(n.con))) {
 						warning("dist.outcome set to binary but number of cases or controls is missing. Will try using total sample size instead but power pruning will be less accurate")
 						iv.se<- 1/sqrt(mean(dat2$samplesize.outcome)*r2sum) 
@@ -366,7 +367,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 		dat2<-dat2[order(dat2$id.set,dat2$iv.se),]
 		id.sets<-unique(dat2$id.set)
 		id.keep<-NULL
-		for(i in seq_along(id.sets)){
+		for (i in seq_along(id.sets)) {
 			# print(i)
 			# print(id.sets[i])
 			id.temp<-unique(dat2[dat2$id.set==id.sets[i],c("id.set","id.subset")])
