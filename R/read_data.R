@@ -122,8 +122,8 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 
 #' Read exposure or outcome data
 #'
-#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests. 
-#' Infers p-values when possible from beta and se. 
+#' Reads in exposure data. Checks and organises columns for use with MR or enrichment tests.
+#' Infers p-values when possible from beta and se.
 #'
 #' @param dat Data frame. Must have header with at least SNP column present.
 #' @param type Is this the exposure or the outcome data that is being read in? The default is `"exposure"`.
@@ -152,15 +152,15 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 #'
 #' @export
 #' @return data frame
-format_data <- function(dat, type="exposure", snps=NULL, header=TRUE, 
-                        phenotype_col="Phenotype", snp_col="SNP", 
-                        beta_col="beta", se_col="se", eaf_col="eaf", 
-                        effect_allele_col="effect_allele", 
-                        other_allele_col="other_allele", pval_col="pval", 
-                        units_col="units", ncase_col="ncase", 
-                        ncontrol_col="ncontrol", samplesize_col="samplesize", 
-                        gene_col="gene", id_col="id", min_pval=1e-200, 
-                        z_col="z", info_col="info", chr_col="chr", 
+format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
+                        phenotype_col="Phenotype", snp_col="SNP",
+                        beta_col="beta", se_col="se", eaf_col="eaf",
+                        effect_allele_col="effect_allele",
+                        other_allele_col="other_allele", pval_col="pval",
+                        units_col="units", ncase_col="ncase",
+                        ncontrol_col="ncontrol", samplesize_col="samplesize",
+                        gene_col="gene", id_col="id", min_pval=1e-200,
+                        z_col="z", info_col="info", chr_col="chr",
                         pos_col="pos", log_pval=FALSE)
 {
 
@@ -197,7 +197,7 @@ if (inherits(dat, "data.table")) {
 	{
 		dat <- subset(dat, SNP %in% snps)
 	}
-	
+
 	if(! phenotype_col %in% names(dat))
 	{
 		message("No phenotype name specified, defaulting to '", type, "'.")
@@ -224,11 +224,11 @@ if (inherits(dat, "data.table")) {
 			warning("Duplicated SNPs present in exposure data for phenotype '", x[[type]][1], ". Just keeping the first instance:\n", paste(x$SNP[dup], collapse="\n"))
 			x <- x[!dup,]
 		}
-		return(x)		
+		return(x)
 	})
 
 	# Check if columns required for MR are present
-	mr_cols_required <- c(snp_col, beta_col, se_col, effect_allele_col) 
+	mr_cols_required <- c(snp_col, beta_col, se_col, effect_allele_col)
 	mr_cols_desired <- c(other_allele_col, eaf_col)
 	if(! all(mr_cols_required %in% names(dat)))
 	{
@@ -372,7 +372,7 @@ if (inherits(dat, "data.table")) {
 			}
 		}
 	}
-	
+
 	# If no pval column then create it from beta and se if available
 	if("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat) && ! "pval.outcome" %in% names(dat))
 	{
@@ -380,7 +380,7 @@ if (inherits(dat, "data.table")) {
 		dat$pval.outcome <- stats::pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE) * 2
 		dat$pval_origin.outcome <- "inferred"
 	}
-	
+
 
 	if(ncase_col %in% names(dat))
 	{
@@ -401,7 +401,7 @@ if (inherits(dat, "data.table")) {
 		}
 	}
 
-	
+
 
 	if(samplesize_col %in% names(dat))
 	{
@@ -418,7 +418,7 @@ if (inherits(dat, "data.table")) {
 			if(any(index))
 			{
 				message("Generating sample size from ncase and ncontrol")
-				dat$samplesize.outcome[index] <- dat$ncase.outcome[index] + dat$ncontrol.outcome[index]			
+				dat$samplesize.outcome[index] <- dat$ncase.outcome[index] + dat$ncontrol.outcome[index]
 			}
 		}
 	} else if("ncontrol.outcome" %in% names(dat) && "ncase.outcome" %in% names(dat))
@@ -431,7 +431,7 @@ if (inherits(dat, "data.table")) {
 	{
 		names(dat)[which(names(dat) == gene_col)[1]] <- "gene.outcome"
 	}
-	
+
 	if(info_col %in% names(dat))
 	{
 		names(dat)[which(names(dat) == info_col)[1]] <- "info.outcome"
@@ -570,7 +570,7 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 #' Get data from metabolomic QTL results
 #'
 #' See [format_data()].
-#' 
+#'
 #' @param metab_qtls_subset Selected rows from \code{metab_qtls} data loaded from \code{MRInstruments} package.
 #' @param type Are these data used as `"exposure"` or `"outcome"`? Default is `"exposure"`.
 #'
@@ -579,7 +579,7 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 format_metab_qtls <- function(metab_qtls_subset, type="exposure")
 {
 	stopifnot(type %in% c("exposure", "outcome"))
-	
+
 
 	if(length(unique(metab_qtls_subset$phenotype)) > 1)
 	{
@@ -606,7 +606,7 @@ format_metab_qtls <- function(metab_qtls_subset, type="exposure")
 format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 {
 	stopifnot(type %in% c("exposure", "outcome"))
-	
+
 
 	if(length(unique(proteomic_qtls_subset$analyte)) > 1)
 	{
@@ -633,7 +633,7 @@ format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 format_aries_mqtl <- function(aries_mqtl_subset, type="exposure")
 {
 	stopifnot(type %in% c("exposure", "outcome"))
-	
+
 	aries_mqtl_subset$Phenotype <- paste0(aries_mqtl_subset$cpg, " (", aries_mqtl_subset$age, ")")
 
 	if(length(unique(aries_mqtl_subset$Phenotype)) > 1)
