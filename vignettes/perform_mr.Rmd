@@ -235,7 +235,7 @@ p4[[1]]
 
 ## 1-to-many forest plot
 
-A 1-to-many MR analysis interrogates the effect of a single exposure on multiple outcomes or multiple exposures on a single outcome. The results of this analysis can be visualised using the 1-to-many forest plot, with or without stratification on a categorical variable. From a visual point of view, the function works best for 50 or fewer results and is not really designed to handle more than a 100 results. If your number of results is much greater than 50, it may be better to split these across two separate plots. For example, if you have 100 sets of results you could divide these equally across two plots and then combine the two plots together in another programme like Powerpoint. The function assumes the results are already in the right order for plotting. As such, users are advised to sort their results according to how they would like them to appear in the plot. Users can use their own code to do this or they can use the `sort_1_to_many()` function.  
+A 1-to-many MR analysis interrogates the effect of a single exposure on multiple outcomes or multiple exposures on a single outcome. The results of this analysis can be visualised using the 1-to-many forest plot, with or without stratification on a categorical variable. From a visual point of view, the function works best for 50 or fewer results and is not really designed to handle more than a 100 results. If your number of results is much greater than 50, it may be better to split these across two separate plots. For example, if you have 100 sets of results you could divide these equally across two plots and then combine the two plots together in another programme like Powerpoint. The function assumes the results are already in the right order for plotting. As such, users are advised to sort their results according to how they would like them to appear in the plot. Users can use their own code to do this or they can use the `sort_1_to_many()` function.
 
 ### Step 1: generate 1-to-many MR results
 
@@ -248,7 +248,7 @@ chd_out_dat <- extract_outcome_data(
 )
 
 dat2 <- harmonise_data(
-  exposure_dat = exp_dat, 
+  exposure_dat = exp_dat,
   outcome_dat = chd_out_dat
 )
 res <- mr(dat2)
@@ -261,9 +261,9 @@ res <- mr(dat2)
 In this example we wish to plot results from an MR analysis of the effect of multiple exposures on coronary heart disease, with results sorted by decreasing effect size (largest effect at the top of the plot) and with one MR method for each unique exposure-outcome combination. We will also make the size of each point estimate proportional to its inverse variance. This is a useful way to draw attention towards the most reliable results and away from results with very wide confidence intervals. To specify the size of the point estimate, set the weight argument to the name of the column in the data with the weight information.
 
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
-res <- subset_on_method(res) # default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP). 
+res <- subset_on_method(res) # default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP).
 res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by decreasing effect size (largest effect at top of the plot)
-res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
+res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
 res$weight <- 1/res$se
 
 min(exp(res$b - 1.96*res$se)) # identify value for 'lo' in forest_plot_1_to_many
@@ -343,7 +343,7 @@ In this next example we plot the results from an analysis of the effect of multi
 
 ```{r cache=FALSE, warning=FALSE, fig.height=10, eval=FALSE}
 res <- mr(dat2)
-res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
+res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
 
 res <-
   sort_1_to_many(
@@ -377,7 +377,7 @@ forest_plot_1_to_many(
 In this next example we plot the same results as above but with results stratified by a grouping variable. We also select one MR method for each unique exposure-outcome combination and sort the results by decreasing effect size within each group (i.e. largest effect at the top).
 
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
-res <- mr(dat2) 
+res <- mr(dat2)
 res <- split_exposure(res)
 res <- subset_on_method(res)
 res$subcategory[res$exposure %in% c("Adiponectin", "Hip circumference", "Waist circumference")] <- "Group 1"
@@ -422,12 +422,12 @@ dis_dat <- extract_outcome_data(
 )
 
 dat3 <- harmonise_data(
-  exposure_dat = exp_dat, 
+  exposure_dat = exp_dat,
   outcome_dat = dis_dat
 )
 
 res <- mr(dat3, method_list = c("mr_wald_ratio", "mr_ivw"))
-res <- split_outcome(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column 
+res <- split_outcome(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
 
 res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by decreasing effect size (largest effect at top of the plot)
 ```
@@ -474,7 +474,7 @@ plot2
 
 pdf("plot1.pdf", height = 10, width = 8)
 plot1
-dev.off() 
+dev.off()
 ```
 
 * * *
@@ -538,11 +538,11 @@ These tests are obtained using:
 
 ```{r eval=FALSE, warnings=FALSE}
 mr_steiger(
-  p_exp = dat$pval.exposure, 
-  p_out = dat$pval.outcome, 
-  n_exp = dat$samplesize.exposure, 
-  n_out = dat$samplesize.outcome, 
-  r_xxo = 1, 
+  p_exp = dat$pval.exposure,
+  p_out = dat$pval.outcome,
+  n_exp = dat$samplesize.exposure,
+  n_out = dat$samplesize.outcome,
+  r_xxo = 1,
   r_yyo = 1,
   r_exp=0
 )
@@ -635,7 +635,7 @@ Here `ld_matrix()` returns the LD correlation values (not R^2^) for each pair of
 
 ```{r}
 dat <- harmonise_data(
-  exposure_dat = bmi_exp_dat, 
+  exposure_dat = bmi_exp_dat,
   outcome_dat = chd_out_dat
 )
 ```

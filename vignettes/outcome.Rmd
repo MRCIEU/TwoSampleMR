@@ -33,7 +33,7 @@ chd_out_dat1 <- extract_outcome_data(
 	outcomes = 'ieu-a-7'
 )
 chd_out_dat2 <- extract_outcome_data(
-	snps = c("rs234", "rs17097147"), 
+	snps = c("rs234", "rs17097147"),
 	outcomes = c('ieu-a-2', 'ieu-a-7')
 )
 save(ao, bmi_exp_dat, chd_out_dat1, chd_out_dat2, file = file.path("inst", "extdata", "vig_outcome.RData"), compress = "xz")
@@ -103,7 +103,7 @@ chd_out_dat1 <- extract_outcome_data(
 The `extract_outcome_data()` function is flexible. The `snps` argument only requires an array of rsIDs, and the `outcomes` argument can be a vector of outcomes, e.g.
 ```{r eval=FALSE}
 chd_out_dat2 <- extract_outcome_data(
-	snps = c("rs234", "rs17097147"), 
+	snps = c("rs234", "rs17097147"),
 	outcomes = c('ieu-a-2', 'ieu-a-7')
 )
 ```
