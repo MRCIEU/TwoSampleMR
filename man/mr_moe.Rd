@@ -44,8 +44,8 @@ load("rf.rdata")
 # Update the results with mixture of experts
 r <- mr_moe(r, rf)
 
-# Now you can view the estimates, and see that they have 
-# been sorted in order from most likely to least likely to 
+# Now you can view the estimates, and see that they have
+# been sorted in order from most likely to least likely to
 # be accurate, based on MOE prediction
 r[[1]]$estimates
 }
