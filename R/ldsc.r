@@ -1,4 +1,4 @@
-Ghuber <- function (u, k = 30, deriv = 0)
+Ghuber <- function(u, k = 30, deriv = 0)
 {
     if (!deriv) {
         return(pmin(1, k/abs(u)))
