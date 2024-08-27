@@ -41,8 +41,8 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 	typS = sum(v*(k-1))/(sum.v^2 - sum(v^2))
 	for(j in 1:L)
 	{
-		tausq = 0 ; F = 1 ;TAUsq = NULL
-		while(F>0)
+		tausq = 0 ; Fstat = 1 ;TAUsq = NULL
+		while(Fstat>0)
 		{
 			TAUsq = c(TAUsq, tausq)
 			w = 1/(s^2+tausq)
@@ -51,9 +51,9 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 			yW = sum(y*w)/sum.w
 			Q1 = sum(w*(y-yW)^2)
 			Q2 = sum(w2*(y-yW)^2)
-			F = Q1-Quant[j]
-			Ftau = max(F,0)
-			delta = F/Q2
+			Fstat = Q1-Quant[j]
+			Ftau = max(Fstat,0)
+			delta = Fstat/Q2
 			tausq = tausq + delta
 		}
 		MU[j] = yW
