@@ -23,24 +23,24 @@
 #' @return data frame.
 format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FALSE,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL)
 {
-	if(!is.null(by)){
+	if (!is.null(by)) {
 		mr_res<-mr_res[,names(mr_res)!="subcategory"]
 		names(mr_res)[names(mr_res)==by]<-"subcategory"
-	}else{
+	} else {
 		mr_res$subcategory<-""
 	}
 
-	if(is.null(weight)) {
+	if (is.null(weight)) {
 		mr_res$weight=3
 	}
 
-	if(TraitM=="exposure"){ #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
+	if (TraitM=="exposure") { #the plot function currently tries to plot separate plots for each unique exposure. This is a legacy of the original multiple exposures forest plot function and needs to be cleaned up. The function won't work if the TraitM column is called exposure
 		names(mr_res)[names(mr_res)=="exposure"]<-"TraitM"
 		TraitM<-"TraitM"
 	}
 
-	names(mr_res)[names(mr_res)==b ]<-"b"
-	names(mr_res)[names(mr_res)==se ]<-"se"
+	names(mr_res)[names(mr_res)==b]<-"b"
+	names(mr_res)[names(mr_res)==se]<-"se"
 	Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
 	Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters),paste0("D",Letters)))
 	mr_res$outcome2<-mr_res[,TraitM]
@@ -113,13 +113,13 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 		stringsAsFactors = FALSE
 	)
 
-	if(!is.null(addcols)){
+	if (!is.null(addcols)) {
 		dat2<-dat[,addcols]
 		dat<-cbind(dat1,dat2)
-		if(length(addcols)==1){
+		if (length(addcols)==1) {
 			names(dat)[names(dat)=="dat2"]<-addcols
 		}
-	}else{
+	} else {
 		dat<-dat1
 	}
 
@@ -154,13 +154,13 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 #' @export
 #' @return data frame.
 #' 
-sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,priority=NULL){
+sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NULL,priority=NULL) {
 
 	mr_res[,trait_m]<-as.character(mr_res[,trait_m])
 	mr_res[,group]<-as.character(mr_res[,group])
-	if(!b %in% names(mr_res)) warning("Column with effect estimates not found. Did you forget to specify the column of data containing your effect estimates?")
-	if(sort_action==1){
-		if(is.null(group)) warning("You must indicate a grouping variable")
+	if (!b %in% names(mr_res)) warning("Column with effect estimates not found. Did you forget to specify the column of data containing your effect estimates?")
+	if (sort_action==1) {
+		if (is.null(group)) warning("You must indicate a grouping variable")
 		
 		# Numbers<-1:100
 		Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
@@ -174,13 +174,13 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 		mr_res<-mr_res[,!names(mr_res) %in% c("Index","Index2","Index3")]
 	}
 
-	if(sort_action ==2){
-		if(is.null(group)) warning("You must indicate a grouping variable")
+	if (sort_action ==2) {
+		if (is.null(group)) warning("You must indicate a grouping variable")
 		mr_res<-mr_res[order(mr_res[,b],decreasing=TRUE),]
 		mr_res<-mr_res[order(mr_res[,group]),]
 	}
 		
-	if(sort_action==3){
+	if (sort_action==3) {
 		if(is.null(group)) warning("You must indicate a grouping variable")
 		if(is.null(priority)) warning("You must indicate which value of the grouping variable ",group," to use as the priority value")
 
@@ -190,8 +190,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 
 		mr_res1$b.sort[mr_res1[,trait_m]==priority]<-mr_res1[,b][mr_res1[,trait_m]==priority]
 		# mr_res1$b.sort[mr_res1[,group]==priority]<-1000
-		for(i in unique(mr_res1[,group]))
-		{
+		for (i in unique(mr_res1[,group])) {
 			mr_res1$b.sort[mr_res1[,group] == i & is.na(mr_res1$b.sort)]<-mr_res1$b.sort[mr_res1[,group]== i & !is.na(mr_res1$b.sort)]
 		}
 		# mr_res1$b.sort[is.na(mr_res1$b.sort)]<-mr_res1$b.sort[!is.na(mr_res1$b.sort)]
@@ -201,21 +200,20 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 		mr_res<-mr_res[order(mr_res$b.sort,decreasing=TRUE),]
 		groups<-unique(mr_res[,group])
 		List<-NULL
-		for(i in seq_along(groups)){
+		for (i in seq_along(groups)) {
 			Test<-mr_res[mr_res[,group]==groups[i],]
 			Test1<-Test[Test[,trait_m] != priority,]
 			Test2<-Test[Test[,trait_m] == priority,]
 			List[[i]]<-rbind(Test2,Test1)
 		}
 		mr_res<-do.call(rbind,List)
-		
 	}
 
-	if(sort_action ==4){
+	if (sort_action ==4) {
 		mr_res<-mr_res[order(mr_res[,b],decreasing=TRUE),]
 	}
 
-	if(sort_action ==5){
+	if (sort_action ==5) {
 		mr_res<-mr_res[order(mr_res[,b],decreasing=FALSE),]
 	}
 
@@ -270,7 +268,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		dat$up_ci <- pmin(dat$up_ci, xlim[2], na.rm=TRUE)
 	}
 
-	if(is.null(up) || is.null(lo) ){
+	if (is.null(up) || is.null(lo)) {
 		up <- max(dat$up_ci, na.rm=TRUE)
 		lo <- min(dat$lo_ci, na.rm=TRUE)
 	}
@@ -565,12 +563,12 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @export
 #' @return grid plot object
 #' 
-forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=TRUE,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL){
+forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=TRUE,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL) {
 	# if(is.null(lo) | is.null(up)) warning("Values missing for the lower or upper bounds of the x axis. Did you forget to set the lo and up arguments?")
 	
 	xlim=NULL
 	ncols=1+length(addcols)
-	if(addcol_titles==""){
+	if (addcol_titles=="") {
 		addcol_titles<-rep(addcol_titles,length(addcols))
 	}
 	
@@ -619,9 +617,9 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 
 		count <- count + 1
 
-		if(!is.null(addcols)){
+		if (!is.null(addcols)) {
 
-			for(j in seq_along(addcols)){
+			for (j in seq_along(addcols)) {
 					l[[count]]<-forest_plot_addcol(
 					dat,
 					sec[i],
@@ -639,8 +637,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 		}
 
 
-		for(j in seq_along(columns))
-		{
+		for (j in seq_along(columns)) {
 			l[[count]] <- forest_plot_basic2(
 				dat, 
 				sec[i], 
