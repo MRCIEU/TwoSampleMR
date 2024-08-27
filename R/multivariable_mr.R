@@ -1,6 +1,6 @@
 #' Extract exposure variables for multivariable MR
 #'
-#' Requires a list of IDs from available_outcomes. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand. 
+#' Requires a list of IDs from available_outcomes. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.
 #'
 #' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
 #' @param clump_r2 The default is `0.01`.
@@ -45,7 +45,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 	tab <- table(d$SNP)
 	keepsnps <- names(tab)[tab == length(id_exposure)-1]
 	d <- subset(d, SNP %in% keepsnps)
-	
+
 	# Reshape exposures
 	dh1 <- subset(d, id.outcome == id.outcome[1], select=c(SNP, exposure, id.exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, beta.exposure, se.exposure, pval.exposure))
 	dh2 <- subset(d, select=c(SNP, outcome, id.outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, beta.outcome, se.outcome, pval.outcome))
@@ -58,8 +58,8 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 
 #' Attempt to perform MVMR using local data
 #'
-#' Allows you to read in summary data from text files to format the multivariable exposure dataset. 
-#' 
+#' Allows you to read in summary data from text files to format the multivariable exposure dataset.
+#'
 #' Note that you can provide an array of column names for each column, which is of length `filenames_exposure`
 #'
 #' @param filenames_exposure Filenames for each exposure dataset. Must have header with at least SNP column present. Following arguments are used for determining how to read the filename and clumping etc.
@@ -91,8 +91,8 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #' @export
 #' @return List
 mv_extract_exposures_local <- function(
-	filenames_exposure, 
-	sep = " ", 
+	filenames_exposure,
+	sep = " ",
 	phenotype_col = "Phenotype",
 	snp_col = "SNP",
 	beta_col = "beta",
@@ -151,7 +151,7 @@ mv_extract_exposures_local <- function(
 	for(i in seq_along(filenames_exposure))
 	{
 		if(flag == "character") {
-			l_full[[i]] <- read_outcome_data(filenames_exposure[i], 
+			l_full[[i]] <- read_outcome_data(filenames_exposure[i],
 				sep = sep[i],
 				phenotype_col = phenotype_col[i],
 				snp_col = snp_col[i],
@@ -171,7 +171,7 @@ mv_extract_exposures_local <- function(
 				log_pval = log_pval[i]
 			)
 		} else {
-			l_full[[i]] <- format_data(filenames_exposure[[i]], 
+			l_full[[i]] <- format_data(filenames_exposure[[i]],
 				type="outcome",
 				phenotype_col = phenotype_col[i],
 				snp_col = snp_col[i],
@@ -228,7 +228,7 @@ mv_extract_exposures_local <- function(
 	tab <- table(d$SNP)
 	keepsnps <- names(tab)[tab == length(id_exposure)-1]
 	d <- subset(d, SNP %in% keepsnps)
-	
+
 	# Reshape exposures
 	dh1 <- subset(d, id.outcome == id.outcome[1], select=c(SNP, exposure, id.exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, beta.exposure, se.exposure, pval.exposure))
 	dh2 <- subset(d, select=c(SNP, outcome, id.outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, beta.outcome, se.outcome, pval.outcome))
@@ -246,7 +246,7 @@ mv_extract_exposures_local <- function(
 #' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
 #'
 #' @export
-#' @return List of vectors and matrices required for mv analysis. 
+#' @return List of vectors and matrices required for mv analysis.
 #' \describe{
 #' \item{exposure_beta}{a matrix of beta coefficients, in which rows correspond to SNPs and columns correspond to exposures.}
 #' \item{exposure_se}{is the same as `exposure_beta`, but for standard errors.}
@@ -257,7 +257,7 @@ mv_extract_exposures_local <- function(
 #' \item{outcome_pval}{an array of p-values for the outcome.}
 #' \item{outname}{A data frame with two variables, `id.outcome` and `outcome` which are character strings.}
 #' }
-#' 
+#'
 mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 {
 
@@ -328,7 +328,7 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #' @return List of results
 mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
-	# This is a matrix of 
+	# This is a matrix of
 	beta.outcome <- mvdat$outcome_beta
 	beta.exposure <- mvdat$exposure_beta
 	pval.exposure <- mvdat$exposure_pval
@@ -366,7 +366,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 			} else {
 				marginal_outcome[,i] <- stats::lm(beta.outcome ~ 0 + beta.exposure[, -c(i), drop=FALSE])$res
 				mod <- summary(stats::lm(marginal_outcome[,i] ~ 0 + beta.exposure[,i]))
-			}			
+			}
 		}
 		if(sum(index) > (nexp + as.numeric(intercept)))
 		{
@@ -410,7 +410,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' Performs modified multivariable MR analysis.
 #' For each exposure the instruments are selected then all exposures for those SNPs are regressed against the outcome together, weighting for the inverse variance of the outcome.
-#' 
+#'
 #' @param mvdat Output from [mv_harmonise_data()].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
@@ -421,7 +421,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #' @return List of results
 mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
 {
-	# This is a matrix of 
+	# This is a matrix of
 	beta.outcome <- mvdat$outcome_beta
 	beta.exposure <- mvdat$exposure_beta
 	pval.exposure <- mvdat$exposure_pval
@@ -499,7 +499,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 }
 
 #' Perform basic multivariable MR
-#' 
+#'
 #' Performs initial multivariable MR analysis from Burgess et al 2015.
 #' For each exposure the outcome is residualised for all the other exposures, then unweighted regression is applied.
 #'
@@ -510,7 +510,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #' @return List of results
 mv_basic <- function(mvdat, pval_threshold=5e-8)
 {
-	# This is a matrix of 
+	# This is a matrix of
 	beta.outcome <- mvdat$outcome_beta
 	beta.exposure <- mvdat$exposure_beta
 	pval.exposure <- mvdat$exposure_pval
@@ -571,7 +571,7 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 #' @return List of results
 mv_ivw <- function(mvdat, pval_threshold=5e-8)
 {
-	# This is a matrix of 
+	# This is a matrix of
 	beta.outcome <- mvdat$outcome_beta
 	beta.exposure <- mvdat$exposure_beta
 	pval.exposure <- mvdat$exposure_pval
@@ -636,7 +636,7 @@ mv_lasso_feature_selection <- function(mvdat)
 }
 
 #' Perform multivariable MR on subset of features
-#' 
+#'
 #' The function proceeds as follows:
 #' \enumerate{
 #' \item Select features (by default this is done using LASSO feature selection).
@@ -665,7 +665,7 @@ mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), interce
 
 	mvdat$exposure_beta <- mvdat$exposure_beta[instruments,,drop=FALSE]
 	mvdat$exposure_se <- mvdat$exposure_se[instruments,,drop=FALSE]
-	mvdat$exposure_pval <- mvdat$exposure_pval[instruments,,drop=FALSE]	
+	mvdat$exposure_pval <- mvdat$exposure_pval[instruments,,drop=FALSE]
 	mvdat$outcome_beta <- mvdat$outcome_beta[instruments]
 	mvdat$outcome_se <- mvdat$outcome_se[instruments]
 	mvdat$outcome_pval <- mvdat$outcome_pval[instruments]

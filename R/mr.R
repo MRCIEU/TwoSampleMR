@@ -46,7 +46,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
 
 
 #' Get list of available MR methods
-#' 
+#'
 #' @export
 #' @return character vector of method names
 mr_method_list <- function()
