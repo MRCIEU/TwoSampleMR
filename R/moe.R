@@ -226,7 +226,9 @@ mr_moe_single <- function(res, rf)
 			MOE = predict(rf[[m]], metric, type="prob")[,2]
 		)
 		return(d)
-	}) %>% bind_rows %>% arrange(desc(MOE))
+	}) %>% 
+	  bind_rows %>%
+	  arrange(desc(MOE))
 	if("MOE" %in% names(res$estimates))
 	{
 		message("Overwriting previous MOE estimate")
