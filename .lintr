@@ -13,6 +13,7 @@ linters: linters_with_defaults(
     assignment_linter = NULL,
     cyclocomp_linter = NULL,
     object_usage_linter = NULL,
-    spaces_left_parentheses_linter = NULL
+    spaces_left_parentheses_linter = NULL,
+    object_length_linter = NULL
   )
 encoding: "UTF-8"
