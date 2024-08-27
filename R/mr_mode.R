@@ -12,7 +12,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
-	if(nrow(dat) < 3) 
+	if(nrow(dat) < 3)
 	{
 		warning("Need at least 3 SNPs")
 		return(NULL)
@@ -44,7 +44,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 			h <- max(0.00000001, s*cur_phi)
 			#Compute the smoothed empirical density function
 			densityIV <- stats::density(BetaIV.in, weights=weights, bw=h)
-			#Extract the point with the highest density as the point estimate 
+			#Extract the point with the highest density as the point estimate
 			beta[length(beta)+1] <- densityIV$x[densityIV$y==max(densityIV$y)]
 		}
 		return(beta)
@@ -61,7 +61,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 		#Set up a matrix to store the results from each bootstrap iteration
 		beta.boot <- matrix(nrow=nboot, ncol=length(beta_Mode.in))
 
-		for(i in 1:nboot) 
+		for(i in 1:nboot)
 		{
 			#Re-sample each ratio estimate using SEs derived not assuming NOME
 			BetaIV.boot      <- stats::rnorm(length(BetaIV.in), mean=BetaIV.in, sd=seBetaIV.in[,1])
@@ -106,7 +106,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	beta_WeightedMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=seBetaIV[,1], phi=phi)
 	weights <- 1/seBetaIV[,1]^2
 	penalty <- stats::pchisq(weights * (BetaIV-beta_WeightedMode)^2, df=1, lower.tail=FALSE)
-	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized 
+	pen.weights <- weights*pmin(1, penalty*parameters$penk) # penalized
 
 	beta_PenalisedMode <- beta(BetaIV.in=BetaIV, seBetaIV.in=sqrt(1/pen.weights), phi=phi)
 
@@ -132,15 +132,15 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 	id.exposure <- ifelse("id.exposure" %in% names(dat), dat$id.exposure[1], "")
 	id.outcome <- ifelse("id.outcome" %in% names(dat), dat$id.outcome[1], "")
 	Results <- data.frame(
-		id.exposure = id.exposure, 
-		id.outcome = id.outcome, 
-		method = Method, 
-		nsnp = length(b_exp), 
-		b = beta_Mode, 
-		se = se_Mode, 
-		ci_low = CIlow_Mode, 
-		ci_upp = CIupp_Mode, 
-		pval = P_Mode, 
+		id.exposure = id.exposure,
+		id.outcome = id.outcome,
+		method = Method,
+		nsnp = length(b_exp),
+		b = beta_Mode,
+		se = se_Mode,
+		ci_low = CIlow_Mode,
+		ci_upp = CIupp_Mode,
+		pval = P_Mode,
 		stringsAsFactors=FALSE
 	)
 
@@ -174,7 +174,7 @@ mr_mode <- function(dat, parameters=default_parameters(), mode_method="all")
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
+mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
 	if(sum(index) < 3)
@@ -204,7 +204,7 @@ mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_pa
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
+mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
 	if(sum(index) < 3)
@@ -236,7 +236,7 @@ mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_para
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
+mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
 	if(sum(index) < 3)
@@ -252,7 +252,7 @@ mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=defau
 
 
 #' MR simple mode estimator (NOME)
-#' 
+#'
 #' MR simple mode estimator (NOME).
 #'
 #' @param b_exp Vector of genetic effects on exposure
@@ -268,7 +268,7 @@ mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=defau
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) 
+mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
 {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
 	if(sum(index) < 3)
