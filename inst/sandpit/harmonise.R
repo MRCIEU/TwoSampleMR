@@ -2,7 +2,7 @@
 # Possibilities
 
 # Both alleles in E and O and freq for both
-# - 
+# -
 
 # 2E + 2O + Ef + Of
 # 2E + 2O + Ef

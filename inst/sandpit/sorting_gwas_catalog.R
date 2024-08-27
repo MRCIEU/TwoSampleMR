@@ -17,7 +17,7 @@ b <- subset(a, select=c(DISEASE.TRAIT, PUBMEDID, FIRST.AUTHOR, DATE, SNPS,STRONG
 b$RISK.ALLELE.FREQUENCY <- as.numeric(b$RISK.ALLELE.FREQUENCY)
 
 #exclude SNPs with missing rsids
-b<-b[grep("rs",b$SNPS,ignore.case=TRUE,),] #exclude SNPs without an rsid 
+b<-b[grep("rs",b$SNPS,ignore.case=TRUE,),] #exclude SNPs without an rsid
 b[grep("-",b$STRONGEST.SNP.RISK.ALLELE,ignore.case=TRUE,invert=TRUE),]
 
 # Get effect allele
@@ -28,7 +28,7 @@ b$effect_allele<-lapply(seq_along(b$STRONGEST.SNP.RISK.ALLELE),FUN=function(x) s
 b$DATE <- as.Date(b$DATE, format="%d-%b-%y")
 b$year <- format(b$DATE, "%Y")
 
-# Try to get the units 
+# Try to get the units
 Start<-unlist(lapply(b$X95..CI..TEXT.,FUN=function(x) unlist(gregexpr("] ",x))+2))
 Stop<-nchar(b$X95..CI..TEXT.)
 b$units<-unlist(lapply(seq_along(Start) ,FUN=function(x) substr(b$X95..CI..TEXT.[x],Start[x],Stop[x])))

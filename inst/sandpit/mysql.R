@@ -36,11 +36,11 @@ dim(d)
 # TMG_F1WnTL
 
 # use mrbase;
-# 
+#
 # describe assoc;
 # describe snps;
 # describe study;
-# 
+#
 # SELECT COUNT(*) FROM study;
 # SELECT COUNT(*) FROM snps;
 # SELECT COUNT(*) FROM assoc;
@@ -49,18 +49,18 @@ dim(d)
 # SELECT * FROM study limit 10;
 # SELECT * FROM snps WHERE name='rs13078807';
 # SELECT * FROM assoc WHERE snp=207707;
-# 
+#
 # SELECT * FROM assoc limit 10;
 # SELECT * FROM assoc WHERE snp=2223704;
-# 
+#
 # SELECT a.*, b.*, c.*
 # FROM assoc a, snps b, study c
 # WHERE a.snp=b.id AND a.study=c.id
 # AND (b.name='rs10900000' OR b.name='rs10000010' OR b.name='rs10000092')
 # AND (c.filename='cardiogramplusc4d_180814_update_data.txt.uniform.af.txt' OR c.filename='All_ancestries_SNP_gwas_mc_merge_nogc.tbl.uniq.gz.uniform.af.txt')
 # ORDER BY filename;
-# 
-# 
+#
+#
 # SELECT a.*, b.*, c.*
 # FROM assoc a, snps b, study c
 # WHERE a.snp=b.id AND a.study=c.id

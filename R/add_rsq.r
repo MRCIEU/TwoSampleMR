@@ -2,7 +2,7 @@
 #'
 #' Can be applied to exposure_dat, outcome_dat or harmonised_data.
 #' Note that it will be beneficial in some circumstances to add the meta data to
-#' the data object using [add_metadata()] before running this function. 
+#' the data object using [add_metadata()] before running this function.
 #' Also adds effective sample size for case control data.
 #'
 #' @param dat exposure_dat, outcome_dat or harmonised_data
@@ -76,7 +76,7 @@ add_rsq_one <- function(dat, what="exposure")
 			ind1 <- !is.na(dat[[paste0("pval.", what)]]) & !is.na(dat[[paste0("samplesize.", what)]])
 			dat[[paste0("rsq.", what)]] <- NA
 			if(sum(ind1) > 0)
-			{		
+			{
 				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_bsen(
 					dat[[paste0("beta.", what)]][ind1],
 					dat[[paste0("se.", what)]][ind1],
@@ -114,7 +114,7 @@ test_r_from_pn <- function()
       "Package \"tidyr\" must be installed to use this function.",
       call. = FALSE
     )
-  }	
+  }
 
 	param <- expand.grid(
 		n = c(10, 100, 1000, 10000, 100000),
@@ -228,7 +228,7 @@ compareNA <- function(v1,v2) {
 
 #' Estimate proportion of variance of liability explained by SNP in general population
 #'
-#' This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis. 
+#' This uses equation 10 in Lee et al. A Better Coefficient of Determination for Genetic Profile Analysis.
 #' Genetic Epidemiology 36: 214–224 (2012) \doi{10.1002/gepi.21614}.
 #'
 #' @param lor Vector of Log odds ratio.
@@ -309,7 +309,7 @@ contingency <- function(af, prop, odds_ratio, eps=1e-15)
 		z <- -c_ / b
 	} else {
 		d <- b^2 - 4*a*c_
-		if (d < eps*eps) 
+		if (d < eps*eps)
 		{
 			s <- 0
 		} else {
@@ -327,7 +327,7 @@ contingency <- function(af, prop, odds_ratio, eps=1e-15)
 #' @param g Vector of 0/1/2
 #'
 #' @export
-#' @return Allele frequency 
+#' @return Allele frequency
 allele_frequency <- function(g)
 {
 	(sum(g == 1) + 2 * sum(g == 2)) / (2 * sum(!is.na(g)))

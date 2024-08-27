@@ -42,7 +42,7 @@ enrichment_method_list <- function()
 	a <- lapply(a, as.data.frame)
 	a <- plyr::rbind.fill(a)
 	a <- as.data.frame(lapply(a, as.character), stringsAsFactors=FALSE)
-	return(a)	
+	return(a)
 }
 
 
