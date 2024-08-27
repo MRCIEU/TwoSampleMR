@@ -1,5 +1,5 @@
 #' Get heterogeneity statistics
-#' 
+#'
 #' Get heterogeneity statistics.
 #'
 #' @param dat Harmonised exposure and outcome data. Output from [harmonise_data()].
@@ -21,7 +21,7 @@ mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list =
 		}
 		res <- lapply(method_list, function(meth)
 		{
-			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)	
+			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
 		})
 		methl <- mr_method_list()
 		het_tab <- data.frame(
