@@ -7,7 +7,7 @@ load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
 test_that("MRInput", {
 	skip_if(getRversion() < '4.4.0') # because MendelianRandomization will not be installed
 	w <- dat_to_MRInput(dat, get_correlations=FALSE)
-	expect_true(length(w) == 1)	
+	expect_true(length(w) == 1)
 	expect_true(class(w) == "list")
 	expect_true(class(w[[1]]) == "MRInput")
 })
@@ -26,7 +26,7 @@ test_that("MRInput with cor", {
 
 test_that("mrpresso", {
 	expect_warning(w <- run_mr_presso(dat))
-	expect_true(length(w) == 1)	
+	expect_true(length(w) == 1)
 	expect_true(class(w) == "list")
 	expect_true(class(w[[1]]) == "list")
 	expect_true(length(w[[1]]) == 2)
