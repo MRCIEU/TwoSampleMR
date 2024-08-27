@@ -235,5 +235,6 @@ extract_split <- function(snplist, id, splitsize=20000)
         pbapply::pblapply(., function(x)
         {
             ieugwasr::associations(x, id, proxies=FALSE)
-        }) %>% dplyr::bind_rows()
+        }) %>%
+        dplyr::bind_rows()
 }
