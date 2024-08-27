@@ -160,7 +160,7 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 #' @keywords internal
 #' @return Character or array of character
 simple_cap <- function(x) {
-	sapply(x, function(x){
+	sapply(x, function(x) {
 		x <- tolower(x)
 		s <- strsplit(x, " ")[[1]]
 		paste(toupper(substring(s, 1,1)), substring(s, 2), sep="", collapse=" ")
