@@ -41,7 +41,9 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 	typS = sum(v*(k-1))/(sum.v^2 - sum(v^2))
 	for(j in 1:L)
 	{
-		tausq = 0 ; Fstat = 1 ;TAUsq = NULL
+		tausq = 0
+		Fstat = 1
+		TAUsq = NULL
 		while(Fstat>0)
 		{
 			TAUsq = c(TAUsq, tausq)
