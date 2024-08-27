@@ -1,7 +1,7 @@
 #' Create scatter plot with lines showing the causal estimate for different MR tests
 #'
 #' Requires dev version of ggplot2
-#' 
+#'
 #' @param mr_results Output from [mr()].
 #' @param dat Output from [harmonise_data()].
 #' @export
@@ -50,8 +50,8 @@ mr_scatter_plot <- function(mr_results, dat)
 
 blank_plot <- function(message)
 {
-	ggplot2::ggplot(data.frame(a=0,b=0,n=message)) + 
-    ggplot2::geom_text(ggplot2::aes(x=a,y=b,label=n)) + 
-    ggplot2::labs(x=NULL,y=NULL) + 
+	ggplot2::ggplot(data.frame(a=0,b=0,n=message)) +
+    ggplot2::geom_text(ggplot2::aes(x=a,y=b,label=n)) +
+    ggplot2::labs(x=NULL,y=NULL) +
     ggplot2::theme(axis.text=ggplot2::element_blank(), axis.ticks=ggplot2::element_blank())
 }
