@@ -311,8 +311,6 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 		id.set.unique<-unique(id.sets)
 		dat$id.set<-as.numeric(factor(id.sets))
 		for(i in seq_along(id.set.unique)){
-			print(i)
-			print(id.set.unique[i])
 			dat1<-dat[id.sets == id.set.unique[i],]
 			# unique(dat1[,c("exposure","outcome")])
 			id.subset<-paste(dat1$exposure,dat1$id.exposure,dat1$outcome,dat1$id.outcome)
@@ -344,11 +342,12 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 					iv.se<- 1/sqrt(mean(dat2$samplesize.outcome)*r2sum) #standard error of the IV should be proportional to this
 				}
 				if(dist.outcome == "binary"){
-					iv.se<-1/sqrt(mean(n.cas)*mean(n.con)*r2sum) #standard error of the IV should be proportional to this
 					if(any(is.na(n.cas)) || any(is.na(n.con))) {
 						warning("dist.outcome set to binary but number of cases or controls is missing. Will try using total sample size instead but power pruning will be less accurate")
 						iv.se<- 1/sqrt(mean(dat2$samplesize.outcome)*r2sum) 
-					}
+					} else {
+                    	iv.se<-1/sqrt(mean(n.cas)*mean(n.con)*r2sum) #standard error of the IV should be proportional to this
+                    }
 				}
 				# Power calculations to implement at some point
 				# iv.se<-1/sqrt(unique(n.cas)*unique(n.con)*r2sum) #standard error of the IV should be proportional to this
