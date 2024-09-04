@@ -339,7 +339,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 				r2sum<-sum(r2) # sum of the r-squares for each SNP in the instrument
 				# F<-r2sum*(n-1-k)/((1-r2sum*k )
 				if (dist.outcome == "continuous") {
-					iv.se<- 1/sqrt(mean(dat2$samplesize.outcome)*r2sum) #standard error of the IV should be proportional to this
+					iv.se<- 1/sqrt(mean(dat2$samplesize.outcome, na.rm = TRUE)*r2sum) #standard error of the IV should be proportional to this
 				}
 				if (dist.outcome == "binary") {
 					if(any(is.na(n.cas)) || any(is.na(n.con))) {
