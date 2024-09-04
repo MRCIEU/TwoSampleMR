@@ -344,9 +344,9 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 				if (dist.outcome == "binary") {
 					if(any(is.na(n.cas)) || any(is.na(n.con))) {
 						warning("dist.outcome set to binary but number of cases or controls is missing. Will try using total sample size instead but power pruning will be less accurate")
-						iv.se<- 1/sqrt(mean(dat2$samplesize.outcome)*r2sum)
+						iv.se<- 1/sqrt(mean(dat2$samplesize.outcome, na.rm = TRUE)*r2sum)
 					} else {
-                    	iv.se<-1/sqrt(mean(n.cas)*mean(n.con)*r2sum) #standard error of the IV should be proportional to this
+                    	iv.se<-1/sqrt(mean(n.cas, na.rm = TRUE)*mean(n.con, na.rm = TRUE)*r2sum) #standard error of the IV should be proportional to this
                     }
 				}
 				# Power calculations to implement at some point
