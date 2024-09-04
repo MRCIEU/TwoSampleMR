@@ -338,7 +338,6 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 				# n<-min(n) #sample size of the exposure/risk factor GWAS
 				r2sum<-sum(r2) # sum of the r-squares for each SNP in the instrument
 				# F<-r2sum*(n-1-k)/((1-r2sum*k )
-
 				if (dist.outcome == "continuous") {
 					iv.se<- 1/sqrt(mean(dat2$samplesize.outcome)*r2sum) #standard error of the IV should be proportional to this
 				}
