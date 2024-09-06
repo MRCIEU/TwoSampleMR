@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -433,7 +433,7 @@ function.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span></span>
-<span>  exposure_dat <span class="op">=</span> <span class="va">exp_dat</span>, </span>
+<span>  exposure_dat <span class="op">=</span> <span class="va">exp_dat</span>,</span>
 <span>  outcome_dat <span class="op">=</span> <span class="va">chd_out_dat</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span></code></pre></div>
@@ -456,9 +456,9 @@ intervals. To specify the size of the point estimate, set the weight
 argument to the name of the column in the data with the weight
 information.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># default is to subset on either the IVW method (&gt;1 instrumental SNP) or Wald ratio method (1 instrumental SNP). </span></span>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># default is to subset on either the IVW method (&gt;1 instrumental SNP) or Wald ratio method (1 instrumental SNP).</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_1_to_many.html">sort_1_to_many</a></span><span class="op">(</span><span class="va">res</span>, b <span class="op">=</span> <span class="st">"b"</span>, sort_action <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="co"># this sorts results by decreasing effect size (largest effect at top of the plot)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column </span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column</span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">weight</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="va">res</span><span class="op">$</span><span class="va">se</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">-</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">res</span><span class="op">$</span><span class="va">se</span><span class="op">)</span><span class="op">)</span> <span class="co"># identify value for 'lo' in forest_plot_1_to_many</span></span>
@@ -544,7 +544,7 @@ in this example we want the row names to correspond to the MR
 method.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column </span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="../reference/sort_1_to_many.html">sort_1_to_many</a></span><span class="op">(</span></span>
@@ -581,7 +581,7 @@ for each unique exposure-outcome combination and sort the results by
 decreasing effect size within each group (i.e. largest effect at the
 top).</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">subcategory</span><span class="op">[</span><span class="va">res</span><span class="op">$</span><span class="va">exposure</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Adiponectin"</span>, <span class="st">"Hip circumference"</span>, <span class="st">"Waist circumference"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Group 1"</span></span>
@@ -633,12 +633,12 @@ test this against 103 diseases in the IEU GWAS database:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dat3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span></span>
-<span>  exposure_dat <span class="op">=</span> <span class="va">exp_dat</span>, </span>
+<span>  exposure_dat <span class="op">=</span> <span class="va">exp_dat</span>,</span>
 <span>  outcome_dat <span class="op">=</span> <span class="va">dis_dat</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat3</span>, method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_wald_ratio"</span>, <span class="st">"mr_ivw"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_outcome.html">split_outcome</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column </span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_outcome.html">split_outcome</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_1_to_many.html">sort_1_to_many</a></span><span class="op">(</span><span class="va">res</span>, b <span class="op">=</span> <span class="st">"b"</span>, sort_action <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="co"># this sorts results by decreasing effect size (largest effect at top of the plot)</span></span></code></pre></div>
 <p>MR results for 103 diseases can be difficult to visualise in a
@@ -691,7 +691,7 @@ details.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf</a></span><span class="op">(</span><span class="st">"plot1.pdf"</span>, height <span class="op">=</span> <span class="fl">10</span>, width <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span><span class="va">plot1</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -812,11 +812,11 @@ direction</li>
 <p>These tests are obtained using:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mr_steiger.html">mr_steiger</a></span><span class="op">(</span></span>
-<span>  p_exp <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">pval.exposure</span>, </span>
-<span>  p_out <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">pval.outcome</span>, </span>
-<span>  n_exp <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">samplesize.exposure</span>, </span>
-<span>  n_out <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">samplesize.outcome</span>, </span>
-<span>  r_xxo <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>  p_exp <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">pval.exposure</span>,</span>
+<span>  p_out <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">pval.outcome</span>,</span>
+<span>  n_exp <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">samplesize.exposure</span>,</span>
+<span>  n_out <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">samplesize.outcome</span>,</span>
+<span>  r_xxo <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  r_yyo <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  r_exp<span class="op">=</span><span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -941,7 +941,7 @@ R<sup>2</sup>) for each pair of variants present in the 1000 genomes
 data set.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span></span>
-<span>  exposure_dat <span class="op">=</span> <span class="va">bmi_exp_dat</span>, </span>
+<span>  exposure_dat <span class="op">=</span> <span class="va">bmi_exp_dat</span>,</span>
 <span>  outcome_dat <span class="op">=</span> <span class="va">chd_out_dat</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span></code></pre></div>
