@@ -53,7 +53,7 @@ To harmonise the exposure and outcome data, do the following:
 
 ```{r}
 dat <- harmonise_data(
-	exposure_dat = bmi_exp_dat, 
+	exposure_dat = bmi_exp_dat,
 	outcome_dat = chd_out_dat
 )
 ```

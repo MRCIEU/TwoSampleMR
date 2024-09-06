@@ -1,7 +1,6 @@
-Ghuber <- function (u, k = 30, deriv = 0)
+Ghuber <- function(u, k = 30, deriv = 0)
 {
-    if (!deriv)
-    {
+    if (!deriv) {
         return(pmin(1, k/abs(u)))
     } else {
         return(abs(u) <= k)
@@ -21,15 +20,13 @@ Ghuber <- function (u, k = 30, deriv = 0)
 #' @return model fit
 ldsc_h2_internal <- function(Z, r2, N, W=NULL)
 {
-    if (is.null(W))
-    {
+    if (is.null(W)) {
         W <- rep(1, length(Z))
     }
     tau <- (mean(Z^2) - 1) / mean(N * r2)
     Wv <- 1 / (1 + tau * N * r2)^2
     id <- which(Z^2 > 30)
-    if (length(id) > 0)
-    {
+    if (length(id) > 0) {
         Wv[id] <- sqrt(Wv[id])
     }
     mod <- MASS::rlm(I(Z^2) ~ I(N * r2), weight = W * Wv,
@@ -57,14 +54,13 @@ ldsc_h2_internal <- function(Z, r2, N, W=NULL)
 #'
 #' Guo,B. and Wu,B. (2018) Principal component based adaptive association test of multiple traits using GWAS summary statistics. bioRxiv 269597; doi: 10.1101/269597
 #'
-#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961. 
+#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961.
 #'
-#' https://github.com/baolinwu/MTAR 
+#' https://github.com/baolinwu/MTAR
 #' @keywords internal
 ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 {
-    if(is.null(W))
-    {
+    if (is.null(W)) {
         W = rep(1,length(r2))
     }
 
@@ -76,8 +72,7 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
     r0 <- 0
 
     ## 1st round
-    if(any(Nc > 0))
-    {
+    if (any(Nc > 0)) {
         rcf <- as.vector(MASS::rlm(Y ~ X, psi = Ghuber)$coef)
         r0 <- rcf[1]
         gv <- rcf[-1]
@@ -88,13 +83,11 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
     ## 2nd round
     Wv <- 1 / ((h1 * N1r2 + 1) * (h2 * N2r2 + 1) + (X * gv + r0)^2)
     id <- which(abs(Zs[,1] * Zs[,2]) > 30)
-    if(length(id) > 0)
-    {
+    if(length(id) > 0) {
         Wv[id] <- sqrt(Wv[id])
     }
 
-    if(any(Nc > 0))
-    {
+    if (any(Nc > 0)) {
         rcf <- MASS::rlm(Y ~ X, weight = W * Wv, psi = Ghuber, k = 30)
     } else {
         rcf <- MASS::rlm(Y ~ X - 1, weight = W * Wv, psi = Ghuber, k = 30)
@@ -119,13 +112,12 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 #'
 #' Guo,B. and Wu,B. (2018) Principal component based adaptive association test of multiple traits using GWAS summary statistics. bioRxiv 269597; doi: 10.1101/269597
 #'
-#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961. 
+#' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961.
 #'
 #' <https://github.com/baolinwu/MTAR>
 ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
 {
-    if(is.null(snpinfo))
-    {
+    if (is.null(snpinfo)) {
         snpinfo <- ieugwasr::afl2_list("hapmap3")
     }
 
@@ -140,12 +132,11 @@ ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
 
     stopifnot(nrow(d) > 0)
 
-    if(ancestry == "infer")
-    {
+    if (ancestry == "infer") {
         ancestry <- ieugwasr::infer_ancestry(d, snpinfo)$pop[1]
     }
 
-    d <- snpinfo %>% 
+    d <- snpinfo %>%
         dplyr::select(rsid, l2=paste0("L2.", ancestry)) %>%
         dplyr::inner_join(., d, by="rsid") %>%
         dplyr::filter(complete.cases(.))
@@ -167,8 +158,7 @@ ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
 #' @return model fit
 ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
 {
-    if(is.null(snpinfo))
-    {
+    if (is.null(snpinfo)) {
         snpinfo <- ieugwasr::afl2_list("hapmap3")
     }
 
@@ -189,22 +179,20 @@ ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
 
     stopifnot(nrow(d2) > 0)
 
-    if(ancestry == "infer")
-    {
+    if (ancestry == "infer") {
         ancestry1 <- ieugwasr::infer_ancestry(d1, snpinfo)
         ancestry2 <- ieugwasr::infer_ancestry(d2, snpinfo)
-        if(ancestry1$pop[1] != ancestry2$pop[1])
-        {
+        if (ancestry1$pop[1] != ancestry2$pop[1]) {
             stop("d1 ancestry is ", ancestry1$pop[1], " and d2 ancestry is ", ancestry2$pop[1])
         }
         ancestry <- ancestry1$pop[1]
     }
 
-    d1 <- snpinfo %>% 
+    d1 <- snpinfo %>%
         dplyr::select(rsid, l2=paste0("L2.", ancestry)) %>%
         dplyr::inner_join(., d1, by="rsid")
 
-    d2 <- snpinfo %>% 
+    d2 <- snpinfo %>%
         dplyr::select(rsid, l2=paste0("L2.", ancestry)) %>%
         dplyr::inner_join(., d2, by="rsid")
 
@@ -247,5 +235,6 @@ extract_split <- function(snplist, id, splitsize=20000)
         pbapply::pblapply(., function(x)
         {
             ieugwasr::associations(x, id, proxies=FALSE)
-        }) %>% dplyr::bind_rows()
+        }) %>%
+        dplyr::bind_rows()
 }

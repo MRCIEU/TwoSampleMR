@@ -1,12 +1,12 @@
 #' Convert TwoSampleMR format to MendelianRandomization format
 #'
-#' The MendelianRandomization package offers MR methods that can 
+#' The MendelianRandomization package offers MR methods that can
 #' be used with the same data used in the TwoSampleMR package. This
 #' function converts from the TwoSampleMR format to the MRInput class.
 #'
 #' @param dat Output from the [harmonise_data()] function.
 #' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.
-#' @param pop If `get_correlations` is `TRUE` then use the following 
+#' @param pop If `get_correlations` is `TRUE` then use the following
 #'
 #' @export
 #' @return List of MRInput objects for each exposure/outcome combination
@@ -186,7 +186,7 @@ dat_to_RadialMR <- function(dat)
 }
 
 #' Radial IVW analysis
-#' 
+#'
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
 #' @param se_exp Standard errors of genetic effects on exposure.
@@ -256,10 +256,10 @@ run_mrmix <- function(dat)
 			x$eaf.exposure[index] <- x$eaf.outcome[index]
 		}
 		l <- MRMix::standardize(
-			x$beta.exposure, 
-			x$beta.outcome, 
-			x$se.exposure, 
-			x$se.outcome, 
+			x$beta.exposure,
+			x$beta.outcome,
+			x$se.exposure,
+			x$se.outcome,
 			xunit,
 			yunit,
 			x$samplesize.exposure,

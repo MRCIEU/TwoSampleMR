@@ -1,3 +1,10 @@
+# TwoSampleMR v0.6.8
+
+(Release date 2024-09-06)
+
+* Replaced some `unique()` calls in `power_prune()` with `mean()` to ensure scalar `iv.se` values (thanks @phageghost)
+* Slightly improved formatting of code base
+
 # TwoSampleMR v0.6.7
 
 (Release date 2024-08-21)

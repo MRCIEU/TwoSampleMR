@@ -43,7 +43,7 @@
 #' @param decrease (logical) sort the studies by decreasing effect sizes `TRUE`/`FALSE`?
 #' @param se_Col (character) name of the column giving the standard error of the effect sizes.
 #' @param returnRobj (logical) return the graph as an internal R object `TRUE`/`FALSE`?
-#' 
+#'
 #' @keywords internal
 #' @return grid object giving the forest plot (or plot as pdf)
 mr_forest_plot_grouped <-
@@ -117,7 +117,7 @@ mr_forest_plot_grouped <-
                     idx <- idx + 2 + n_std
                 }
                 # returns data frame giving spacings, primary annotation (content_list), typeface attributes for the primary annotation (attr_list), and  mapping between rows in forest plot and rows in meta-analytic data frame
-                return( data.frame( spacing_vec = (1 + length(spacing_vec) - spacing_vec), content_list = unlist(content_list), row_list = unlist(row_list), attr_list = unlist(attr_list) ) )
+                return(data.frame(spacing_vec = (1 + length(spacing_vec) - spacing_vec), content_list = unlist(content_list), row_list = unlist(row_list), attr_list = unlist(attr_list)))
             }
 
 
@@ -162,7 +162,7 @@ mr_forest_plot_grouped <-
                     data_Fm$eff_col <- log(as.numeric(data_Fm[,eff_col]))
                 }
                 # ggplot code to generate the forest plot using geom_segments and geom_points and to make a relatively minimal theme
-                raw_forest  <- ggplot2::ggplot(data = data_Fm, ggplot2::aes( y = space_col, yend = space_col, x = as.numeric(lb_col), xend = as.numeric(ub_col) )) + ggplot2::geom_segment() + ggplot2::geom_point(ggplot2::aes( y = space_col,  x = as.numeric(eff_col), size = 4 )) + ggplot2::theme_bw() + ggplot2::theme( axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank(), axis.title = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(), rect = ggplot2::element_blank(), title = ggplot2::element_text(size = 23), legend.position = 'none') + ggplot2::expand_limits(y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + ggplot2::labs(title = title_text) # returns ggplot2 object with the (un-annotated) forest plot
+                raw_forest  <- ggplot2::ggplot(data = data_Fm, ggplot2::aes(y = space_col, yend = space_col, x = as.numeric(lb_col), xend = as.numeric(ub_col))) + ggplot2::geom_segment() + ggplot2::geom_point(ggplot2::aes(y = space_col,  x = as.numeric(eff_col), size = 4)) + ggplot2::theme_bw() + ggplot2::theme(axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank(), axis.title = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(), rect = ggplot2::element_blank(), title = ggplot2::element_text(size = 23), legend.position = 'none') + ggplot2::expand_limits(y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + ggplot2::labs(title = title_text) # returns ggplot2 object with the (un-annotated) forest plot
                 return(raw_forest)
             }
 
@@ -180,10 +180,10 @@ mr_forest_plot_grouped <-
                 data_Fm$text_col <- data_Fm[,text_col]
 
                 # A hard rule to set the width of the annotation column, which sometimes truncates very wide columns (complex disease names, numbers with 16 digits, etc)
-                text_widths <- c(-1, max(10,0.5 * max(sapply( as.character(data_Fm[,text_col]),nchar ))))
+                text_widths <- c(-1, max(10,0.5 * max(sapply(as.character(data_Fm[,text_col]), nchar))))
 
                 # GGplot rendering of the annotation column
-                lefttext  <- ggplot2::ggplot(data = data_Fm, ggplot2::aes( y = space_col, x = 0, label = text_col, fontface = attr_list )) + ggplot2::geom_text(hjust = 0) + ggplot2::theme_bw() + ggplot2::theme( axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank(),axis.text.x = ggplot2::element_text(colour = "white"),axis.ticks.x = ggplot2::element_line(colour = "white"), axis.title = ggplot2::element_blank(), rect = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(), title = ggplot2::element_text(size = 23) ) + ggplot2::expand_limits(x = text_widths,  y = c(data_Fm[,space_col] - 1, data_Fm[,space_col] + 2)) + ggplot2::labs(title = title_text, size = 40)  # returns two-item list with left_text, the GGplot annotations, and text_widths, the x-axis limits of the plot
+                lefttext  <- ggplot2::ggplot(data = data_Fm, ggplot2::aes(y = space_col, x = 0, label = text_col, fontface = attr_list)) + ggplot2::geom_text(hjust = 0) + ggplot2::theme_bw() + ggplot2::theme(axis.text.y = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank(), axis.text.x = ggplot2::element_text(colour = "white"), axis.ticks.x = ggplot2::element_line(colour = "white"), axis.title = ggplot2::element_blank(), rect = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(), title = ggplot2::element_text(size = 23)) + ggplot2::expand_limits(x = text_widths, y = c(data_Fm[, space_col] - 1, data_Fm[, space_col] + 2)) + ggplot2::labs(title = title_text, size = 40) # returns two-item list with left_text, the GGplot annotations, and text_widths, the x-axis limits of the plot
                 return(list(left_text = lefttext, text_widths = text_widths))
             }
 
@@ -203,7 +203,7 @@ mr_forest_plot_grouped <-
 
                 for (i in seq_along(col_names)) {
                     # loop to get the widths of each annotation column and to group the annotation objects together
-                    col <- anot_col( data_Fm = data_Fm, text_col = col_names[i], space_col = space_col, title_text = title_list[[i]] )
+                    col <- anot_col(data_Fm = data_Fm, text_col = col_names[i], space_col = space_col, title_text = title_list[[i]])
                     relative_widths[i] <- col$text_widths[2] - col$text_widths[1]
                     output[[col_names[i]]] <- ggplotGrob(col$left_text)
                 }
@@ -246,7 +246,7 @@ mr_forest_plot_grouped <-
             width_vec <- c(left_RW,0.34,right_RW)
             width_vec <- width_vec / sum(width_vec)
             # convert the grid objects (now grouped) into a table of grid objects that can be plotted using grid.draw
-            grp_FP <- gtable::gtable_matrix( name = "groupplot", grobs = matrix(grob_Bag, nrow = 1), widths = unit(width_vec, "npc"), heights = unit(1,"npc") )
+            grp_FP <- gtable::gtable_matrix(name = "groupplot", grobs = matrix(grob_Bag, nrow = 1), widths = unit(width_vec, "npc"), heights = unit(1,"npc"))
 
             # return the grid object table, to be plotted
             return(grp_FP)
@@ -263,18 +263,18 @@ mr_forest_plot_grouped <-
 
 
         ## order and structure effect sizes and CIs for forest plot
-        space1 <- spacer( exposure = exposure_Name, eff_col = eff_Col, outcome = outcome_Name, Data_Fm = data, decrease = decrease)
+        space1 <- spacer(exposure = exposure_Name, eff_col = eff_Col, outcome = outcome_Name, Data_Fm = data, decrease = decrease)
 
         expand_data  <- space_Out(data_Fm = data, space_Fm = space1)
 
         ## Make the forest plot
-        fo1  <- ggforest( data_Fm = expand_data, space_col = 'spacing_vec', eff_col = eff_Col, lb_col = "lb" ,ub_col = "ub", log_ES = log_ES, title_text = forest_Title )
+        fo1  <- ggforest(data_Fm = expand_data, space_col = 'spacing_vec', eff_col = eff_Col, lb_col = "lb" ,ub_col = "ub", log_ES = log_ES, title_text = forest_Title)
 
         ## Construct left-hand-side annotations
-        left <- anot_side( data_Fm = expand_data, space_col = 'spacing_vec', col_names = left_Col_Names, title_list = left_Col_Titles )
+        left <- anot_side(data_Fm = expand_data, space_col = 'spacing_vec', col_names = left_Col_Names, title_list = left_Col_Titles)
 
         ## Construct right-hand-side annotations
-        right <- anot_side( data_Fm = expand_data, space_col = 'spacing_vec', col_names = right_Col_Names, title_list = right_Col_Titles )
+        right <- anot_side(data_Fm = expand_data, space_col = 'spacing_vec', col_names = right_Col_Names, title_list = right_Col_Titles)
 
         ## group all plots together
         group <- group_Plots(forst_Pt = fo1, left_Hs = left, right_Hs = right)

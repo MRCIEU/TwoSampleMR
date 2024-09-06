@@ -18,7 +18,7 @@ test_that("server and mrinstruments 2", {
 	if (class(exp_dat) == "try-error") skip("Server issues")
 	expect_true(length(unique(exp_dat$id)) == 1)
 })
-	
+
 test_that("server and mrinstruments 3", {
 	# yes no
 	exp_dat <- try(extract_instruments(outcomes=c("ieu-a-2", "ieu-a-1032")))

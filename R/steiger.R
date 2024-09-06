@@ -29,17 +29,17 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 	d$rgx <- rgx_o / d$rxx_o
 	d$z <- d$rgy - d$rgx
 	d$z[d$type=="A"] <- 0
-	mycolors.trans = grDevices::rgb(c(255,0), c(0,0), 
-               c(0,255),alpha = c(70,255), maxColorValue = 255) 
+	mycolors.trans = grDevices::rgb(c(255,0), c(0,0),
+               c(0,255),alpha = c(70,255), maxColorValue = 255)
 
 	temp <- lattice::wireframe(
-		z ~ rxx_o * ryy_o, 
-		groups=type, 
-		data=d, 
-		scales=list(arrows=FALSE), 
-		col.groups = mycolors.trans, 
-		drape=FALSE, 
-		ylab=expression(rho[xx[o]]), 
+		z ~ rxx_o * ryy_o,
+		groups=type,
+		data=d,
+		scales=list(arrows=FALSE),
+		col.groups = mycolors.trans,
+		drape=FALSE,
+		ylab=expression(rho[xx[o]]),
 		xlab=expression(rho[yy[o]]),
 		zlab=expression(rho[gy]-rho[gx]),
 		par.settings = list(axis.line=list(col="transparent")),
@@ -130,13 +130,13 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yy
 	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
 	rtest_adj <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp_adj, r34 = r_out_adj)
 	l <- list(
-		r2_exp = r_exp^2, 
-		r2_out = r_out^2, 
-		r2_exp_adj = r_exp_adj^2, 
-		r2_out_adj = r_out_adj^2, 
-		correct_causal_direction = r_exp > r_out, 
+		r2_exp = r_exp^2,
+		r2_out = r_out^2,
+		r2_exp_adj = r_exp_adj^2,
+		r2_out_adj = r_out_adj^2,
+		correct_causal_direction = r_exp > r_out,
 		steiger_test = stats::pnorm(-abs(rtest[["z"]])) * 2,
-		correct_causal_direction_adj = r_exp_adj > r_out_adj, 
+		correct_causal_direction_adj = r_exp_adj > r_out_adj,
 		steiger_test_adj = stats::pnorm(-abs(rtest_adj[["z"]])) * 2,
 		vz = sensitivity$vz,
 		vz0 = sensitivity$vz0,
@@ -173,11 +173,11 @@ directionality_test <- function(dat)
 	}
 	dtest <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x)
 	{
-		if(!"r.exposure" %in% names(x)) 
+		if(!"r.exposure" %in% names(x))
 		{
 			x$r.exposure <- NA
 		}
-		if(!"r.outcome" %in% names(x)) 
+		if(!"r.outcome" %in% names(x))
 		{
 			x$r.outcome <- NA
 		}
@@ -247,13 +247,13 @@ mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
 	rtest_adj <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp_adj, r34 = r_out_adj)
 	l <- list(
-		r2_exp = r_exp^2, 
-		r2_out = r_out^2, 
-		r2_exp_adj = r_exp_adj^2, 
-		r2_out_adj = r_out_adj^2, 
-		correct_causal_direction = r_exp > r_out, 
+		r2_exp = r_exp^2,
+		r2_out = r_out^2,
+		r2_exp_adj = r_exp_adj^2,
+		r2_out_adj = r_out_adj^2,
+		correct_causal_direction = r_exp > r_out,
 		steiger_test = stats::pnorm(-abs(rtest[["z"]]))*2,
-		correct_causal_direction_adj = r_exp_adj > r_out_adj, 
+		correct_causal_direction_adj = r_exp_adj > r_out_adj,
 		steiger_test_adj = stats::pnorm(-abs(rtest_adj[["z"]]))*2,
 		vz = sensitivity$vz,
 		vz0 = sensitivity$vz0,

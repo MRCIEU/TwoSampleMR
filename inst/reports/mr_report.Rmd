@@ -1,9 +1,7 @@
 ```{r init, echo=FALSE}
-
 suppressPackageStartupMessages(library(knitr))
 suppressPackageStartupMessages(library(Cairo))
 opts_chunk$set(warning=FALSE, echo=FALSE, message=FALSE, results='asis', fig.width=6, fig.height=6, dev="png", fig.path=paste0('figure/', sanitise_string(title)))
-
 ```
 
 # Two sample MR report
@@ -18,10 +16,8 @@ Date: **`r format(Sys.time(), '%d %B, %Y')`**
 
 ### Results from two sample MR:
 
-```{r chunk1 }
-
+```{r chunk1}
 kable(tablist$mr, row.names=FALSE)
-
 ```
 
 ---
@@ -29,29 +25,23 @@ kable(tablist$mr, row.names=FALSE)
 ### Heterogeneity tests
 
 ```{r chunk2}
-
 kable(tablist$mr_heterogeneity, row.names=FALSE)
-
 ```
 
 --- 
 
 ### Test for directional horizontal pleiotropy
 
-```{r chunk3 }
-
+```{r chunk3}
 kable(tablist$mr_pleiotropy_test, row.names=FALSE)
-
 ```
 
 --- 
 
 ### Test that the exposure is upstream of the outcome
 
-```{r chunk4 }
-
+```{r chunk4}
 kable(tablist$directionality_test, row.names=FALSE)
-
 ```
 
 Note - R^2 values are approximate
@@ -60,38 +50,30 @@ Note - R^2 values are approximate
 
 ### Forest plot of single SNP MR
 
-```{r chunk5 }
-
+```{r chunk5}
 plotlist$mr_forest_plot
-
 ```
 
 ---
 
 ### Comparison of results using different MR methods
 
-```{r chunk6 }
-
+```{r chunk6}
 plotlist$mr_scatter_plot
-
 ```
 
 ---
 
 ### Funnel plot
 
-```{r chunk7 }
-
+```{r chunk7}
 plotlist$mr_funnel_plot
-
 ```
 
 ---
 
 ### Leave-one-out sensitivity analysis
 
-```{r chunk8 }
-
+```{r chunk8}
 plotlist$mr_leaveoneout_plot
-
 ```

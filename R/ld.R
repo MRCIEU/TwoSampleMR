@@ -1,12 +1,12 @@
 #' Perform LD clumping on SNP data
 #'
 #' Uses PLINK clumping method, where SNPs in LD within a particular window will be pruned. The SNP with the lowest p-value is retained.
-#' 
+#'
 #' @details
 #' This function interacts with the OpenGWAS API, which houses LD reference panels for the 5 super-populations in the 1000 genomes reference panel.
 #' It includes only bi-allelic SNPs with MAF > 0.01, so it's quite possible that a variant you want to include in the clumping process will be absent.
 #' If it is absent, it will be automatically excluded from the results.
-#' 
+#'
 #' You can check if your variants are present in the LD reference panel using [ieugwasr::ld_reflookup()].
 #'
 #' This function does put load on the OpenGWAS servers, which makes life more difficult for other users.
@@ -48,7 +48,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 	} else {
 		pval_column <- "pval.exposure"
 	}
-	
+
 	if(! "id.exposure" %in% names(dat))
 	{
 		dat$id.exposure <- random_string(1)
@@ -72,7 +72,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 #' The data used for generating the LD matrix includes only bi-allelic SNPs with MAF > 0.01,
 #' so it's quite possible that a variant you want to include will be absent.
 #' If it is absent, it will be automatically excluded from the results.
-#' 
+#'
 #' You can check if your variants are present in the LD reference panel using [ieugwasr::ld_reflookup()].
 #'
 #' This function does put load on the OpenGWAS servers, which makes life more difficult for other users,

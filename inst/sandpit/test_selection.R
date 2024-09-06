@@ -10,9 +10,9 @@ find_invalid_instruments <- function(d1, d2, d3, steiger_thresh=0.05)
 	for (i in seq_len(nrow(d1)))
 	{
 		l0[[i]] <- mr_steiger(
-			d2$pval[i], 
-			d1$pval[i], 
-			d2$n[i], 
+			d2$pval[i],
+			d1$pval[i],
+			d2$n[i],
 			d1$n[i]
 		)
 	}

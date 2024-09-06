@@ -1,13 +1,13 @@
 #' Get list of studies with available GWAS summary statistics through API
 #'
 #' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
-#' 
+#'
 #' @export
 #' @return Dataframe of details for all available studies
 available_outcomes <- function(opengwas_jwt = ieugwasr::get_opengwas_jwt())
 {
 	# .Deprecated("ieugwasr::gwasinfo()")
-	a <- ieugwasr::gwasinfo(opengwas_jwt=opengwas_jwt)	
+	a <- ieugwasr::gwasinfo(opengwas_jwt=opengwas_jwt)
 	return(a)
 }
 
@@ -85,7 +85,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 	{
 
 		d <- ieugwasr::associations(
-			variants = snps, 
+			variants = snps,
 			id = outcomes,
 			proxies = proxies,
 			r2 = rsq,
@@ -98,20 +98,20 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 
 	} else if(length(snps) > length(outcomes)) {
 
-		# Split snps 
-		n <- length(snps)		
+		# Split snps
+		n <- length(snps)
 		splits <- data.frame(snps=snps, chunk_id=rep(1:(ceiling(n/splitsize)), each=splitsize)[1:n])
 		d <- list()
 		for(i in seq_along(outcomes))
 		{
 			message(i, " of ", length(outcomes), " outcomes")
-			
+
 			d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x)
 			{
 				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
 				out <- ieugwasr::associations(
-					variants = x$snps, 
+					variants = x$snps,
 					id = outcomes[i],
 					proxies = proxies,
 					r2 = rsq,
@@ -135,14 +135,14 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		for(i in seq_along(snps))
 		{
 			message(i, " of ", length(snps), " snps")
-			
+
 			d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x)
 			{
 				x <- plyr::mutate(x)
 				message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
 
 				out <- ieugwasr::associations(
-					variants = snps[i], 
+					variants = snps[i],
 					id = x$outcomes,
 					proxies = proxies,
 					r2 = rsq,
@@ -166,7 +166,7 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 		return(NULL)
 	}
 	d <- format_d(d)
-	if (nrow(d)>0){
+	if (nrow(d)>0) {
 		d$data_source.outcome <- "igd"
 		return(d)
 	} else {
@@ -286,5 +286,5 @@ format_d <- function(d)
 		warning("None of the provided SNPs can be used for MR analysis, they are missing required information.")
 	}
 
-	return(d)	
+	return(d)
 }

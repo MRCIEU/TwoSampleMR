@@ -14,7 +14,7 @@ skip_on_cran()
 # d6 <- extract_instruments("ieu-a-2")[1:5,]
 # d7 <- extract_outcome_data(exposure$SNP, 'ieu-a-2')
 # d8 <- extract_outcome_data(exposure$SNP, 'ukb-d-30710_irnt')
-# d9 <- extract_instruments("bbj-a-1") 
+# d9 <- extract_instruments("bbj-a-1")
 # d10 <- extract_instruments("ieu-b-109")
 
 # save(d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, file="inst/extdata/test_add_metadata.RData", compress = "xz")

@@ -114,8 +114,8 @@ mr_mean_egger <- function(d)
 	y2 <- ratios * weights2
 	egger2 <- summary(stats::lm(y2 ~ weights2))
 	eggeroutliers <- dplyr::tibble(
-		SNP=d$SNP, 
-		Qj = weights2^2 * (ratios - stats::coefficients(egger2)[1,1] / weights2 - stats::coefficients(egger2)[2,1])^2, 
+		SNP=d$SNP,
+		Qj = weights2^2 * (ratios - stats::coefficients(egger2)[1,1] / weights2 - stats::coefficients(egger2)[2,1])^2,
 		Qpval=stats::pchisq(Qj,1,lower.tail=FALSE)
 	)
 
@@ -209,7 +209,7 @@ mr_all <- function(dat, parameters=default_parameters())
 		m1$estimates <- dplyr::bind_rows(m1$estimates, m2, m3)
 	}
 	m1$info <- c(list(
-			id.exposure = dat$id.exposure[1], id.outcome = dat$id.outcome[1]),		
+			id.exposure = dat$id.exposure[1], id.outcome = dat$id.outcome[1]),
 			system_metrics(dat)
 		) %>% dplyr::as_tibble()
 	return(m1)

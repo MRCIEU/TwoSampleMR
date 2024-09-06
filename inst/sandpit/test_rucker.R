@@ -201,8 +201,10 @@ if (weights==2) {W = 1/(seBetaYG^2/BXG^2 + (BYG^2)*seBetaXG^2/BXG^4)}
 
             BIVw = BIV*sqrt(W)
             sW   = sqrt(W)
-IR          = lm(BIVw ~ -1+sW);IVW[i] = IR$coef[1]
-MR          = lm(BIVw ~    sW);E[i]   = MR$coef[2]
+IR          = lm(BIVw ~ -1+sW)
+IVW[i] = IR$coef[1]
+MR          = lm(BIVw ~    sW)
+E[i]   = MR$coef[2]
 
 DF1      = length(BetaYG)-1
 phi_IVW  = summary(IR)$sigma^2

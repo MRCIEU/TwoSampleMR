@@ -48,8 +48,8 @@ m <- mr(d)
 mrs <- mr_leaveoneout(dat)
 p <- mr_leaveoneout_plot(mrs)
 mr_report(mr_results, dat, path="inst/reports", output_path=".")
-ggplot(mrs[[3]], aes(x=SNP, y=b)) + 
-geom_point() + 
+ggplot(mrs[[3]], aes(x=SNP, y=b)) +
+geom_point() +
 geom_errorbar(aes(ymin=b-se, ymax=b+se),width=0, colour=grey) +
 coord_flip()
 

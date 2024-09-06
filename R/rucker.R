@@ -1,8 +1,8 @@
 #' I-squared calculation
 #'
-#' This function calculates the \eqn{I^2} statistic. 
+#' This function calculates the \eqn{I^2} statistic.
 #' To use it for the \eqn{I^2_{GX}} metric ensure that the effects are all the same sign (e.g. \code{abs(y)}).
-#' 
+#'
 #' @param y Vector of effects.
 #' @param s Vector of standard errors.
 #'
@@ -41,8 +41,10 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 	typS = sum(v*(k-1))/(sum.v^2 - sum(v^2))
 	for(j in 1:L)
 	{
-		tausq = 0 ; F = 1 ;TAUsq = NULL
-		while(F>0)
+		tausq = 0
+		Fstat = 1
+		TAUsq = NULL
+		while(Fstat>0)
 		{
 			TAUsq = c(TAUsq, tausq)
 			w = 1/(s^2+tausq)
@@ -51,9 +53,9 @@ PM <- function(y = y, s = s, Alpha = 0.1)
 			yW = sum(y*w)/sum.w
 			Q1 = sum(w*(y-yW)^2)
 			Q2 = sum(w2*(y-yW)^2)
-			F = Q1-Quant[j]
-			Ftau = max(F,0)
-			delta = F/Q2
+			Fstat = Q1-Quant[j]
+			Ftau = max(Fstat,0)
+			delta = Fstat/Q2
 			tausq = tausq + delta
 		}
 		MU[j] = yW
@@ -97,7 +99,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 {
 	if("mr_keep" %in% names(dat)) dat <- subset(dat, mr_keep)
 
-	if(nrow(dat) < 3) 
+	if(nrow(dat) < 3)
 	{
 		warning("Need at least 3 SNPs")
 		return(NULL)
@@ -179,7 +181,7 @@ mr_rucker_internal <- function(dat, parameters=default_parameters())
 	se0_egger_fe <- stats::coefficients(mod_egger)[1,2] / max(mod_egger$sigma, 1)
 	if(parameters$test_dist == "z")
 	{
-		pval0_egger_fe <- stats::pnorm(abs(b0_egger_fe/se0_egger_fe), lower.tail=FALSE) * 2	
+		pval0_egger_fe <- stats::pnorm(abs(b0_egger_fe/se0_egger_fe), lower.tail=FALSE) * 2
 	} else {
 		pval0_egger_fe <- stats::pt(abs(b0_egger_fe/se0_egger_fe), nsnp-2, lower.tail=FALSE) * 2
 	}
@@ -344,7 +346,7 @@ mr_rucker_bootstrap <- function(dat, parameters=default_parameters())
 		ggplot2::geom_density(ggplot2::aes_string(fill="model_name"), alpha=0.4) +
 		ggplot2::geom_vline(data=res, ggplot2::aes_string(xintercept="Estimate", colour="Method")) +
 		ggplot2::scale_colour_brewer(type="qual") +
-		ggplot2::scale_fill_brewer(type="qual") + 
+		ggplot2::scale_fill_brewer(type="qual") +
 		ggplot2::labs(fill="Bootstrap estimates", colour="")
 
 	return(list(rucker=rucker, res=res, bootstrap_estimates=modsel, boostrap_q=bootstrap, q_plot=p1, e_plot=p2))
@@ -464,7 +466,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters=default_parameters())
 			ggplot2::geom_density(ggplot2::aes_string(fill="model_name"), alpha=0.4) +
 			ggplot2::geom_vline(data=res, ggplot2::aes_string(xintercept="Estimate", colour="Method")) +
 			ggplot2::scale_colour_brewer(type="qual") +
-			ggplot2::scale_fill_brewer(type="qual") + 
+			ggplot2::scale_fill_brewer(type="qual") +
 			ggplot2::labs(fill="Bootstrap estimates", colour="")
 
 		return(list(rucker=rucker, res=res, bootstrap_estimates=modsel, boostrap_q=bootstrap, q_plot=p1, e_plot=p2))
@@ -504,7 +506,7 @@ mr_rucker_cooksdistance <- function(dat, parameters=default_parameters())
 		index <- rucker$cooksdistance > cooks_threshold
 		i <- i + 1
 	}
-	
+
 	rucker$removed_snps <- dat_orig$SNP[! dat_orig$SNP %in% dat$SNP]
 	rucker$selected$Method <- "Rucker (CD)"
 	rucker$rucker$Method <- paste0(rucker$rucker$Method, " (CD)")
