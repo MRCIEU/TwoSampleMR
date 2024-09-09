@@ -51,7 +51,8 @@ Imports:
     psych,
     RadialMR,
     reshape2,
-    rmarkdown
+    rmarkdown,
+    rlang
 Suggests: 
     Cairo,
     car,
