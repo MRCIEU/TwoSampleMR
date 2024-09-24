@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   exposure: exposure.html
@@ -8,7 +8,7 @@ articles:
   introduction: introduction.html
   outcome: outcome.html
   perform_mr: perform_mr.html
-last_built: 2024-09-06T08:29Z
+last_built: 2024-09-24T21:07Z
 urls:
   reference: https://mrcieu.github.io/TwoSampleMR/reference
   article: https://mrcieu.github.io/TwoSampleMR/articles
