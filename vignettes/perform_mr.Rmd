@@ -633,7 +633,7 @@ ld_mat
 
 Here `ld_matrix()` returns the LD correlation values (not R^2^) for each pair of variants present in the 1000 genomes data set.
 
-```{r}
+```{r eval=FALSE}
 dat <- harmonise_data(
   exposure_dat = bmi_exp_dat,
   outcome_dat = chd_out_dat
@@ -642,7 +642,7 @@ dat <- harmonise_data(
 
 Convert to the `MRInput` format for the MendelianRandomization package:
 
-```{r}
+```{r eval=FALSE}
 dat2 <- dat_to_MRInput(dat)
 ```
 
