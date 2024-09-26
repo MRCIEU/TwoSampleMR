@@ -907,7 +907,7 @@ plots because they are conditional on the other exposures.</p>
 </h3>
 <p>If you want to perform analysis with your local summary data
 (i.e. not in the OpenGWAS database) then use then look up the
-<code><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local()</a></code> function in replace of the
+<code><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local()</a></code> function instead of the
 <code><a href="../reference/mv_extract_exposures.html">mv_extract_exposures()</a></code> function.</p>
 <hr>
 </div>
@@ -943,20 +943,44 @@ data set.</p>
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span></span>
 <span>  exposure_dat <span class="op">=</span> <span class="va">bmi_exp_dat</span>,</span>
 <span>  outcome_dat <span class="op">=</span> <span class="va">chd_out_dat</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span></code></pre></div>
 <p>Convert to the <code>MRInput</code> format for the
 MendelianRandomization package:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dat_to_MRInput.html">dat_to_MRInput</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dat_to_MRInput.html">dat_to_MRInput</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Converting:</span></span>
+<span><span class="co">#&gt;  - exposure: Body mass index || id:ieu-a-2</span></span>
+<span><span class="co">#&gt;  - outcome: Coronary heart disease || id:ieu-a-7</span></span></code></pre></div>
 <p>This produces a list of <code>MRInput</code> objects that can be used
 with the MendelianRandomization functions, e.g.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">MendelianRandomization</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MendelianRandomization/man/mr_ivw.html" class="external-link">mr_ivw</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">MendelianRandomization</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MendelianRandomization/man/mr_ivw.html" class="external-link">mr_ivw</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Inverse-variance weighted method</span></span>
+<span><span class="co">#&gt; (variants uncorrelated, random-effect model)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Number of Variants : 79 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt;  Method Estimate Std Error 95% CI       p-value</span></span>
+<span><span class="co">#&gt;     IVW    0.446     0.059 0.330, 0.562   0.000</span></span>
+<span><span class="co">#&gt; ------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Residual standard error =  1.357 </span></span>
+<span><span class="co">#&gt; Heterogeneity test statistic (Cochran's Q) = 143.6508 on 78 degrees of freedom, (p-value = 0.0000). I^2 = 45.7%. </span></span>
+<span><span class="co">#&gt; F statistic = 65.6.</span></span></code></pre></div>
 <p>Alternatively, convert to the <code>MRInput</code> format but also
 obtaining the LD matrix for the instruments</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dat_to_MRInput.html">dat_to_MRInput</a></span><span class="op">(</span><span class="va">dat</span>, get_correlation <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu">MendelianRandomization</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MendelianRandomization/man/mr_ivw.html" class="external-link">mr_ivw</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, correl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="../reference/dat_to_MRInput.html">dat_to_MRInput</a></span><span class="op">(</span><span class="va">dat</span>, get_correlation <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Converting:</span></span>
+<span><span class="co">#&gt;  - exposure: Body mass index || id:ieu-a-2</span></span>
+<span><span class="co">#&gt;  - outcome: Coronary heart disease || id:ieu-a-7</span></span>
+<span><span class="co">#&gt;  - obtaining LD matrix</span></span>
+<span><span class="co">#&gt; Please look at vignettes for options on running this locally if you need to run many instances of this command.</span></span>
+<span><span class="co">#&gt; Error in matrix(as.numeric(res), nrow(res), ncol(res)) : </span></span>
+<span><span class="co">#&gt;   non-numeric matrix extent</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"try-error"</span><span class="op">)</span> <span class="fu">MendelianRandomization</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MendelianRandomization/man/mr_ivw.html" class="external-link">mr_ivw</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, correl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -1069,10 +1093,10 @@ outcome name using the split_outcome function:</p>
 <span><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
 <span><span class="co">#&gt;                      method nsnp         b         se         pval</span></span>
 <span><span class="co">#&gt; 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07339519 1.342747e-07</span></span>
+<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07717818 5.318417e-07</span></span>
 <span><span class="co">#&gt; 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15427234 3.040723e-02</span></span>
-<span><span class="co">#&gt; 5             Weighted mode   79 0.3790910 0.10389505 4.741627e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15276076 2.885059e-02</span></span>
+<span><span class="co">#&gt; 5             Weighted mode   79 0.3790910 0.10761091 7.173381e-04</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="split-exposure-names">Split exposure names<a class="anchor" aria-label="anchor" href="#split-exposure-names"></a>
@@ -1103,10 +1127,10 @@ confidence intervals using:</p>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3790910</span></span>
 <span><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653</span></span>
-<span><span class="co">#&gt; 2 0.07339519 1.342747e-07 0.24315192 0.5308610 1.472566 1.275262 1.700396</span></span>
+<span><span class="co">#&gt; 2 0.07717818 5.318417e-07 0.23573724 0.5382757 1.472566 1.265842 1.713051</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328</span></span>
-<span><span class="co">#&gt; 4 0.15427234 3.040723e-02 0.03778165 0.6425292 1.405166 1.038504 1.901284</span></span>
-<span><span class="co">#&gt; 5 0.10389505 4.741627e-04 0.17545669 0.5827253 1.460956 1.191790 1.790913</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.15276076 2.885059e-02 0.04074434 0.6395665 1.405166 1.041586 1.895659</span></span>
+<span><span class="co">#&gt; 5 0.10761091 7.173381e-04 0.16817361 0.5900084 1.460956 1.183142 1.804004</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="subset-on-method">Subset on method<a class="anchor" aria-label="anchor" href="#subset-on-method"></a>
