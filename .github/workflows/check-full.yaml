@@ -35,6 +35,7 @@ jobs:
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
           - {os: ubuntu-latest,   r: '4.3.2'}
+          - {os: ubuntu-24.04-arm, r: 'release', rspm: 'no' }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -50,7 +51,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          use-public-rspm: ${{ matrix.config.rspm || 'true' }}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
