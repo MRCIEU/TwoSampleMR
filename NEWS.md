@@ -4,6 +4,7 @@
 
 * Fixed a bug in `format_data()` when the `log_pval` argument was set to `TRUE`.
 The specified p-value column is now used (thanks to @luddeluddis)
+* Amend references to MR-Base to OpenGWAS
 
 # TwoSampleMR v0.6.8
 
