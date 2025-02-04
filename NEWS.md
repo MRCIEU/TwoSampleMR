@@ -2,6 +2,8 @@
 
 (Release date 2025-02-05)
 
+* Fixed a bug in `format_data()` when the `log_pval` argument was set to `TRUE`.
+The specified p-value column is now used (thanks to @luddeluddis)
 
 # TwoSampleMR v0.6.8
 
