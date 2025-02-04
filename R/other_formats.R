@@ -5,7 +5,7 @@
 #' function converts from the TwoSampleMR format to the MRInput class.
 #'
 #' @param dat Output from the [harmonise_data()] function.
-#' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from the European 1000 genomes data on the MR-Base server.
+#' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from the European 1000 genomes data on OpenGWAS.
 #' @param pop If `get_correlations` is `TRUE` then use the following
 #'
 #' @export
