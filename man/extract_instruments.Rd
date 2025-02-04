@@ -2,7 +2,7 @@
 % Please edit documentation in R/instruments.R
 \name{extract_instruments}
 \alias{extract_instruments}
-\title{Find instruments for use in MR from the MR Base database}
+\title{Find instruments for use in MR from the OpenGWAS database}
 \usage{
 extract_instruments(
   outcomes,
