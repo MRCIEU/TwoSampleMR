@@ -36,4 +36,4 @@ To update the package just run the `remotes::install_github("MRCIEU/TwoSampleMR"
 
 ## Docker
 
-A docker image containing R with the TwoSampleMR package pre-installed is available here: https://hub.docker.com/r/mrcieu/twosamplemr
+A multi-platform docker image containing R with the TwoSampleMR package pre-installed (for both x86_64 and ARM computers) is available here: https://hub.docker.com/r/mrcieu/twosamplemr
