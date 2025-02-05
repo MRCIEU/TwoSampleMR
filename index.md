@@ -7,7 +7,7 @@
 [![TwoSampleMR status badge](https://mrcieu.r-universe.dev/badges/TwoSampleMR)](https://mrcieu.r-universe.dev/TwoSampleMR)
 <!-- badges: end -->
 
-A package for performing Mendelian randomization using GWAS summary data. It uses the [IEU GWAS database](https://gwas.mrcieu.ac.uk/) to obtain data automatically, and a wide range of methods to run the analysis. You can use the [MR-Base web app](https://www.mrbase.org/) to try out a limited range of the functionality in this package, but for any serious work we strongly recommend using this R package.
+A package for performing Mendelian randomization using GWAS summary data. It uses the [IEU OpenGWAS database](https://gwas.mrcieu.ac.uk/) to obtain data automatically, and a wide range of methods to run the analysis.
 
 ## January 2020 major update 
 
@@ -36,4 +36,4 @@ To update the package just run the `remotes::install_github("MRCIEU/TwoSampleMR"
 
 ## Docker
 
-A docker image containing R with the TwoSampleMR package pre-installed is available here: https://hub.docker.com/r/mrcieu/twosamplemr
+A multi-platform docker image containing R with the TwoSampleMR package pre-installed (for both x86_64 and ARM computers) is available here: https://hub.docker.com/r/mrcieu/twosamplemr

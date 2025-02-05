@@ -1,6 +1,6 @@
 c(
 bibentry(
-  header = "If using MR-Base, the IEU GWAS database, or the TwoSampleMR R package please cite:",
+  header = "If using MR-Base, the IEU OpenGWAS database, or the TwoSampleMR R package please cite:",
   bibtype = "Article",
   author = c(
     person("G.", "Hemani", role = c("aut", "cre")),

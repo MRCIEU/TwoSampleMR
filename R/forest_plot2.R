@@ -11,10 +11,10 @@
 #'
 #' By default it uses the [available_outcomes()] function to retrieve the study level characteristics for the outcome trait,
 #' including sample size and outcome category.
-#' This assumes the MR analysis was performed using outcome GWAS(s) contained in MR-Base.
+#' This assumes the MR analysis was performed using outcome GWAS(s) contained in OpenGWAS.
 #'
 #' If \code{ao_slc} is set to \code{TRUE} then the user must supply their own study level characteristics.
-#' This is useful when the user has supplied their own outcome GWAS results (i.e. they are not in MR-Base).
+#' This is useful when the user has supplied their own outcome GWAS results (i.e. they are not in OpenGWAS).
 #'
 #' @param mr_res Results from [mr()].
 #' @param exponentiate Convert effects to OR? The default is `FALSE`.

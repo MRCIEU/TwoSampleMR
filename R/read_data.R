@@ -212,7 +212,7 @@ if (inherits(dat, "data.table")) {
 
 	if(log_pval)
 	{
-		dat$pval <- 10^-dat[[pval_col]]
+		dat[[pval_col]] <- 10^-dat[[pval_col]]
 	}
 
 	# Remove duplicated SNPs
