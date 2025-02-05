@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -545,9 +545,9 @@ levels in at birth:</p>
 <span>                             <span class="va">age</span> <span class="op">==</span> <span class="st">"Birth"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="ieu-gwas-database">IEU GWAS database<a class="anchor" aria-label="anchor" href="#ieu-gwas-database"></a>
+<h3 id="ieu-opengwas-database">IEU OpenGWAS database<a class="anchor" aria-label="anchor" href="#ieu-opengwas-database"></a>
 </h3>
-<p>The IEU GWAS database contains the entire summary statistics for
+<p>The IEU OpenGWAS database contains the entire summary statistics for
 thousands of GWASs. You can browse them here: <a href="https://gwas.mrcieu.ac.uk/" class="external-link uri">https://gwas.mrcieu.ac.uk/</a></p>
 <p>You can use this database to define the instruments for a particular
 exposure. You can also use this database to obtain the effects for
@@ -621,8 +621,8 @@ obtain SNP effects for constructing polygenic risk scores.</p>
 </h2>
 <p>For standard two sample MR it is important to ensure that the
 instruments for the exposure are independent. Once instruments have been
-identified for an exposure variable, the IEU GWAS database can be used
-to perform clumping.</p>
+identified for an exposure variable, the IEU OpenGWAS database can be
+used to perform clumping.</p>
 <p>You can provide a list of SNP IDs, the SNPs will be extracted from
 1000 genomes data, LD calculated between them, and amongst those SNPs
 that have LD R-square above the specified threshold only the SNP with

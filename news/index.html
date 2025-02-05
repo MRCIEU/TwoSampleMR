@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,12 @@
       <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.9" id="twosamplemr-v069">TwoSampleMR v0.6.9<a class="anchor" aria-label="anchor" href="#twosamplemr-v069"></a></h2>
+<p>(Release date 2025-02-05)</p>
+<ul><li>Fixed a bug in <code><a href="../reference/format_data.html">format_data()</a></code> when the <code>log_pval</code> argument was set to <code>TRUE</code>. The specified p-value column is now used (thanks to <a href="https://github.com/luddeluddis" class="external-link">@luddeluddis</a>)</li>
+<li>Amend references to MR-Base to OpenGWAS</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.8" id="twosamplemr-v068">TwoSampleMR v0.6.8<a class="anchor" aria-label="anchor" href="#twosamplemr-v068"></a></h2>
 <p>(Release date 2024-09-06)</p>
@@ -329,8 +335,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="twosamplemr-v031">TwoSampleMR v0.3.1<a class="anchor" aria-label="anchor" href="#twosamplemr-v031"></a></h2>
 <p>(Release date: 2017-11-22)</p>
-<ul><li><p>One of the external packages that TwoSampleMR depends upon had changed, making the authorisation behaviour change. The authorisation was timing out after an hour and it was not refreshing after its timeout. This has now been fixed - the authorisation token will refresh after an hour.</p></li>
-<li><p>The authorisation token used to be stored in a hidden file called .httr-oauth. This has now been changed - it will be stored in a visible file called ‘mrbase.oauth’.</p></li>
+<ul><li>One of the external packages that TwoSampleMR depends upon had changed, making the authorisation behaviour change. The authorisation was timing out after an hour and it was not refreshing after its timeout. This has now been fixed - the authorisation token will refresh after an hour.</li>
+<li>The authorisation token used to be stored in a hidden file called .httr-oauth. This has now been changed - it will be stored in a visible file called ‘mrbase.oauth’.</li>
 </ul></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
