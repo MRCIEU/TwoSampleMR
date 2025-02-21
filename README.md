@@ -4,7 +4,7 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<img src="man/figures/logo.svg" align="right" alt="" width="160" />
+<img src="man/figures/logo.svg" align="right" alt="" width="150" />
 
 
 # Mendelian randomization with GWAS summary data
