@@ -41,6 +41,9 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 	# Harmonise against the first id
 	d <- harmonise_data(d1, d2, action=harmonise_strictness)
 
+	# Drop SNPs that do not pass harmonisation (e.g. palindromic)
+	d <- subset(d, mr_keep)
+
 	# Only keep SNPs that are present in all
 	tab <- table(d$SNP)
 	keepsnps <- names(tab)[tab == length(id_exposure)-1]
@@ -223,6 +226,9 @@ mv_extract_exposures_local <- function(
 
 	# Harmonise against the first id
 	d <- harmonise_data(d1, d2, action=harmonise_strictness)
+
+	# Drop SNPs that do not pass harmonisation (e.g. palindromic)
+	d <- subset(d, mr_keep)
 
 	# Only keep SNPs that are present in all
 	tab <- table(d$SNP)
