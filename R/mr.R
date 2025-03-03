@@ -12,6 +12,13 @@
 #' }
 mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_method_list(), use_by_default)$obj)
 {
+
+  if ("mr_raps" %in% method_list) {
+    if (!(requireNamespace("mr.raps", quietly = TRUE))) {
+      stop("You can install mr.raps with install.packages('mr.raps', repos = c('https://mrcieu.r-universe.dev', 'https://cloud.r-project.org'))")
+    }
+  }
+  
 	mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing MR analysis of '", x1$id.exposure[1], "' on '", x18WII58$id.outcome[1], "'")
@@ -232,7 +239,7 @@ mr_method_list <- function()
 
 #' List of parameters for use with MR functions
 #'
-#' The default is `list(test_dist = "z", nboot = 1000, Cov = 0, penk = 20, phi = 1, alpha = 0.05, Qthresh = 0.05, over.dispersion = TRUE, loss.function = "huber")`.
+#' The default is `list(test_dist = "z", nboot = 1000, Cov = 0, penk = 20, phi = 1, alpha = 0.05, Qthresh = 0.05, over.dispersion = TRUE, loss.function = "huber", shrinkage = FALSE)`.
 #'
 #' @export
 default_parameters <- function()
@@ -246,8 +253,8 @@ default_parameters <- function()
 		alpha = 0.05,
 		Qthresh = 0.05,
 		over.dispersion = TRUE,
-                loss.function = "huber",
-                shrinkage = FALSE
+    loss.function = "huber",
+    shrinkage = FALSE
 	)
 }
 
@@ -974,6 +981,10 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' @export
 mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameters()) {
 
+  if (!(requireNamespace("mr.raps", quietly = TRUE))) {
+    stop("You can install mr.raps with install.packages('mr.raps', repos = c('https://mrcieu.r-universe.dev', 'https://cloud.r-project.org'))")
+  }
+  
     data <- data.frame(beta.exposure = b_exp,
                        beta.outcome = b_out,
                        se.exposure = se_exp,

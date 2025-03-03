@@ -1,0 +1,49 @@
+# Test mr()
+
+# dat <- make_dat("ieu-a-2", "ieu-a-7")
+load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
+
+test_that("Test mr(): MR Egger, Weighted median, Inverse variance weighted, Simple mode, Weighted mode", {
+  res <- mr(dat)
+  expect_equal(nrow(res), 5L)
+  expect_equal(ncol(res), 9L)
+  expect_equal(res[1, "b"], 0.5025, tolerance = 1e-3)
+  expect_equal(res[2, "b"], 0.3870, tolerance = 1e-3)
+  expect_equal(res[3, "b"], 0.4459, tolerance = 1e-3)
+  expect_equal(res[4, "b"], 0.3402, tolerance = 1e-3)
+  expect_equal(res[5, "b"], 0.3791, tolerance = 1e-1)
+})
+
+test_that("mr.raps", {
+  res2 <- suppressWarnings(mr(dat, method_list = "mr_raps"))
+  expect_equal(nrow(res2), 1L)
+  expect_equal(ncol(res2), 9L)
+  expect_equal(res2[1, "b"], 0.4647, tolerance = 1e-3)
+})
+
+test_that("mr.raps over.dispersion option", {
+  params <- default_parameters()
+  params$over.dispersion <- FALSE
+  res3 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
+  expect_equal(nrow(res3), 1L)
+  expect_equal(ncol(res3), 9L)
+  expect_equal(res3[1, "b"], 0.4682, tolerance = 1e-3)
+})
+
+test_that("mr.raps loss.function option", {
+  params <- default_parameters()
+  params$loss.function <- "tukey"
+  res4 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
+  expect_equal(nrow(res4), 1L)
+  expect_equal(ncol(res4), 9L)
+  expect_equal(res4[1, "b"], 0.4788, tolerance = 1e-3)
+})
+
+test_that("mr.raps shrinkage option", {
+  params <- default_parameters()
+  params$shrinkage <- TRUE
+  res5 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
+  expect_equal(nrow(res5), 1L)
+  expect_equal(ncol(res5), 9L)
+  expect_equal(res5[1, "b"], 0.4647, tolerance = 1e-3)
+})
