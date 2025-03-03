@@ -13,3 +13,10 @@ test_that("Test mr(): MR Egger, Weighted median, Inverse variance weighted, Simp
   expect_equal(res[4, "b"], 0.3402, tolerance = 1e-4)
   expect_equal(res[5, "b"], 0.3791, tolerance = 1e-4)
 })
+
+test_that("mr.raps", {
+  res2 <- suppressWarnings(mr(dat, method_list = "mr_raps"))
+  expect_equal(nrow(res2), 1L)
+  expect_equal(ncol(res2), 9L)
+  expect_equal(res2[1, "b"], 0.4647, tolerance = 1e-4)
+})
