@@ -7,7 +7,7 @@ A later version (0.4.1) than was on CRAN (0.2) is available from its GitHub repo
 We believe this later version still works as expected in **TwoSampleMR**.
 However, version 0.4.1 depends upon **rsnps** package which is itself now only available on its GitHub repo.
 Hence, we have added both packages to our <https://mrcieu.r-universe.dev/> and added that to the `Additional_repositories` field in the DESCRIPTION.
-We have also moved mr.raps to the soft dependency list (Suggests list) and added rsnps to our Suggests list with a remote.
+We have also moved mr.raps to the soft dependency list (Suggests list) and added rsnps to our Suggests list, both with remotes.
 * Fix to `default_parameters()` helpfile
 
 # TwoSampleMR v0.6.9
