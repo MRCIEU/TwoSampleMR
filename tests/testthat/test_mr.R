@@ -20,3 +20,30 @@ test_that("mr.raps", {
   expect_equal(ncol(res2), 9L)
   expect_equal(res2[1, "b"], 0.4647, tolerance = 1e-4)
 })
+
+test_that("mr.raps over.dispersion option", {
+  params <- default_parameters()
+  params$over.dispersion <- FALSE
+  res3 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
+  expect_equal(nrow(res3), 1L)
+  expect_equal(ncol(res3), 9L)
+  expect_equal(res3[1, "b"], 0.4682, tolerance = 1e-4)
+})
+
+test_that("mr.raps loss.function option", {
+  params <- default_parameters()
+  params$loss.function <- "tukey"
+  res4 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
+  expect_equal(nrow(res4), 1L)
+  expect_equal(ncol(res4), 9L)
+  expect_equal(res4[1, "b"], 0.4788, tolerance = 1e-4)
+})
+
+test_that("mr.raps shrinkage option", {
+  params <- default_parameters()
+  params$shrinkage <- TRUE
+  res5 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
+  expect_equal(nrow(res5), 1L)
+  expect_equal(ncol(res5), 9L)
+  expect_equal(res5[1, "b"], 0.4647, tolerance = 1e-4)
+})
