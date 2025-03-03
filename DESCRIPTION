@@ -57,6 +57,7 @@ Suggests:
     mr.raps,
     MRInstruments,
     randomForest,
+    rsnps,
     testthat,
     tidyr
 VignetteBuilder: 
@@ -66,7 +67,8 @@ Remotes:
     mrcieu/MRInstruments,
     MRPRESSO=rondolab/MR-PRESSO,
     qingyuanzhao/mr.raps,
-    WSpiller/RadialMR
+    WSpiller/RadialMR,
+    ropensci/rsnps
 Additional_repositories: https://mrcieu.r-universe.dev
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
