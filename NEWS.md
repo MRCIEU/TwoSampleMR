@@ -1,3 +1,10 @@
+# TwoSampleMR v0.6.11
+
+(Release date 2025-03-06)
+
+* The tests using **mr.raps** are now run conditionally.
+* The **rsnps** package has been removed from Suggests because the configuration of **mr.raps** has been corrected.
+
 # TwoSampleMR v0.6.10
 
 (Release date 2025-03-03)

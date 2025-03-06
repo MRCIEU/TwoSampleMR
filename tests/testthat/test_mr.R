@@ -15,6 +15,7 @@ test_that("Test mr(): MR Egger, Weighted median, Inverse variance weighted, Simp
 })
 
 test_that("mr.raps", {
+  skip_if_not_installed("mr.raps")
   res2 <- suppressWarnings(mr(dat, method_list = "mr_raps"))
   expect_equal(nrow(res2), 1L)
   expect_equal(ncol(res2), 9L)
@@ -22,6 +23,7 @@ test_that("mr.raps", {
 })
 
 test_that("mr.raps over.dispersion option", {
+  skip_if_not_installed("mr.raps")
   params <- default_parameters()
   params$over.dispersion <- FALSE
   res3 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
@@ -31,6 +33,7 @@ test_that("mr.raps over.dispersion option", {
 })
 
 test_that("mr.raps loss.function option", {
+  skip_if_not_installed("mr.raps")
   params <- default_parameters()
   params$loss.function <- "tukey"
   res4 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
@@ -40,6 +43,7 @@ test_that("mr.raps loss.function option", {
 })
 
 test_that("mr.raps shrinkage option", {
+  skip_if_not_installed("mr.raps")
   params <- default_parameters()
   params$shrinkage <- TRUE
   res5 <- suppressWarnings(mr(dat, method_list = "mr_raps", parameters = params))
