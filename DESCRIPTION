@@ -66,8 +66,7 @@ Remotes:
     mrcieu/MRInstruments,
     MRPRESSO=rondolab/MR-PRESSO,
     qingyuanzhao/mr.raps,
-    WSpiller/RadialMR,
-    ropensci/rsnps
+    WSpiller/RadialMR
 Additional_repositories: https://mrcieu.r-universe.dev
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
