@@ -64,6 +64,125 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 	))
 }
 
+ss_conf_calcs <- function(bxy, bgx, bux, buy, vg, vu, vex, vey) {
+    args <- as.list(environment())
+    bxyo <- ((bgx^2*bxy*vg + bux^2*bxy*vu + bux*buy*vu + bxy*vex) / (vg*bgx^2 + vu*bux^2 + vex))
+    vx <- bgx^2 * vg + bux^2 * vu + vex
+    vy <- bxy^2*bgx^2*vg + (bxy*bux+buy)^2*vu + bxy^2*(vex) + vey
+    conf <- bux * vu * buy / (vg * bgx^2 + vu * bux^2 + vex)
+    rsqxyo <- bxyo^2 * vx / vy
+    rsqxyos <- rsqxyo * sign(bxyo)
+    rsqxy <- bxy^2 * vx / vy
+    rsqxys <- rsqxy * sign(bxy)
+    rsqgx <- bgx^2*vg / (bgx^2 * vg + bux^2 * vu + vex)
+    rsqgy <- bgx^2*bxy^2*vg / (bxy^2*bgx^2*vg + (bxy*bux+buy)^2*vu + bxy^2*(vex) + vey)
+    rsqux <- bux^2*vu / (bgx^2 * vg + bux^2 * vu + vex)
+    rsquy <- (buy + bux * bxy)^2 * vu / (bxy^2*bgx^2*vg + (bxy*bux+buy)^2*vu + bxy^2*(vex) + vey)
+    rsquxs <- rsqux * sign(bux)
+    rsquys <- rsquy * sign(buy)
+    return(c(args, list(
+        vx=vx,
+        vy=vy,
+        bxyo=bxyo, 
+        conf=conf, 
+        rsqgx=rsqgx, 
+        rsqgy=rsqgy, 
+        rsqux=rsqux, 
+        rsquy=rsquy, 
+        rsqxy=rsqxy, 
+        rsqxyo=rsqxyo, 
+        rsqxyos=rsqxyos, 
+        rsquxs=rsquxs, 
+        rsquys=rsquys, 
+        rsqxys=rsqxys
+    )))
+}
+
+ss_conf_1d <- function(bxy=0.1, bxyo=0.2, bgx=0.5, vx=1, vy=1, vu=1, vg=0.5, simsize=100) {
+    # vx <- bgx^2 * vg + p$bux_vec^2 * vu + vex
+    bux_lim <- sqrt((vx - bgx^2 * vg)/vu)
+    bux_vec <- seq(-bux_lim, bux_lim, length.out=simsize)
+    # Allow causal effect to vary by +/- 200%
+    vex <- vx - bgx^2 * vg - bux_vec^2 * vu
+    conf <- bxyo - bxy
+    buy_vec <- conf * (bgx^2*vg + bux_vec^2*vu + vex) / (bux_vec * vu)
+    vey <- vy - (bxy^2*bgx^2*vg + (bxy*bux_vec+buy_vec)^2*vu + bxy^2*vex)
+    # vy <- bxy^2*bgx^2*vg + (bxy*bux_vec+buy_vec)^2*vu + bxy^2*vex + vey
+    bux_vec * vu * buy_vec / (vg * bgx^2 + vu * bux_vec^2 + vex)
+    res <- ss_conf_calcs(bxy, bgx, bux_vec, buy_vec, vg, vu, vex, vey) %>% 
+      dplyr::as_tibble() %>%
+      dplyr::mutate(bxy=bxy, bgx=bgx, bux=bux_vec, buy=buy_vec, vg=vg, vu=vu, vex=vex, vey=vey)
+    return(res)
+}
+
+#' Sensitivity analysis for unmeasured confounding on Steiger inferred causal direction
+#' 
+#' @description 
+#' This function takes known parameters from an MR analysis and determines the range of unmeasured 
+#' confounding that would be required to agree with the Steiger test inference, and the range of 
+#' unmeasured confounding values that would be required to disagree with the Steiger test inference
+#' 
+#' @param bxy MR estimate of x -> y
+#' @param bxyo Observational estimate of x -> y, if not available can re-run with different values to test sensitivity
+#' @param bgx SNP-exposure association
+#' @param vx Variance of X
+#' @param vy Variance of Y
+#' @param vg Variance of SNP (approximately 2*p*(1-p) where p is the allele frequency)
+#' @param vu Arbitrary variance of unmeasured confounder, default = 1
+#' @param simsize Density of search grid, default=10000
+#' @param beta_a Weighting of confounder values, which are beta distributed. Specify 'a' parameter of beta distribution, default=1 implying flat prior
+#' @param beta_b Weighting of confounder values, which are beta distributed. Specify 'b' parameter of beta distribution, default=1 implying flat prior
+#' @param plot Whether to generate plot. Default=TRUE
+#' 
+#' @importFrom stats dbeta quantile
+#' @importFrom rlang .data
+#' @export
+#' @return List of results
+#' \describe{
+#' \item{o}{data frame of possible confounding values and agreement with inferred steiger result}
+#' \item{prop}{(weighted) fraction of confounding space that agrees with inferred steiger result}
+#' \item{pl}{plot}
+#' }
+steiger_sensitivity_conf <- function(bxy, bxyo, bgx, vx, vy, vg, vu = 1, simsize=10000, beta_a=1, beta_b=1, plot=TRUE)
+{
+    o <- dplyr::bind_rows(
+        ss_conf_1d(bxy=bxy, bxyo=bxyo, bgx=bgx, vx=vx, vy=vy, vu=vu, vg=vg, simsize=simsize) %>%
+            dplyr::mutate(direction="inferred"),
+        ss_conf_1d(bxy=1/bxy, bxyo=bxyo * vx / vy, bgx=bgx * bxy, vx=vy, vy=vx, vu=vu, vg=vg, simsize=simsize) %>%
+            dplyr::mutate(direction="reverse")
+    ) %>%
+    dplyr::filter(
+        .data$vex >= 0 & 
+        .data$vey >= 0 &
+        .data$rsquy >= 0 & .data$rsquy <= 1 &
+        .data$rsqux >= 0 & .data$rsqux <= 1 &
+        .data$rsqgx >= 0 & .data$rsqgx <= 1 &
+        .data$rsqgy >= 0 & .data$rsqgy <= 1
+    ) %>%
+        dplyr::group_by(.data$direction) %>%
+        dplyr::do({
+            x <- .
+            x1 <- x$rsqux[-1]
+            x2 <- x$rsqux[-length(x$rsqux)]
+            y1 <- x$rsquy[-1]
+            y2 <- x$rsquy[-length(x$rsquy)]
+            d <- sqrt((x1-x2)^2 + (y1-y2)^2)
+            d[d > quantile(d, na.rm=T, probs=0.99)*4] <- NA
+            x$d <- c(NA, d)
+            x$weight <- dbeta(x$rsqux, shape1=beta_a, shape2=beta_b) * dbeta(x$rsquy, shape1=beta_a, shape2=beta_b)
+            x
+        })
+    
+    w <- o$d * o$weight
+    w1 <- w[o$direction=="inferred"]
+    prop <- sum(w1, na.rm=T) / sum(w, na.rm=T)
+    ret <- list(result=o, prop=prop)
+    if(plot) {
+        ret$pl <- ggplot2::ggplot(o, ggplot2::aes(x=.data$rsquxs, y=.data$rsquys)) +
+        ggplot2::geom_point(ggplot2::aes(colour=.data$direction, size=.data$weight))
+    }
+    return(ret)
+}
 
 #' MR Steiger test of directionality
 #'
