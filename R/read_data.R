@@ -196,6 +196,9 @@ if (inherits(dat, "data.table")) {
 	if(!is.null(snps))
 	{
 		dat <- subset(dat, SNP %in% snps)
+		if (nrow(dat) == 0L) {
+		  stop("No SNPs specified for the exposure are present in the outcome dataset.")
+		}
 	}
 
 	if(! phenotype_col %in% names(dat))
