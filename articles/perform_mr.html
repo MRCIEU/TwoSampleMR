@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -702,10 +702,12 @@ details.</p>
 <p>MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method
 that considers the measurement error in SNP-exposure effects, is
 unbiased when there are many (e.g. hundreds of) weak instruments, and is
-robust to systematic and idiosyncratic pleiotropy. See the <a href="https://arxiv.org/abs/1801.09652" class="external-link">arXiv preprint</a> for more
-detail about the statistical methodology.</p>
-<p>MR.RAPS is implemented in the R package <em>mr.raps</em> that is
-available on CRAN. It can be directly called from TwoSampleMR by</p>
+robust to systematic and idiosyncratic pleiotropy. See <span class="citation">Zhao et al. (2020)</span> for more detail about the
+statistical methodology.</p>
+<p>MR.RAPS is implemented in the R package <strong>mr.raps</strong> that
+is available on <a href="https://github.com/qingyuanzhao/mr.raps" class="external-link">GitHub</a> which is
+installed when you install TwoSampleMR. It can be directly called from
+TwoSampleMR by</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span>, method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_raps"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>MR.RAPS comes with two main options: <code>over.dispersion</code>
@@ -714,7 +716,7 @@ available on CRAN. It can be directly called from TwoSampleMR by</p>
 <code>"huber"</code>, or <code>"tukey"</code>). The latter two loss
 functions are robust to idiosyncratic pleiotropy. The default option is
 <code>over.dispersion = TRUE</code> and
-<code>loss.function = "tukey"</code>. To change these options, modify
+<code>loss.function = "huber"</code>. To change these options, modify
 the <code>parameters</code> argument of <code><a href="../reference/mr.html">mr()</a></code> by (for
 example)</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
@@ -1212,6 +1214,12 @@ Hemani, Gibran, Kate Tilling, and George Davey Smith. 2017.
 <span>“Orienting the Causal Relationship Between Imprecisely Measured
 Traits Using GWAS Summary Data.”</span> <em>PLOS Genetics</em> 13 (11):
 e1007081. <a href="https://doi.org/10.1371/journal.pgen.1007081" class="external-link">https://doi.org/10.1371/journal.pgen.1007081</a>.
+</div>
+<div id="ref-zhao2020" class="csl-entry">
+Zhao, Qingyuan, Jingshu Wang, Gibran Hemani, Jack Bowden, and Dylan S
+Small. 2020. <span>“<span class="nocase">Statistical inference in
+two-sample summary-data Mendelian randomization using robust adjusted
+profile score</span>”</span> 48: 1742–69. <a href="https://doi.org/10.1214/19-AOS1866" class="external-link">https://doi.org/10.1214/19-AOS1866</a>.
 </div>
 </div>
 </div>
