@@ -482,14 +482,14 @@ dev.off()
 
 ## MR.RAPS: Many weak instruments analysis
 
-MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method that considers the measurement error in SNP-exposure effects, is unbiased when there are many (e.g. hundreds of) weak instruments, and is robust to systematic and idiosyncratic pleiotropy. See the [arXiv preprint](https://arxiv.org/abs/1801.09652) for more detail about the statistical methodology.
+MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method that considers the measurement error in SNP-exposure effects, is unbiased when there are many (e.g. hundreds of) weak instruments, and is robust to systematic and idiosyncratic pleiotropy. See @zhao2020 for more detail about the statistical methodology.
 
-MR.RAPS is implemented in the R package _mr.raps_ that is available on CRAN. It can be directly called from TwoSampleMR by
+MR.RAPS is implemented in the R package **mr.raps** that is available on [GitHub](https://github.com/qingyuanzhao/mr.raps) which is installed when you install TwoSampleMR. It can be directly called from TwoSampleMR by
 ```{r eval=FALSE}
 res <- mr(dat, method_list = c("mr_raps"))
 ```
 
-MR.RAPS comes with two main options: `over.dispersion` (whether the method should consider systematic pleiotropy) and `loss.function` (either `"l2"`, `"huber"`, or `"tukey"`). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is `over.dispersion = TRUE` and `loss.function = "tukey"`. To change these options, modify the `parameters` argument of `mr()` by (for example)
+MR.RAPS comes with two main options: `over.dispersion` (whether the method should consider systematic pleiotropy) and `loss.function` (either `"l2"`, `"huber"`, or `"tukey"`). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is `over.dispersion = TRUE` and `loss.function = "huber"`. To change these options, modify the `parameters` argument of `mr()` by (for example)
 ```{r eval=FALSE}
 res <-
   mr(
