@@ -1,3 +1,11 @@
+# TwoSampleMR v0.6.12
+
+(Release date 2025-03-18)
+
+* Fixed a bug in `format_data()` (thanks to @lea-urpa)
+* For MVMR data extraction in `mv_extract_exposures()` and `mv_extract_exposures_local()`, SNPs that do not pass harmonisation between exposures in MVMR are now dropped (thanks @yatest)
+* The comments about **mr.raps** in the Perform MR vignette have been updated
+
 # TwoSampleMR v0.6.11
 
 (Release date 2025-03-06)

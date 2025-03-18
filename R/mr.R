@@ -18,7 +18,7 @@ mr <- function(dat, parameters=default_parameters(), method_list=subset(mr_metho
       stop("You can install mr.raps with install.packages('mr.raps', repos = c('https://mrcieu.r-universe.dev', 'https://cloud.r-project.org'))")
     }
   }
-  
+
 	mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
 	{
 		# message("Performing MR analysis of '", x1$id.exposure[1], "' on '", x18WII58$id.outcome[1], "'")
@@ -984,7 +984,7 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
   if (!(requireNamespace("mr.raps", quietly = TRUE))) {
     stop("You can install mr.raps with install.packages('mr.raps', repos = c('https://mrcieu.r-universe.dev', 'https://cloud.r-project.org'))")
   }
-  
+
     data <- data.frame(beta.exposure = b_exp,
                        beta.outcome = b_out,
                        se.exposure = se_exp,
