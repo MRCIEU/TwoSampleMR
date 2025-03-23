@@ -226,6 +226,14 @@ mr_method_list <- function()
 			Description="Doesn't use any weights",
 			use_by_default=FALSE,
 			heterogeneity_test=TRUE
+		),
+		list(
+		  obj = "mr_grip",
+		  name = "MR GRIP",
+		  PubmedID = "",
+		  Description = "Allele coding invariant regression",
+		  use_by_default = FALSE,
+		  heterogeneity_test = FALSE
 		)
 	)
 	a <- lapply(a, as.data.frame)
