@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.13
+
+(Release date 2025-##-##)
+
+* Added `mr_grip()` function which implements the MR-GRIP method of Dudbridge et al.
+
 # TwoSampleMR v0.6.12
 
 (Release date 2025-03-18)
