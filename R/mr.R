@@ -118,7 +118,7 @@ mr_method_list <- function()
 		list(
 			obj="mr_simple_median",
 			name="Simple median",
-			PubmedID="",
+			PubmedID="27061298",
 			Description="",
 			use_by_default=FALSE,
 			heterogeneity_test=FALSE
@@ -126,7 +126,7 @@ mr_method_list <- function()
 		list(
 			obj="mr_weighted_median",
 			name="Weighted median",
-			PubmedID="",
+			PubmedID="27061298",
 			Description="",
 			use_by_default=TRUE,
 			heterogeneity_test=FALSE
