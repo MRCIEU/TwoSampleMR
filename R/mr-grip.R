@@ -50,16 +50,15 @@ mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
   )
   grip_out <- b_out * b_exp
   grip_exp <- b_exp^2
-  grip_exp2 <- grip_exp^2
   # GRIP regression.  Includes intercept.  Weights designed to replicate IVW under no intercept.
-  mod <- stats::lm(grip_out ~ grip_exp, weights = 1 / (b_exp^2 * se_out^2))
+  mod <- stats::lm(grip_out ~ grip_exp, weights = 1 / (grip_exp * se_out^2))
   smod <- summary(mod)
   b <- stats::coefficients(smod)[2, 1]
   se <- stats::coefficients(smod)[2, 2]
   b.adj <- NA
   se.adj <- NA
   pval.adj <- NA
-  pval <- 2 * stats::pt(abs(b / se), length(b_exp) - 2, lower.tail = FALSE)
+  pval <- 2 * stats::pt(abs(b / se), length(b_exp) - 2L, lower.tail = FALSE)
   return(list(
     b = b,
     se = se,
