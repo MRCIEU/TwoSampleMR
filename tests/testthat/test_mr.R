@@ -51,3 +51,10 @@ test_that("mr.raps shrinkage option", {
   expect_equal(ncol(res5), 9L)
   expect_equal(res5[1, "b"], 0.4647, tolerance = 1e-3)
 })
+
+test_that("mr_grip()", {
+  res6 <- suppressWarnings(mr(dat, method_list = "mr_grip"))
+  expect_equal(nrow(res6), 1L)
+  expect_equal(ncol(res6), 9L)
+  expect_equal(res6[1, "b"], 0.490, tolerance = 1e-3)
+})
