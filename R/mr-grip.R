@@ -37,7 +37,7 @@ mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
     dat = NA
   )
   if (
-    sum(!is.na(b_exp) && !is.na(b_out) && !is.na(se_exp) && !is.na(se_out)) < 3
+    sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3
   ) {
     return(nulllist)
   }
