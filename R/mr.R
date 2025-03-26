@@ -142,7 +142,7 @@ mr_method_list <- function()
 		list(
 			obj="mr_ivw",
 			name="Inverse variance weighted",
-			PubmedID="",
+			PubmedID="24114802",
 			Description="",
 			use_by_default=TRUE,
 			heterogeneity_test=TRUE
