@@ -481,7 +481,8 @@ if (inherits(dat, "data.table")) {
 		dat$mr_keep.outcome <- dat$mr_keep.outcome & apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
 		if(any(!dat$mr_keep.outcome))
 		{
-			warning("The following SNP(s) are missing required information for the MR tests and will be excluded\n", paste(subset(dat, !mr_keep.outcome)$SNP, collapse="\n"))
+		  missinginfosnps <- paste(subset(dat, !mr_keep.outcome)$SNP, collapse = " ")
+			warning("The following SNP(s) are missing required information for the MR tests and will be excluded: ", missinginfosnps)
 		}
 	}
 	if(all(!dat$mr_keep.outcome))
