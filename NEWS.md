@@ -5,7 +5,7 @@
 * Added `mr_grip()` function which implements the MR-GRIP (modified MR-Egger with the Genotype Recoding Invariance Property) method of Dudbridge and Bowden et al. (2025).
   The new method can be accessed by `mr(dat, method_list = "mr_grip")` or it can be added to the default list of methods with `mr(dat, method_list = c(subset(mr_method_list(), use_by_default)$obj, "mr_grip"))`.
 * Added Pub Med IDs for more of the methods.
-* `format_data()` no longer causes a stack overflow when its `dat` argument is not a variable (thanks to @DarwinAwardWinner)
+* The `format_data()` function no longer causes a stack overflow when its `dat` argument is not a variable (thanks to @DarwinAwardWinner)
 
 # TwoSampleMR v0.6.12
 
