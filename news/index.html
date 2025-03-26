@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,16 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.12/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.13" id="twosamplemr-v0613">TwoSampleMR v0.6.13<a class="anchor" aria-label="anchor" href="#twosamplemr-v0613"></a></h2>
+<p>(Release date 2025-03-26)</p>
+<ul><li>Added <code><a href="../reference/mr_grip.html">mr_grip()</a></code> function which implements the MR-GRIP (modified MR-Egger with the Genotype Recoding Invariance Property) method of Dudbridge and Bowden et al. (2025). The new method can be accessed by <code>mr(dat, method_list = "mr_grip")</code> or it can be added to the default list of methods with <code>mr(dat, method_list = c(subset(mr_method_list(), use_by_default)$obj, "mr_grip"))</code>.</li>
+<li>Added Pub Med IDs for more of the methods.</li>
+<li>The <code><a href="../reference/format_data.html">format_data()</a></code> function no longer causes a stack overflow when its <code>dat</code> argument is not a variable (thanks to <a href="https://github.com/DarwinAwardWinner" class="external-link">@DarwinAwardWinner</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.12" id="twosamplemr-v0612">TwoSampleMR v0.6.12<a class="anchor" aria-label="anchor" href="#twosamplemr-v0612"></a></h2>
 <p>(Release date 2025-03-18)</p>
