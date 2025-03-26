@@ -174,7 +174,7 @@ mr_method_list <- function()
 		list(
 			obj="mr_simple_mode",
 			name="Simple mode",
-			PubmedID="",
+			PubmedID="29040600",
 			Description="",
 			use_by_default=TRUE,
 			heterogeneity_test=FALSE
@@ -182,7 +182,7 @@ mr_method_list <- function()
 		list(
 			obj="mr_weighted_mode",
 			name="Weighted mode",
-			PubmedID="",
+			PubmedID="29040600",
 			Description="",
 			use_by_default=TRUE,
 			heterogeneity_test=FALSE
@@ -190,7 +190,7 @@ mr_method_list <- function()
 		list(
 			obj="mr_weighted_mode_nome",
 			name="Weighted mode (NOME)",
-			PubmedID="",
+			PubmedID="29040600",
 			Description="",
 			use_by_default=FALSE,
 			heterogeneity_test=FALSE
@@ -198,7 +198,7 @@ mr_method_list <- function()
 		list(
 			obj="mr_simple_mode_nome",
 			name="Simple mode (NOME)",
-			PubmedID="",
+			PubmedID="29040600",
 			Description="",
 			use_by_default=FALSE,
 			heterogeneity_test=FALSE
