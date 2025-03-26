@@ -1,4 +1,10 @@
-#' MR-GRIP: Allele coding invariant version of MR-Egger
+#' MR-GRIP: a modified MR-Egger model with the Genotype Recoding Invariant Property
+#'
+#' This implements the modified MR-Egger model with the Genotype Recoding Invariant Property (MR-GRIP).
+#' It is well known that the results of MR-Egger are sensitive to which alleles are designated as the effect alleles.
+#' A pragmatic convention is to orient all SNPs to have positive effects on the exposure, which has some advantages in interpretation but also brings some philosophical limitations.
+#' The MR-GRIP model is a modification to the MR-Egger model in which each term is multiplied by the genotype-phenotype associations.
+#' This makes each term in the model invariant to allele coding.
 #'
 #' @param b_exp Vector of genetic effects on exposure.
 #' @param b_out Vector of genetic effects on outcome.
