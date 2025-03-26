@@ -495,7 +495,7 @@ res <-
 
 ## MR-GRIP
 
-MR-GRIP is a recently proposed method due to Dudbridge (2025) which is a modification to the MR-Egger method which has the Genotype Recoding Invariance Property (GRIP), it can be implemented using the code below.
+MR-GRIP is a recently proposed method due to Dudbridge and Bowden et al. (2025) which is a modification to the MR-Egger method which has the Genotype Recoding Invariance Property (GRIP), it can be implemented using the code below.
 
 ```{r eval=FALSE}
 res <- mr(dat, method_list = c("mr_grip"))
