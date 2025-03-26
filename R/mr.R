@@ -134,7 +134,7 @@ mr_method_list <- function()
 		list(
 			obj="mr_penalised_weighted_median",
 			name="Penalised weighted median",
-			PubmedID="",
+			PubmedID="27061298",
 			Description="",
 			use_by_default=FALSE,
 			heterogeneity_test=FALSE
