@@ -150,7 +150,7 @@ mr_method_list <- function()
 		list(
 			obj = "mr_ivw_radial",
 			name = "IVW radial",
-			PubmedID = "",
+			PubmedID = "29961852",
 			Description = "",
 			use_by_default = FALSE,
 			heterogeneity_test = TRUE
