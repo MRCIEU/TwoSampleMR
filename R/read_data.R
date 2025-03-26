@@ -165,12 +165,11 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
 {
 
 if (inherits(dat, "data.table")) {
-  datname <- deparse(substitute(dat))
-  stop(paste0(
-    "Your ", datname, " data.frame is also of class 'data.table', ",
-    "please reformat as simply a data.frame with ", datname, " <- data.frame(",
-    datname, ") and then rerun your format_data() call."
-  ))
+  stop(
+    "Your data.frame is also of class 'data.table' ",
+    "please reformat as simply a data.frame with data.frame() or as.data.frame() ",
+    "and then rerun format_data()."
+  )
 }
 
   all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col, z_col, info_col, chr_col, pos_col)
