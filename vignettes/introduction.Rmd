@@ -32,8 +32,6 @@ The general principles [@DaveySmith2003; @DaveySmithHemani2014], and statistical
 
 This package uses the [ieugwasr](https://github.com/mrcieu/ieugwasr) package to connect to the database of thousands of complete GWAS summary data.
 
-* * *
-
 ## Installation
 
 To install directly from the GitHub repository do the following:
@@ -44,8 +42,6 @@ install_github("MRCIEU/TwoSampleMR")
 ```
 
 If you don't have the `remotes` package install it from CRAN using `install.packages("remotes")`.
-
-* * *
 
 ## Overview
 
