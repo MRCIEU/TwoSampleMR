@@ -279,7 +279,8 @@ format_d <- function(d)
 	d$mr_keep.outcome <- apply(d[, mrcols], 1, function(x) !any(is.na(x)))
 	if(any(!d$mr_keep.outcome))
 	{
-		warning("The following SNP(s) are missing required information for the MR tests and will be excluded\n", paste(subset(d, !mr_keep.outcome)$SNP, collapse="\n"))
+	  missinginfosnps <- paste(subset(d, !mr_keep.outcome)$SNP, collapse = " ")
+		warning("The following SNP(s) are missing required information for the MR tests and will be excluded: ", missinginfosnps)
 	}
 	if(all(!d$mr_keep.outcome))
 	{

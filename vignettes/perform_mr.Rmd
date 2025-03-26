@@ -84,8 +84,6 @@ mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 
 By default, all the methods that are labelled `TRUE` in the `use_by_default` column are used by the `mr()` function.
 
-* * *
-
 ## Sensitivity analyses
 
 ### Heterogeneity statistics
@@ -143,8 +141,6 @@ res_loo <- mr_leaveoneout(dat)
 ```
 
 By default the method used is the inverse variance weighted method, but this can be changed by using the `method` argument.
-
-* * *
 
 ## Plots
 
@@ -478,18 +474,16 @@ plot1
 dev.off()
 ```
 
-* * *
+## MR-RAPS: Many weak instruments analysis
 
-## MR.RAPS: Many weak instruments analysis
+MR-RAPS (Robust Adjusted Profile Score) is a recently proposed method that considers the measurement error in SNP-exposure effects, is unbiased when there are many (e.g. hundreds of) weak instruments, and is robust to systematic and idiosyncratic pleiotropy. See @zhao2020 for more detail about the statistical methodology.
 
-MR.RAPS (Robust Adjusted Profile Score) is a recently proposed method that considers the measurement error in SNP-exposure effects, is unbiased when there are many (e.g. hundreds of) weak instruments, and is robust to systematic and idiosyncratic pleiotropy. See @zhao2020 for more detail about the statistical methodology.
-
-MR.RAPS is implemented in the R package **mr.raps** that is available on [GitHub](https://github.com/qingyuanzhao/mr.raps) which is installed when you install TwoSampleMR. It can be directly called from TwoSampleMR by
+MR-RAPS is implemented in the R package **mr.raps** that is available on [GitHub](https://github.com/qingyuanzhao/mr.raps) which is installed when you install TwoSampleMR. It can be directly called from TwoSampleMR by
 ```{r eval=FALSE}
 res <- mr(dat, method_list = c("mr_raps"))
 ```
 
-MR.RAPS comes with two main options: `over.dispersion` (whether the method should consider systematic pleiotropy) and `loss.function` (either `"l2"`, `"huber"`, or `"tukey"`). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is `over.dispersion = TRUE` and `loss.function = "huber"`. To change these options, modify the `parameters` argument of `mr()` by (for example)
+MR-RAPS comes with two main options: `over.dispersion` (whether the method should consider systematic pleiotropy) and `loss.function` (either `"l2"`, `"huber"`, or `"tukey"`). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is `over.dispersion = TRUE` and `loss.function = "huber"`. To change these options, modify the `parameters` argument of `mr()` by (for example)
 ```{r eval=FALSE}
 res <-
   mr(
@@ -499,7 +493,19 @@ res <-
   )
 ```
 
-* * *
+## MR-GRIP
+
+MR-GRIP is a recently proposed method due to Dudbridge and Bowden et al. (2025) which is a modification to the MR-Egger method which has the Genotype Recoding Invariance Property (GRIP), it can be implemented using the code below.
+
+```{r eval=FALSE}
+res <- mr(dat, method_list = c("mr_grip"))
+```
+
+Or include it with the default set of methods as follows.
+
+```{r, eval=FALSE}
+mr(dat, method_list = c(subset(mr_method_list(), use_by_default)$obj, "mr_grip"))
+```
 
 ## Reports
 
@@ -512,8 +518,6 @@ mr_report(dat)
 By default this produces a html file in the current working directory, but see the help pages on how to modify this.
 
 This function will create a separate report file for every exposure-outcome combination that is present in the `dat` object.
-
-* * *
 
 ## MR Steiger directionality test
 
@@ -548,8 +552,6 @@ mr_steiger(
   r_exp=0
 )
 ```
-
-* * *
 
 ## Multivariable MR
 
@@ -615,8 +617,6 @@ The current plots being generated are not necessarily adequate because while the
 
 If you want to perform analysis with your local summary data (i.e. not in the OpenGWAS database) then use then look up the `mv_extract_exposures_local()` function instead of the `mv_extract_exposures()` function.
 
-* * *
-
 ## MR estimates when instruments are correlated
 
 In the examples shown so far it is assumed that instruments are independent (i.e. they are not in linkage disequilibrium, LD). This is to avoid 'double counting' effects. An alternative approach is to estimate the MR effects accounting for the correlation between variants.
@@ -659,8 +659,6 @@ Alternatively, convert to the `MRInput` format but also obtaining the LD matrix 
 dat2 <- try(dat_to_MRInput(dat, get_correlation = TRUE))
 if (class(dat2) != "try-error") MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
 ```
-
-* * *
 
 ## MR-MoE: Using a mixture of experts machine learning approach
 
@@ -713,8 +711,6 @@ The result object itself is a list with the following elements:
 - `info` (metrics used to generate MOE)
 
 Looking at the `estimates`, we see that there is a column called `MOE` which is the predicted AUROC curve performance of each method.
-
-* * *
 
 ## Post MR results management
 

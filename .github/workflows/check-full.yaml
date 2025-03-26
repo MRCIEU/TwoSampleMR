@@ -31,9 +31,9 @@ jobs:
           - {os: macos-latest,   r: 'release'}
           - {os: macos-13, r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: '4.3.2'}
           - {os: ubuntu-24.04-arm, r: 'release', rspm: 'no' }
 
@@ -52,6 +52,10 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: ${{ matrix.config.rspm || 'true' }}
+
+      - name: Set pak options
+        shell: bash
+        run: echo 'options(pkg.sysreqs_db_update_timeout = as.difftime(59, units = "secs"))' >> ~/.Rprofile
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
