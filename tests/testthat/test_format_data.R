@@ -45,3 +45,8 @@ test_that("format_data() should not error after having its data.table class remo
     samplesize_col = "n"
   ))
 })
+
+test_that("format_data() should not cause a stack overflow", {
+    a <- data.table::data.table(x = sample(1:1e6))
+    expect_error(do.call(format_data, list(a)))
+})
