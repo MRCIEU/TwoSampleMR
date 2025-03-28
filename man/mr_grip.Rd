@@ -2,7 +2,7 @@
 % Please edit documentation in R/mr-grip.R
 \name{mr_grip}
 \alias{mr_grip}
-\title{MR-GRIP: a modified MR-Egger model with the Genotype Recoding Invariant Property}
+\title{MR-GRIP: a modified MR-Egger model with the Genotype Recoding Invariance Property}
 \usage{
 mr_grip(b_exp, b_out, se_exp, se_out, parameters)
 }
@@ -32,7 +32,7 @@ List of with the following elements:
 }
 }
 \description{
-This implements the modified MR-Egger model with the Genotype Recoding Invariant Property (MR-GRIP) due to Dudbridge and Bowden et al. (2025).
+This implements the modified MR-Egger model with the Genotype Recoding Invariance Property (MR-GRIP) due to Dudbridge and Bowden et al. (2025).
 It is well known that the results of MR-Egger are sensitive to which alleles are designated as the effect alleles.
 A pragmatic convention is to orient all SNPs to have positive effects on the exposure, which has some advantages in interpretation but also brings some philosophical limitations.
 The MR-GRIP model is a modification to the MR-Egger model in which each term is multiplied by the genotype-phenotype associations.
