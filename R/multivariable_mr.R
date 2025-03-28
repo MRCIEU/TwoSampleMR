@@ -69,7 +69,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #' @param sep Specify delimiter in file. The default is space, i.e. `sep=" "`. If length is 1 it will use the same `sep` value for each exposure dataset. You can provide a vector of values, one for each exposure dataset, if the values are different across datasets. The same applies to all dataset-formatting options listed below.
 #' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. Default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
-#' @param beta_col Required for MR. Name of column with effect sizes. THe default is `"beta"`.
+#' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.
 #' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
 #' @param eaf_col Required for MR. Name of column with effect allele frequency. The default is `"eaf"`.
 #' @param effect_allele_col Required for MR. Name of column with effect allele. Must be "A", "C", "T" or "G". The default is `"effect_allele"`.
