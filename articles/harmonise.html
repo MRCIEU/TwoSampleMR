@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.13</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.14</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 Hemani</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.13/vignettes/harmonise.Rmd" class="external-link"><code>vignettes/harmonise.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/harmonise.Rmd" class="external-link"><code>vignettes/harmonise.Rmd</code></a></small>
       <div class="d-none name"><code>harmonise.Rmd</code></div>
     </div>
 
@@ -124,7 +124,7 @@ the forward strand sometimes changes, and GWASs from a few years ago
 aren’t guaranteed to be using forward strand conventions.</p>
 <p>Some examples are shown below:</p>
 <div class="section level3">
-<h3 id="correct-unambigious">Correct, unambigious<a class="anchor" aria-label="anchor" href="#correct-unambigious"></a>
+<h3 id="correct-unambiguous">Correct, unambiguous<a class="anchor" aria-label="anchor" href="#correct-unambiguous"></a>
 </h3>
 <pre><code>exposure effect = 0.5
 effect allele = A
@@ -137,7 +137,7 @@ other allele = G</code></pre>
 same</p>
 </div>
 <div class="section level3">
-<h3 id="incorrect-reference-unambigious">Incorrect reference, unambigious<a class="anchor" aria-label="anchor" href="#incorrect-reference-unambigious"></a>
+<h3 id="incorrect-reference-unambiguous">Incorrect reference, unambiguous<a class="anchor" aria-label="anchor" href="#incorrect-reference-unambiguous"></a>
 </h3>
 <pre><code>exposure effect = 0.5
 effect allele = A
@@ -297,7 +297,7 @@ summary datasets for body mass index and coronary heart disease:</p>
 <p>There are therefore multiple potential combinations of body mass
 index and coronary heart disease, which would likely lead to duplicate
 MR analyses. We recommend that users prune their datasets so that only
-the exposure-outcome combination with the highested expected power is
+the exposure-outcome combination with the highest expected power is
 retained. This can be done by selecting the exposure-outcome summary set
 with the largest sample size for the outcome, using the power_prune
 function:</p>
