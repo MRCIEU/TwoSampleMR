@@ -31,7 +31,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 
 	if(!is.data.frame(dat))
 	{
-		stop("Expecting data frame returned from format_data")
+		stop("Expecting data frame returned from format_data().")
 	}
 
 	if("pval.exposure" %in% names(dat) && "pval.outcome" %in% names(dat))
