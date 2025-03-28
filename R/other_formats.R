@@ -72,7 +72,7 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE, pop="EUR")
 
 #' Harmonise LD matrix against summary data
 #'
-#' LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be exposure dataset or harmonised dartaset.
+#' LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be exposure dataset or harmonised dataset.
 #'
 #' @param x Exposure dataset or harmonised dataset
 #' @param ld Output from [ld_matrix()]
