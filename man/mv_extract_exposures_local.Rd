@@ -41,7 +41,7 @@ mv_extract_exposures_local(
 
 \item{snp_col}{Required name of column with SNP rs IDs. The default is \code{"SNP"}.}
 
-\item{beta_col}{Required for MR. Name of column with effect sizes. THe default is \code{"beta"}.}
+\item{beta_col}{Required for MR. Name of column with effect sizes. The default is \code{"beta"}.}
 
 \item{se_col}{Required for MR. Name of column with standard errors. The default is \code{"se"}.}
 
