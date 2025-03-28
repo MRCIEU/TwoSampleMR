@@ -61,17 +61,17 @@ mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
   smod <- summary(mod)
   b <- stats::coefficients(smod)[2, 1]
   se <- stats::coefficients(smod)[2, 2]
-  b.adj <- NA
-  se.adj <- NA
-  pval.adj <- NA
+  b.wi <- NA
+  se.wi <- NA
+  pval.wi <- NA
   pval <- 2 * stats::pt(abs(b / se), length(b_exp) - 2L, lower.tail = FALSE)
   return(list(
     b = b,
     se = se,
     pval = pval,
-    b.adj = b.adj,
-    se.adj = se.adj,
-    pval.adj = pval.adj,
+    b.wi = b.wi,
+    se.wi = se.wi,
+    pval.wi = pval.wi,
     nsnp = length(b_exp),
     mod = smod,
     dat = dat
