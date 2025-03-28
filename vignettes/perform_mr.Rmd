@@ -755,7 +755,7 @@ The default is to subset on the IVW method when >1 SNP is available and to use t
 
 ### Combine all results
 
-It is often useful to combine all results and study level characterists into a single dataframe or table, e.g. for sharing results with collaborators or when the user wishes to present all results in a single table or figure. This can be done using the `combine_all_mrresults()` function:
+It is often useful to combine all results and study level characteristics into a single dataframe or table, e.g. for sharing results with collaborators or when the user wishes to present all results in a single table or figure. This can be done using the `combine_all_mrresults()` function:
 
 ```{r, eval=FALSE }
 res <- mr(dat)
