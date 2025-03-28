@@ -68,7 +68,7 @@ Recent GWASs typically present the effects of a SNP in reference to the allele o
 
 Some examples are shown below:
 
-### Correct, unambigious
+### Correct, unambiguous
 
 ```
 exposure effect = 0.5
@@ -82,7 +82,7 @@ other allele = G
 
 Here the effect allele on the exposure and the outcome is the same
 
-### Incorrect reference, unambigious
+### Incorrect reference, unambiguous
 
 ```
 exposure effect = 0.5
