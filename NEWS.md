@@ -1,3 +1,10 @@
+# TwoSampleMR v0.6.14
+
+(Release date 2025-03-28)
+
+* Minor amends to the `mr_grip()` returned object names (thanks @fdudbridge)
+* Fixed some typos in the helpfiles and vignettes
+
 # TwoSampleMR v0.6.13
 
 (Release date 2025-03-26)
