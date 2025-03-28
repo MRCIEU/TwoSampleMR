@@ -5,7 +5,7 @@
 #'
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param snps SNPs to extract. If `NULL`, which the default, then doesn't extract any and keeps all.
-#' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`.
+#' @param sep Specify delimiter in file. The default is space, i.e. `sep=" "`.
 #' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. Default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
 #' @param beta_col Required for MR. Name of column with effect sizes. THe default is `"beta"`.
@@ -64,7 +64,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #'
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param clump Whether to perform LD clumping with [clump_data()] on the exposure data. The default is `FALSE`.
-#' @param sep Specify delimeter in file. The default is a space, i.e. `" "`.
+#' @param sep Specify delimiter in file. The default is a space, i.e. `" "`.
 #' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome". The default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
 #' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.

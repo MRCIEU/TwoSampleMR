@@ -66,7 +66,7 @@ mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, ha
 #' Note that you can provide an array of column names for each column, which is of length `filenames_exposure`
 #'
 #' @param filenames_exposure Filenames for each exposure dataset. Must have header with at least SNP column present. Following arguments are used for determining how to read the filename and clumping etc.
-#' @param sep Specify delimeter in file. The default is space, i.e. `sep=" "`. If length is 1 it will use the same `sep` value for each exposure dataset. You can provide a vector of values, one for each exposure dataset, if the values are different across datasets. The same applies to all dataset-formatting options listed below.
+#' @param sep Specify delimiter in file. The default is space, i.e. `sep=" "`. If length is 1 it will use the same `sep` value for each exposure dataset. You can provide a vector of values, one for each exposure dataset, if the values are different across datasets. The same applies to all dataset-formatting options listed below.
 #' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. Default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
 #' @param beta_col Required for MR. Name of column with effect sizes. THe default is `"beta"`.
