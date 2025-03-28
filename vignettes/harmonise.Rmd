@@ -165,7 +165,7 @@ ao[ao$trait == "Body mass index", c("trait", "id", "pmid", "author", "sample_siz
 ao[ao$trait == "Coronary heart disease", c("trait", "id", "pmid", "author", "ncase", "ncontrol", "nsnp")]
 ```
 
-There are therefore multiple potential combinations of body mass index and coronary heart disease, which would likely lead to duplicate MR analyses. We recommend that users prune their datasets so that only the exposure-outcome combination with the highested expected power is retained. This can be done by selecting the exposure-outcome summary set with the largest sample size for the outcome, using the power_prune function:
+There are therefore multiple potential combinations of body mass index and coronary heart disease, which would likely lead to duplicate MR analyses. We recommend that users prune their datasets so that only the exposure-outcome combination with the highest expected power is retained. This can be done by selecting the exposure-outcome summary set with the largest sample size for the outcome, using the power_prune function:
 
 ```{r eval=FALSE}
 dat <- power_prune(dat, method = 1, dist.outcome = "binary")
