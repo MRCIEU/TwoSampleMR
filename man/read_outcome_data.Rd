@@ -33,7 +33,7 @@ read_outcome_data(
 
 \item{snps}{SNPs to extract. If \code{NULL}, which the default, then doesn't extract any and keeps all.}
 
-\item{sep}{Specify delimeter in file. The default is space, i.e. \code{sep=" "}.}
+\item{sep}{Specify delimiter in file. The default is space, i.e. \code{sep=" "}.}
 
 \item{phenotype_col}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value \code{"Outcome"}. Default is \code{"Phenotype"}.}
 

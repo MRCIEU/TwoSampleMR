@@ -33,7 +33,7 @@ read_exposure_data(
 
 \item{clump}{Whether to perform LD clumping with \code{\link[=clump_data]{clump_data()}} on the exposure data. The default is \code{FALSE}.}
 
-\item{sep}{Specify delimeter in file. The default is a space, i.e. \code{" "}.}
+\item{sep}{Specify delimiter in file. The default is a space, i.e. \code{" "}.}
 
 \item{phenotype_col}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome". The default is \code{"Phenotype"}.}
 
