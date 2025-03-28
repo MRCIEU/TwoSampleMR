@@ -25,7 +25,7 @@ forest_plot(
 
 \item{exponentiate}{Convert effects to OR? Default is \code{FALSE}.}
 
-\item{single_snp_method}{Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? The default is \code{"Wald ratio"}.}
+\item{single_snp_method}{Which of the single SNP methods to use when only 1 SNP was used to estimate the causal effect? The default is \code{"Wald ratio"}.}
 
 \item{multi_snp_method}{Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is \code{"Inverse variance weighted"}.}
 

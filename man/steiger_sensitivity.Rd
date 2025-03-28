@@ -18,7 +18,7 @@ List with the following elements:
 \describe{
 \item{vz}{Total volume of the error parameter space}
 \item{vz0}{Volume of the parameter space that gives the incorrect answer}
-\item{vz1}{Volume of the paramtere space that gives the correct answer}
+\item{vz1}{Volume of the parameter space that gives the correct answer}
 \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
 \item{pl}{plot of parameter space}
 }

@@ -1,6 +1,6 @@
-#' MR-GRIP: a modified MR-Egger model with the Genotype Recoding Invariant Property
+#' MR-GRIP: a modified MR-Egger model with the Genotype Recoding Invariance Property
 #'
-#' This implements the modified MR-Egger model with the Genotype Recoding Invariant Property (MR-GRIP) due to Dudbridge and Bowden et al. (2025).
+#' This implements the modified MR-Egger model with the Genotype Recoding Invariance Property (MR-GRIP) due to Dudbridge and Bowden et al. (2025).
 #' It is well known that the results of MR-Egger are sensitive to which alleles are designated as the effect alleles.
 #' A pragmatic convention is to orient all SNPs to have positive effects on the exposure, which has some advantages in interpretation but also brings some philosophical limitations.
 #' The MR-GRIP model is a modification to the MR-Egger model in which each term is multiplied by the genotype-phenotype associations.
@@ -61,17 +61,17 @@ mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
   smod <- summary(mod)
   b <- stats::coefficients(smod)[2, 1]
   se <- stats::coefficients(smod)[2, 2]
-  b.adj <- NA
-  se.adj <- NA
-  pval.adj <- NA
+  b.wi <- NA
+  se.wi <- NA
+  pval.wi <- NA
   pval <- 2 * stats::pt(abs(b / se), length(b_exp) - 2L, lower.tail = FALSE)
   return(list(
     b = b,
     se = se,
     pval = pval,
-    b.adj = b.adj,
-    se.adj = se.adj,
-    pval.adj = pval.adj,
+    b.wi = b.wi,
+    se.wi = se.wi,
+    pval.wi = pval.wi,
     nsnp = length(b_exp),
     mod = smod,
     dat = dat

@@ -33,13 +33,13 @@ read_outcome_data(
 
 \item{snps}{SNPs to extract. If \code{NULL}, which the default, then doesn't extract any and keeps all.}
 
-\item{sep}{Specify delimeter in file. The default is space, i.e. \code{sep=" "}.}
+\item{sep}{Specify delimiter in file. The default is space, i.e. \code{sep=" "}.}
 
 \item{phenotype_col}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value \code{"Outcome"}. Default is \code{"Phenotype"}.}
 
 \item{snp_col}{Required name of column with SNP rs IDs. The default is \code{"SNP"}.}
 
-\item{beta_col}{Required for MR. Name of column with effect sizes. THe default is \code{"beta"}.}
+\item{beta_col}{Required for MR. Name of column with effect sizes. The default is \code{"beta"}.}
 
 \item{se_col}{Required for MR. Name of column with standard errors. The default is \code{"se"}.}
 

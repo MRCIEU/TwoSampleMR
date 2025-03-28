@@ -145,7 +145,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 #' @param sort_action Choose how to sort results.
 #' \itemize{
 #' \item `sort_action = 1`: sort results by effect size within groups. Use the group order supplied by the user.
-#' \item `sort_action = 2`: sort results by effect size and group. Overides the group ordering supplied by the user.
+#' \item `sort_action = 2`: sort results by effect size and group. Overrides the group ordering supplied by the user.
 #' \item `sort_action = 3`: group results for the same trait together (e.g. multiple results for the same trait from different MR methods).
 #' \item `sort_action = 4`: sort by decreasing effect size (largest effect size at top and smallest at bottom).
 #' \item `sort_action = 5`: sort by increasing effect size (smallest effect size at top and largest at bottom).

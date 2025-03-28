@@ -438,7 +438,7 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 #'
 #' @param mr_res Results from [mr()].
 #' @param exponentiate Convert effects to OR? Default is `FALSE`.
-#' @param single_snp_method Which of the single SNP methosd to use when only 1 SNP was used to estimate the causal effect? The default is `"Wald ratio"`.
+#' @param single_snp_method Which of the single SNP methods to use when only 1 SNP was used to estimate the causal effect? The default is `"Wald ratio"`.
 #' @param multi_snp_method Which of the multi-SNP methods to use when there was more than 1 SNPs used to estimate the causal effect? The default is `"Inverse variance weighted"`.
 #' @param group_single_categories If there are categories with only one outcome, group them together into an "Other" group. The default is `TRUE`.
 #' @param by_category Separate the results into sections by category? The default is `TRUE`.
