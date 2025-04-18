@@ -25,7 +25,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 2
+      # max-parallel: 2
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
