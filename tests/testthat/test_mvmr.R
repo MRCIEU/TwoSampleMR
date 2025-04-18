@@ -1,5 +1,6 @@
 context("mvmr")
 
+skip_if(Sys.getenv('TWOSAMPLEMR_ENABLE_OPENGWAS_TESTS') != TRUE, "Tests requiring OpenGWAS")
 skip_on_cran()
 skip_if_offline()
 skip_if_offline(host = "api.opengwas.io")

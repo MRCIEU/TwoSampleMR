@@ -10,6 +10,7 @@ context("mvmr local")
 load(system.file("extdata", "test_add_mvmr_local.RData", package="TwoSampleMR"))
 
 test_that("mv exposure local", {
+  skip_if(Sys.getenv('TWOSAMPLEMR_ENABLE_OPENGWAS_TESTS') != TRUE, "Tests requiring OpenGWAS")
   skip_if_offline()
   skip_if_offline(host = "api.opengwas.io")
 	skip_on_cran()
