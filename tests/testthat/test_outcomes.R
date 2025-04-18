@@ -26,19 +26,19 @@ test_that("outcomes 3", {
 })
 
 test_that("outcomes 4", {
-	b <- extract_outcome_data(a$SNP, c("ieu-a-2", "a"), proxies=TRUE)
+	b <- try(extract_outcome_data(a$SNP, c("ieu-a-2", "a"), proxies=TRUE))
 	if(inherits(b, "try-error")) skip("Server issues")
 	expect_true(nrow(b) > 30 & nrow(b) < nrow(a))
 })
 
 test_that("outcomes 5", {
-	b <- extract_outcome_data(a$SNP, c("ieu-a-2", "ieu-a-7"), proxies=FALSE)
+	b <- try(extract_outcome_data(a$SNP, c("ieu-a-2", "ieu-a-7"), proxies=FALSE))
 	if(inherits(b, "try-error")) skip("Server issues")
 	expect_true(nrow(b) > 60)
 })
 
 test_that("outcomes 6", {
-	b <- extract_outcome_data(a$SNP, c("ieu-a-2", "ieu-a-7"), proxies=TRUE)
+	b <- try(extract_outcome_data(a$SNP, c("ieu-a-2", "ieu-a-7"), proxies=TRUE))
 	if(inherits(b, "try-error")) skip("Server issues")
 	expect_true(nrow(b) > 70)
 })
