@@ -1,7 +1,7 @@
 context("LDSC")
 
-
 test_that("get afl2", {
+  skip_if(Sys.getenv('TWOSAMPLEMR_ENABLE_OPENGWAS_TESTS') != TRUE, "Tests requiring OpenGWAS")
 	skip("Very slow")
 	hm3info <- ieugwasr::afl2_list("hapmap3")
 	if(inherits(hm3info, "response")) skip("Server issues")
