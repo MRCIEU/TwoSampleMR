@@ -1,5 +1,5 @@
 test_that("Create local data", {
-  skip_if(Sys.getenv('TWOSAMPLEMR_ENABLE_OPENGWAS_TESTS') != TRUE, "Tests requiring OpenGWAS")
+skip_if_opengwas_tests_disabled()
 skip("Skip local data creation unless you have good access to the API.")
 
 exp_dat <- extract_instruments("ieu-a-2")

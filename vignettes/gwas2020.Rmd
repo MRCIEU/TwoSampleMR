@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This document details changes and new features specifically relating to the TwoSampleMR R package and the GWAS database behind it.
+This document details changes and new features specifically relating to the TwoSampleMR R package and the IEU OpenGWAS database behind it.
 
 ## What has changed
 
@@ -19,7 +19,7 @@ There is backward compatibility built into the R packages that access the data, 
 
 ### Authentication
 
-Previously you would automatically be asked to authenticate any query to the database, through google. Now, we are making authentication voluntary - something that you do at the start of a session only if you need access to specific private datasets on the database. For the vast majority of use cases this is not required.
+Previously you would automatically be asked to authenticate any query to the database, through Google. Now, we are making authentication voluntary - something that you do at the start of a session only if you need access to specific private datasets on the database. For the vast majority of use cases this is not required.
 
 Another change is that the R package that managed the authentication has updated, and the file tokens generated are slightly different. For full information on how to deal with this, see here: https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication
 
@@ -97,13 +97,13 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 
 ## Key links
 
-- The IEU GWAS database: https://gwas.mrcieu.ac.uk
-- API to the IEU GWAS database: https://api.opengwas.io/api/
+- The IEU OpenGWAS database: https://gwas.mrcieu.ac.uk
+- API to the IEU OpenGWAS database: https://api.opengwas.io/api/
 - ieugwasr package, for R access to the API: https://mrcieu.github.io/ieugwasr/
-- ieugwaspy package, for python access to the API: https://github.com/MRCIEU/ieugwaspy/ (Under construction)
+- ieugwaspy package, for python access to the API: https://github.com/MRCIEU/ieugwaspy/
 - gwasvcf package, R interface to GWAS VCF files: https://mrcieu.github.io/gwasvcf/
-- pygwasvcf package, python interface to GWAS VCF files: https://github.com/mrcieu/pygwasvcf (Under construction)
-- gwasglue package, linking GWAS data to various analytical methods: https://mrcieu.github.io/gwasglue/ (Functional, under construction)
+- pygwasvcf package, python interface to GWAS VCF files: https://github.com/mrcieu/pygwasvcf
+- gwasglue package, linking GWAS data to various analytical methods: https://mrcieu.github.io/gwasglue/
 - gwas2vcf online tool, allowing users to create GWAS VCF files from summary data: https://github.com/MRCIEU/gwas2vcf
 
 ## How to request new data
@@ -111,21 +111,3 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 We have setup a github issues page here: https://github.com/MRCIEU/opengwas-requests/issues
 
 Please visit here to make a log of new data requests, or to contribute new data.
-
-## Backwards compatibility
-
-To install the new version of TwoSampleMR, perform as normal:
-
-```r
-install.packages("remotes")
-remotes::install_github("MRCIEU/TwoSampleMR")
-```
-
-To update the package just run the `remotes::install_github("MRCIEU/TwoSampleMR")` command again.
-
-We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:
-
-```r
-install.packages("remotes")
-remotes::install_github("MRCIEU/TwoSampleMR@0.4.26")
-```

@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ## Background
 
-Two sample Mendelian randomisation (2SMR) is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components
+Two sample Mendelian randomisation is a method to estimate the causal effect of an exposure on an outcome using only summary statistics from genome wide association studies (GWAS). Though conceptually straightforward, there are a number of steps that are required to perform the analysis properly, and they can be cumbersome. The TwoSampleMR package aims to make this easy by combining three important components
 
 - data management and harmonisation
 - the statistical routines to estimate the causal effects
@@ -30,18 +30,52 @@ Two sample Mendelian randomisation (2SMR) is a method to estimate the causal eff
 
 The general principles [@DaveySmith2003; @DaveySmithHemani2014], and statistical methods [@Pierce2013; @Bowden2015] can be found elsewhere, here we will just outline how to use the R package.
 
-This package uses the [ieugwasr](https://github.com/mrcieu/ieugwasr) package to connect to the database of thousands of complete GWAS summary data.
+This package uses the [ieugwasr](https://github.com/mrcieu/ieugwasr) package to connect to the IEU OpenGWAS database of thousands of complete GWAS summary data.
 
 ## Installation
 
-To install directly from the GitHub repository do the following:
+If you are using macOS or Windows you can install a binary version of TwoSampleMR from our <https://mrcieu.r-universe.dev> with the following code.
 
 ```{r eval=FALSE}
+install.packages("TwoSampleMR", repos = c("https://mrcieu.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+If you are using the latest long term support version of Ubuntu Linux (currently 24.04 Noble Numbat) you can install a binary version of TwoSampleMR with the following code.
+
+```{r eval=FALSE}
+options(HTTPUserAgent = sprintf(
+  "R/%s R (%s)",
+  getRversion(),
+  paste(getRversion(),
+        R.version["platform"],
+        R.version["arch"],
+        R.version["os"])
+))
+
+install.packages(
+  'TwoSampleMR',
+  repos = c(
+    'https://mrcieu.r-universe.dev/bin/linux/noble/4.5/',
+    'https://p3m.dev/cran/__linux__/noble/latest',
+    'https://cloud.r-project.org'
+  )
+)
+```
+
+To install TwoSampleMR from source from our GitHub repository run the following code.
+
+```{r eval=FALSE}
+# install.packages("remotes") # Run if remotes package not installed
 library(remotes)
 install_github("MRCIEU/TwoSampleMR")
 ```
 
-If you don't have the `remotes` package install it from CRAN using `install.packages("remotes")`.
+TwoSampleMR can be installed in [WebR](https://docs.r-wasm.org/webr/latest/) using the following code.
+
+```{r eval=FALSE}
+install.packages('TwoSampleMR',
+  repos = c('https://mrcieu.r-universe.dev', 'https://repo.r-wasm.org'))
+```
 
 ## Overview
 
@@ -70,7 +104,7 @@ ao <- available_outcomes()
 exposure_dat <- extract_instruments("ieu-a-2")
 
 # Get effects of instruments on outcome
-outcome_dat <- extract_outcome_data(snps=exposure_dat$SNP, outcomes = "ieu-a-7")
+outcome_dat <- extract_outcome_data(snps = exposure_dat$SNP, outcomes = "ieu-a-7")
 
 # Harmonise the exposure and outcome data
 dat <- harmonise_data(exposure_dat, outcome_dat)
