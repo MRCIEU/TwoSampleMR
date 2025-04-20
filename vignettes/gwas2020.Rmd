@@ -111,21 +111,3 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 We have setup a github issues page here: https://github.com/MRCIEU/opengwas-requests/issues
 
 Please visit here to make a log of new data requests, or to contribute new data.
-
-## Backwards compatibility
-
-To install the new version of TwoSampleMR, perform as normal:
-
-```r
-install.packages("remotes")
-remotes::install_github("MRCIEU/TwoSampleMR")
-```
-
-To update the package just run the `remotes::install_github("MRCIEU/TwoSampleMR")` command again.
-
-We recommend using this new version going forwards but for a limited time we are enabling backwards compatibility, in case you are in the middle of analysis or need to reproduce old analysis. In order to use the legacy version of the package and the database, install using:
-
-```r
-install.packages("remotes")
-remotes::install_github("MRCIEU/TwoSampleMR@0.4.26")
-```
