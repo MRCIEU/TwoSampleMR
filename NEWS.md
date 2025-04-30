@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.15
+
+(Release date 2025-05-01)
+
+* Bumped the minimum required version of R to 4.1.0. This is due to a dependency (the scales package) of a dependency (the ggplot2 package), which now has this requirement.
+
 # TwoSampleMR v0.6.14
 
 (Release date 2025-03-28)
