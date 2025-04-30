@@ -49,7 +49,7 @@ Imports:
     RadialMR,
     reshape2,
     rmarkdown
-Suggests: 
+Suggests:
     Cairo,
     car,
     markdown,
@@ -59,7 +59,7 @@ Suggests:
     randomForest,
     testthat,
     tidyr
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 Remotes:
     gqi/MRMix,
