@@ -3,7 +3,7 @@
 
 # Use binomial test assuming that on average should be 50% under the null hypothesis
 
-# What is the minumum number of SNPs required to achieve p-value of 0.05?
+# What is the minimum number of SNPs required to achieve p-value of 0.05?
 
 param <- expand.grid(n = 1:100, x=0:100)
 param <- subset(param, x <= n)

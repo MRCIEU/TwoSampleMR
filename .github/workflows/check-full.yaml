@@ -35,6 +35,8 @@ jobs:
           - {os: ubuntu-latest,   r: 'oldrel-2'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: '4.3.2'}
+          - {os: ubuntu-latest,   r: 'oldrel-3'}
+          - {os: ubuntu-latest,   r: 'oldrel-4'}
           - {os: macos-15, r: 'release'}
           - {os: macos-13, r: 'release'}
           # - {os: ubuntu-24.04-arm, r: 'release', rspm: 'no' }
@@ -62,7 +64,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: >
-            any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0
+            any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0, car=?ignore-before-r=4.3.2
           needs: check
           upgrade: 'TRUE'
 
