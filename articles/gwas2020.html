@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.15</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,8 @@
     
     
 <p>This document details changes and new features specifically relating
-to the TwoSampleMR R package and the GWAS database behind it.</p>
+to the TwoSampleMR R package and the IEU OpenGWAS database behind
+it.</p>
 <div class="section level2">
 <h2 id="what-has-changed">What has changed<a class="anchor" aria-label="anchor" href="#what-has-changed"></a>
 </h2>
@@ -107,7 +108,7 @@ update your scripts to reflect this change.</p>
 <h3 id="authentication">Authentication<a class="anchor" aria-label="anchor" href="#authentication"></a>
 </h3>
 <p>Previously you would automatically be asked to authenticate any query
-to the database, through google. Now, we are making authentication
+to the database, through Google. Now, we are making authentication
 voluntary - something that you do at the start of a session only if you
 need access to specific private datasets on the database. For the vast
 majority of use cases this is not required.</p>
@@ -281,21 +282,21 @@ contribute code.</p>
 <h2 id="key-links">Key links<a class="anchor" aria-label="anchor" href="#key-links"></a>
 </h2>
 <ul>
-<li>The IEU GWAS database: <a href="https://gwas.mrcieu.ac.uk" class="external-link uri">https://gwas.mrcieu.ac.uk</a>
+<li>The IEU OpenGWAS database: <a href="https://gwas.mrcieu.ac.uk" class="external-link uri">https://gwas.mrcieu.ac.uk</a>
 </li>
-<li>API to the IEU GWAS database: <a href="https://api.opengwas.io/api/" class="external-link uri">https://api.opengwas.io/api/</a>
+<li>API to the IEU OpenGWAS database: <a href="https://api.opengwas.io/api/" class="external-link uri">https://api.opengwas.io/api/</a>
 </li>
 <li>ieugwasr package, for R access to the API: <a href="https://mrcieu.github.io/ieugwasr/" class="external-link uri">https://mrcieu.github.io/ieugwasr/</a>
 </li>
-<li>ieugwaspy package, for python access to the API: <a href="https://github.com/MRCIEU/ieugwaspy/" class="external-link uri">https://github.com/MRCIEU/ieugwaspy/</a> (Under
-construction)</li>
+<li>ieugwaspy package, for python access to the API: <a href="https://github.com/MRCIEU/ieugwaspy/" class="external-link uri">https://github.com/MRCIEU/ieugwaspy/</a>
+</li>
 <li>gwasvcf package, R interface to GWAS VCF files: <a href="https://mrcieu.github.io/gwasvcf/" class="external-link uri">https://mrcieu.github.io/gwasvcf/</a>
 </li>
-<li>pygwasvcf package, python interface to GWAS VCF files: <a href="https://github.com/mrcieu/pygwasvcf" class="external-link uri">https://github.com/mrcieu/pygwasvcf</a> (Under
-construction)</li>
+<li>pygwasvcf package, python interface to GWAS VCF files: <a href="https://github.com/mrcieu/pygwasvcf" class="external-link uri">https://github.com/mrcieu/pygwasvcf</a>
+</li>
 <li>gwasglue package, linking GWAS data to various analytical methods:
-<a href="https://mrcieu.github.io/gwasglue/" class="external-link uri">https://mrcieu.github.io/gwasglue/</a> (Functional, under
-construction)</li>
+<a href="https://mrcieu.github.io/gwasglue/" class="external-link uri">https://mrcieu.github.io/gwasglue/</a>
+</li>
 <li>gwas2vcf online tool, allowing users to create GWAS VCF files from
 summary data: <a href="https://github.com/MRCIEU/gwas2vcf" class="external-link uri">https://github.com/MRCIEU/gwas2vcf</a>
 </li>
@@ -308,24 +309,6 @@ summary data: <a href="https://github.com/MRCIEU/gwas2vcf" class="external-link 
 <p>Please visit here to make a log of new data requests, or to
 contribute new data.</p>
 </div>
-<div class="section level2">
-<h2 id="backwards-compatibility">Backwards compatibility<a class="anchor" aria-label="anchor" href="#backwards-compatibility"></a>
-</h2>
-<p>To install the new version of TwoSampleMR, perform as normal:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR"</span><span class="op">)</span></span></code></pre></div>
-<p>To update the package just run the
-<code>remotes::install_github("MRCIEU/TwoSampleMR")</code> command
-again.</p>
-<p>We recommend using this new version going forwards but for a limited
-time we are enabling backwards compatibility, in case you are in the
-middle of analysis or need to reproduce old analysis. In order to use
-the legacy version of the package and the database, install using:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR@0.4.26"</span><span class="op">)</span></span></code></pre></div>
-</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
@@ -337,7 +320,7 @@ the legacy version of the package and the database, install using:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>

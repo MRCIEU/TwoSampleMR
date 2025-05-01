@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.15</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,9 +85,9 @@ Hemani</h4>
 <div class="section level2">
 <h2 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
 </h2>
-<p>Two sample Mendelian randomisation (2SMR) is a method to estimate the
-causal effect of an exposure on an outcome using only summary statistics
-from genome wide association studies (GWAS). Though conceptually
+<p>Two sample Mendelian randomisation is a method to estimate the causal
+effect of an exposure on an outcome using only summary statistics from
+genome wide association studies (GWAS). Though conceptually
 straightforward, there are a number of steps that are required to
 perform the analysis properly, and they can be cumbersome. The
 TwoSampleMR package aims to make this easy by combining three important
@@ -104,17 +104,49 @@ statistical methods <span class="citation">(Pierce and Burgess 2013;
 Bowden, Davey Smith, and Burgess 2015)</span> can be found elsewhere,
 here we will just outline how to use the R package.</p>
 <p>This package uses the <a href="https://github.com/mrcieu/ieugwasr" class="external-link">ieugwasr</a> package to
-connect to the database of thousands of complete GWAS summary data.</p>
+connect to the IEU OpenGWAS database of thousands of complete GWAS
+summary data.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>To install directly from the GitHub repository do the following:</p>
+<p>If you are using macOS or Windows you can install a binary version of
+TwoSampleMR from our <a href="https://mrcieu.r-universe.dev" class="external-link uri">https://mrcieu.r-universe.dev</a> with the following
+code.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"TwoSampleMR"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://mrcieu.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>If you are using the latest long term support version of Ubuntu Linux
+(currently 24.04 Noble Numbat) you can install a binary version of
+TwoSampleMR with the following code.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>HTTPUserAgent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span></span>
+<span>  <span class="st">"R/%s R (%s)"</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        <span class="va">R.version</span><span class="op">[</span><span class="st">"platform"</span><span class="op">]</span>,</span>
+<span>        <span class="va">R.version</span><span class="op">[</span><span class="st">"arch"</span><span class="op">]</span>,</span>
+<span>        <span class="va">R.version</span><span class="op">[</span><span class="st">"os"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
+<span>  <span class="st">'TwoSampleMR'</span>,</span>
+<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">'https://mrcieu.r-universe.dev/bin/linux/noble/4.5/'</span>,</span>
+<span>    <span class="st">'https://p3m.dev/cran/__linux__/noble/latest'</span>,</span>
+<span>    <span class="st">'https://cloud.r-project.org'</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>To install TwoSampleMR from source from our GitHub repository run the
+following code.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes") # Run if remotes package not installed</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span></span>
 <span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MRCIEU/TwoSampleMR"</span><span class="op">)</span></span></code></pre></div>
-<p>If you don’t have the <code>remotes</code> package install it from
-CRAN using <code>install.packages("remotes")</code>.</p>
+<p>TwoSampleMR can be installed in <a href="https://docs.r-wasm.org/webr/latest/" class="external-link">WebR</a> using the following
+code.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'TwoSampleMR'</span>,</span>
+<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://mrcieu.r-universe.dev'</span>, <span class="st">'https://repo.r-wasm.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -131,10 +163,10 @@ the outcomes to be each for the same reference allele</li>
 reports</li>
 </ol>
 <p>A diagrammatic overview is shown here:</p>
-<p><img src="img%2Ftwosamplemr_schematic_long-01.png" alt="A diagrammatic overview of performing a two-sample Mendelian randomization analysis" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="img/twosamplemr_schematic_long-01.png" alt="A diagrammatic overview of performing a two-sample Mendelian randomization analysis" width="800px" style="display: block; margin: auto;"></p>
 <p>A basic analysis, e.g. the causal effect of body mass index on
 coronary heart disease, looks like this:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MRCIEU/TwoSampleMR" class="external-link">TwoSampleMR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># List available GWASs</span></span>
@@ -144,7 +176,7 @@ coronary heart disease, looks like this:</p>
 <span><span class="va">exposure_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span><span class="op">(</span><span class="st">"ieu-a-2"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get effects of instruments on outcome</span></span>
-<span><span class="va">outcome_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span>snps<span class="op">=</span><span class="va">exposure_dat</span><span class="op">$</span><span class="va">SNP</span>, outcomes <span class="op">=</span> <span class="st">"ieu-a-7"</span><span class="op">)</span></span>
+<span><span class="va">outcome_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span>snps <span class="op">=</span> <span class="va">exposure_dat</span><span class="op">$</span><span class="va">SNP</span>, outcomes <span class="op">=</span> <span class="st">"ieu-a-7"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Harmonise the exposure and outcome data</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span><span class="va">exposure_dat</span>, <span class="va">outcome_dat</span><span class="op">)</span></span>
@@ -210,7 +242,7 @@ subsample and 2-sample instrumental variable estimators</span>.”</span>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>
