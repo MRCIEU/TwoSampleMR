@@ -107,7 +107,8 @@ mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
     se.adj = se.adj,
     pval.adj = pval.adj,
     nsnp = length(b_exp),
-    mod = smod,
+    mod = mod,
+    smod = smod,
     dat = dat
   ))
 }
