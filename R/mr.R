@@ -231,7 +231,7 @@ mr_method_list <- function()
 		  obj = "mr_grip",
 		  name = "MR GRIP",
 		  PubmedID = "",
-		  Description = "Allele coding invariant regression",
+		  Description = "Allele coding invariant MR-Egger regression",
 		  use_by_default = FALSE,
 		  heterogeneity_test = FALSE
 		)
