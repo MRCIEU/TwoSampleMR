@@ -18,7 +18,6 @@
 #' \item{b}{MR estimate}
 #' \item{se}{Standard error of MR estimate}
 #' \item{pval}{p-value of MR estimate}
-#' \item{Q, Q_df, Q_pval}{Heterogeneity stats}
 #' \item{b.wi}{MR estimate adjusting for weak instruments}
 #' \item{se.wi}{Standard error adjusting for weak instruments}
 #' \item{pval.wi}{p-value adjusting for weak instruments}
@@ -35,9 +34,6 @@ mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
     se = NA,
     pval = NA,
     nsnp = NA,
-    Q = NA,
-    Q_df = NA,
-    Q_pval = NA,
     mod = NA,
     smod = NA,
     dat = NA
