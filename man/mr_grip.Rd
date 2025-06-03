@@ -23,10 +23,12 @@ List of with the following elements:
 \item{b}{MR estimate}
 \item{se}{Standard error of MR estimate}
 \item{pval}{p-value of MR estimate}
-\item{Q, Q_df, Q_pval}{Heterogeneity stats}
-\item{b.wi}{MR estimate adjusting for weak instruments}
-\item{se.wi}{Standard error adjusting for weak instruments}
-\item{pval.wi}{p-value adjusting for weak instruments}
+\item{b_i}{Intercept}
+\item{se_i}{Standard error of intercept}
+\item{pval_i}{p-value of intercept}
+\item{b.adj}{MR estimate adjusting for weak instruments}
+\item{se.adj}{Standard error adjusting for weak instruments}
+\item{pval.adj}{p-value adjusting for weak instruments}
 \item{mod}{Summary of regression}
 \item{dat}{Original data used for MR-GRIP}
 }
