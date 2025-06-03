@@ -18,9 +18,12 @@
 #' \item{b}{MR estimate}
 #' \item{se}{Standard error of MR estimate}
 #' \item{pval}{p-value of MR estimate}
-#' \item{b.wi}{MR estimate adjusting for weak instruments}
-#' \item{se.wi}{Standard error adjusting for weak instruments}
-#' \item{pval.wi}{p-value adjusting for weak instruments}
+#' \item{b_i}{Intercept}
+#' \item{se_i}{Standard error of intercept}
+#' \item{pval_i}{p-value of intercept}
+#' \item{b.adj}{MR estimate adjusting for weak instruments}
+#' \item{se.adj}{Standard error adjusting for weak instruments}
+#' \item{pval.adj}{p-value adjusting for weak instruments}
 #' \item{mod}{Summary of regression}
 #' \item{dat}{Original data used for MR-GRIP}
 #' }
@@ -52,22 +55,51 @@ mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
   )
   grip_out <- b_out * b_exp
   grip_exp <- b_exp^2
-  # GRIP regression.  Includes intercept.  Weights designed to replicate IVW under no intercept.
-  mod <- stats::lm(grip_out ~ grip_exp, weights = 1 / (grip_exp * se_out^2))
+  grip_weights <- 1 / (b_exp^2 * se_out^2)
+
+  # GRIP regression.  Includes intercept.  Weights under NOME assumption.
+  mod <- stats::lm(grip_out ~ grip_exp, weights = grip_weights)
   smod <- summary(mod)
   b <- stats::coefficients(smod)[2, 1]
   se <- stats::coefficients(smod)[2, 2]
-  b.wi <- NA
-  se.wi <- NA
-  pval.wi <- NA
-  pval <- 2 * stats::pt(abs(b / se), length(b_exp) - 2L, lower.tail = FALSE)
+  b_i <- stats::coefficients(smod)[1, 1]
+  se_i <- stats::coefficients(smod)[1, 2]
+
+  # Weak instrument adjustment
+  grip_weights <- 1 / (se_out^2)
+  numer <- sum(grip_weights) *
+    sum(grip_weights * b_out * b_exp * (b_exp^2 - 3 * se_exp^2)) -
+    sum(grip_weights * b_out * b_exp) * sum(grip_weights * (b_exp^2 - se_exp^2))
+  denom <- sum(grip_weights) *
+    sum(grip_weights * (b_exp^4 - 6 * b_exp^2 * se_exp^2 + 3 * se_exp^4)) -
+    (sum(grip_weights * (b_exp^2 - se_exp^2)))^2
+  b.adj <- numer / denom
+
+  var_out <- mean((b_out - (b * grip_exp + b_i) / b_exp)^2) * b_exp^2
+  numer <- sum(grip_weights)^2 *
+    sum(grip_weights^2 * var_out * (b_exp^2 - 3 * se_exp^2)^2) +
+    sum(grip_weights^2 * var_out) * sum(grip_weights * (b_exp^2 - se_exp^2))^2 -
+    2 *
+      sum(grip_weights) *
+      sum(grip_weights * (b_exp^2 - se_exp^2)) *
+      sum(grip_weights^2 * (b_exp^2 - se_exp^2) * var_out)
+  se.adj <- sqrt(numer) / denom
+
+  pval <- 2 * stats::pt(abs(b / se), length(b_exp) - 2, lower.tail = FALSE)
+  pval_i <- 2 *
+    stats::pt(abs(b_i / se_i), length(b_exp) - 2, lower.tail = FALSE)
+  pval.adj <- 2 *
+    stats::pt(abs(b.adj / se.adj), length(b_exp) - 2, lower.tail = FALSE)
   return(list(
     b = b,
     se = se,
     pval = pval,
-    b.wi = b.wi,
-    se.wi = se.wi,
-    pval.wi = pval.wi,
+    b_i = b_i,
+    se_i = se_i,
+    pval_i = pval_i,
+    b.adj = b.adj,
+    se.adj = se.adj,
+    pval.adj = pval.adj,
     nsnp = length(b_exp),
     mod = smod,
     dat = dat
