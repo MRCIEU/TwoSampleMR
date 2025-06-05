@@ -1,6 +1,6 @@
-#' Create scatter plot with lines showing the causal estimate for different MR tests
+#' Create scatter plot with fitted lines showing the causal effect estimate for different MR estimators
 #'
-#' Requires dev version of ggplot2
+#' Create scatter plot with fitted lines showing the causal effect estimate for different MR estimators.
 #'
 #' @param mr_results Output from [mr()].
 #' @param dat Output from [harmonise_data()].
