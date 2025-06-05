@@ -58,3 +58,14 @@ test_that("mr_grip()", {
   expect_equal(ncol(res6), 9L)
   expect_equal(res6[1, "b"], 0.490, tolerance = 1e-3)
 })
+
+test_that("mr_grip() not from mr()", {
+  tst <- mr_grip(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+  expect_equal(tst$b, 0.49, tol = 1e-4)
+  expect_equal(tst$se, 0.0947, tol = 1e-4)
+  expect_equal(tst$b_i, -3.38e-5, tol = 1e-6)
+  expect_equal(tst$se_i, 5.66e-5, tol = 1e-6)
+  expect_equal(tst$b.adj, 0.44736, tol = 1e-4)
+  expect_equal(tst$se.adj, 0.16389, tol = 1e-4)
+  expect_equal(tst$nsnp, 79L)
+})

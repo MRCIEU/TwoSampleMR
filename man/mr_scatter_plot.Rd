@@ -2,7 +2,7 @@
 % Please edit documentation in R/scatterplot.R
 \name{mr_scatter_plot}
 \alias{mr_scatter_plot}
-\title{Create scatter plot with lines showing the causal estimate for different MR tests}
+\title{Create scatter plot with fitted lines showing the causal effect estimate for different MR estimators}
 \usage{
 mr_scatter_plot(mr_results, dat)
 }
@@ -15,5 +15,5 @@ mr_scatter_plot(mr_results, dat)
 List of plots
 }
 \description{
-Requires dev version of ggplot2
+Create scatter plot with fitted lines showing the causal effect estimate for different MR estimators.
 }
