@@ -44,6 +44,20 @@ mr_scatter_plot <- function(mr_results, dat) {
       mrres$a[mrres$method == "MR Egger (bootstrap)"] <- temp$b_i
     }
 
+    if ("MR GRIP" %in% mrres$method) {
+      temp <- mr_grip(
+        d$beta.exposure,
+        d$beta.outcome,
+        d$se.exposure,
+        d$se.outcome,
+        default_parameters()
+      )
+      # keep intercept at 0 because plot on gd versus gp axes
+      # mrres$a[mrres$method == "MR GRIP"] <- temp$b_i
+      msgtxt <- paste0("Strictly, it is only valid to view the MR-GRIP estimate on the standard MR scatter plot axes when the intercept is zero. The estimated intercept for this model is: ", signif(temp$b_i))
+      message(msgtxt)
+    }
+
     ggplot2::ggplot(
       data = d,
       ggplot2::aes(x = beta.exposure, y = beta.outcome)
