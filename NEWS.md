@@ -3,7 +3,7 @@
 (Release date 2025-06-05)
 
 * Added weak instrument adjustment estimate and intercept to returned output of `mr_grip()` (thanks @fdudbridge)
-* Amended `mr_scatter_plot()` to correctly plot the intercept from `mr_grip()` (thanks @fdudbridge)
+* Amended `mr_scatter_plot()` to issue a message about the scale the MR-GRIP estimate is plotted on (thanks @fdudbridge)
 
 # TwoSampleMR v0.6.15
 
