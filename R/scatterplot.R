@@ -101,7 +101,7 @@ mr_scatter_plot <- function(mr_results, dat) {
         )
       ) +
       ggplot2::labs(
-        colour = "MR Test",
+        colour = "MR Estimate",
         x = paste("SNP effect on", d$exposure[1]),
         y = paste("SNP effect on", d$outcome[1])
       ) +
