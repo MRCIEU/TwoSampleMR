@@ -52,10 +52,7 @@ mr_scatter_plot <- function(mr_results, dat) {
         d$se.outcome,
         default_parameters()
       )
-      # keep intercept at 0 because plot on gd versus gp axes
-      # mrres$a[mrres$method == "MR GRIP"] <- temp$b_i
-      msgtxt <- paste0("Strictly, it is only valid to view the MR-GRIP estimate on the standard MR scatter plot axes when the intercept is zero. The estimated intercept for this model is: ", signif(temp$b_i))
-      message(msgtxt)
+      mrres$a[mrres$method == "MR GRIP"] <- stats::lm(d$beta.outcome - temp$b*d$beta.exposure ~ 1, weights = 1/d$se.outcome^2)$coef
     }
 
     ggplot2::ggplot(
