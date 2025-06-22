@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.17
+
+(Release date 2025-06-22)
+
+* Continued amends to the plot for MR-GRIP (thanks @fdudbridge)
+
 # TwoSampleMR v0.6.16
 
 (Release date 2025-06-05)
