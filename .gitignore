@@ -19,3 +19,5 @@ vignettes/*.html
 docs
 tests/testthat/*.pdf
 README.html
+vignettes/filename.pdf
+vignettes/filename.png
