@@ -138,6 +138,7 @@ It is possible to perform a leave-one-out analysis, where the MR is performed ag
 
 ```{r}
 res_loo <- mr_leaveoneout(dat)
+head(res_loo)
 ```
 
 By default the method used is the inverse variance weighted method, but this can be changed by using the `method` argument.
