@@ -21,3 +21,4 @@ tests/testthat/*.pdf
 README.html
 vignettes/filename.pdf
 vignettes/filename.png
+vignettes/plot1.pdf
