@@ -22,3 +22,5 @@ README.html
 vignettes/filename.pdf
 vignettes/filename.png
 vignettes/plot1.pdf
+vignettes/mr_report.md
+vignettes/figure/*.png
