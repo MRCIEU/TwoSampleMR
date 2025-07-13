@@ -1,3 +1,10 @@
+# TwoSampleMR v0.6.18
+
+(Release date 2025-07-15)
+
+* Fixes to `mr_forest_plot()`, `forest_plot_1_to_many()`, `mr_leaveoneout_plot()`, and `mr_scatter_plot()` for compatibility with the forthcoming release of version 4 of **ggplot2**.
+* Made some minor improvements in the *Perform MR* vignette including adding back several of the forest plots.
+
 # TwoSampleMR v0.6.17
 
 (Release date 2025-06-22)
