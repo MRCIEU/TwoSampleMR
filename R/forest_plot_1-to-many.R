@@ -41,7 +41,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 
 	names(mr_res)[names(mr_res)==b]<-"b"
 	names(mr_res)[names(mr_res)==se]<-"se"
-	Letters<-c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
+	Letters<-LETTERS
 	Letters<-sort(c(paste0("A",Letters),paste0("B",Letters),paste0("C",Letters),paste0("D",Letters)))
 	mr_res$outcome2<-mr_res[,TraitM]
 	mr_res[,TraitM]<-paste(Letters[seq_along(mr_res[,TraitM])],mr_res[,TraitM])
