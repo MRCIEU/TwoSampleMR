@@ -348,7 +348,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		plot.margin=ggplot2::unit(c(2,3,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour="white", fill=colour_scheme, size=1),
+		panel.background=ggplot2::element_rect(colour="white", fill=colour_scheme, linewidth=1),
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
@@ -388,7 +388,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	      plot.margin=ggplot2::unit(c(2,3,2,0), units="points"),
 	      plot.background=ggplot2::element_rect(fill="white"),
 	      panel.spacing=ggplot2::unit(0,"lines"),
-	      panel.background=ggplot2::element_rect(colour="white", fill=colour_scheme, size=1),
+	      panel.background=ggplot2::element_rect(colour="white", fill=colour_scheme, linewidth=1),
 	      strip.text.y = ggplot2::element_blank()
 	      # strip.background = ggplot2::element_blank()
 	    ) +
@@ -479,7 +479,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour=colour_scheme, fill=colour_scheme, size=1),
+		panel.background=ggplot2::element_rect(colour=colour_scheme, fill=colour_scheme, linewidth=1),
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
@@ -563,7 +563,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 		plot.margin=ggplot2::unit(c(2,0,2,0), units="points"),
 		plot.background=ggplot2::element_rect(fill="white"),
 		panel.spacing=ggplot2::unit(0,"lines"),
-		panel.background=ggplot2::element_rect(colour="red", fill=colour_scheme, size=1),
+		panel.background=ggplot2::element_rect(colour="red", fill=colour_scheme, linewidth=1),
 		strip.text.y = ggplot2::element_blank(),
 		strip.text.x = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
