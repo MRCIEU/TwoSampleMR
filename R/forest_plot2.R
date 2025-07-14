@@ -520,10 +520,8 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		ggplot2::theme(text=ggplot2::element_text(size=10))
 	)
 
-	if(!by_category)
-	{
-		if(!in_columns)
-		{
+	if(!by_category) {
+		if(!in_columns) {
 			return(forest_plot_basic(
 				dat,
 				bottom = TRUE,
@@ -541,8 +539,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			)
 			count <- 2
 			columns <- unique(dat$exposure)
-			for(i in seq_along(columns))
-			{
+			for(i in seq_along(columns)) {
 				l[[count]] <- forest_plot_basic(
 					dat,
 					section=NULL,
@@ -569,13 +566,11 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		}
 	}
 
-	if(!in_columns)
-	{
+	if(!in_columns) {
 		sec <- unique(as.character(dat$category))
 		h <- rep(0, length(sec))
 		l <- list()
-		for(i in seq_along(sec))
-		{
+		for(i in seq_along(sec)) {
 			l[[i]] <- forest_plot_basic(
 				dat,
 				sec[i],
@@ -605,8 +600,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 		l <- list()
 		h <- rep(0, length(sec))
 		count <- 1
-		for(i in seq_along(sec))
-		{
+		for(i in seq_along(sec)) {
 			h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 			l[[count]] <- forest_plot_names(
 				dat,
@@ -614,8 +608,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 				bottom = i==length(sec)
 			)
 			count <- count + 1
-			for(j in seq_along(columns))
-			{
+			for(j in seq_along(columns)) {
 				l[[count]] <- forest_plot_basic(
 					dat,
 					sec[i],
