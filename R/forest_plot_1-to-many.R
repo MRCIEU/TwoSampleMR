@@ -314,7 +314,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 	dat <- dat[rev(seq_len(nrow(dat))), ]
 
-	if (packageVersion("ggplot2") <= "3.5.2") {
+	if (utils::packageVersion("ggplot2") <= "3.5.2") {
 	p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), colour=colour_scheme,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, size=0.3) +

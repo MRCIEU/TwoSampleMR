@@ -111,7 +111,7 @@ mr_forest_plot <- function(singlesnp_results, exponentiate=FALSE)
 			xint <- 1
 		}
 
-		if (packageVersion("ggplot2") <= "3.5.2") {
+		if (utils::packageVersion("ggplot2") <= "3.5.2") {
 		ggplot2::ggplot(d, ggplot2::aes(y=SNP, x=b)) +
 		ggplot2::geom_vline(xintercept=xint, linetype="dotted") +
 		# ggplot2::geom_errorbarh(ggplot2::aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=as.factor(tot), colour=as.factor(tot)), height=0) +

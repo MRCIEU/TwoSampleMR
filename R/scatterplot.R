@@ -55,7 +55,7 @@ mr_scatter_plot <- function(mr_results, dat) {
       mrres$a[mrres$method == "MR GRIP"] <- stats::lm(d$beta.outcome - temp$b*d$beta.exposure ~ 1, weights = 1/d$se.outcome^2)$coef
     }
 
-    if (packageVersion("ggplot2") <= "3.5.2") {
+    if (utils::packageVersion("ggplot2") <= "3.5.2") {
     ggplot2::ggplot(
       data = d,
       ggplot2::aes(x = beta.exposure, y = beta.outcome)
