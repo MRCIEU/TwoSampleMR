@@ -565,7 +565,7 @@ When SNPs instrument multiple potential exposures, for example in the case of di
 5. Harmonise them all to be on the same effect allele
 6. Use the multivariable MR method against these harmonised data
 
-Example - The GWAS IDs for HDL, LDL and total cholesterol are `ieu-a-299`, `ieu-a-300` and `ieu-a-302`. The GWAS ID for coronary heart disease (CHD) is `ieu-a-7`. In this example we will estimate the multivariable effects of HDL, LDL and total cholesterol on CHD.
+Example - The GWAS IDs for HDL, LDL and total cholesterol are `ieu-a-299`, `ieu-a-300`, and `ieu-a-302`. The GWAS ID for coronary heart disease (CHD) is `ieu-a-7`. In this example we will estimate the multivariable effects of HDL, LDL and total cholesterol on CHD.
 
 ```{r eval=FALSE}
 id_exposure <- c("ieu-a-299", "ieu-a-300", "ieu-a-302")
