@@ -997,12 +997,12 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
                        beta.outcome = b_out,
                        se.exposure = se_exp,
                        se.outcome = se_out)
-    out <- suppressMessages(
+    out <- suppressMessages({
         mr.raps::mr.raps(data,
                          diagnostics = FALSE,
                          over.dispersion = parameters$over.dispersion,
                          loss.function = parameters$loss.function,
-                         shrinkage = parameters$shrinkage))
+                         shrinkage = parameters$shrinkage)})
     list(b = out$beta.hat,
          se = out$beta.se,
          pval = stats::pnorm(- abs(out$beta.hat / out$beta.se)) * 2,
