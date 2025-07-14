@@ -352,7 +352,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
-	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=main_title) +
+	ggplot2::labs(y=NULL, x=xlabname, colour=NULL, fill=NULL, title=main_title) +
 	outcome_labels
 	} else {
 	  p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
@@ -568,7 +568,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 		strip.text.x = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
-	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=addcol_title) +
+	ggplot2::labs(y=NULL, x=xlabname, colour=NULL, fill=NULL, title=addcol_title) +
 	outcome_labels
 	return(p)
 }
