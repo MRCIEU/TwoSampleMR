@@ -49,3 +49,26 @@ test_that("Funnel plot", {
   expect_no_error(p7 <- mr_funnel_plot(res_single))
   expect_true(length(p7) == 1L)
 })
+
+# forest plot 1 to many
+rm(list = ls())
+load(system.file("extdata", "forestplot_1_to_many_data.RData", package="TwoSampleMR"))
+
+test_that("Forest plot 1 to many", {
+  expect_warning(p8 <- forest_plot_1_to_many(
+    res,
+    b = "b",
+    se = "se",
+    exponentiate = TRUE,
+    ao_slc = FALSE,
+    lo = 0.3,
+    up = 2.5,
+    TraitM = "exposure",
+    col1_width = 2,
+    by = NULL,
+    trans = "log2",
+    xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
+    weight = "weight"
+  ))
+})
+
