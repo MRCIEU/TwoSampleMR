@@ -97,4 +97,29 @@ test_that("Forest plot 1 to many test 2", {
   ))
 })
 
+test_that("Forest plot 1 to many test 3 - with subcategory in by argument", {
+  res <- mr(dat2)
+  res <- split_exposure(res)
+  res <- subset_on_method(res)
+  res$subcategory[res$exposure %in% c("Adiponectin", "Hip circumference", "Waist circumference")] <- "Group 1"
+  res$subcategory[is.na(res$subcategory)] <- "Group 2"
+  res$weight <- 1/res$se
+  res <- sort_1_to_many(res, sort_action = 1, group = "subcategory")
+  expect_no_error(p10 <- forest_plot_1_to_many(
+    res,
+    b = "b",
+    se = "se",
+    exponentiate = TRUE,
+    trans = "log2",
+    ao_slc = FALSE,
+    lo = 0.3,
+    up = 2.5,
+    TraitM = "exposure",
+    col_text_size = 4,
+    col1_width = 1.5,
+    by = "subcategory",
+    xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
+    subheading_size = 14,
+    weight = "weight"
+  ))
 })
