@@ -609,7 +609,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 
 	xlim=NULL
 	ncols=1+length(addcols)
-	if (addcol_titles=="") {
+	if (all(addcol_titles == "")) {
 		addcol_titles<-rep(addcol_titles,length(addcols))
 	}
 
