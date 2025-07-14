@@ -309,7 +309,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(trans=trans, limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
-	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
+	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide="none") +
 	ggplot2::theme(
 		axis.line=ggplot2::element_blank(),
 		axis.text.y=ggplot2::element_blank(),
@@ -345,7 +345,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	    ggplot2::facet_grid(lab ~ .) +
 	    ggplot2::scale_x_continuous(trans=trans, limits=c(lo, up)) +
 	    ggplot2::scale_colour_brewer(type="qual") +
-	    ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
+	    ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide="none") +
 	    ggplot2::theme(
 	      axis.line=ggplot2::element_blank(),
 	      axis.text.y=ggplot2::element_blank(),
@@ -436,7 +436,7 @@ forest_plot_names <- function(dat, section=NULL, bottom=TRUE)
 	ggplot2::facet_grid(lab ~ .) +
 	ggplot2::scale_x_continuous(limits=c(lo, up)) +
 	ggplot2::scale_colour_brewer(type="qual") +
-	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
+	ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide="none") +
 	ggplot2::theme(
 		axis.line=ggplot2::element_blank(),
 		axis.text.y=ggplot2::element_blank(),
