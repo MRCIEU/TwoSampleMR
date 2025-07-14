@@ -243,8 +243,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 #' @return ggplot object
 forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
 {
-	if(bottom)
-	{
+	if(bottom) {
 		text_colour <- ggplot2::element_text(colour="black")
 		tick_colour <- ggplot2::element_line(colour="black")
 		xlabname <- xlab
@@ -260,8 +259,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
 
 	# Change lab
-	if(!is.null(xlim))
-	{
+	if(!is.null(xlim)) {
 		stopifnot(length(xlim) == 2)
 		stopifnot(xlim[1] < xlim[2])
 		dat$lo_ci <- pmax(dat$lo_ci, xlim[1], na.rm=TRUE)
@@ -276,24 +274,21 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	lo_orig <- lo
 	lo <- lo - r * 0.5
 
-	if(!is.null(section))
-	{
+	if(!is.null(section)) {
 		dat <- subset(dat, category==section)
 		main_title <- section
 	} else {
 		main_title <- ""
 	}
 
-	if(!is.null(colour_group))
-	{
+	if(!is.null(colour_group)) {
 		dat <- subset(dat, exposure == colour_group)
 		point_plot <- ggplot2::geom_point(size=dat$weight,colour=colour_scheme,fill=colour_scheme,shape=shape_points)
 	} else {
 		point_plot <- ggplot2::geom_point(ggplot2::aes(colour=colour_scheme), size=dat$weight,fill=colour_scheme)
 	}
 
-	if((!is.null(colour_group) && colour_group_first) || is.null(colour_group))
-	{
+	if((!is.null(colour_group) && colour_group_first) || is.null(colour_group)) {
 		outcome_labels <- ggplot2::geom_text(ggplot2::aes(label=outcome2,colour=colour_scheme), x=lo, y=mean(c(1, length(unique(dat$exposure)))), hjust=0, vjust=0.5, size=2.5)
 		main_title <- ifelse(is.null(section), "", section)
 		title_colour <- "black"
@@ -401,8 +396,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 
 forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5)
 {
-	if(bottom)
-	{
+	if(bottom) {
 		text_colour <- ggplot2::element_text(colour="white")
 		tick_colour <- ggplot2::element_line(colour="white")
 		xlabname <- ""
@@ -425,8 +419,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 	lo <- 0
 	up <- 1
 
-	if(!is.null(section))
-	{
+	if(!is.null(section)) {
 		dat <- subset(dat, category==section)
 		main_title <- section
 		section_colour <- "black"
@@ -493,8 +486,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 {
 	print(addcol)
 	# print(addcol_title)
-	if(bottom)
-	{
+	if(bottom) {
 		text_colour <- ggplot2::element_text(colour="white")
 		tick_colour <- ggplot2::element_line(colour="white")
 		xlabname <- ""
@@ -512,8 +504,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 	lo <- 0
 	up <- 1
 
-	if(!is.null(section))
-	{
+	if(!is.null(section)) {
 		dat <- subset(dat, category==section)
 		main_title <- section
 		section_colour <- "black"
@@ -675,7 +666,6 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 			}
 		}
 
-
 		for (j in seq_along(columns)) {
 			l[[count]] <- forest_plot_basic2(
 				dat,
@@ -709,5 +699,4 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 			)
 		)
 	)
-
 }
