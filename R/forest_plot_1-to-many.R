@@ -314,6 +314,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	dat <- merge(dat, l, by="lab", all.x=TRUE)
 	dat <- dat[rev(seq_len(nrow(dat))), ]
 
+	if (packageVersion("ggplot2") <= "3.5.2") {
 	p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	ggplot2::geom_rect(ggplot2::aes(fill=col), colour=colour_scheme,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, size=0.3) +
@@ -353,6 +354,47 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	) +
 	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=main_title) +
 	outcome_labels
+	} else {
+	  p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
+	    ggplot2::geom_rect(ggplot2::aes(fill=col), colour=colour_scheme,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+	    ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, size=0.3) +
+	    ggplot2::geom_vline(xintercept=null_line, colour="#333333", size=0.3) +
+	    # ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
+	    ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), width=0, size=0.4, colour=colour_scheme) +
+	    # ggplot2::geom_point(colour="black", size=2.2) +
+	    ggplot2::geom_point(colour=colour_scheme, size=2.2,shape=shape_points,fill=colour_scheme) +
+	    # ggplot2::scale_fill_manual(values="cyan4")+
+	    point_plot +
+	    ggplot2::facet_grid(lab ~ .) +
+	    ggplot2::scale_x_continuous(trans=trans, limits=c(lo, up)) +
+	    ggplot2::scale_colour_brewer(type="qual") +
+	    # ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
+	    ggplot2::scale_fill_manual(values=c("#eeeeee", "#ffffff"), guide=FALSE) +
+	    ggplot2::theme(
+	      axis.line=ggplot2::element_blank(),
+	      axis.text.y=ggplot2::element_blank(),
+	      axis.ticks.y=ggplot2::element_blank(),
+	      axis.text.x=text_colour,
+	      axis.ticks.x=tick_colour,
+	      # strip.text.y=ggplot2::element_text(angle=360, hjust=0),
+	      strip.background=ggplot2::element_rect(fill="white", colour="white"),
+	      strip.text=ggplot2::element_text(family="Courier New", face="bold", size=9),
+	      legend.position="none",
+	      legend.direction="vertical",
+	      panel.grid.minor.x=ggplot2::element_blank(),
+	      panel.grid.minor.y=ggplot2::element_blank(),
+	      panel.grid.major.y=ggplot2::element_blank(),
+	      plot.title = ggplot2::element_text(hjust = 0, size=subheading_size, colour=title_colour),
+	      plot.margin=ggplot2::unit(c(2,3,2,0), units="points"),
+	      plot.background=ggplot2::element_rect(fill="white"),
+	      panel.spacing=ggplot2::unit(0,"lines"),
+	      panel.background=ggplot2::element_rect(colour="white", fill=colour_scheme, size=1),
+	      strip.text.y = ggplot2::element_blank()
+	      # strip.background = ggplot2::element_blank()
+	    ) +
+	    ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=main_title) +
+	    outcome_labels
+	}
 	return(p)
 }
 
