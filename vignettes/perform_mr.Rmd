@@ -612,7 +612,7 @@ This generates a table of results.
 
 There are several different ways in which this analysis can be formulated, e.g., consider 3 exposures against one outcome, one could:
 
-1. Fit all exposures together or fit one exposure at a time against the residuals of the outcome that has been adjusted for the other outcomes. The former is recommended by default in this R package through the `mv_multiple()` function but the latter was how MV MR was originally described by Burgess et al 2015 and can be done with `mv_residual()`;
+1. Fit all exposures together or fit one exposure at a time against the residuals of the outcome that has been adjusted for the other outcomes. The former is recommended by default in this R package through the `mv_multiple()` function but the latter was how MV MR was originally described by @burgess-2015 and can be done with `mv_residual()`;
 2. Fitting all instruments for all exposures (default) or only fitting the instruments for each exposure sequentially;
 3. Forcing the slopes through the origin (default) or allowing an intercept term.
 
