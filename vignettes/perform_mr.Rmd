@@ -238,7 +238,7 @@ A 1-to-many MR analysis interrogates the effect of a single exposure on multiple
 ### Step 1: generate 1-to-many MR results
 
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
-exp_dat <- extract_instruments(outcomes = c(2, 100, 1032, 104, 1, 72, 999))
+exp_dat <- extract_instruments(outcomes = c("ieu-a-2", "ieu-a-100", "ieu-a-1032", "ieu-a-104", "ieu-a-1", "ieu-a-72", "ieu-a-999"))
 table(exp_dat$exposure)
 chd_out_dat <- extract_outcome_data(
   snps = exp_dat$SNP,
