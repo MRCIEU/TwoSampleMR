@@ -131,13 +131,11 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 
 	dat <- dat[order(dat$index), ]
 
-
 	dat <- dat[order(dat$outcome), ]
 
 	stopifnot(length(priority) == 1)
 
-	if(priority %in% dat$category)
-	{
+	if(priority %in% dat$category) {
 
 		temp1 <- subset(dat, category==priority)
 		temp2 <- subset(dat, category=="Other")
@@ -148,7 +146,6 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 		)
 
 	}
-
 
 	return(dat)
 }
