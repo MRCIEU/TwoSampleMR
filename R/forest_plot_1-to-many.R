@@ -357,7 +357,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	} else {
 	  p <-ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=exposure)) +
 	    ggplot2::geom_rect(ggplot2::aes(fill=col), colour=colour_scheme,xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
-	    ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, size=0.3) +
+	    ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, linewidth=0.3) +
 	    ggplot2::geom_vline(xintercept=null_line, colour="#333333", linewidth=0.3) +
 	    # ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
 	    ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), width=0, linewidth=0.4, colour=colour_scheme) +
