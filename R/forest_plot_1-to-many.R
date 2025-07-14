@@ -625,7 +625,6 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 		weight=weight
 	)
 
-
 	legend <- cowplot::get_legend(
 		ggplot2::ggplot(dat, ggplot2::aes(x=effect, y=outcome)) +
 		ggplot2::geom_point(ggplot2::aes(colour=exposure)) +
@@ -641,8 +640,7 @@ forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome
 	l <- list()
 	h <- rep(0, length(sec))
 	count <- 1
-	for(i in seq_along(sec))
-	{
+	for(i in seq_along(sec)) {
 		h[i] <- length(unique(subset(dat, category==sec[i])$outcome))
 
 		l[[count]] <- forest_plot_names2(
