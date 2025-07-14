@@ -59,7 +59,7 @@ forest_plot_1_to_many(
 
 \item{addcol_widths}{Widths of Y axis labels for additional columns specified by the addcols argument. Numeric vector. The default is \code{NULL}.}
 
-\item{addcol_titles}{Titles of additional columns specified by the addcols argument. Character vector. The default is \code{NULL}.}
+\item{addcol_titles}{Titles of additional columns specified by the addcols argument. Character vector. The default is \code{""}.}
 
 \item{subheading_size}{text size for the subheadings specified in by argument. The default is \code{6}.}
 
