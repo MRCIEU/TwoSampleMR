@@ -484,13 +484,13 @@ MR-RAPS is implemented in the R package **mr.raps** that is available on [GitHub
 res <- mr(dat, method_list = c("mr_raps"))
 ```
 
-MR-RAPS comes with two main options: `over.dispersion` (whether the method should consider systematic pleiotropy) and `loss.function` (either `"l2"`, `"huber"`, or `"tukey"`). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is `over.dispersion = TRUE` and `loss.function = "huber"`. To change these options, modify the `parameters` argument of `mr()` by (for example)
+MR-RAPS comes with two main options: `over.dispersion` (whether the method should consider systematic pleiotropy) and `loss.function` (either `"l2"`, `"huber"`, or `"tukey"`). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is `over.dispersion = TRUE`, `loss.function = "huber"`, and `shrinkage = FALSE`. To change these options, modify the `parameters` argument of `mr()` by, for example,
 ```{r eval=FALSE}
 res <-
   mr(
     dat,
     method_list = c("mr_raps"),
-    parameters = list(over.dispersion = FALSE, loss.function = "l2")
+    parameters = list(over.dispersion = FALSE, loss.function = "l2", shrinkage = TRUE)
   )
 ```
 
