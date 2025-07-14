@@ -242,7 +242,7 @@ exp_dat <- extract_instruments(outcomes = c("ieu-a-2", "ieu-a-100", "ieu-a-1032"
 table(exp_dat$exposure)
 chd_out_dat <- extract_outcome_data(
   snps = exp_dat$SNP,
-  outcomes = 7
+  outcomes = "ieu-a-7"
 )
 
 dat2 <- harmonise_data(
@@ -409,7 +409,7 @@ In the above example we made up an arbitrary grouping variable called "subcatego
 The plot function works best with 50 or fewer rows and is not really designed to handle more than a 100. Visualising a single-column forest plot with 100 results is also quite difficult. If your number of results is much greater than 50, it is advisable to split the results across two different plots. In the example below we select BMI as the exposure and test this against 103 diseases in the IEU GWAS database:
 
 ```{r echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
-exp_dat <- extract_instruments(outcomes = 2) # extract instruments for BMI
+exp_dat <- extract_instruments(outcomes = "ieu-a-2") # extract instruments for BMI
 ao <- available_outcomes()
 ao <- ao[ao$category == "Disease", ] # identify diseases
 ao <- ao[which(ao$ncase > 100), ]
