@@ -72,3 +72,28 @@ test_that("Forest plot 1 to many", {
   ))
 })
 
+test_that("Forest plot 1 to many test 2", {
+  res$pval<-formatC(res$pval, format = "e", digits = 2)
+  expect_warning(p9 <- forest_plot_1_to_many(
+    res,
+    b = "b",
+    se = "se",
+    exponentiate = TRUE,
+    ao_slc = FALSE,
+    lo = 0.3,
+    up = 2.5,
+    TraitM = "exposure",
+    by = NULL,
+    trans = "log2",
+    xlab = "OR for CHD per SD increase in risk factor (95% CI)",
+    weight = "weight",
+    subheading_size = 11,
+    col1_title = "Risk factor",
+    col1_width = 2.5,
+    col_text_size = 4,
+    addcols = c("nsnp", "pval"),
+    addcol_widths = c(1.0, 1.0),
+    addcol_titles = c("No. SNPs", "P-val")
+  )
+  )
+})
