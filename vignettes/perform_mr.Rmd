@@ -632,7 +632,7 @@ If you want to perform analysis with your local summary data (i.e. not in the Op
 
 In the examples shown so far it is assumed that instruments are independent (i.e. they are not in linkage disequilibrium, LD). This is to avoid 'double counting' effects. An alternative approach is to estimate the MR effects accounting for the correlation between variants.
 
-The TwoSampleMR package has not implemented this yet, but the [MendelianRandomization](https://CRAN.R-project.org/package=MendelianRandomization) R package by Olena Yavorska and Stephen Burgess does have this functionality. We can use the TwoSampleMR package to extract, format and harmonise data, and then convert to the format required by the MendelianRandomization package. The IEU GWAS database server has the individual level genetic data for ~500 Europeans in 1000 genomes data, and can obtain the LD matrix for a set of SNPs using these data. For example:
+The TwoSampleMR package has not implemented this yet, but the [MendelianRandomization](https://CRAN.R-project.org/package=MendelianRandomization) R package by Yavorska and Burgess does have this functionality. We can use the TwoSampleMR package to extract, format and harmonise data, and then convert to the format required by the MendelianRandomization package. The IEU GWAS database server has the individual level genetic data for ~500 Europeans in 1000 genomes data, and can obtain the LD matrix for a set of SNPs using these data. For example:
 
 ```{r eval=FALSE}
 snplist <- c("rs234", "rs1205")
