@@ -548,9 +548,8 @@ mr_steiger(
   p_out = dat$pval.outcome,
   n_exp = dat$samplesize.exposure,
   n_out = dat$samplesize.outcome,
-  r_xxo = 1,
-  r_yyo = 1,
-  r_exp=0
+  r_exp = rep(NA, length(dat$pval.exposure)),
+  r_out = rep(NA, length(dat$pval.exposure))
 )
 ```
 
