@@ -55,7 +55,7 @@ rm(list = ls())
 load(system.file("extdata", "forestplot_1_to_many_data.RData", package="TwoSampleMR"))
 
 test_that("Forest plot 1 to many", {
-  expect_no_error(p8 <- forest_plot_1_to_many(
+  expect_warning(p8 <- forest_plot_1_to_many(
     res,
     b = "b",
     se = "se",
@@ -69,12 +69,12 @@ test_that("Forest plot 1 to many", {
     trans = "log2",
     xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
     weight = "weight"
-  ))
+  ), regexp = "Removed 6 rows containing missing values or values outside the scale range (`geom_vline()`).", fixed = TRUE)
 })
 
 test_that("Forest plot 1 to many test 2", {
   res$pval<-formatC(res$pval, format = "e", digits = 2)
-  expect_no_error(p9 <- forest_plot_1_to_many(
+  expect_warning(p9 <- forest_plot_1_to_many(
     res,
     b = "b",
     se = "se",
@@ -94,7 +94,7 @@ test_that("Forest plot 1 to many test 2", {
     addcols = c("nsnp", "pval"),
     addcol_widths = c(1.0, 1.0),
     addcol_titles = c("No. SNPs", "P-val")
-  ))
+  ), regexp = "Removed 6 rows containing missing values or values outside the scale range (`geom_vline()`).", fixed = TRUE)
 })
 
 test_that("Forest plot 1 to many test 3 - with subcategory in by argument", {
@@ -105,7 +105,7 @@ test_that("Forest plot 1 to many test 3 - with subcategory in by argument", {
   res$subcategory[is.na(res$subcategory)] <- "Group 2"
   res$weight <- 1/res$se
   res <- sort_1_to_many(res, sort_action = 1, group = "subcategory")
-  expect_no_error(p10 <- forest_plot_1_to_many(
+  expect_warning(p10 <- forest_plot_1_to_many(
     res,
     b = "b",
     se = "se",
@@ -121,5 +121,5 @@ test_that("Forest plot 1 to many test 3 - with subcategory in by argument", {
     xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
     subheading_size = 14,
     weight = "weight"
-  ))
+  ), regexp = "Removed 3 rows containing missing values or values outside the scale range (`geom_vline()`).", fixed = TRUE)
 })
