@@ -392,7 +392,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	      strip.text.y = ggplot2::element_blank()
 	      # strip.background = ggplot2::element_blank()
 	    ) +
-	    ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=main_title) +
+	    ggplot2::labs(y=NULL, x=xlabname, colour=NULL, fill=NULL, title=main_title) +
 	    outcome_labels
 	}
 	return(p)
@@ -483,7 +483,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 		strip.text.y = ggplot2::element_blank()
 		# strip.background = ggplot2::element_blank()
 	) +
-	ggplot2::labs(y=NULL, x=xlabname, colour="", fill=NULL, title=main_title) +
+	ggplot2::labs(y=NULL, x=xlabname, colour=NULL, fill=NULL, title=main_title) +
 	outcome_labels
 	return(p)
 }
