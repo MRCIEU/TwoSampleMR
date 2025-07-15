@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.18</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Robust adjusted profile score</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.17/R/mr.R" class="external-link"><code>R/mr.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/R/mr.R" class="external-link"><code>R/mr.R</code></a></small>
       <div class="d-none name"><code>mr_raps.Rd</code></div>
     </div>
 
@@ -79,10 +79,10 @@
 
 
 <dt id="arg-parameters">parameters<a class="anchor" aria-label="anchor" href="#arg-parameters"></a></dt>
-<dd><p>A list of parameters. Specifically, <code>over.dispersion</code> and <code>loss.function</code>.
-<code>over.dispersion</code> is a logical concerning should the model consider overdispersion (systematic pleiotropy).
-And <code>loss.function</code> allows using either the squared error loss (<code>"l2"</code>) or robust loss functions/scores (<code>"huber"</code> or <code>"tukey"</code>).
-The default is <code>parameters=list(overdispersion = TRUE, loss.function = "tukey")</code>.</p></dd>
+<dd><p>A list of parameters. Specifically, <code>over.dispersion</code>, <code>loss.function</code>, and <code>shrinkage</code>:</p><ul><li><p><code>over.dispersion</code> is a logical concerning should the model consider overdispersion (systematic pleiotropy);</p></li>
+<li><p><code>loss.function</code> allows using either the squared error loss (<code>"l2"</code>) or robust loss functions/scores (<code>"huber"</code> or <code>"tukey"</code>);</p></li>
+<li><p><code>shrinkage</code> is a logical specifying whether empirically partially Bayes should be used.</p></li>
+</ul><p>The default is <code>parameters=list(overdispersion = TRUE, loss.function = "huber", shrinkage = FALSE)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -107,7 +107,7 @@ The default is <code>parameters=list(overdispersion = TRUE, loss.function = "tuk
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Qingyuan Zhao, Jingshu Wang, Jack Bowden, Dylan S. Small. Statistical inference in two-sample summary-data Mendelian randomization using robust adjusted profile score. Forthcoming.</p>
+    <p>Qingyuan Zhao, Jingshu Wang, Jack Bowden, Dylan S. Small. Statistical inference in two-sample summary-data Mendelian randomization using robust adjusted profile score. Annals of Statistics, 48, 3, 1742–1769, <a href="https://doi.org/10.1214/19-AOS1866" class="external-link">doi:10.1214/19-AOS1866</a></p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
