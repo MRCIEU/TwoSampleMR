@@ -182,13 +182,13 @@ It is possible to save this plot using the `ggsave()` function from the `ggplot2
 ggsave(p1[[1]], file = "filename.pdf", width = 7, height = 7)
 ```
 
-or save as a png
+Or to save as a png.
 
 ```{r eval=FALSE}
 ggsave(p1[[1]], file = "filename.png", width = 7, height = 7)
 ```
 
-See `?ggplot2::ggsave` for more info.
+See `?ggplot2::ggsave()` for more info.
 
 ### Forest plot
 
@@ -200,9 +200,9 @@ p2 <- mr_forest_plot(res_single)
 p2[[1]]
 ```
 
-Here, the plot shows the causal effect as estimated using each of the SNPs on their own, and comparing against the causal effect as estimated using the methods that use all the SNPs.
+Here, the plot shows the causal effect as estimated using each of the SNPs individually, and comparing against the causal effect as estimated using the methods that use all the SNPs.
 
-To get plots that use different methods, specify them in the `mr_singlesnp()` function:
+To obtain plots that use different methods, specify them in the `mr_singlesnp()` function:
 
 ```{r fig.alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs.", warning=FALSE, fig.height=10}
 res_single <- mr_singlesnp(dat, all_method = c("mr_ivw", "mr_two_sample_ml"))
@@ -220,7 +220,11 @@ p3 <- mr_leaveoneout_plot(res_loo)
 p3[[1]]
 ```
 
-Specify the test to use e.g. `mr_leaveoneout(dat, method = mr_egger_regression)` to use MR-Egger regression.
+We can also specify the method to use in the function call, e.g., to use MR-Egger regression in the leave-one-out analysis specify
+
+```r
+mr_leaveoneout(dat, method = mr_egger_regression)
+```
 
 ### Funnel plot
 
