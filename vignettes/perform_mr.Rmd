@@ -46,7 +46,7 @@ load(system.file("extdata", "vig_perform_mr.RData", package = "TwoSampleMR"))
 
 ## Introduction
 
-Let's continue with the example of BMI on CHD:
+Let's continue with the example of body mass index (BMI) on coronary heart disease (CHD):
 
 ```{r, eval=FALSE}
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
@@ -57,7 +57,7 @@ chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7'
 dat <- harmonise_data(bmi_exp_dat, chd_out_dat)
 ```
 
-Once the exposure and outcome data are harmonised, we have effects and standard errors for each instrument SNP available for the exposure and outcome traits. We can use this information to perform Mendelian randomisation. To do this, simply run:
+Once the exposure and outcome data are harmonised, we have effects and standard errors for each instrument SNP available for the exposure and outcome traits. We can use this information to perform a Mendelian randomization (MR) analysis. To do this, simply run:
 
 ```{r}
 res <- mr(dat)
@@ -168,7 +168,7 @@ And to see how many plots there are:
 length(p1)
 ```
 
-Lines are drawn for each method used in `mr(dat)`, the slope of the line corresponding to the estimated causal effect. To limit which lines are drawn, simply specify the desired methods, e.g. to only draw MR Egger and IVW:
+Lines are drawn for each method used in `mr(dat)`, the slope of the line corresponding to the estimated causal effect. To limit which lines are drawn, simply specify the desired methods, e.g., to only draw the lines for the MR Egger and IVW causal effect estimates:
 
 ```{r}
 res <- mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
