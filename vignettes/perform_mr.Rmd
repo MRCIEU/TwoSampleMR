@@ -170,7 +170,7 @@ length(p1)
 
 Lines are drawn for each method used in `mr(dat)`, the slope of the line corresponding to the estimated causal effect. To limit which lines are drawn, simply specify the desired methods, e.g., to only draw the lines for the MR Egger and IVW causal effect estimates:
 
-```{r}
+```{r fig.alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted and MR-Egger.", fig.asp=1.15}
 res <- mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 p1 <- mr_scatter_plot(res, dat)
 p1[[1]]
@@ -228,7 +228,7 @@ mr_leaveoneout(dat, method = mr_egger_regression)
 
 Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows:
 
-```{r fig.alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs.", fig.asp=1.15}
+```{r fig.alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs.", fig.asp=1.15, fig.height=7}
 p4 <- mr_funnel_plot(res_single)
 p4[[1]]
 ```
@@ -272,7 +272,7 @@ rm(list = ls()[ls() %in% "evalinr"])
 load(system.file("extdata", "forestplot_1_to_many_data.RData", package = "TwoSampleMR"))
 ```
 
-```{r}
+```{r fig.alt="A forest plot showing the estimated causal effects for each risk factor on the outcome."}
 min(exp(res$b - 1.96*res$se)) # identify value for 'lo' in forest_plot_1_to_many
 max(exp(res$b + 1.96*res$se)) # identify value for 'up' in forest_plot_1_to_many
 
@@ -295,7 +295,7 @@ forest_plot_1_to_many(
 
 It is also possible to add additional columns and column titles and to choose the size of the text in the columns:
 
-```{r}
+```{r fig.alt="A forest plot showing the estimated causal effects for each risk factor on the outcome including columns for the no. SNPs and p-value."}
 res$pval <- formatC(res$pval, format = "e", digits = 2)
 
 forest_plot_1_to_many(
@@ -323,7 +323,7 @@ forest_plot_1_to_many(
 
 In my own workflow I prefer to to keep the plot free of axis and column titles and to add them separately in a program like Powerpoint:
 
-```{r}
+```{r fig.alt="A forest plot showing the estimated causal effects for each risk factor on the outcome including columns for the no. SNPs and p-value without column headers."}
 forest_plot_1_to_many(
   res,
   b = "b",
@@ -364,7 +364,7 @@ res <-
   )
 ```
 
-```{r}
+```{r fig.alt="A forest plot showing the estimated causal effects for each method for each risk factor on the outcome."}
 forest_plot_1_to_many(
   res,
   b = "b",
@@ -387,7 +387,7 @@ forest_plot_1_to_many(
 
 In this next example we plot the same results as above but with results stratified by a grouping variable. We also select one MR method for each unique exposure-outcome combination and sort the results by decreasing effect size within each group (i.e. largest effect at the top).
 
-```{r}
+```{r fig.alt="Forest plot split by a subcategory variable."}
 res <- mr(dat2)
 res <- split_exposure(res)
 res <- subset_on_method(res)
