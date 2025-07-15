@@ -351,7 +351,8 @@ In this next example we plot the results from an analysis of the effect of multi
 
 ```{r}
 res <- mr(dat2)
-res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
+# to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
+res <- split_exposure(res)
 
 res <-
   sort_1_to_many(
@@ -425,9 +426,11 @@ rm(list = ls()[ls() %in% "evalinr"])
 ```
 
 ```{r echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
-exp_dat <- extract_instruments(outcomes = "ieu-a-2") # extract instruments for BMI
+# extract instruments for BMI
+exp_dat <- extract_instruments(outcomes = "ieu-a-2")
 ao <- available_outcomes()
-ao <- ao[ao$category == "Disease", ] # identify diseases
+# identify diseases
+ao <- ao[ao$category == "Disease", ]
 ao <- ao[which(ao$ncase > 100), ]
 
 dis_dat <- extract_outcome_data(
@@ -441,9 +444,10 @@ dat3 <- harmonise_data(
 )
 
 res <- mr(dat3, method_list = c("mr_wald_ratio", "mr_ivw"))
-res <- split_outcome(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
-
-res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by decreasing effect size (largest effect at top of the plot)
+# to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
+res <- split_outcome(res)
+# this sorts results by decreasing effect size (largest effect at top of the plot)
+res <- sort_1_to_many(res, b = "b", sort_action = 4)
 ```
 
 MR results for 103 diseases can be difficult to visualise in a single-column forest plot. In my own workflow I would split these across two plots and then join them together in a separate program, such as Powerpoint, and do further refinements there. I typically save my plots using the `pdf()` graphics device. In this particular example the disease labels probably require some cleaning up (some are a bit long) or alternatively the column text size could be made smaller. It is also possible to change the colour of the plot and the shape of the point estimates. Type `?forest_plot_1_to_many` for further details.
@@ -621,6 +625,7 @@ Finally, perform the multivariable MR analysis
 
 ```{r}
 res <- mv_multiple(mvdat)
+res
 ```
 
 This generates a table of results.
