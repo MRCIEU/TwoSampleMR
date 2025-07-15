@@ -621,14 +621,12 @@ Once the data has been obtained, harmonise so that all are on the same reference
 mvdat <- mv_harmonise_data(mv_exposure_dat, mv_outcome_dat)
 ```
 
-Finally, perform the multivariable MR analysis
+Finally, perform the multivariable MR analysis, which generates a table of results.
 
 ```{r}
 res <- mv_multiple(mvdat)
 res
 ```
-
-This generates a table of results.
 
 ### Note about multivariable methods
 
