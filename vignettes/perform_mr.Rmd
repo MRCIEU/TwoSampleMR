@@ -173,6 +173,7 @@ Lines are drawn for each method used in `mr(dat)`, the slope of the line corresp
 ```{r}
 res <- mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 p1 <- mr_scatter_plot(res, dat)
+p1[[1]]
 ```
 
 It is possible to save this plot using the `ggsave()` function from the `ggplot2` package, e.g. to save as a pdf
