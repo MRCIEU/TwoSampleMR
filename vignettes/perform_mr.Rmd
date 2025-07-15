@@ -265,9 +265,6 @@ res <- subset_on_method(res) # default is to subset on either the IVW method (>1
 res <- sort_1_to_many(res, b = "b", sort_action = 4) # this sorts results by decreasing effect size (largest effect at top of the plot)
 res <- split_exposure(res) # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
 res$weight <- 1/res$se
-
-min(exp(res$b - 1.96*res$se)) # identify value for 'lo' in forest_plot_1_to_many
-max(exp(res$b + 1.96*res$se)) # identify value for 'up' in forest_plot_1_to_many
 ```
 
 ```{r echo=FALSE, eval=TRUE, warning=FALSE}
@@ -275,6 +272,9 @@ load(system.file("extdata", "forestplot_1_to_many_data.RData", package = "TwoSam
 ```
 
 ```{r}
+min(exp(res$b - 1.96*res$se)) # identify value for 'lo' in forest_plot_1_to_many
+max(exp(res$b + 1.96*res$se)) # identify value for 'up' in forest_plot_1_to_many
+
 forest_plot_1_to_many(
   res,
   b = "b",
