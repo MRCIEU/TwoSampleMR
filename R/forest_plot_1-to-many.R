@@ -43,6 +43,7 @@ format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FA
 	mr_res$outcome2<-mr_res[,TraitM]
 	mr_res[,TraitM]<-paste(Letters[seq_along(mr_res[,TraitM])],mr_res[,TraitM])
 
+	if (is.null(mr_res$subcategory)) mr_res$subcategory <- ""
 	mr_res$subcategory<-trim(mr_res$subcategory)
 	mr_res$exposure<-""
 
