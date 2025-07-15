@@ -969,14 +969,16 @@ mr_ivw_fe <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameter
 #' Robust adjusted profile score
 #'
 #' @inheritParams mr_ivw
-#' @param parameters A list of parameters. Specifically, `over.dispersion` and `loss.function`.
-#' `over.dispersion` is a logical concerning should the model consider overdispersion (systematic pleiotropy).
-#' And `loss.function` allows using either the squared error loss (`"l2"`) or robust loss functions/scores (`"huber"` or `"tukey"`).
-#' The default is `parameters=list(overdispersion = TRUE, loss.function = "tukey")`.
+#' @param parameters A list of parameters. Specifically, `over.dispersion`, `loss.function`, and `shrinkage`:
+#' * `over.dispersion` is a logical concerning should the model consider overdispersion (systematic pleiotropy);
+#' * `loss.function` allows using either the squared error loss (`"l2"`) or robust loss functions/scores (`"huber"` or `"tukey"`);
+#' * `shrinkage` is a logical specifying whether empirically partially Bayes should be used.
+#'
+#' The default is `parameters=list(overdispersion = TRUE, loss.function = "huber", shrinkage = FALSE)`.
 #'
 #' @details This function calls the \code{mr.raps} package. Please refer to the documentation of that package for more detail.
 #'
-#' @references Qingyuan Zhao, Jingshu Wang, Jack Bowden, Dylan S. Small. Statistical inference in two-sample summary-data Mendelian randomization using robust adjusted profile score. Forthcoming.
+#' @references Qingyuan Zhao, Jingshu Wang, Jack Bowden, Dylan S. Small. Statistical inference in two-sample summary-data Mendelian randomization using robust adjusted profile score. Annals of Statistics, 48, 3, 1742--1769, \doi{10.1214/19-AOS1866}
 #'
 #' @return List with the following elements:
 #' \describe{
@@ -997,12 +999,12 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
                        beta.outcome = b_out,
                        se.exposure = se_exp,
                        se.outcome = se_out)
-    out <- suppressMessages(
+    out <- suppressMessages({
         mr.raps::mr.raps(data,
                          diagnostics = FALSE,
                          over.dispersion = parameters$over.dispersion,
                          loss.function = parameters$loss.function,
-                         shrinkage = parameters$shrinkage))
+                         shrinkage = parameters$shrinkage)})
     list(b = out$beta.hat,
          se = out$beta.se,
          pval = stats::pnorm(- abs(out$beta.hat / out$beta.se)) * 2,

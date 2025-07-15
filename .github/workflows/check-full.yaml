@@ -28,7 +28,7 @@ jobs:
       # max-parallel: 2
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
+          - {os: macos-15,   r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
@@ -37,8 +37,7 @@ jobs:
           - {os: ubuntu-latest,   r: '4.3.2'}
           - {os: ubuntu-latest,   r: 'oldrel-3'}
           - {os: ubuntu-latest,   r: 'oldrel-4'}
-          - {os: macos-15, r: 'release'}
-          - {os: macos-13, r: 'release'}
+          - {os: macos-14, r: 'release'}
           # - {os: ubuntu-24.04-arm, r: 'release', rspm: 'no' }
 
     env:

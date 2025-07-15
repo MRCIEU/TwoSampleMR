@@ -43,8 +43,6 @@ save(ao, bmi_exp_dat, chd_out_dat1, chd_out_dat2, file = file.path("inst", "extd
 load(system.file("extdata", "vig_outcome.RData", package = "TwoSampleMR"))
 ```
 
-
-
 Once instruments for the exposure trait have been specified, those variants need to be extracted from the outcome trait.
 
 ## Available studies in IEU GWAS database

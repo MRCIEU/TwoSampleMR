@@ -15,10 +15,14 @@ mr_raps(b_exp, b_out, se_exp, se_out, parameters = default_parameters())
 
 \item{se_out}{Standard errors of genetic effects on outcome.}
 
-\item{parameters}{A list of parameters. Specifically, \code{over.dispersion} and \code{loss.function}.
-\code{over.dispersion} is a logical concerning should the model consider overdispersion (systematic pleiotropy).
-And \code{loss.function} allows using either the squared error loss (\code{"l2"}) or robust loss functions/scores (\code{"huber"} or \code{"tukey"}).
-The default is \code{parameters=list(overdispersion = TRUE, loss.function = "tukey")}.}
+\item{parameters}{A list of parameters. Specifically, \code{over.dispersion}, \code{loss.function}, and \code{shrinkage}:
+\itemize{
+\item \code{over.dispersion} is a logical concerning should the model consider overdispersion (systematic pleiotropy);
+\item \code{loss.function} allows using either the squared error loss (\code{"l2"}) or robust loss functions/scores (\code{"huber"} or \code{"tukey"});
+\item \code{shrinkage} is a logical specifying whether empirically partially Bayes should be used.
+}
+
+The default is \code{parameters=list(overdispersion = TRUE, loss.function = "huber", shrinkage = FALSE)}.}
 }
 \value{
 List with the following elements:
@@ -36,5 +40,5 @@ Robust adjusted profile score
 This function calls the \code{mr.raps} package. Please refer to the documentation of that package for more detail.
 }
 \references{
-Qingyuan Zhao, Jingshu Wang, Jack Bowden, Dylan S. Small. Statistical inference in two-sample summary-data Mendelian randomization using robust adjusted profile score. Forthcoming.
+Qingyuan Zhao, Jingshu Wang, Jack Bowden, Dylan S. Small. Statistical inference in two-sample summary-data Mendelian randomization using robust adjusted profile score. Annals of Statistics, 48, 3, 1742--1769, \doi{10.1214/19-AOS1866}
 }
