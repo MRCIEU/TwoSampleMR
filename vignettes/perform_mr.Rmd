@@ -195,7 +195,6 @@ See `?ggplot2::ggsave()` for more info.
 Use the `mr_forest_plot()` function to compare the MR estimates using the different MR methods against the single SNP tests.
 
 ```{r fig.alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs.", warning=FALSE, fig.height=10}
-res_single <- mr_singlesnp(dat)
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
 ```
@@ -215,7 +214,6 @@ p2[[1]]
 Use the `mr_leaveoneout_plot()` function to visualise the leave-one-out analysis:
 
 ```{r fig.alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted.", warning=FALSE, fig.height=10}
-res_loo <- mr_leaveoneout(dat)
 p3 <- mr_leaveoneout_plot(res_loo)
 p3[[1]]
 ```
@@ -231,7 +229,6 @@ mr_leaveoneout(dat, method = mr_egger_regression)
 Asymmetry in a funnel plot is useful for gauging the reliability of a particular MR analysis. Funnel plots can be produced using the single SNP results as follows:
 
 ```{r fig.alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs.", fig.asp=1.15}
-res_single <- mr_singlesnp(dat)
 p4 <- mr_funnel_plot(res_single)
 p4[[1]]
 ```
