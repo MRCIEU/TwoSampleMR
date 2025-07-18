@@ -43,12 +43,12 @@ test_that("radial MR dat", {
 
 test_that("radial MR", {
 	w <- dat_to_RadialMR(dat)
-	expect_warning(o <- RadialMR::ivw_radial(w[[1]]))
+	utils::capture.output(expect_warning(o <- RadialMR::ivw_radial(w[[1]])))
 	expect_true(class(o) == "IVW")
 })
 
 
 test_that("radial MR", {
-	w <- mr_ivw_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+	utils::capture.output(w <- mr_ivw_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome))
 	expect_true(class(w) == "list")
 })
