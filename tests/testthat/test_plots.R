@@ -69,7 +69,7 @@ test_that("Forest plot 1 to many", {
     trans = "log2",
     xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
     weight = "weight"
-  ), regexp = "Removed 6 rows containing missing values or values outside the scale range *")
+  ), regexp = "Removed 6 rows")
 })
 
 test_that("Forest plot 1 to many test 2", {
@@ -94,7 +94,7 @@ test_that("Forest plot 1 to many test 2", {
     addcols = c("nsnp", "pval"),
     addcol_widths = c(1.0, 1.0),
     addcol_titles = c("No. SNPs", "P-val")
-  ), regexp = "Removed 6 rows containing missing values or values outside the scale range *")
+  ), regexp = "Removed 6 rows")
 })
 
 test_that("Forest plot 1 to many test 3 - with subcategory in by argument", {
@@ -121,5 +121,5 @@ test_that("Forest plot 1 to many test 3 - with subcategory in by argument", {
     xlab = "OR for CHD per SD increase in risk factor (95% confidence interval)",
     subheading_size = 14,
     weight = "weight"
-  ), regexp = "Removed 3 rows containing missing values or values outside the scale range *")
+  ), regexp = "Removed 3 rows")
 })
