@@ -1,7 +1,7 @@
 Package: TwoSampleMR
 Title: Two Sample MR Functions and Interface to MRC Integrative
     Epidemiology Unit OpenGWAS Database
-Version: 0.6.18
+Version: 0.6.19
 Authors@R: c(
     person("Gibran", "Hemani", , "g.hemani@bristol.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0920-1055")),

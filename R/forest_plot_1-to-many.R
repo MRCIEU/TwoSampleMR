@@ -346,7 +346,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 	    ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), alpha=0, linewidth=0.3) +
 	    ggplot2::geom_vline(xintercept=null_line, colour="#333333", linewidth=0.3) +
 	    # ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), height=0, size=0.4, colour="#aaaaaa") +
-	    ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), width=0, linewidth=0.4, colour=colour_scheme) +
+	    ggplot2::geom_errorbar(ggplot2::aes(xmin=lo_ci, xmax=up_ci), width=0, linewidth=0.4, colour=colour_scheme, orientation = "y") +
 	    # ggplot2::geom_point(colour="black", size=2.2) +
 	    ggplot2::geom_point(colour=colour_scheme, size=2.2,shape=shape_points,fill=colour_scheme) +
 	    # ggplot2::scale_fill_manual(values="cyan4")+

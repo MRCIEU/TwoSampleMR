@@ -74,7 +74,7 @@ test_that("Forest plot 1 to many", {
 
 test_that("Forest plot 1 to many test 2", {
   res$pval<-formatC(res$pval, format = "e", digits = 2)
-  expect_warning(p9 <- utils::capture.output(forest_plot_1_to_many(
+  expect_warning(utils::capture.output(p9 <- forest_plot_1_to_many(
     res,
     b = "b",
     se = "se",

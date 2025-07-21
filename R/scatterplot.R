@@ -118,13 +118,14 @@ mr_scatter_plot <- function(mr_results, dat) {
           colour = "grey",
           width = 0
         ) +
-        ggplot2::geom_errorbarh(
+        ggplot2::geom_errorbar(
           ggplot2::aes(
             xmin = beta.exposure - se.exposure,
             xmax = beta.exposure + se.exposure
           ),
           colour = "grey",
-          width = 0
+          width = 0,
+          orientation = "y"
         ) +
         ggplot2::geom_point() +
         ggplot2::geom_abline(

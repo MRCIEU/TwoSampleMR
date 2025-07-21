@@ -339,7 +339,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 	    ggplot2::geom_rect(ggplot2::aes(fill=col), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
 	    ggplot2::geom_vline(xintercept=seq(ceiling(lo_orig), ceiling(up), by=0.5), colour="white", size=0.3) +
 	    ggplot2::geom_vline(xintercept=null_line, colour="#333333", size=0.3) +
-	    ggplot2::geom_errorbarh(ggplot2::aes(xmin=lo_ci, xmax=up_ci), width=0, size=0.4, colour="#aaaaaa") +
+	    ggplot2::geom_errorbar(ggplot2::aes(xmin=lo_ci, xmax=up_ci), width=0, size=0.4, colour="#aaaaaa", orientation = "y") +
 	    ggplot2::geom_point(colour="black", size=2.2) +
 	    point_plot +
 	    ggplot2::facet_grid(lab ~ .) +
