@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.19
+
+(Release date 2025-07-21)
+
+* Further fixes for the forthcoming version 4 of ggplot2.
+
 # TwoSampleMR v0.6.18
 
 (Release date 2025-07-15)
