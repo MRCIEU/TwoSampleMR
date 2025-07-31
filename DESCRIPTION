@@ -64,7 +64,6 @@ VignetteBuilder:
 Remotes:
     gqi/MRMix,
     mrcieu/MRInstruments,
-    mrcieu/ieugwasr,
     MRPRESSO=rondolab/MR-PRESSO,
     qingyuanzhao/mr.raps,
     WSpiller/RadialMR
