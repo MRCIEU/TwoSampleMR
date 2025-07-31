@@ -1,3 +1,9 @@
+x_api_source_header <- function()
+{
+	paste0("ieugwasr/", utils::packageVersion("ieugwasr"), ";TwoSampleMR/", utils::packageVersion("TwoSampleMR"))
+}
+
+
 #' Get list of studies with available GWAS summary statistics through API
 #'
 #' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
@@ -7,7 +13,7 @@
 available_outcomes <- function(opengwas_jwt = ieugwasr::get_opengwas_jwt())
 {
 	# .Deprecated("ieugwasr::gwasinfo()")
-	a <- ieugwasr::gwasinfo(opengwas_jwt=opengwas_jwt)
+	a <- ieugwasr::gwasinfo(opengwas_jwt=opengwas_jwt, x_api_source=x_api_source_header())
 	return(a)
 }
 
@@ -92,7 +98,8 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 			align_alleles = align_alleles,
 			palindromes = palindromes,
 			maf_threshold = maf_threshold,
-			opengwas_jwt=opengwas_jwt
+			opengwas_jwt=opengwas_jwt,
+			x_api_source=x_api_source_header()
 		)
 		if(!is.data.frame(d)) d <- data.frame()
 
@@ -118,7 +125,8 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 					align_alleles = align_alleles,
 					palindromes = palindromes,
 					maf_threshold = maf_threshold,
-					opengwas_jwt=opengwas_jwt
+					opengwas_jwt=opengwas_jwt,
+					x_api_source=x_api_source_header()
 				)
 				if(!is.data.frame(out)) out <- data.frame()
 				return(out)
@@ -149,7 +157,8 @@ extract_outcome_data_internal <- function(snps, outcomes, proxies = TRUE, rsq = 
 					align_alleles = align_alleles,
 					palindromes = palindromes,
 					maf_threshold = maf_threshold,
-					opengwas_jwt=opengwas_jwt
+					opengwas_jwt=opengwas_jwt,
+					x_api_source=x_api_source_header()
 				)
 
 				if(!is.data.frame(out)) out <- data.frame()

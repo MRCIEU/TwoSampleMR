@@ -118,14 +118,14 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
 {
     if (is.null(snpinfo)) {
-        snpinfo <- ieugwasr::afl2_list("hapmap3")
+        snpinfo <- ieugwasr::afl2_list("hapmap3", x_api_source=x_api_source_header())
     }
 
     snpinfo <- snpinfo %>%
         dplyr::filter(complete.cases(.))
 
     d <- extract_split(snpinfo$rsid, id, splitsize) %>%
-        ieugwasr::fill_n() %>%
+        ieugwasr::fill_n(x_api_source=x_api_source_header()) %>%
         dplyr::mutate(z = beta / se) %>%
         dplyr::select(rsid, z = z, n = n, eaf) %>%
         dplyr::filter(complete.cases(.))
@@ -159,12 +159,12 @@ ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
 ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
 {
     if (is.null(snpinfo)) {
-        snpinfo <- ieugwasr::afl2_list("hapmap3")
+        snpinfo <- ieugwasr::afl2_list("hapmap3", x_api_source=x_api_source_header())
     }
 
     x <- extract_split(snpinfo$rsid, c(id1, id2), splitsize)
     d1 <- subset(x, id == id1) %>%
-        ieugwasr::fill_n() %>%
+        ieugwasr::fill_n(x_api_source=x_api_source_header()) %>%
         dplyr::mutate(z = beta / se) %>%
         dplyr::select(rsid, z1 = z, n1 = n, eaf) %>%
         dplyr::filter(complete.cases(.))
@@ -172,7 +172,7 @@ ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
     stopifnot(nrow(d1) > 0)
 
     d2 <- subset(x, id == id2) %>%
-        ieugwasr::fill_n() %>%
+        ieugwasr::fill_n(x_api_source=x_api_source_header()) %>%
         dplyr::mutate(z = beta / se) %>%
         dplyr::select(rsid, z2 = z, n2 = n, eaf) %>%
         dplyr::filter(complete.cases(.))
@@ -234,7 +234,7 @@ extract_split <- function(snplist, id, splitsize=20000)
     split(snplist, 1:nsplit) %>%
         pbapply::pblapply(., function(x)
         {
-            ieugwasr::associations(x, id, proxies=FALSE)
+            ieugwasr::associations(x, id, proxies=FALSE, x_api_source=x_api_source_header())
         }) %>%
         dplyr::bind_rows()
 }

@@ -89,5 +89,5 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 ld_matrix <- function(snps, with_alleles=TRUE, pop="EUR")
 {
 	# .Deprecated("ieugwasr::ld_matrix()")
-	ieugwasr::ld_matrix(variants=snps, with_alleles=with_alleles, pop=pop)
+	ieugwasr::ld_matrix(variants=snps, with_alleles=with_alleles, pop=pop, x_api_source=x_api_source_header())
 }
