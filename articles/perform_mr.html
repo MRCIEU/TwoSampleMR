@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.19</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.20</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 and Philip Haycock</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.19/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
       <div class="d-none name"><code>perform_mr.Rmd</code></div>
     </div>
 
@@ -1081,8 +1081,10 @@ obtaining the LD matrix for the instruments</p>
 <span><span class="co">#&gt;  - outcome: Coronary heart disease || id:ieu-a-7</span></span>
 <span><span class="co">#&gt;  - obtaining LD matrix</span></span>
 <span><span class="co">#&gt; Please look at vignettes for options on running this locally if you need to run many instances of this command.</span></span>
-<span><span class="co">#&gt; Error in matrix(as.numeric(res), nrow(res), ncol(res)) : </span></span>
-<span><span class="co">#&gt;   non-numeric matrix extent</span></span>
+<span><span class="co">#&gt; Error in get_query_content(.) : </span></span>
+<span><span class="co">#&gt; Status code from OpenGWAS API: 401</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Message: ERROR - Go to https://api.opengwas.io/ - From 1st May 2024 you must provide a token (JWT) alongside most of your requests. Read more at https://api.opengwas.io/ and also check for the latest version at https://mrcieu.github.io/ieugwasr/</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"try-error"</span><span class="op">)</span> <span class="fu">MendelianRandomization</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MendelianRandomization/man/mr_ivw.html" class="external-link">mr_ivw</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, correl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
