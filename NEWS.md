@@ -1,3 +1,11 @@
+# TwoSampleMR v0.6.20
+
+(Release date 2025-08-01)
+
+* TwoSampleMR now requires **ieugwasr** version 1.1.0 which provides improved error messages.
+* Changed error handling - now if the API gives an error code it is propagated as an error with message in **TwoSampleMR**.
+* Headers sent to API are updated.
+
 # TwoSampleMR v0.6.19
 
 (Release date 2025-07-21)
