@@ -10,12 +10,12 @@
 #' @export
 #' @return data frame
 add_rsq <- function(dat) {
-	if("id.exposure" %in% names(dat)) {
+	if ("id.exposure" %in% names(dat)) {
 		dat <- 	plyr::ddply(dat, c("id.exposure"), function(x) {
 				add_rsq_one(x, "exposure")
 			})
 	}
-	if("id.outcome" %in% names(dat)) {
+	if ("id.outcome" %in% names(dat)) {
 		dat <- 	plyr::ddply(dat, c("id.outcome"), function(x) {
 				add_rsq_one(x, "outcome")
 			})
@@ -24,18 +24,18 @@ add_rsq <- function(dat) {
 }
 
 add_rsq_one <- function(dat, what="exposure") {
-	if(! paste0("units.", what) %in% names(dat)) {
+	if (! paste0("units.", what) %in% names(dat)) {
 		dat[[paste0("units.", what)]] <- NA
 	}
 	stopifnot(length(unique(dat[[what]])) == 1)
 	stopifnot(length(unique(dat[[paste0("units.", what)]])) == 1)
 
-	if(! paste0("rsq.", what) %in% names(dat)) {
+	if (! paste0("rsq.", what) %in% names(dat)) {
 		dat[[paste0("pval.", what)]][dat[[paste0("pval.", what)]] < 1e-300] <- 1e-300
-		if(compareNA(dat[[paste0("units.", what)]][1], "log odds")) {
+		if (compareNA(dat[[paste0("units.", what)]][1], "log odds")) {
 			# message("Estimating rsq.exposure for binary trait")
 			# message("Ensure that beta.exposure, eaf.exposure, ncase.exposure, ncontrol.exposure are all specified with no missing values")
-			if(! paste0("prevalence.", what) %in% names(dat)) {
+			if (! paste0("prevalence.", what) %in% names(dat)) {
 				dat[[paste0("prevalence.", what)]] <- 0.1
 				warning(paste0("Assuming ", what, " prevalence of 0.1. Alternatively, add prevalence.", what, " column and re-run."))
 			}
@@ -45,7 +45,7 @@ add_rsq_one <- function(dat, what="exposure") {
 				!is.na(dat[[paste0("ncontrol.", what)]]) &
 				!is.na(dat[[paste0("prevalence.", what)]])
 			dat[[paste0("rsq.", what)]] <- NA
-			if(sum(ind1) > 0) {
+			if (sum(ind1) > 0) {
 				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_lor(
 					dat[[paste0("beta.", what)]][ind1],
 					dat[[paste0("eaf.", what)]][ind1],
@@ -57,14 +57,14 @@ add_rsq_one <- function(dat, what="exposure") {
 			} else {
 				message("Try adding metadata with add_metadata()")
 			}
-		} else if(all(grepl("SD", dat[[paste0("units.", what)]])) && all(!is.na(dat[[paste0("eaf.", what)]]))) {
+		} else if (all(grepl("SD", dat[[paste0("units.", what)]])) && all(!is.na(dat[[paste0("eaf.", what)]]))) {
 			dat[[paste0("rsq.", what)]] <- NA
 			dat[[paste0("rsq.", what)]] <- 2 * dat[[paste0("beta.", what)]]^2 * dat[[paste0("eaf.", what)]] * (1-dat[[paste0("eaf.", what)]])
 			dat[[paste0("effective_n.", what)]] <- dat[[paste0("samplesize.", what)]]
 		} else {
 			ind1 <- !is.na(dat[[paste0("pval.", what)]]) & !is.na(dat[[paste0("samplesize.", what)]])
 			dat[[paste0("rsq.", what)]] <- NA
-			if(sum(ind1) > 0) {
+			if (sum(ind1) > 0) {
 				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_bsen(
 					dat[[paste0("beta.", what)]][ind1],
 					dat[[paste0("se.", what)]][ind1],
@@ -87,7 +87,7 @@ get_r_from_pn_less_accurate <- function(p, n) {
 	qval <- stats::qchisq(p, 1, lower.tail = FALSE) / (stats::qchisq(p, n-2, lower.tail = FALSE)/(n-2))
 	r <- sqrt(sum(qval / (n - qval)))
 
-	if(r >= 1) {
+	if (r >= 1) {
 		warning("Correlation greater than 1, make sure SNPs are pruned for LD.")
 	}
 	return(r)
@@ -106,7 +106,7 @@ test_r_from_pn <- function() {
 		rsq = 10^seq(-4,-0.5, length.out=30)
 	)
 
-	for(i in seq_len(nrow(param))) {
+	for (i in seq_len(nrow(param))) {
 		message(i)
 		x <- scale(stats::rnorm(param$n[i]))
 		y <- x * sqrt(param$rsq[i]) + scale(stats::rnorm(param$n[i])) * sqrt(1 - param$rsq[i])
@@ -158,7 +158,7 @@ get_r_from_pn <- function(p, n) {
 		abs(-log10(suppressWarnings(get_p_from_r2n(x, sample_size))) - -log10(pvalue))
 	}
 
-	if(length(p) > 1 && length(n) == 1) {
+	if (length(p) > 1 && length(n) == 1) {
 		message("Assuming n the same for all p values")
 		n <- rep(n, length(p))
 	}
@@ -166,10 +166,10 @@ get_r_from_pn <- function(p, n) {
 	Fval <- suppressWarnings(stats::qf(p, 1, n-1, lower.tail=FALSE))
 	R2 <- Fval / (n - 2 + Fval)
 	index <- !is.finite(Fval)
-	if(any(index)) {
+	if (any(index)) {
 		index <- which(index)
-		for(i in seq_along(index)) {
-			if(p[index[i]] == 0) {
+		for (i in seq_along(index)) {
+			if (p[index[i]] == 0) {
 				R2[index[i]] <- NA
 				warning("P-value of 0 cannot be converted to R value")
 			} else {
@@ -222,22 +222,22 @@ get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", 
 	stopifnot(length(ncase) == 1 | length(ncase) == length(lor))
 	stopifnot(length(ncontrol) == 1 | length(ncontrol) == length(lor))
 	stopifnot(length(prevalence) == 1 | length(prevalence) == length(lor))
-	if(length(prevalence) == 1 && length(lor) != 1) {
+	if (length(prevalence) == 1 && length(lor) != 1) {
 		prevalence <- rep(prevalence, length(lor))
 	}
-	if(length(ncase) == 1 && length(lor) != 1) {
+	if (length(ncase) == 1 && length(lor) != 1) {
 		ncase <- rep(ncase, length(lor))
 	}
-	if(length(ncontrol) == 1 && length(lor) != 1) {
+	if (length(ncontrol) == 1 && length(lor) != 1) {
 		ncontrol <- rep(ncontrol, length(lor))
 	}
 
 	nsnp <- length(lor)
 	r <- array(NA, nsnp)
-	for(i in 1:nsnp) {
-		if(model == "logit") {
+	for (i in 1:nsnp) {
+		if (model == "logit") {
 			ve <- pi^2/3
-		} else if(model == "probit") {
+		} else if (model == "probit") {
 			ve <- 1
 		} else {
 			stop("Model must be probit or logit")
@@ -245,7 +245,7 @@ get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", 
 		popaf <- get_population_allele_frequency(af[i], ncase[i] / (ncase[i] + ncontrol[i]), exp(lor[i]), prevalence[i])
 		vg <- (lor[i])^2 * popaf * (1-popaf)
 		r[i] <- vg / (vg + ve)
-		if(correction) {
+		if (correction) {
 			r[i] <- r[i] / 0.58
 		}
 		r[i] <- sqrt(r[i]) * sign(lor[i])
@@ -311,7 +311,7 @@ allele_frequency <- function(g) {
 get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence) {
 	stopifnot(length(af) == length(odds_ratio))
 	stopifnot(length(prop) == length(odds_ratio))
-	for(i in seq_along(odds_ratio)) {
+	for (i in seq_along(odds_ratio)) {
 		co <- contingency(af[i], prop[i], odds_ratio[i])
 		af_controls <- co[1,2] / (co[1,2] + co[2,2])
 		af_cases <- co[1,1] / (co[1,1] + co[2,1])
