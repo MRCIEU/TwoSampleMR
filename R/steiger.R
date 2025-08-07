@@ -206,7 +206,7 @@ directionality_test <- function(dat)
 #' @param r_out Vector of correlations of SNP-outcome
 #' @param n_exp Sample sizes for p_exp
 #' @param n_out Sample sizes for p_out
-#' @param r_xxo Measurememt precision of exposure
+#' @param r_xxo Measurement precision of exposure
 #' @param r_yyo Measurement precision of outcome
 #' @param ... Further arguments to be passed to [lattice::wireframe()]
 #'
