@@ -96,8 +96,8 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
 #' \item{sensitivity_plot}{Plot of parameter space of causal directions and measurement error}
 #' }
-mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo=1, ...)
-{
+mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo=1, ...) {
+
 	r_exp <- abs(r_exp)
 	r_out <- abs(r_out)
 
@@ -107,12 +107,10 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yy
 	ip_exp <- is.na(p_exp) | is.na(n_exp)
 	ip_out <- is.na(p_out) | is.na(n_out)
 
-	if(any(ir_exp))
-	{
+	if(any(ir_exp)) {
 		r_exp[ir_exp] <- get_r_from_pn(p_exp[ir_exp & !ip_exp], n_exp[ir_exp & !ip_exp])
 	}
-	if(any(ir_out))
-	{
+	if(any(ir_out)) {
 		r_out[ir_out] <- get_r_from_pn(p_out[ir_out & !ip_out], n_out[ir_out & !ip_out])
 	}
 
