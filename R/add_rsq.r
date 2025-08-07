@@ -46,13 +46,13 @@ add_rsq_one <- function(dat, what="exposure") {
 				!is.na(dat[[paste0("prevalence.", what)]])
 			dat[[paste0("rsq.", what)]] <- NA
 			if (sum(ind1) > 0) {
-				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_lor(
+				dat[[paste0("rsq.", what)]][ind1] <- (get_r_from_lor(
 					dat[[paste0("beta.", what)]][ind1],
 					dat[[paste0("eaf.", what)]][ind1],
 					dat[[paste0("ncase.", what)]][ind1],
 					dat[[paste0("ncontrol.", what)]][ind1],
 					dat[[paste0("prevalence.", what)]]
-				)^2
+				))^2
 				dat[[paste0("effective_n.", what)]][ind1] <- effective_n(dat[[paste0("ncase.", what)]][ind1], dat[[paste0("ncontrol.", what)]][ind1])
 			} else {
 				message("Try adding metadata with add_metadata()")
@@ -65,11 +65,11 @@ add_rsq_one <- function(dat, what="exposure") {
 			ind1 <- !is.na(dat[[paste0("pval.", what)]]) & !is.na(dat[[paste0("samplesize.", what)]])
 			dat[[paste0("rsq.", what)]] <- NA
 			if (sum(ind1) > 0) {
-				dat[[paste0("rsq.", what)]][ind1] <- get_r_from_bsen(
+				dat[[paste0("rsq.", what)]][ind1] <- (get_r_from_bsen(
 					dat[[paste0("beta.", what)]][ind1],
 					dat[[paste0("se.", what)]][ind1],
 					dat[[paste0("samplesize.", what)]][ind1]
-				)^2
+				))^2
 				dat[[paste0("effective_n.", what)]] <- dat[[paste0("samplesize.", what)]]
 			} else {
 				message("Try adding metadata with add_metadata()")
