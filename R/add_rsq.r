@@ -126,10 +126,10 @@ test_r_from_pn <- function()
 		message(i)
 		x <- scale(stats::rnorm(param$n[i]))
 		y <- x * sqrt(param$rsq[i]) + scale(stats::rnorm(param$n[i])) * sqrt(1 - param$rsq[i])
-		param$rsq_emp[i] <- stats::cor(x, y)^2
+		param$rsq_emp[i] <- (stats::cor(x, y))^2
 		param$pval[i] <- max(stats::coefficients(summary(stats::lm(y ~ x)))[2,4], 1e-300)
-		param$rsq1[i] <- get_r_from_pn_less_accurate(param$pval[i], param$n[i])^2
-		param$rsq2[i] <- get_r_from_pn(param$pval[i], param$n[i])^2
+		param$rsq1[i] <- (get_r_from_pn_less_accurate(param$pval[i], param$n[i]))^2
+		param$rsq2[i] <- (get_r_from_pn(param$pval[i], param$n[i]))^2
 	}
 
 	param <- tidyr::gather(param, key=out, value=value, rsq1, rsq2)
@@ -273,7 +273,7 @@ get_r_from_lor <- function(lor, af, ncase, ncontrol, prevalence, model="logit", 
 			stop("Model must be probit or logit")
 		}
 		popaf <- get_population_allele_frequency(af[i], ncase[i] / (ncase[i] + ncontrol[i]), exp(lor[i]), prevalence[i])
-		vg <- lor[i]^2 * popaf * (1-popaf)
+		vg <- (lor[i])^2 * popaf * (1-popaf)
 		r[i] <- vg / (vg + ve)
 		if(correction)
 		{
@@ -308,7 +308,7 @@ contingency <- function(af, prop, odds_ratio, eps=1e-15)
 	{
 		z <- -c_ / b
 	} else {
-		d <- b^2 - 4*a*c_
+		d <- (b)^2 - 4*a*c_
 		if (d < eps*eps)
 		{
 			s <- 0
