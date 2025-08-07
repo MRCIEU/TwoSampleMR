@@ -15,7 +15,7 @@ mr_steiger2(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo = 1, ...)
 
 \item{n_out}{Sample sizes for p_out}
 
-\item{r_xxo}{Measurememt precision of exposure}
+\item{r_xxo}{Measurement precision of exposure}
 
 \item{r_yyo}{Measurement precision of outcome}
 
