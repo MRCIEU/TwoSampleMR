@@ -20,21 +20,17 @@
 #'
 #' @export
 #' @return [harmonise_data()] style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is `TRUE` if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome.
-steiger_filtering <- function(dat)
-{
+steiger_filtering <- function(dat) {
 	plyr::ddply(dat, c("id.exposure", "id.outcome"), steiger_filtering_internal)
 }
 
 
 
-steiger_filtering_internal <- function(dat)
-{
-	if(! "units.outcome" %in% names(dat))
-	{
+steiger_filtering_internal <- function(dat) {
+	if(! "units.outcome" %in% names(dat)) {
 		dat$units.outcome <- NA
 	}
-	if(! "units.exposure" %in% names(dat))
-	{
+	if(! "units.exposure" %in% names(dat)) {
 		dat$units.exposure <- NA
 	}
 	stopifnot(length(unique(dat$exposure)) == 1)
