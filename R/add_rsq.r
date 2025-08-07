@@ -1,4 +1,4 @@
-#' Estimate r-square of each association
+#' Estimate r-squared of each association
 #'
 #' Can be applied to exposure_dat, outcome_dat or harmonised_data.
 #' Note that it will be beneficial in some circumstances to add the meta data to
