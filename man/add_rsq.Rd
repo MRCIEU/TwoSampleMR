@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_rsq.r
 \name{add_rsq}
 \alias{add_rsq}
-\title{Estimate r-square of each association}
+\title{Estimate r-squared of each association}
 \usage{
 add_rsq(dat)
 }
