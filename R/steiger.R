@@ -116,8 +116,8 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yy
 		r_out[ir_out] <- get_r_from_pn(p_out[ir_out & !ip_out], n_out[ir_out & !ip_out])
 	}
 
-	r_exp <- sqrt(sum(r_exp[!is.na(r_exp) | is.na(r_out)]^2))
-	r_out <- sqrt(sum(r_out[!is.na(r_exp) | is.na(r_out)]^2))
+	r_exp <- sqrt(sum((r_exp[!is.na(r_exp) | is.na(r_out)])^2))
+	r_out <- sqrt(sum((r_out[!is.na(r_exp) | is.na(r_out)])^2))
 
 	stopifnot(r_xxo <= 1 & r_xxo >= 0)
 	stopifnot(r_yyo <= 1 & r_yyo >= 0)
@@ -130,10 +130,10 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yy
 	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
 	rtest_adj <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp_adj, r34 = r_out_adj)
 	l <- list(
-		r2_exp = r_exp^2,
-		r2_out = r_out^2,
-		r2_exp_adj = r_exp_adj^2,
-		r2_out_adj = r_out_adj^2,
+		r2_exp = (r_exp)^2,
+		r2_out = (r_out)^2,
+		r2_exp_adj = (r_exp_adj)^2,
+		r2_out_adj = (r_out_adj)^2,
 		correct_causal_direction = r_exp > r_out,
 		steiger_test = stats::pnorm(-abs(rtest[["z"]])) * 2,
 		correct_causal_direction_adj = r_exp_adj > r_out_adj,
@@ -233,24 +233,24 @@ mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 	n_exp <- n_exp[!index]
 	n_out <- n_out[!index]
 
-	r_exp <- sqrt(sum(r_exp^2))
-	r_out <- sqrt(sum(r_out^2))
+	r_exp <- sqrt(sum((r_exp)^2))
+	r_out <- sqrt(sum((r_out)^2))
 
 	stopifnot(r_xxo <= 1 & r_xxo >= 0)
 	stopifnot(r_yyo <= 1 & r_yyo >= 0)
 
-	r_exp_adj <- sqrt(r_exp^2 / r_xxo^2)
-	r_out_adj <- sqrt(r_out^2 / r_yyo^2)
+	r_exp_adj <- sqrt((r_exp)^2 / (r_xxo)^2)
+	r_out_adj <- sqrt((r_out)^2 / (r_yyo)^2)
 
 	sensitivity <- steiger_sensitivity(r_exp, r_out, ...)
 
 	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
 	rtest_adj <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp_adj, r34 = r_out_adj)
 	l <- list(
-		r2_exp = r_exp^2,
-		r2_out = r_out^2,
-		r2_exp_adj = r_exp_adj^2,
-		r2_out_adj = r_out_adj^2,
+		r2_exp = (r_exp)^2,
+		r2_out = (r_out)^2,
+		r2_exp_adj = (r_exp_adj)^2,
+		r2_out_adj = (r_out_adj)^2,
 		correct_causal_direction = r_exp > r_out,
 		steiger_test = stats::pnorm(-abs(rtest[["z"]]))*2,
 		correct_causal_direction_adj = r_exp_adj > r_out_adj,
