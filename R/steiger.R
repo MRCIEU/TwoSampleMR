@@ -75,7 +75,7 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 #' @param n_out Sample sizes for p_out
 #' @param r_exp Vector of absolute correlations for SNP-exposure
 #' @param r_out Vector of absolute correlations for SNP-outcome
-#' @param r_xxo Measurememt precision of exposure
+#' @param r_xxo Measurement precision of exposure
 #' @param r_yyo Measurement precision of outcome
 #' @param ... Further arguments to be passed to [lattice::wireframe()]
 #'
