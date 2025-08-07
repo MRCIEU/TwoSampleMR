@@ -19,7 +19,7 @@ mr_steiger(p_exp, p_out, n_exp, n_out, r_exp, r_out, r_xxo = 1, r_yyo = 1, ...)
 
 \item{r_out}{Vector of absolute correlations for SNP-outcome}
 
-\item{r_xxo}{Measurememt precision of exposure}
+\item{r_xxo}{Measurement precision of exposure}
 
 \item{r_yyo}{Measurement precision of outcome}
 
