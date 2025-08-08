@@ -27,8 +27,7 @@
 #'
 #' @export
 #' @return data frame
-read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE, chr_col="chr", pos_col="pos")
-{
+read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE, chr_col="chr", pos_col="pos") {
 	outcome_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	outcome_dat <- format_data(
 		as.data.frame(outcome_dat),
@@ -86,8 +85,7 @@ read_outcome_data <- function(filename, snps=NULL, sep=" ", phenotype_col="Pheno
 #'
 #' @export
 #' @return data frame
-read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE, chr_col="chr", pos_col="pos")
-{
+read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Phenotype", snp_col="SNP", beta_col="beta", se_col="se", eaf_col="eaf", effect_allele_col="effect_allele", other_allele_col="other_allele", pval_col="pval", units_col="units", ncase_col="ncase", ncontrol_col="ncontrol", samplesize_col="samplesize", gene_col="gene", id_col="id", min_pval=1e-200, log_pval=FALSE, chr_col="chr", pos_col="pos") {
 	exposure_dat <- data.table::fread(filename, header=TRUE, sep=sep)
 	exposure_dat <- format_data(
 		as.data.frame(exposure_dat),
@@ -113,8 +111,7 @@ read_exposure_data <- function(filename, clump=FALSE, sep=" ", phenotype_col="Ph
 		pos_col=pos_col
 	)
 	exposure_dat$data_source.exposure <- "textfile"
-	if(clump)
-	{
+	if (clump) {
 		exposure_dat <- clump_data(exposure_dat)
 	}
 	return(exposure_dat)
@@ -161,8 +158,7 @@ format_data <- function(dat, type="exposure", snps=NULL, header=TRUE,
                         ncontrol_col="ncontrol", samplesize_col="samplesize",
                         gene_col="gene", id_col="id", min_pval=1e-200,
                         z_col="z", info_col="info", chr_col="chr",
-                        pos_col="pos", log_pval=FALSE)
-{
+                        pos_col="pos", log_pval=FALSE) {
 
 if (inherits(dat, "data.table")) {
   stop(
@@ -175,8 +171,7 @@ if (inherits(dat, "data.table")) {
   all_cols <- c(phenotype_col, snp_col, beta_col, se_col, eaf_col, effect_allele_col, other_allele_col, pval_col, units_col, ncase_col, ncontrol_col, samplesize_col, gene_col, id_col, z_col, info_col, chr_col, pos_col)
 
 	i <- names(dat) %in% all_cols
-	if(sum(i) == 0)
-	{
+	if (sum(i) == 0) {
 		stop("None of the specified columns present")
 	}
 	dat <- dat[,i]
