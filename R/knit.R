@@ -18,13 +18,11 @@
 #' @param  ... Arguments to be passed to [knitr::knit()]
 #' @return NULL
 #' @keywords internal
-knit_report <- function(input_filename, output_filename, ...)
-{
+knit_report <- function(input_filename, output_filename, ...) {
     output_filename <- normalizePath(output_filename)
 
     output_dir <- dirname(output_filename)
-    if (!file.exists(output_dir))
-        dir.create(output_dir)
+    if (!file.exists(output_dir)) dir.create(output_dir)
 
     current_dir <- getwd()
     on.exit(setwd(current_dir))
@@ -38,20 +36,17 @@ knit_report <- function(input_filename, output_filename, ...)
     is.docx <- tolower(suffix) %in% c("doc", "docx", "word")
     is.md <- tolower(suffix) %in% c("md", "markdown")
 
-    if (is.html)
+    if (is.html) {
         return(knitr::knit2html(input_filename, output=paste0(name, ".html"), envir=parent.frame(), ...))
-    else if (is.md)
+    } else if (is.md) {
         return(knitr::knit(input_filename, output=paste0(name, ".md"), envir=parent.frame(), ...))
-    else if (is.pdf)
-    {
+    } else if (is.pdf) {
         return(rmarkdown::render(input_filename, rmarkdown::pdf_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".pdf"), clean = TRUE, envir=parent.frame(), ...))
-    }
-    else if (is.docx)
-    {
+    } else if (is.docx) {
         return(rmarkdown::render(input_filename, rmarkdown::word_document(), intermediates_dir=getwd(), output_dir=getwd(), output_file=paste0(name, ".docx"), clean = TRUE, envir=parent.frame(), ...))
-    }
-    else
+    } else {
         stop("Please choose a filename with pdf, html, docx or md suffix")
+    }
 }
 
 
@@ -72,8 +67,7 @@ knit_report <- function(input_filename, output_filename, ...)
 #'
 #' @export
 #' @return NULL
-mr_report <- function(dat, output_path = ".", output_type = "html", author = "Analyst", study = "Two Sample MR", path=system.file("reports", package="TwoSampleMR"), ...)
-{
+mr_report <- function(dat, output_path = ".", output_type = "html", author = "Analyst", study = "Two Sample MR", path=system.file("reports", package="TwoSampleMR"), ...) {
     message("Writing report as ", output_type, " file to ", output_path)
 
     message("Performing analysis")
@@ -98,13 +92,10 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
     combinations <- plyr::ddply(dat, c("id.exposure", "id.outcome"), plyr::summarise, n=length(exposure), exposure=exposure[1], outcome=outcome[1])
 
     output_file <- array("", nrow(combinations))
-    for(i in seq_len(nrow(combinations)))
-    {
+    for (i in seq_len(nrow(combinations))) {
         title <- paste(combinations$exposure[i], "against", combinations$outcome[i])
-        tablist <- lapply(m[c("mr", "enrichment", "directionality_test", "mr_heterogeneity", "mr_pleiotropy_test")], function(x)
-            {
-                if(is.null(x))
-                {
+        tablist <- lapply(m[c("mr", "enrichment", "directionality_test", "mr_heterogeneity", "mr_pleiotropy_test")], function(x) {
+                if (is.null(x)) {
                     return(NULL)
                 } else {
                    subset(x, id.exposure == combinations$id.exposure[i] & id.outcome == combinations$id.outcome[i], select=-c(id.exposure, id.outcome, exposure, outcome))
@@ -115,8 +106,7 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
         plotlist <- lapply(p, function(x) {
             d <- attributes(x)$split_labels
             index <- which(d$id.exposure == combinations$id.exposure[i] & d$id.outcome == combinations$id.outcome[i])
-            if(length(index) < 1)
-            {
+            if (length(index) < 1) {
                 return(blank_plot("Insufficient number of SNPs"))
             } else {
                 return(x[[index]])
@@ -129,7 +119,6 @@ mr_report <- function(dat, output_path = ".", output_type = "html", author = "An
     return(output_file)
 }
 
-sanitise_string <- function(x)
-{
+sanitise_string <- function(x) {
     gsub(" ", "_", gsub("[^[:alnum:] ]", "", x))
 }
