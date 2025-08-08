@@ -14,8 +14,7 @@
 #'
 #' @export
 #' @return data frame
-extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, opengwas_jwt=ieugwasr::get_opengwas_jwt(), force_server=FALSE)
-{
+extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2 = 0.001, kb = 10000, opengwas_jwt=ieugwasr::get_opengwas_jwt(), force_server=FALSE) {
 	# .Deprecated("ieugwasr::tophits()")
 	outcomes <- ieugwasr::legacy_ids(unique(outcomes))
 
