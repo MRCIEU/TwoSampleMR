@@ -10,27 +10,23 @@
 #'
 #' @export
 #' @return List of MRInput objects for each exposure/outcome combination
-dat_to_MRInput <- function(dat, get_correlations=FALSE, pop="EUR")
-{
+dat_to_MRInput <- function(dat, get_correlations=FALSE, pop="EUR") {
   if (!requireNamespace("MendelianRandomization", quietly = TRUE)) {
     stop(
       "Package \"MendelianRandomization\" must be installed to use this function.",
       call. = FALSE
     )
   }
-	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
-	{
+	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x) {
 		x <- plyr::mutate(x)
 		message("Converting:")
 		message(" - exposure: ", x$exposure[1])
 		message(" - outcome: ", x$outcome[1])
-		if(get_correlations)
-		{
+		if (get_correlations) {
 			message(" - obtaining LD matrix")
 			ld <- ld_matrix(unique(x$SNP), pop=pop)
 			out <- harmonise_ld_dat(x, ld)
-			if(is.null(out))
-			{
+			if (is.null(out)) {
 				return(NULL)
 			}
 			x <- out$x
@@ -79,8 +75,7 @@ dat_to_MRInput <- function(dat, get_correlations=FALSE, pop="EUR")
 #'
 #' @export
 #' @return List of exposure dataset and harmonised LD matrix
-harmonise_ld_dat <- function(x, ld)
-{
+harmonise_ld_dat <- function(x, ld) {
 	snpnames <- do.call(rbind, strsplit(rownames(ld), split="_"))
 	i1 <- snpnames[,1] %in% x$SNP
 	ld <- ld[i1,i1]
@@ -98,17 +93,14 @@ harmonise_ld_dat <- function(x, ld)
 		(snpnames$X3 == snpnames$effect_allele.exposure & snpnames$X2 == snpnames$other_allele.exposure)
 
 	# What happens if everything is gone?
-	if(nrow(x) == 0)
-	{
+	if (nrow(x) == 0) {
 		message(" - none of the SNPs could be aligned to the LD reference panel")
 		return(NULL)
 	}
 
-	if(any(!snpnames$keep))
-	{
+	if (any(!snpnames$keep)) {
 		message(" - the following SNPs could not be aligned to the LD reference panel: \n- ", paste(subset(snpnames, !keep)$SNP, collapse="\n - "))
 	}
-
 
 	snpnames$flip1 <- snpnames$X2 != snpnames$effect_allele.exposure
 	x <- subset(x, SNP %in% snpnames$SNP)
@@ -122,8 +114,7 @@ harmonise_ld_dat <- function(x, ld)
 	rownames(ld) <- snpnames$SNP
 	colnames(ld) <- snpnames$SNP
 
-	if(any(!snpnames$keep))
-	{
+	if (any(!snpnames$keep)) {
 		message("Removing ", sum(!snpnames$keep), " variants due to harmonisation issues")
 		ld <- ld[snpnames$keep, snpnames$keep]
 		x <- x[snpnames$keep, ]
@@ -144,8 +135,7 @@ harmonise_ld_dat <- function(x, ld)
 #'
 #' @export
 #' @return List of results for every exposure/outcome combination
-run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
-{
+run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05) {
 	dat <- subset(dat, mr_keep)
 	d <- subset(dat, !duplicated(paste(id.exposure, " - ", id.outcome)), select=c(exposure, outcome, id.exposure, id.outcome))
 	res <- list()
@@ -153,8 +143,7 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 	attributes(res)$id.outcome <- d$id.outcome
 	attributes(res)$exposure <- d$exposure
 	attributes(res)$outcome <- d$outcome
-	for(j in seq_len(nrow(d)))
-	{
+	for (j in seq_len(nrow(d))) {
 		x <- subset(dat, exposure == d$exposure[j] & outcome == d$outcome[j])
 		message(x$exposure[1], " - ", x$outcome[1])
 		res[[j]] <- MRPRESSO::mr_presso(BetaOutcome = "beta.outcome", BetaExposure = "beta.exposure", SdOutcome = "se.outcome", SdExposure = "se.exposure", OUTLIERtest = TRUE, DISTORTIONtest = TRUE, data = x, NbDistribution = NbDistribution,  SignifThreshold = SignifThreshold)
@@ -170,10 +159,8 @@ run_mr_presso <- function(dat, NbDistribution = 1000,  SignifThreshold = 0.05)
 #'
 #' @export
 #' @return List of RadialMR format datasets
-dat_to_RadialMR <- function(dat)
-{
-	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x)
-	{
+dat_to_RadialMR <- function(dat) {
+	out <- plyr::dlply(dat, c("exposure", "outcome"), function(x) {
 		x <- plyr::mutate(x)
 		message("Converting:")
 		message(" - exposure: ", x$exposure[1])
@@ -200,11 +187,10 @@ dat_to_RadialMR <- function(dat)
 #' \item{se}{standard error}
 #' \item{pval}{p-value}
 #' }
-mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
-{
-  if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) &
-		!is.na(se_out)) < 2)
+mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) {
+  if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2) {
 		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
+  }
 	d <- RadialMR::format_radial(BXG=b_exp, BYG=b_out, seBXG=se_exp, seBYG=se_out, RSID=seq_along(b_exp))
 	out <- RadialMR::ivw_radial(d, alpha=0.05, weights=3)
 	b <- out$coef[1,1]
@@ -226,32 +212,25 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters=default_param
 #'
 #' @export
 #' @return List of results, with one list item for every exposure/outcome pair in dat object
-run_mrmix <- function(dat)
-{
-	plyr::dlply(dat, c("id.exposure", "id.outcome"), function(x)
-	{
+run_mrmix <- function(dat) {
+	plyr::dlply(dat, c("id.exposure", "id.outcome"), function(x) {
 		message("Analysing ", x$id.exposure[1], " against ", x$id.outcome[1])
-		if(grepl("log odds", x$units.exposure[1]))
-		{
+		if (grepl("log odds", x$units.exposure[1])) {
 			xunit <- "binary"
-		} else if(grepl("^SD", x$units.exposure[1]))
-		{
+		} else if (grepl("^SD", x$units.exposure[1])) {
 			xunit <- "n"
 		} else {
 			xunit <- "continuous"
 		}
-		if(grepl("log odds", x$units.outcome[1]))
-		{
+		if (grepl("log odds", x$units.outcome[1])) {
 			yunit <- "binary"
-		} else if(grepl("^SD", x$units.outcome[1]))
-		{
+		} else if (grepl("^SD", x$units.outcome[1])) {
 			yunit <- "n"
 		} else {
 			yunit <- "continuous"
 		}
 		index <- is.na(x$eaf.exposure)
-		if(any(index))
-		{
+		if (any(index)) {
 			warning(paste0(x$id.exposure[1], ".", x$id.outcome[1], " - Some eaf.exposure values are missing, using eaf.outcome in their place"))
 			x$eaf.exposure[index] <- x$eaf.outcome[index]
 		}
