@@ -16,8 +16,7 @@
 #'
 #' @export
 #' @return data frame in `exposure_dat` format
-mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, opengwas_jwt=ieugwasr::get_opengwas_jwt(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR", plink_bin=NULL, bfile=NULL)
-{
+mv_extract_exposures <- function(id_exposure, clump_r2=0.001, clump_kb=10000, harmonise_strictness=2, opengwas_jwt=ieugwasr::get_opengwas_jwt(), find_proxies=TRUE, force_server=FALSE, pval_threshold=5e-8, pop="EUR", plink_bin=NULL, bfile=NULL) {
 	stopifnot(length(id_exposure) > 1)
 	id_exposure <- ieugwasr::legacy_ids(id_exposure)
 
@@ -123,7 +122,7 @@ mv_extract_exposures_local <- function(
 	message("WARNING: Experimental function")
 
 	stopifnot(inherits(filenames_exposure, "character") | inherits(filenames_exposure, "list"))
-	if(inherits(filenames_exposure, "list")) {
+	if (inherits(filenames_exposure, "list")) {
 		stopifnot(all(sapply(filenames_exposure, function(x) inherits(x, "data.frame"))))
 		flag <- "data.frame"
 	} else {
@@ -131,29 +130,28 @@ mv_extract_exposures_local <- function(
 	}
 
 	n <- length(filenames_exposure)
-	if(length(sep) == 1) {sep <- rep(sep, n)}
-	if(length(phenotype_col) == 1) {phenotype_col <- rep(phenotype_col, n)}
-	if(length(snp_col) == 1) {snp_col <- rep(snp_col, n)}
-	if(length(beta_col) == 1) {beta_col <- rep(beta_col, n)}
-	if(length(se_col) == 1) {se_col <- rep(se_col, n)}
-	if(length(eaf_col) == 1) {eaf_col <- rep(eaf_col, n)}
-	if(length(effect_allele_col) == 1) {effect_allele_col <- rep(effect_allele_col, n)}
-	if(length(other_allele_col) == 1) {other_allele_col <- rep(other_allele_col, n)}
-	if(length(pval_col) == 1) {pval_col <- rep(pval_col, n)}
-	if(length(units_col) == 1) {units_col <- rep(units_col, n)}
-	if(length(ncase_col) == 1) {ncase_col <- rep(ncase_col, n)}
-	if(length(ncontrol_col) == 1) {ncontrol_col <- rep(ncontrol_col, n)}
-	if(length(samplesize_col) == 1) {samplesize_col <- rep(samplesize_col, n)}
-	if(length(gene_col) == 1) {gene_col <- rep(gene_col, n)}
-	if(length(id_col) == 1) {id_col <- rep(id_col, n)}
-	if(length(min_pval) == 1) {min_pval <- rep(min_pval, n)}
-	if(length(log_pval) == 1) {log_pval <- rep(log_pval, n)}
+	if (length(sep) == 1) {sep <- rep(sep, n)}
+	if (length(phenotype_col) == 1) {phenotype_col <- rep(phenotype_col, n)}
+	if (length(snp_col) == 1) {snp_col <- rep(snp_col, n)}
+	if (length(beta_col) == 1) {beta_col <- rep(beta_col, n)}
+	if (length(se_col) == 1) {se_col <- rep(se_col, n)}
+	if (length(eaf_col) == 1) {eaf_col <- rep(eaf_col, n)}
+	if (length(effect_allele_col) == 1) {effect_allele_col <- rep(effect_allele_col, n)}
+	if (length(other_allele_col) == 1) {other_allele_col <- rep(other_allele_col, n)}
+	if (length(pval_col) == 1) {pval_col <- rep(pval_col, n)}
+	if (length(units_col) == 1) {units_col <- rep(units_col, n)}
+	if (length(ncase_col) == 1) {ncase_col <- rep(ncase_col, n)}
+	if (length(ncontrol_col) == 1) {ncontrol_col <- rep(ncontrol_col, n)}
+	if (length(samplesize_col) == 1) {samplesize_col <- rep(samplesize_col, n)}
+	if (length(gene_col) == 1) {gene_col <- rep(gene_col, n)}
+	if (length(id_col) == 1) {id_col <- rep(id_col, n)}
+	if (length(min_pval) == 1) {min_pval <- rep(min_pval, n)}
+	if (length(log_pval) == 1) {log_pval <- rep(log_pval, n)}
 
 	l_full <- list()
 	l_inst <- list()
-	for(i in seq_along(filenames_exposure))
-	{
-		if(flag == "character") {
+	for (i in seq_along(filenames_exposure)) {
+		if (flag == "character") {
 			l_full[[i]] <- read_outcome_data(filenames_exposure[i],
 				sep = sep[i],
 				phenotype_col = phenotype_col[i],
@@ -195,7 +193,7 @@ mv_extract_exposures_local <- function(
 			)
 		}
 
-		if(l_full[[i]]$outcome[1] == "outcome") l_full[[i]]$outcome <- paste0("exposure", i)
+		if (l_full[[i]]$outcome[1] == "outcome") l_full[[i]]$outcome <- paste0("exposure", i)
 		l_inst[[i]] <- subset(l_full[[i]], pval.outcome < pval_threshold)
 		l_inst[[i]] <- subset(l_inst[[i]], !duplicated(SNP))
 		l_inst[[i]] <- convert_outcome_to_exposure(l_inst[[i]])
@@ -264,8 +262,7 @@ mv_extract_exposures_local <- function(
 #' \item{outname}{A data frame with two variables, `id.outcome` and `outcome` which are character strings.}
 #' }
 #'
-mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
-{
+mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2) {
 
 	stopifnot(all(c("SNP", "id.exposure", "exposure", "effect_allele.exposure", "beta.exposure", "se.exposure", "pval.exposure") %in% names(exposure_dat)))
 	nexp <- length(unique(exposure_dat$id.exposure))
@@ -274,9 +271,7 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 	keepsnp <- names(tab)[tab == nexp]
 	exposure_dat <- subset(exposure_dat, SNP %in% keepsnp)
 
-
 	exposure_mat <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var="beta.exposure")
-
 
 	# Get outcome data
 	dat <- harmonise_data(subset(exposure_dat, id.exposure == exposure_dat$id.exposure[1]), outcome_dat, action=harmonise_strictness)
@@ -314,7 +309,6 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 	expname <- subset(exposure_dat, !duplicated(id.exposure), select=c(id.exposure, exposure))
 	outname <- subset(outcome_dat, !duplicated(id.outcome), select=c(id.outcome, outcome))
 
-
 	return(list(exposure_beta=exposure_beta, exposure_pval=exposure_pval, exposure_se=exposure_se, outcome_beta=outcome_beta, outcome_pval=outcome_pval, outcome_se=outcome_se, expname=expname, outname=outname))
 }
 
@@ -332,8 +326,7 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness=2)
 #'
 #' @export
 #' @return List of results
-mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
-{
+mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE) {
 	# This is a matrix of
 	beta.outcome <- mvdat$outcome_beta
 	beta.exposure <- mvdat$exposure_beta
@@ -354,10 +347,8 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		index <- pval.exposure[,i] < pval_threshold
 
 		# Get outcome effects adjusted for all effects on all other exposures
-		if(intercept)
-		{
-			if(instrument_specific)
-			{
+		if (intercept) {
+			if (instrument_specific) {
 				marginal_outcome[index,i] <- stats::lm(beta.outcome[index] ~ beta.exposure[index, -c(i), drop=FALSE])$res
 				mod <- summary(stats::lm(marginal_outcome[index,i] ~ beta.exposure[index, i]))
 			} else {
@@ -365,8 +356,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 				mod <- summary(stats::lm(marginal_outcome[,i] ~ beta.exposure[,i]))
 			}
 		} else {
-			if(instrument_specific)
-			{
+			if(instrument_specific) {
 				marginal_outcome[index,i] <- stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i), drop=FALSE])$res
 				mod <- summary(stats::lm(marginal_outcome[index,i] ~ 0 + beta.exposure[index, i]))
 			} else {
@@ -374,8 +364,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 				mod <- summary(stats::lm(marginal_outcome[,i] ~ 0 + beta.exposure[,i]))
 			}
 		}
-		if(sum(index) > (nexp + as.numeric(intercept)))
-		{
+		if (sum(index) > (nexp + as.numeric(intercept))) {
 			effs[i] <- mod$coef[as.numeric(intercept) + 1, 1]
 			se[i] <- mod$coef[as.numeric(intercept) + 1, 2]
 		} else {
@@ -390,8 +379,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		flip <- sign(d$exposure) == -1
 		d$outcome[flip] <- d$outcome[flip] * -1
 		d$exposure <- abs(d$exposure)
-		if(plots)
-		{
+		if (plots) {
 			p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
 			ggplot2::geom_point() +
 			ggplot2::geom_abline(intercept=0, slope=effs[i]) +
@@ -406,7 +394,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		marginal_outcome=marginal_outcome
 	)
 
-	if(plots) out$plots <- p
+	if (plots) out$plots <- p
 	return(out)
 }
 
@@ -425,8 +413,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' @export
 #' @return List of results
-mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
-{
+mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE) {
 	# This is a matrix of
 	beta.outcome <- mvdat$outcome_beta
 	beta.exposure <- mvdat$exposure_beta
@@ -442,8 +429,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 	p <- list()
 	nom <- colnames(beta.exposure)
 	nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
-	for (i in 1:nexp)
-	{
+	for (i in 1:nexp) {
 		# For this exposure, only keep SNPs that meet some p-value threshold
 		index <- pval.exposure[,i] < pval_threshold
 
@@ -451,25 +437,21 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		# marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res
 
 		# Get the effect of the exposure on the residuals of the outcome
-		if(!intercept)
-		{
-			if(instrument_specific)
-			{
+		if (!intercept) {
+			if (instrument_specific) {
 				mod <- summary(stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, ,drop=FALSE], weights=w[index]))
 			} else {
 				mod <- summary(stats::lm(beta.outcome ~ 0 + beta.exposure, weights=w))
 			}
 		} else {
-			if(instrument_specific)
-			{
+			if (instrument_specific) {
 				mod <- summary(stats::lm(beta.outcome[index] ~ beta.exposure[index, ,drop=FALSE], weights=w[index]))
 			} else {
 				mod <- summary(stats::lm(beta.outcome ~ beta.exposure, weights=w))
 			}
 		}
 
-		if(instrument_specific && sum(index) <= (nexp + as.numeric(intercept)))
-		{
+		if (instrument_specific && sum(index) <= (nexp + as.numeric(intercept))) {
 			effs[i] <- NA
 			se[i] <- NA
 		} else {
@@ -484,8 +466,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 		flip <- sign(d$exposure) == -1
 		d$outcome[flip] <- d$outcome[flip] * -1
 		d$exposure <- abs(d$exposure)
-		if(plots)
-		{
+		if (plots) {
 			p[[i]] <- ggplot2::ggplot(d[index,], ggplot2::aes(x=exposure, y=outcome)) +
 			ggplot2::geom_point() +
 			ggplot2::geom_abline(intercept=0, slope=effs[i]) +
@@ -498,8 +479,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 	out <- list(
 		result=result
 	)
-	if(plots)
-		out$plots=p
+	if (plots) out$plots=p
 
 	return(out)
 }
@@ -514,8 +494,7 @@ mv_multiple <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 #'
 #' @export
 #' @return List of results
-mv_basic <- function(mvdat, pval_threshold=5e-8)
-{
+mv_basic <- function(mvdat, pval_threshold=5e-8) {
 	# This is a matrix of
 	beta.outcome <- mvdat$outcome_beta
 	beta.exposure <- mvdat$exposure_beta
@@ -575,8 +554,7 @@ mv_basic <- function(mvdat, pval_threshold=5e-8)
 #'
 #' @export
 #' @return List of results
-mv_ivw <- function(mvdat, pval_threshold=5e-8)
-{
+mv_ivw <- function(mvdat, pval_threshold=5e-8) {
 	# This is a matrix of
 	beta.outcome <- mvdat$outcome_beta
 	beta.exposure <- mvdat$exposure_beta
@@ -631,8 +609,7 @@ mv_ivw <- function(mvdat, pval_threshold=5e-8)
 #'
 #' @export
 #' @return data frame of retained features
-mv_lasso_feature_selection <- function(mvdat)
-{
+mv_lasso_feature_selection <- function(mvdat) {
 	message("Performing feature selection")
 	b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
 	c <- glmnet::coef.glmnet(b, s = "lambda.min")
@@ -658,8 +635,7 @@ mv_lasso_feature_selection <- function(mvdat)
 #'
 #' @export
 #' @return List of results
-mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE)
-{
+mv_subset <- function(mvdat, features=mv_lasso_feature_selection(mvdat), intercept=FALSE, instrument_specific=FALSE, pval_threshold=5e-8, plots=FALSE) {
 	# Update mvdat object
 	mvdat$exposure_beta <- mvdat$exposure_beta[, features$exposure, drop=FALSE]
 	mvdat$exposure_se <- mvdat$exposure_se[, features$exposure, drop=FALSE]
