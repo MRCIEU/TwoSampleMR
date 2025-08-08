@@ -8,12 +8,10 @@
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-fishers_combined_test <- function(pval)
-{
+fishers_combined_test <- function(pval) {
 	pval <- pval[is.finite(pval) & pval <=1 & pval >= 0]
 	index <- pval == 0
-	if(any(index))
-	{
+	if (any(index)) {
 		warning("p-values of 0 are unreliable in Fisher's combined test.")
 		pval[index] <- 1e-50
 	}
@@ -29,8 +27,7 @@ fishers_combined_test <- function(pval)
 #'
 #' @export
 #' @return Data frame
-enrichment_method_list <- function()
-{
+enrichment_method_list <- function() {
 	a <- list(
 		list(
 			obj="fishers_combined_test",
@@ -54,20 +51,16 @@ enrichment_method_list <- function()
 #'
 #' @export
 #' @return data frame
-enrichment <- function(dat, method_list=enrichment_method_list()$obj)
-{
-	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
-	{
+enrichment <- function(dat, method_list=enrichment_method_list()$obj) {
+	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1) {
 		# message("Performing enrichment analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
 
 		x <- subset(x1, !is.na(pval.outcome))
-		if(nrow(x) == 0)
-		{
+		if (nrow(x) == 0) {
 			message("No outcome p-values for analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
 			return(NULL)
 		}
-		res <- lapply(method_list, function(meth)
-		{
+		res <- lapply(method_list, function(meth) {
 			get(meth)(x$pval.outcome)
 		})
 		methl <- enrichment_method_list()

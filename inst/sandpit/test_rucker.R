@@ -40,8 +40,7 @@ dev.off()
 res1 <- array(0, 100)
 res2 <- array(0, 100)
 res3 <- array(0, 100)
-for (i in 1:100)
-{
+for (i in 1:100) {
 	message(i)
 	bp3 <- bp
 	index <- sample(seq_len(nrow(bp3)), replace = FALSE)

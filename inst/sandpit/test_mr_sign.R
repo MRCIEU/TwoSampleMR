@@ -7,8 +7,7 @@
 
 param <- expand.grid(n = 1:100, x=0:100)
 param <- subset(param, x <= n)
-for (i in seq_len(nrow(param)))
-{
+for (i in seq_len(nrow(param))) {
 	param$pval[i] <- binom.test(x=param$x[i], n=param$n[i], p=0.5)$p.value
 }
 min(param$pval)

@@ -16,8 +16,7 @@ options(mrbaseapi="http://api.mrbase.org/")
 inst2 <- extract_instruments(89, clump=TRUE)
 
 table(inst1==inst2)
-for (i in seq_len(ncol(inst1)))
-{
+for (i in seq_len(ncol(inst1))) {
 	print(sum(inst1[,i] == inst2[,i]))
 }
 
