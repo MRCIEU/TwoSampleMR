@@ -18,3 +18,4 @@ cache$
 ^CITATION\.cff$
 ^README\.html$
 ^\.lintr$
+^inst/sandpit$
