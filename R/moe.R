@@ -1,5 +1,4 @@
-system_metrics <- function(dat)
-{
+system_metrics <- function(dat) {
 	# Number of SNPs
 	# Sample size outcome
 	# Sample size exposure
@@ -18,14 +17,12 @@ system_metrics <- function(dat)
 
 	# IF more than 1 SNP
 
-	if(nrow(dat) > 1)
-	{
+	if (nrow(dat) > 1) {
 		# Egger-Isq
 		metrics$egger_isq <- Isq(abs(dat$beta.exposure), dat$se.exposure)
 	}
 
-	if(nrow(dat) > 2)
-	{
+	if (nrow(dat) > 2) {
 		sct <- mr_sign(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
 		metrics$sct <- -log10(sct$pval) * sign(sct$b)
 		# IF more than 2 SNP
@@ -77,8 +74,7 @@ system_metrics <- function(dat)
 }
 
 
-get_rsq <- function(dat)
-{
+get_rsq <- function(dat) {
 	stopifnot(length(unique(dat$exposure)) == 1)
 	stopifnot(length(unique(dat$outcome)) == 1)
 	stopifnot(length(unique(dat$units.exposure)) == 1)
@@ -86,15 +82,13 @@ get_rsq <- function(dat)
 
 
 	dat$pval.exposure[dat$pval.exposure < 1e-300] <- 1e-300
-	if(dat$units.exposure[1] == "log odds")
-	{
+	if (dat$units.exposure[1] == "log odds") {
 		ind1 <- !is.na(dat$beta.exposure) &
 			!is.na(dat$eaf.exposure) &
 			!is.na(dat$ncase.exposure) &
 			!is.na(dat$ncontrol.exposure)
 		dat$rsq.exposure <- NA
-		if(sum(ind1) > 0)
-		{
+		if (sum(ind1) > 0) {
 			dat$rsq.exposure[ind1] <- get_r_from_lor(
 				dat$beta.exposure[ind1],
 				dat$eaf.exposure[ind1],
@@ -106,8 +100,7 @@ get_rsq <- function(dat)
 	} else {
 		ind1 <- !is.na(dat$pval.exposure) & !is.na(dat$samplesize.exposure)
 		dat$rsq.exposure <- NA
-		if(sum(ind1) > 0)
-		{
+		if (sum(ind1) > 0) {
 			dat$rsq.exposure[ind1] <- get_r_from_pn(
 				dat$pval.exposure[ind1],
 				dat$samplesize.exposure[ind1]
@@ -117,15 +110,13 @@ get_rsq <- function(dat)
 
 
 	dat$pval.outcome[dat$pval.outcome < 1e-300] <- 1e-300
-	if(dat$units.outcome[1] == "log odds")
-	{
+	if (dat$units.outcome[1] == "log odds") {
 		ind1 <- !is.na(dat$beta.outcome) &
 			!is.na(dat$eaf.outcome) &
 			!is.na(dat$ncase.outcome) &
 			!is.na(dat$ncontrol.outcome)
 		dat$rsq.outcome <- NA
-		if(sum(ind1) > 0)
-		{
+		if (sum(ind1) > 0) {
 			dat$rsq.outcome[ind1] <- get_r_from_lor(
 				dat$beta.outcome[ind1],
 				dat$eaf.outcome[ind1],
@@ -137,8 +128,7 @@ get_rsq <- function(dat)
 	} else {
 		ind1 <- !is.na(dat$pval.outcome) & !is.na(dat$samplesize.outcome)
 		dat$rsq.outcome <- NA
-		if(sum(ind1) > 0)
-		{
+		if (sum(ind1) > 0) {
 			dat$rsq.outcome[ind1] <- get_r_from_pn(
 				dat$pval.outcome[ind1],
 				dat$samplesize.outcome[ind1]
@@ -188,16 +178,14 @@ get_rsq <- function(dat)
 #' # be accurate, based on MOE prediction
 #' r[[1]]$estimates
 #'}
-mr_moe <- function(res, rf)
-{
+mr_moe <- function(res, rf) {
 	if (!requireNamespace("randomForest", quietly = TRUE)) {
 	  stop(
 	    "Package \"randomForest\" must be installed to use this function.",
 	    call. = FALSE
 	  )
 	}
-	lapply(res, function(x)
-	{
+	lapply(res, function(x) {
 		o <- try(mr_moe_single(x, rf))
 		if(inherits(o, "try-error"))
 		{
@@ -208,8 +196,7 @@ mr_moe <- function(res, rf)
 	})
 }
 
-mr_moe_single <- function(res, rf)
-{
+mr_moe_single <- function(res, rf) {
   if (!requireNamespace("randomForest", quietly = TRUE)) {
     stop(
       "Package \"randomForest\" must be installed to use this function.",
@@ -219,8 +206,7 @@ mr_moe_single <- function(res, rf)
 	metric <- res$info[1,] %>% dplyr::select(-c(id.exposure, id.outcome, steiger_filtered, outlier_filtered, nsnp_removed))
 
 	methodlist <- names(rf)
-	pred <- lapply(methodlist, function(m)
-	{
+	pred <- lapply(methodlist, function(m) {
 		d <- dplyr::tibble(
 			method = m,
 			MOE = predict(rf[[m]], metric, type="prob")[,2]
@@ -229,8 +215,7 @@ mr_moe_single <- function(res, rf)
 	}) %>%
 	  bind_rows %>%
 	  arrange(desc(MOE))
-	if("MOE" %in% names(res$estimates))
-	{
+	if("MOE" %in% names(res$estimates)) {
 		message("Overwriting previous MOE estimate")
 		res$estimates <- subset(res$estimates, select=-c(MOE, method2))
 	}
