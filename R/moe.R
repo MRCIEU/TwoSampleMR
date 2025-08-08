@@ -187,8 +187,7 @@ mr_moe <- function(res, rf) {
 	}
 	lapply(res, function(x) {
 		o <- try(mr_moe_single(x, rf))
-		if(inherits(o, "try-error"))
-		{
+		if (inherits(o, "try-error")) {
 			return(x)
 		} else {
 			return(o)
