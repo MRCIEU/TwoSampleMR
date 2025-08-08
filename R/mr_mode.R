@@ -195,11 +195,9 @@ mr_weighted_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_pa
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
-{
+mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
-	if(sum(index) < 3)
-	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+	if (sum(index) < 3) return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
 	b_exp <- b_exp[index]
 	b_out <- b_out[index]
@@ -227,11 +225,9 @@ mr_simple_mode <- function(b_exp, b_out, se_exp, se_out, parameters=default_para
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
-{
+mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
-	if(sum(index) < 3)
-	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+	if (sum(index) < 3) return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
 	b_exp <- b_exp[index]
 	b_out <- b_out[index]
@@ -259,11 +255,9 @@ mr_weighted_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=defau
 #' \item{se}{Standard error}
 #' \item{pval}{p-value}
 #' }
-mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters())
-{
+mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default_parameters()) {
 	index <- !is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)
-	if(sum(index) < 3)
-	return(list(b=NA, se=NA, pval=NA, nsnp=NA))
+	if (sum(index) < 3) return(list(b=NA, se=NA, pval=NA, nsnp=NA))
 
 	b_exp <- b_exp[index]
 	b_out <- b_out[index]
@@ -274,11 +268,9 @@ mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters=default
 }
 
 
-mr_mode_broken <- function(dat, parameters=default_parameters(), mode_method="all")
-{
+mr_mode_broken <- function(dat, parameters=default_parameters(), mode_method="all") {
 	res <- plyr::ddply(dat, c("id.exposure", "exposure", "id.outcome", "outcome"), function(x) mr_mode_internal(x, parameters, mode_method="all"))
-	if(mode_method != "all")
-	{
+	if (mode_method != "all") {
 		return(subset(res, method %in% mode_method))
 	} else {
 		return(res)
