@@ -6,8 +6,7 @@
 #'
 #' @export
 #' @return data frame
-split_outcome <- function(mr_res)
-{
+split_outcome <- function(mr_res) {
 	Pos<-grep("\\|\\|",mr_res$outcome) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
 	if (sum(Pos)!=0) {
 		Outcome<-as.character(mr_res$outcome[Pos])
@@ -30,8 +29,7 @@ split_outcome <- function(mr_res)
 #'
 #' @export
 #' @return data frame
-split_exposure <- function(mr_res)
-{
+split_exposure <- function(mr_res) {
 	Pos<-grep("\\|\\|",mr_res$exposure) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
 	# Pos2<-grep("\\|\\|",mr_res$exposure,invert=T)
 	# mr_res2 <-mr_res[Pos2,]
@@ -57,8 +55,7 @@ split_exposure <- function(mr_res)
 #'
 #' @export
 #' @return data frame
-generate_odds_ratios <- function(mr_res)
-{
+generate_odds_ratios <- function(mr_res) {
 	mr_res$lo_ci <- mr_res$b - 1.96 * mr_res$se
 	mr_res$up_ci <- mr_res$b + 1.96 * mr_res$se
 	mr_res$or <- exp(mr_res$b)
@@ -77,11 +74,9 @@ generate_odds_ratios <- function(mr_res)
 #'
 #' @export
 #' @return data frame.
-subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted")
-{
+subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_method="Inverse variance weighted") {
 	dat <- subset(mr_res, (nsnp==1 & method==single_snp_method) | (nsnp > 1 & method == multi_snp_method))
 	return(dat)
-
 }
 
 #' Combine all mr results
@@ -132,34 +127,33 @@ subset_on_method <- function(mr_res, single_snp_method="Wald ratio", multi_snp_m
 # All.res<-split_exposure(All.res)
 # All.res<-split_outcome(All.res)
 
-combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.exposure=FALSE,split.outcome=FALSE)
-{
+combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.exposure=FALSE,split.outcome=FALSE) {
 	het<-het[,c("id.exposure","id.outcome","method","Q","Q_df","Q_pval")]
 
 	# Convert all factors to character
 	# lapply(names(Res), FUN=function(x) class(Res[,x]))
 	Class<-unlist(lapply(names(res), FUN=function(x) class(res[,x])))
-	if(any(Class == "factor")) {
+	if (any(Class == "factor")) {
 		Pos<-which(unlist(lapply(names(res), FUN=function(x) class(res[,x])))=="factor")
-		for(i in seq_along(Pos)){
+		for (i in seq_along(Pos)) {
 			res[,Pos[i]]<-as.character(res[,Pos[i]])
 		}
 	}
 
 	# lapply(names(Het), FUN=function(x) class(Het[,x]))
 	Class<-unlist(lapply(names(het), FUN=function(x) class(het[,x])))
-	if(any(Class == "factor")) {
+	if (any(Class == "factor")) {
 		Pos<-which(unlist(lapply(names(het), FUN=function(x) class(het[,x])))=="factor")
-		for(i in seq_along(Pos)){
+		for (i in seq_along(Pos)){
 			het[,Pos[i]]<-as.character(het[,Pos[i]])
 		}
 	}
 
 	# lapply(names(Sin), FUN=function(x) class(Sin[,x]))
 	Class<-unlist(lapply(names(sin), FUN=function(x) class(sin[,x])))
-	if(any(Class == "factor")) {
+	if (any(Class == "factor")) {
 		Pos<-which(unlist(lapply(names(sin), FUN=function(x) class(sin[,x])))=="factor")
-		for(i in seq_along(Pos)){
+		for (i in seq_along(Pos)) {
 			sin[,Pos[i]]<-as.character(sin[,Pos[i]])
 		}
 	}
@@ -178,8 +172,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 	res<-merge(res,het,by=c("id.outcome","id.exposure","Method"),all.x=TRUE)
 	res<-plyr::rbind.fill(res,sin[,c("exposure","outcome","id.exposure","id.outcome","SNP","b","se","pval","Method")])
 
-	if(ao_slc)
-	{
+	if (ao_slc) {
 		ao<-available_outcomes()
 		names(ao)[names(ao)=="nsnp"]<-"nsnps.outcome.array"
 		res<-merge(res,ao[,!names(ao) %in% c("unit","priority","sd","path","note","filename","access","mr")],by.x="id.outcome",by.y="id")
@@ -187,12 +180,10 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 
 	res$nsnp[is.na(res$nsnp)]<-1
 
-	for(i in unique(res$id.outcome))
-	{
+	for (i in unique(res$id.outcome)) {
 		Methods<-unique(res$Method[res$id.outcome==i])
 		Methods<-Methods[Methods!="Wald ratio"]
-		for(j in unique(Methods))
-		{
+		for(j in unique(Methods)) {
 			res$SNP[res$id.outcome == i & res$Method==j]<-paste(res$SNP[res$id.outcome == i & res$Method=="Wald ratio"],collapse="; ")
 		}
 	}
@@ -254,9 +245,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 #' @export
 #' @return data.frame with duplicate summary sets removed
 
-power_prune <- function(dat,method=1,dist.outcome="binary")
-{
-
+power_prune <- function(dat,method=1,dist.outcome="binary") {
 	# dat[,c("eaf.exposure","beta.exposure","se.exposure","samplesize.outcome","ncase.outcome","ncontrol.outcome")]
 	if (method==1) {
 		L<-NULL
@@ -276,7 +265,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 			}
 			if (any(is.na(ncase))) {
 				ncase<-dat1$samplesize.outcome
-				if(dist.outcome=="binary") warning(paste("dist.outcome set to binary but case sample size is missing. Will use total sample size instead but power pruning may be less accurate"))
+				if (dist.outcome=="binary") warning(paste("dist.outcome set to binary but case sample size is missing. Will use total sample size instead but power pruning may be less accurate"))
 			}
 			if (any(is.na(ncase))) stop("sample size missing for at least 1 summary set")
 			dat1<-dat1[order(ncase,decreasing=TRUE),]
@@ -342,12 +331,12 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 					iv.se<- 1/sqrt(mean(dat2$samplesize.outcome, na.rm = TRUE)*r2sum) #standard error of the IV should be proportional to this
 				}
 				if (dist.outcome == "binary") {
-					if(any(is.na(n.cas)) || any(is.na(n.con))) {
+					if (any(is.na(n.cas)) || any(is.na(n.con))) {
 						warning("dist.outcome set to binary but number of cases or controls is missing. Will try using total sample size instead but power pruning will be less accurate")
 						iv.se<- 1/sqrt(mean(dat2$samplesize.outcome, na.rm = TRUE)*r2sum)
 					} else {
                     	iv.se<-1/sqrt(mean(n.cas, na.rm = TRUE)*mean(n.con, na.rm = TRUE)*r2sum) #standard error of the IV should be proportional to this
-                    }
+          }
 				}
 				# Power calculations to implement at some point
 				# iv.se<-1/sqrt(unique(n.cas)*unique(n.con)*r2sum) #standard error of the IV should be proportional to this
@@ -387,7 +376,6 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 		# dat2[dat2$id.set==1,c("iv.se","id.set","id.subset")]
 
 		return(dat)
-
 	}
 }
 
@@ -402,8 +390,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary")
 #' @export
 #' @return data frame
 
-size.prune <- function(dat)
-{
+size.prune <- function(dat) {
 	dat$ncase[is.na(dat$ncase)]<-dat$samplesize[is.na(dat$ncase)]
 	dat<-dat[order(dat$ncase,decreasing=TRUE),]
 	id.expout<-paste(dat$exposure,dat$outcome)
