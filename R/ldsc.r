@@ -1,5 +1,4 @@
-Ghuber <- function(u, k = 30, deriv = 0)
-{
+Ghuber <- function(u, k = 30, deriv = 0) {
     if (!deriv) {
         return(pmin(1, k/abs(u)))
     } else {
@@ -18,8 +17,7 @@ Ghuber <- function(u, k = 30, deriv = 0)
 #'
 #' @keywords internal
 #' @return model fit
-ldsc_h2_internal <- function(Z, r2, N, W=NULL)
-{
+ldsc_h2_internal <- function(Z, r2, N, W=NULL) {
     if (is.null(W)) {
         W <- rep(1, length(Z))
     }
@@ -58,8 +56,7 @@ ldsc_h2_internal <- function(Z, r2, N, W=NULL)
 #'
 #' https://github.com/baolinwu/MTAR
 #' @keywords internal
-ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
-{
+ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL) {
     if (is.null(W)) {
         W = rep(1,length(r2))
     }
@@ -83,7 +80,7 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
     ## 2nd round
     Wv <- 1 / ((h1 * N1r2 + 1) * (h2 * N2r2 + 1) + (X * gv + r0)^2)
     id <- which(abs(Zs[,1] * Zs[,2]) > 30)
-    if(length(id) > 0) {
+    if (length(id) > 0) {
         Wv[id] <- sqrt(Wv[id])
     }
 
@@ -115,8 +112,7 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc=0, W=NULL)
 #' Gua,B. and Wu,B. (2019) Integrate multiple traits to detect novel trait-gene association using GWAS summary data with an adaptive test approach. Bioinformatics. 2019 Jul 1;35(13):2251-2257. doi: 10.1093/bioinformatics/bty961.
 #'
 #' <https://github.com/baolinwu/MTAR>
-ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
-{
+ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000) {
     if (is.null(snpinfo)) {
         snpinfo <- ieugwasr::afl2_list("hapmap3", x_api_source=x_api_source_header())
     }
@@ -156,8 +152,7 @@ ldsc_h2 <- function(id, ancestry="infer", snpinfo = NULL, splitsize=20000)
 #'
 #' @export
 #' @return model fit
-ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
-{
+ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000) {
     if (is.null(snpinfo)) {
         snpinfo <- ieugwasr::afl2_list("hapmap3", x_api_source=x_api_source_header())
     }
@@ -208,8 +203,7 @@ ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
         )
 
     gcov <- dat %>%
-        {
-            ldsc_rg_internal(
+              ldsc_rg_internal(
                 Zs = cbind(.$z1, .$z2),
                 r2 = .$l2,
                 h1 = h1$coefficients[2,1] * nrow(d1),
@@ -217,8 +211,7 @@ ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
                 N1 = .$n1,
                 N2 = .$n2,
                 W = .$l2
-            )
-        }
+              )
     return(list(
         gcov = gcov,
         h1=h1,
@@ -228,12 +221,10 @@ ldsc_rg <- function(id1, id2, ancestry="infer", snpinfo = NULL, splitsize=20000)
 }
 
 
-extract_split <- function(snplist, id, splitsize=20000)
-{
+extract_split <- function(snplist, id, splitsize=20000) {
     nsplit <- round(length(snplist)/splitsize)
     split(snplist, 1:nsplit) %>%
-        pbapply::pblapply(., function(x)
-        {
+        pbapply::pblapply(., function(x) {
             ieugwasr::associations(x, id, proxies=FALSE, x_api_source=x_api_source_header())
         }) %>%
         dplyr::bind_rows()
