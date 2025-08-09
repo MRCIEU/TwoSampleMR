@@ -2,7 +2,7 @@
 
 (Release date 2025-08-##)
 
-* Fixed typos in Steiger related documentation.
+* Fixed typos in Steiger related documentation (thanks to @eleanorsanderson and Kaitlin Wade for providing the motivating example for this).
 * Some code cleanup to make debugging easier.
 
 # TwoSampleMR v0.6.20
