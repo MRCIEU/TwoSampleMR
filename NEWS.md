@@ -2,7 +2,8 @@
 
 (Release date 2025-08-##)
 
-* TODO: Investigating an mr-steiger issue.
+* Fixed typos in Steiger related documentation.
+* Some code cleanup to make debugging easier.
 
 # TwoSampleMR v0.6.20
 
