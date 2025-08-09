@@ -176,8 +176,7 @@ if (inherits(dat, "data.table")) {
 	}
 	dat <- dat[,i]
 
-	if(! snp_col %in% names(dat))
-	{
+	if (! snp_col %in% names(dat)) {
 		stop("SNP column not found")
 	}
 
@@ -187,28 +186,24 @@ if (inherits(dat, "data.table")) {
 	dat$SNP <- gsub("[[:space:]]", "", dat$SNP)
 	dat <- subset(dat, !is.na(SNP))
 
-	if(!is.null(snps))
-	{
+	if (!is.null(snps)) {
 		dat <- subset(dat, SNP %in% snps)
 		if (nrow(dat) == 0L) {
 		  stop("No SNPs specified for the exposure are present in the outcome dataset.")
 		}
 	}
 
-	if(! phenotype_col %in% names(dat))
-	{
+	if (! phenotype_col %in% names(dat)) {
 		message("No phenotype name specified, defaulting to '", type, "'.")
 		dat[[type]] <- type
 	} else {
 		dat[[type]] <- dat[[phenotype_col]]
-		if(phenotype_col != type)
-		{
+		if (phenotype_col != type) {
 			dat <- dat[,-which(names(dat)==phenotype_col)]
 		}
 	}
 
-	if(log_pval)
-	{
+	if (log_pval) {
 		dat[[pval_col]] <- 10^-dat[[pval_col]]
 	}
 
@@ -216,8 +211,7 @@ if (inherits(dat, "data.table")) {
 	dat <- plyr::ddply(dat, type, function(x) {
 		x <- plyr::mutate(x)
 		dup <- duplicated(x$SNP)
-		if(any(dup))
-		{
+		if (any(dup)) {
 			warning("Duplicated SNPs present in exposure data for phenotype '", x[[type]][1], ". Just keeping the first instance:\n", paste(x$SNP[dup], collapse="\n"))
 			x <- x[!dup,]
 		}
@@ -227,26 +221,22 @@ if (inherits(dat, "data.table")) {
 	# Check if columns required for MR are present
 	mr_cols_required <- c(snp_col, beta_col, se_col, effect_allele_col)
 	mr_cols_desired <- c(other_allele_col, eaf_col)
-	if(! all(mr_cols_required %in% names(dat)))
-	{
+	if (! all(mr_cols_required %in% names(dat))) {
 		warning("The following columns are not present and are required for MR analysis\n", paste(mr_cols_required[!mr_cols_required %in% names(dat)]), collapse="\n")
 		dat$mr_keep.outcome <- FALSE
 	} else {
 		dat$mr_keep.outcome <- TRUE
 	}
 
-	if(! all(mr_cols_desired %in% names(dat)))
-	{
+	if (! all(mr_cols_desired %in% names(dat))) {
 		warning("The following columns are not present but are helpful for harmonisation\n", paste(mr_cols_desired[!mr_cols_desired %in% names(dat)]), collapse="\n")
 	}
 
 	# Check beta
 	i <- which(names(dat) == beta_col)[1]
-	if(!is.na(i))
-	{
+	if (!is.na(i)) {
 		names(dat)[i] <- "beta.outcome"
-		if(!is.numeric(dat$beta.outcome))
-		{
+		if (!is.numeric(dat$beta.outcome)) {
 			warning("beta column is not numeric. Coercing...")
 			dat$beta.outcome <- as.numeric(dat$beta.outcome)
 		}
@@ -257,11 +247,9 @@ if (inherits(dat, "data.table")) {
 
 	# Check se
 	i <- which(names(dat) == se_col)[1]
-	if(!is.na(i))
-	{
+	if (!is.na(i)) {
 		names(dat)[i] <- "se.outcome"
-		if(!is.numeric(dat$se.outcome))
-		{
+		if (!is.numeric(dat$se.outcome)) {
 			warning("se column is not numeric. Coercing...")
 			dat$se.outcome <- as.numeric(dat$se.outcome)
 		}
@@ -272,11 +260,9 @@ if (inherits(dat, "data.table")) {
 
 	# Check eaf
 	i <- which(names(dat) == eaf_col)[1]
-	if(!is.na(i))
-	{
+	if (!is.na(i)) {
 		names(dat)[i] <- "eaf.outcome"
-		if(!is.numeric(dat$eaf.outcome))
-		{
+		if (!is.numeric(dat$eaf.outcome)) {
 			warning("eaf column is not numeric. Coercing...")
 			dat$eaf.outcome <- as.numeric(dat$eaf.outcome)
 		}
@@ -287,15 +273,12 @@ if (inherits(dat, "data.table")) {
 
 	# Check effect_allele
 	i <- which(names(dat) == effect_allele_col)[1]
-	if(!is.na(i))
-	{
+	if (!is.na(i)) {
 		names(dat)[i] <- "effect_allele.outcome"
-		if(is.logical(dat$effect_allele.outcome))
-		{
+		if (is.logical(dat$effect_allele.outcome)) {
 			dat$effect_allele.outcome <- substr(as.character(dat$effect_allele.outcome), 1, 1)
 		}
-		if(!is.character(dat$effect_allele.outcome))
-		{
+		if (!is.character(dat$effect_allele.outcome)) {
 			warning("effect_allele column is not character data. Coercing...")
 			dat$effect_allele.outcome <- as.character(dat$effect_allele.outcome)
 		}
@@ -304,8 +287,7 @@ if (inherits(dat, "data.table")) {
 		# index <- ! dat$effect_allele.outcome %in% c("A", "C", "T", "G")
 		index <- ! (grepl("^[ACTG]+$", dat$effect_allele.outcome) | dat$effect_allele.outcome %in% c("D", "I"))
 		index[is.na(index)] <- TRUE
-		if(any(index))
-		{
+		if (any(index)) {
 			warning("effect_allele column has some values that are not A/C/T/G or an indel comprising only these characters or D/I. These SNPs will be excluded.")
 			dat$effect_allele.outcome[index] <- NA
 			dat$mr_keep.outcome[index] <- FALSE
@@ -315,15 +297,12 @@ if (inherits(dat, "data.table")) {
 
 	# Check other_allele
 	i <- which(names(dat) == other_allele_col)[1]
-	if(!is.na(i))
-	{
+	if (!is.na(i)) {
 		names(dat)[i] <- "other_allele.outcome"
-		if(is.logical(dat$other_allele.outcome))
-		{
+		if (is.logical(dat$other_allele.outcome)) {
 			dat$other_allele.outcome <- substr(as.character(dat$other_allele.outcome), 1, 1)
 		}
-		if(!is.character(dat$other_allele.outcome))
-		{
+		if (!is.character(dat$other_allele.outcome)) {
 			warning("other_allele column is not character data. Coercing...")
 			dat$other_allele.outcome <- as.character(dat$other_allele.outcome)
 		}
@@ -332,8 +311,7 @@ if (inherits(dat, "data.table")) {
 		# index <- ! dat$other_allele.outcome %in% c("A", "C", "T", "G")
 		index <- ! (grepl("^[ACTG]+$", dat$other_allele.outcome) | dat$other_allele.outcome %in% c("D", "I"))
 		index[is.na(index)] <- TRUE
-		if(any(index))
-		{
+		if (any(index)) {
 			warning("other_allele column has some values that are not A/C/T/G or an indel comprising only these characters or D/I. These SNPs will be excluded")
 			dat$other_allele.outcome[index] <- NA
 			dat$mr_keep.outcome[index] <- FALSE
@@ -343,11 +321,9 @@ if (inherits(dat, "data.table")) {
 
 	# Check pval
 	i <- which(names(dat) == pval_col)[1]
-	if(!is.na(i))
-	{
+	if (!is.na(i)) {
 		names(dat)[i] <- "pval.outcome"
-		if(!is.numeric(dat$pval.outcome))
-		{
+		if (!is.numeric(dat$pval.outcome)) {
 			warning("pval column is not numeric. Coercing...")
 			dat$pval.outcome <- as.numeric(dat$pval.outcome)
 		}
@@ -359,10 +335,8 @@ if (inherits(dat, "data.table")) {
 		dat$pval.outcome[index] <- min_pval
 
 		dat$pval_origin.outcome <- "reported"
-		if(any(is.na(dat$pval.outcome)))
-		{
-			if("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat))
-			{
+		if (any(is.na(dat$pval.outcome))) {
+			if ("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat)) {
 				index <- is.na(dat$pval.outcome)
 				dat$pval.outcome[index] <- stats::pnorm(abs(dat$beta.outcome[index])/dat$se.outcome[index], lower.tail=FALSE)
 				dat$pval_origin.outcome[index] <- "inferred"
@@ -371,28 +345,23 @@ if (inherits(dat, "data.table")) {
 	}
 
 	# If no pval column then create it from beta and se if available
-	if("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat) && ! "pval.outcome" %in% names(dat))
-	{
+	if ("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat) && ! "pval.outcome" %in% names(dat)) {
 		message("Inferring p-values")
 		dat$pval.outcome <- stats::pnorm(abs(dat$beta.outcome)/dat$se.outcome, lower.tail=FALSE) * 2
 		dat$pval_origin.outcome <- "inferred"
 	}
 
 
-	if(ncase_col %in% names(dat))
-	{
+	if (ncase_col %in% names(dat)) {
 		names(dat)[which(names(dat) == ncase_col)[1]] <- "ncase.outcome"
-		if(!is.numeric(dat$ncase.outcome))
-		{
+		if (!is.numeric(dat$ncase.outcome)) {
 			warning(ncase_col, " column is not numeric")
 			dat$ncase.outcome <- as.numeric(dat$ncase.outcome)
 		}
 	}
-	if(ncontrol_col %in% names(dat))
-	{
+	if (ncontrol_col %in% names(dat)) {
 		names(dat)[which(names(dat) == ncontrol_col)[1]] <- "ncontrol.outcome"
-		if(!is.numeric(dat$ncontrol.outcome))
-		{
+		if (!is.numeric(dat$ncontrol.outcome)) {
 			warning(ncontrol_col, " column is not numeric")
 			dat$ncontrol.outcome <- as.numeric(dat$ncontrol.outcome)
 		}
@@ -400,96 +369,78 @@ if (inherits(dat, "data.table")) {
 
 
 
-	if(samplesize_col %in% names(dat))
-	{
+	if (samplesize_col %in% names(dat)) {
 		names(dat)[which(names(dat) == samplesize_col)[1]] <- "samplesize.outcome"
-		if(!is.numeric(dat$samplesize.outcome))
-		{
+		if (!is.numeric(dat$samplesize.outcome)) {
 			warning(samplesize_col, " column is not numeric")
 			dat$samplesize.outcome <- as.numeric(dat$samplesize.outcome)
 		}
 
-		if("ncontrol.outcome" %in% names(dat) && "ncase.outcome" %in% names(dat))
-		{
+		if ("ncontrol.outcome" %in% names(dat) && "ncase.outcome" %in% names(dat)) {
 			index <- is.na(dat$samplesize.outcome) & !is.na(dat$ncase.outcome) & !is.na(dat$ncontrol.outcome)
-			if(any(index))
-			{
+			if (any(index)) {
 				message("Generating sample size from ncase and ncontrol")
 				dat$samplesize.outcome[index] <- dat$ncase.outcome[index] + dat$ncontrol.outcome[index]
 			}
 		}
-	} else if("ncontrol.outcome" %in% names(dat) && "ncase.outcome" %in% names(dat))
-	{
+	} else if ("ncontrol.outcome" %in% names(dat) && "ncase.outcome" %in% names(dat)) {
 		message("Generating sample size from ncase and ncontrol")
 		dat$samplesize.outcome <- dat$ncase.outcome + dat$ncontrol.outcome
 	}
 
-	if(gene_col %in% names(dat))
-	{
+	if (gene_col %in% names(dat)) {
 		names(dat)[which(names(dat) == gene_col)[1]] <- "gene.outcome"
 	}
 
-	if(info_col %in% names(dat))
-	{
+	if (info_col %in% names(dat)) {
 		names(dat)[which(names(dat) == info_col)[1]] <- "info.outcome"
 	}
 
-	if(z_col %in% names(dat))
-	{
+	if (z_col %in% names(dat)) {
 		names(dat)[which(names(dat) == z_col)[1]] <- "z.outcome"
 	}
 
-	if(chr_col %in% names(dat))
-	{
+	if (chr_col %in% names(dat)) {
 		names(dat)[which(names(dat) == chr_col)[1]] <- "chr.outcome"
 	}
 
-	if(pos_col %in% names(dat))
-	{
+	if (pos_col %in% names(dat)) {
 		names(dat)[which(names(dat) == pos_col)[1]] <- "pos.outcome"
 	}
 
-	if(units_col %in% names(dat))
-	{
+	if (units_col %in% names(dat)) {
 		names(dat)[which(names(dat) == units_col)[1]] <- "units.outcome"
 		dat$units.outcome_dat <- as.character(dat$units.outcome)
 		temp <- check_units(dat, type, "units.outcome")
-		if(any(temp$ph))
-		{
+		if (any(temp$ph)) {
 			dat[[type]] <- paste0(dat[[type]], " (", dat$units.outcome, ")")
 		}
 	}
 
 	# Create id column
-	if(id_col %in% names(dat))
-	{
+	if (id_col %in% names(dat)) {
 		names(dat)[which(names(dat) == id_col)[1]] <- "id.outcome"
 		dat$id.outcome <- as.character(dat$id.outcome)
 	} else {
 		dat$id.outcome <- create_ids(dat[[type]])
 	}
 
-	if(any(dat$mr_keep.outcome))
-	{
+	if (any(dat$mr_keep.outcome)) {
 		mrcols <- c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome")
 		mrcols_present <- mrcols[mrcols %in% names(dat)]
 		dat$mr_keep.outcome <- dat$mr_keep.outcome & apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
-		if(any(!dat$mr_keep.outcome))
-		{
+		if (any(!dat$mr_keep.outcome)) {
 		  missinginfosnps <- paste(subset(dat, !mr_keep.outcome)$SNP, collapse = " ")
 			warning("The following SNP(s) are missing required information for the MR tests and will be excluded: ", missinginfosnps)
 		}
 	}
-	if(all(!dat$mr_keep.outcome))
-	{
+	if (all(!dat$mr_keep.outcome)) {
 		warning("None of the provided SNPs can be used for MR analysis, they are missing required information.")
 	}
 
 	# Add in missing MR cols
-	for(col in c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome", "other_allele.outcome", "eaf.outcome"))
-	{
-		if(! col %in% names(dat))
-		{
+	for (col in c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome", "other_allele.outcome", "eaf.outcome")) {
+		if (! col %in% names(dat)) {
 			dat[[col]] <- NA
 		}
 	}
@@ -499,13 +450,10 @@ if (inherits(dat, "data.table")) {
 	return(dat)
 }
 
-check_units <- function(x, id, col)
-{
-	temp <- plyr::ddply(x, id, function(x1)
-	{
+check_units <- function(x, id, col) {
+	temp <- plyr::ddply(x, id, function(x1) {
 		ph <- FALSE
-		if(length(unique(x1[[col]])) > 1)
-		{
+		if (length(unique(x1[[col]])) > 1) {
 			warning("More than one type of unit specified for ", x1[[id]][1])
 			x1 <- plyr::mutate(x1)
 			ph <- TRUE
@@ -531,8 +479,7 @@ check_units <- function(x, id, col)
 #' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units))
 #' bmi <- format_data(bmi)
 #'}
-format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
-{
+format_gwas_catalog <- function(gwas_catalog_subset, type="exposure") {
 	message("This function is now deprecated and has been replaced by 'format_data'.")
 	return(NULL)
 }
@@ -547,13 +494,11 @@ format_gwas_catalog <- function(gwas_catalog_subset, type="exposure")
 #'
 #' @export
 #' @return Data frame
-format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
-{
+format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure") {
 	stopifnot(type %in% c("exposure", "outcome"))
 	gtex_eqtl_subset[[type]] <- paste0(gtex_eqtl_subset$gene_name, " (", gtex_eqtl_subset$tissue, ")")
 
-	if(length(unique(gtex_eqtl_subset[[type]])) > 1)
-	{
+	if (length(unique(gtex_eqtl_subset[[type]])) > 1) {
 		message("Separating the entries into the following phenotypes:\n", paste(unique(gtex_eqtl_subset[[type]]), collapse="\n"))
 	}
 
@@ -561,7 +506,6 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 	dat[[paste0("data_source.", type)]] <- "gtex_eqtl"
 
 	return(dat)
-
 }
 
 
@@ -574,13 +518,10 @@ format_gtex_eqtl <- function(gtex_eqtl_subset, type="exposure")
 #'
 #' @export
 #' @return Data frame
-format_metab_qtls <- function(metab_qtls_subset, type="exposure")
-{
+format_metab_qtls <- function(metab_qtls_subset, type="exposure") {
 	stopifnot(type %in% c("exposure", "outcome"))
 
-
-	if(length(unique(metab_qtls_subset$phenotype)) > 1)
-	{
+	if (length(unique(metab_qtls_subset$phenotype)) > 1) {
 		message("Separating the entries into the following phenotypes:\n", paste(unique(metab_qtls_subset$phenotype), collapse="\n"))
 	}
 
@@ -601,13 +542,10 @@ format_metab_qtls <- function(metab_qtls_subset, type="exposure")
 #'
 #' @export
 #' @return Data frame
-format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
-{
+format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure") {
 	stopifnot(type %in% c("exposure", "outcome"))
 
-
-	if(length(unique(proteomic_qtls_subset$analyte)) > 1)
-	{
+	if (length(unique(proteomic_qtls_subset$analyte)) > 1) {
 		message("Separating the entries into the following phenotypes:\n", paste(unique(proteomic_qtls_subset$analyte), collapse="\n"))
 	}
 
@@ -628,14 +566,12 @@ format_proteomic_qtls <- function(proteomic_qtls_subset, type="exposure")
 #'
 #' @export
 #' @return Data frame
-format_aries_mqtl <- function(aries_mqtl_subset, type="exposure")
-{
+format_aries_mqtl <- function(aries_mqtl_subset, type="exposure") {
 	stopifnot(type %in% c("exposure", "outcome"))
 
 	aries_mqtl_subset$Phenotype <- paste0(aries_mqtl_subset$cpg, " (", aries_mqtl_subset$age, ")")
 
-	if(length(unique(aries_mqtl_subset$Phenotype)) > 1)
-	{
+	if (length(unique(aries_mqtl_subset$Phenotype)) > 1) {
 		message("Separating the entries into the following phenotypes:\n", paste(unique(aries_mqtl_subset$Phenotype), collapse="\n"))
 	}
 
@@ -646,11 +582,9 @@ format_aries_mqtl <- function(aries_mqtl_subset, type="exposure")
 }
 
 
-random_string <- function(n=1, len=6)
-{
+random_string <- function(n=1, len=6) {
 	randomString <- c(1:n)
-	for (i in 1:n)
-	{
+	for (i in 1:n) {
 		randomString[i] <- paste(sample(c(0:9, letters, LETTERS),
 		len, replace=TRUE),
 		collapse="")
@@ -658,8 +592,7 @@ random_string <- function(n=1, len=6)
 	return(randomString)
 }
 
-create_ids <- function(x)
-{
+create_ids <- function(x) {
 	a <- as.factor(x)
 	levels(a) <- random_string(length(levels(a)))
 	a <- as.character(a)
@@ -678,18 +611,20 @@ create_ids <- function(x)
 #'
 #' @export
 #' @return data frame
-combine_data <- function(x)
-{
+combine_data <- function(x) {
 	stopifnot(is.list(x))
-	if("exposure" %in% names(x[[1]])) type <- "exposure"
-	else if("outcome" %in% names(x[[1]])) type <- "outcome"
-	else stop("Datasets must be generated from format_data")
+	if ("exposure" %in% names(x[[1]])) {
+	  type <- "exposure"
+	} else if ("outcome" %in% names(x[[1]])) {
+	  type <- "outcome"
+	} else {
+	  stop("Datasets must be generated from format_data")
+	}
 
 	check <- all(sapply(x, function(i) {
 		type %in% names(i)}))
 
-	if(!check)
-	{
+	if (!check) {
 		stop("Not all datasets or of type '", type, "'")
 	}
 
@@ -697,8 +632,7 @@ combine_data <- function(x)
 	mr_keep_col <- paste0("mr_keep.", type)
 	x <- plyr::rbind.fill(x)
 
-	x <- plyr::ddply(x, id_col, function(x)
-	{
+	x <- plyr::ddply(x, id_col, function(x) {
 		x <- plyr::mutate(x)
 		x <- x[order(x[[mr_keep_col]], decreasing=TRUE), ]
 		x <- subset(x, !duplicated(SNP))
@@ -718,8 +652,7 @@ combine_data <- function(x)
 #'
 #' @export
 #' @return data frame
-convert_outcome_to_exposure <- function(outcome_dat)
-{
+convert_outcome_to_exposure <- function(outcome_dat) {
 	id <- subset(outcome_dat, !duplicated(outcome), select=c(outcome, id.outcome))
 	exposure_dat <- format_data(
 		outcome_dat,
