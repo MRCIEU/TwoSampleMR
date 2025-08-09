@@ -13,10 +13,8 @@
 #' \item{sensitivity_ratio}{Ratio of vz1/vz0. Higher means inferred direction is less susceptible to measurement error}
 #' \item{pl}{plot of parameter space}
 #' }
-steiger_sensitivity <- function(rgx_o, rgy_o, ...)
-{
-	if(rgy_o > rgx_o)
-	{
+steiger_sensitivity <- function(rgx_o, rgy_o, ...) {
+	if (rgy_o > rgx_o) {
 		a <- rgy_o
 		b <- rgx_o
 	} else {
