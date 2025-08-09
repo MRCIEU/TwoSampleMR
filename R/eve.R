@@ -215,7 +215,7 @@ mr_wrapper_single <- function(dat, parameters=default_parameters()) {
 		outlier = FALSE, steiger = FALSE, both = FALSE
 	)
 	m[[1]] <- mr_all(dat, parameters=parameters)
-	if(!is.null(m[[1]])) {
+	if (!is.null(m[[1]])) {
 		if ("outliers" %in% names(m[[1]])) {
 			temp <- subset(dat, ! SNP %in% subset(m[[1]]$outliers, Qpval < 0.05)$SNP)
 			m[[2]] <- mr_all(temp, parameters=parameters)
@@ -233,7 +233,7 @@ mr_wrapper_single <- function(dat, parameters=default_parameters()) {
 			)
 		} else {
 			m[[3]] <- mr_all(dat_st, parameters=parameters)
-			if("outliers" %in% names(m[[3]])) {
+			if ("outliers" %in% names(m[[3]])) {
 				temp <- subset(dat_st, ! SNP %in% subset(m[[3]]$outliers, Qpval < 0.05)$SNP)
 				m[[4]] <- mr_all(temp, parameters=parameters)
 				snps_retained$both[snps_retained$SNP %in% temp$SNP] <- TRUE

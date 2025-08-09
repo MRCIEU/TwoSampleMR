@@ -21,7 +21,7 @@ extract_instruments <- function(outcomes, p1 = 5e-8, clump = TRUE, p2 = 5e-8, r2
 	d <- ieugwasr::tophits(outcomes, pval=p1, clump=clump, r2=r2, kb=kb, force_server=FALSE, opengwas_jwt=opengwas_jwt, x_api_source=x_api_source_header())
 
 	# d$phenotype.deprecated <- paste0(d$trait, " || ", d$consortium, " || ", d$year, " || ", d$unit)
-	if(nrow(d) == 0) return(NULL)
+	if (nrow(d) == 0) return(NULL)
 	d$phenotype <- paste0(d$trait, " || id:", d$id)
 	d <- format_data(
 		d,

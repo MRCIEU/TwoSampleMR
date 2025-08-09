@@ -288,7 +288,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary") {
 		}
 		dat<-do.call(rbind,L)
 		dat<-dat[,!names(dat1) %in% c("id.set","id.subset")]
-		# if(drop.duplicates == T) {
+		# if (drop.duplicates == T) {
 		# 	dat<-dat[dat$power.prune=="keep",]
 		# }
 		return(dat)
@@ -364,7 +364,7 @@ power_prune <- function(dat,method=1,dist.outcome="binary") {
 
 		dat2$power.prune<-"drop"
 		dat2$power.prune[paste(dat2$id.set,dat2$id.subset) %in% id.keep]<-"keep"
-		# if(drop.duplicates == T) {
+		# if (drop.duplicates == T) {
 			dat2<-dat2[dat2$power.prune=="keep",]
 		# }
 		dat2<-dat2[,!names(dat2) %in% c("iv.se","power.prune","id.set","id.subset")]

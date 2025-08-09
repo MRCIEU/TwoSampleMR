@@ -84,7 +84,7 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 		stringsAsFactors = FALSE
 	)
 
-	# if(fix_capitals)
+	# if (fix_capitals)
 	# {
 	# 	dat$exposure <- simple_cap(dat$exposure)
 	# 	dat$outcome <- simple_cap(dat$outcome)
@@ -111,7 +111,7 @@ format_mr_results <- function(mr_res, exponentiate=FALSE, single_snp_method="Wal
 	# 		x <- .
 	# 		nc <- ncol(x)
 	# 		missed <- exps[! exps %in% x$exposure]
-	# 		if(length(missed) >= 1)
+	# 		if (length(missed) >= 1)
 	# 		{
 	# 			out <- unique(x$outcome)
 	# 			ca <- unique(x$category)
@@ -251,7 +251,7 @@ forest_plot_basic <- function(dat, section=NULL, colour_group=NULL, colour_group
 			point_plot <- ggplot2::geom_point(size=2)
 		}
 	} else {
-		if(!is.null(threshold)) {
+		if (!is.null(threshold)) {
 			point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure, shape = pval < threshold), size=2)
 		} else {
 			point_plot <- ggplot2::geom_point(ggplot2::aes(colour=exposure), size=2)

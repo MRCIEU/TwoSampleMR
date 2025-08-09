@@ -354,7 +354,7 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 }
 
 harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, action) {
-	if(length(SNP) == 0) return(data.frame())
+	if (length(SNP) == 0) return(data.frame())
 	jlog <- list()
 	jlog[['alleles']] <- "2-1"
 

@@ -356,7 +356,7 @@ mv_residual <- function(mvdat, intercept=FALSE, instrument_specific=FALSE, pval_
 				mod <- summary(stats::lm(marginal_outcome[,i] ~ beta.exposure[,i]))
 			}
 		} else {
-			if(instrument_specific) {
+			if (instrument_specific) {
 				marginal_outcome[index,i] <- stats::lm(beta.outcome[index] ~ 0 + beta.exposure[index, -c(i), drop=FALSE])$res
 				mod <- summary(stats::lm(marginal_outcome[index,i] ~ 0 + beta.exposure[index, i]))
 			} else {
