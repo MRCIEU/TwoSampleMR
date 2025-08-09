@@ -6,27 +6,21 @@
 #'
 #' @export
 #' @return Data frame
-standardise_units <- function(dat)
-{
-	out <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(d)
-	{
-		if(d$units.exposure[1] != "log odds")
-		{
+standardise_units <- function(dat) {
+	out <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(d) {
+		if (d$units.exposure[1] != "log odds") {
 			estsd <- mean(estimate_trait_sd(d$beta.exposure, d$se.exposure, d$samplesize.exposure, d$eaf.exposure), na.rm=TRUE)
 
-			if(!is.na(estsd))
-			{
+			if (!is.na(estsd)) {
 				d$beta.exposure <- d$beta.exposure / estsd
 				d$se.exposure <- d$se.exposure / estsd
 				d$units.exposure <- "SD"
 				d$estimated_sd.exposure <- estsd
 			}
 		}
-		if(d$units.outcome[1] != "log odds")
-		{
+		if (d$units.outcome[1] != "log odds") {
 			estsd <- mean(estimate_trait_sd(d$beta.outcome, d$se.outcome, d$samplesize.outcome, d$eaf.outcome), na.rm=TRUE)
-			if(!is.na(estsd))
-			{
+			if (!is.na(estsd)) {
 				d$beta.outcome <- d$beta.outcome / estsd
 				d$se.outcome <- d$se.outcome / estsd
 				d$units.outcome <- "SD"
@@ -50,8 +44,7 @@ standardise_units <- function(dat)
 #'
 #' @export
 #' @return Vector of sd estimates for each association.
-estimate_trait_sd <- function(b, se, n, p)
-{
+estimate_trait_sd <- function(b, se, n, p) {
 	z <- b / se
 	standardised_bhat <- sqrt((z^2/(z^2+n-2)) / (2 * p * (1-p))) * sign(z)
 	estimated_sd <- b / standardised_bhat
