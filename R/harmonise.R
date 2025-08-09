@@ -70,7 +70,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2) {
 
 	fix.tab <- list()
 	mr_cols <- c("beta.exposure", "beta.outcome", "se.exposure", "se.outcome")
-	for(i in seq_len(nrow(combs))) {
+	for (i in seq_len(nrow(combs))) {
 		x <- subset(res.tab, id.exposure == combs$id.exposure[i] & id.outcome == combs$id.outcome[i])
 		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
 		x <- harmonise(x, 0.08, x$action[1])

@@ -183,7 +183,7 @@ combine_all_mrresults <- function(res,het,plt,sin,ao_slc=TRUE,Exp=FALSE,split.ex
 	for (i in unique(res$id.outcome)) {
 		Methods<-unique(res$Method[res$id.outcome==i])
 		Methods<-Methods[Methods!="Wald ratio"]
-		for(j in unique(Methods)) {
+		for (j in unique(Methods)) {
 			res$SNP[res$id.outcome == i & res$Method==j]<-paste(res$SNP[res$id.outcome == i & res$Method=="Wald ratio"],collapse="; ")
 		}
 	}

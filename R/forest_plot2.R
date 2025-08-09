@@ -515,7 +515,7 @@ forest_plot <- function(mr_res, exponentiate=FALSE, single_snp_method="Wald rati
 			)
 			count <- 2
 			columns <- unique(dat$exposure)
-			for(i in seq_along(columns)) {
+			for (i in seq_along(columns)) {
 				l[[count]] <- forest_plot_basic(
 					dat,
 					section=NULL,
