@@ -130,23 +130,23 @@ mv_extract_exposures_local <- function(
 	}
 
 	n <- length(filenames_exposure)
-	if (length(sep) == 1) {sep <- rep(sep, n)}
-	if (length(phenotype_col) == 1) {phenotype_col <- rep(phenotype_col, n)}
-	if (length(snp_col) == 1) {snp_col <- rep(snp_col, n)}
-	if (length(beta_col) == 1) {beta_col <- rep(beta_col, n)}
-	if (length(se_col) == 1) {se_col <- rep(se_col, n)}
-	if (length(eaf_col) == 1) {eaf_col <- rep(eaf_col, n)}
-	if (length(effect_allele_col) == 1) {effect_allele_col <- rep(effect_allele_col, n)}
-	if (length(other_allele_col) == 1) {other_allele_col <- rep(other_allele_col, n)}
-	if (length(pval_col) == 1) {pval_col <- rep(pval_col, n)}
-	if (length(units_col) == 1) {units_col <- rep(units_col, n)}
-	if (length(ncase_col) == 1) {ncase_col <- rep(ncase_col, n)}
-	if (length(ncontrol_col) == 1) {ncontrol_col <- rep(ncontrol_col, n)}
-	if (length(samplesize_col) == 1) {samplesize_col <- rep(samplesize_col, n)}
-	if (length(gene_col) == 1) {gene_col <- rep(gene_col, n)}
-	if (length(id_col) == 1) {id_col <- rep(id_col, n)}
-	if (length(min_pval) == 1) {min_pval <- rep(min_pval, n)}
-	if (length(log_pval) == 1) {log_pval <- rep(log_pval, n)}
+	if (length(sep) == 1) sep <- rep(sep, n)
+	if (length(phenotype_col) == 1) phenotype_col <- rep(phenotype_col, n)
+	if (length(snp_col) == 1) snp_col <- rep(snp_col, n)
+	if (length(beta_col) == 1) beta_col <- rep(beta_col, n)
+	if (length(se_col) == 1) se_col <- rep(se_col, n)
+	if (length(eaf_col) == 1) eaf_col <- rep(eaf_col, n)
+	if (length(effect_allele_col) == 1) effect_allele_col <- rep(effect_allele_col, n)
+	if (length(other_allele_col) == 1) other_allele_col <- rep(other_allele_col, n)
+	if (length(pval_col) == 1) pval_col <- rep(pval_col, n)
+	if (length(units_col) == 1) units_col <- rep(units_col, n)
+	if (length(ncase_col) == 1) ncase_col <- rep(ncase_col, n)
+	if (length(ncontrol_col) == 1) ncontrol_col <- rep(ncontrol_col, n)
+	if (length(samplesize_col) == 1) samplesize_col <- rep(samplesize_col, n)
+	if (length(gene_col) == 1) gene_col <- rep(gene_col, n)
+	if (length(id_col) == 1) id_col <- rep(id_col, n)
+	if (length(min_pval) == 1) min_pval <- rep(min_pval, n)
+	if (length(log_pval) == 1) log_pval <- rep(log_pval, n)
 
 	l_full <- list()
 	l_inst <- list()
