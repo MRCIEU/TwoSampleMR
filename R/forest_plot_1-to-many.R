@@ -21,8 +21,7 @@
 #'
 #' @export
 #' @return data frame.
-format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FALSE,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL)
-{
+format_1_to_many <- function(mr_res, b="b",se="se",exponentiate=FALSE, ao_slc=FALSE,by=NULL,TraitM="outcome",addcols=NULL,weight=NULL) {
 	if (is.null(by)) {
 		mr_res$subcategory<-""
 	}
@@ -232,8 +231,7 @@ sort_1_to_many <- function(mr_res,b="b",trait_m="outcome",sort_action=4,group=NU
 #' @param shape_points the shape of the data points to pass to [ggplot2::geom_point()]. Default is set to `15` (filled square).
 #'
 #' @return ggplot object
-forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15)
-{
+forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_group_first=TRUE, xlab=NULL, bottom=TRUE, trans="identity", xlim=NULL, lo=lo,up=up,subheading_size=subheading_size,colour_scheme="black",shape_points=15) {
 	if (bottom) {
 		text_colour <- ggplot2::element_text(colour="black")
 		tick_colour <- ggplot2::element_line(colour="black")
@@ -385,8 +383,7 @@ forest_plot_basic2 <- function(dat, section=NULL, colour_group=NULL, colour_grou
 }
 
 
-forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5)
-{
+forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,title="",subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5) {
 	if (bottom) {
 		text_colour <- ggplot2::element_text(colour="white")
 		tick_colour <- ggplot2::element_line(colour="white")
@@ -473,8 +470,7 @@ forest_plot_names2 <- function(dat, section=NULL, var1="outcome2",bottom=TRUE,ti
 }
 
 
-forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5)
-{
+forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol_title=NULL,subheading_size=subheading_size,colour_scheme="black",shape_points=15,col_text_size=5) {
 	print(addcol)
 	# print(addcol_title)
 	if (bottom) {
@@ -587,7 +583,7 @@ forest_plot_addcol <- function(dat, section=NULL, addcol=NULL,bottom=TRUE,addcol
 #' @export
 #' @return grid plot object
 forest_plot_1_to_many <- function(mr_res="mr_res", b="b",se="se",TraitM="outcome",col1_width=1,col1_title="",exponentiate=FALSE, trans="identity",ao_slc=TRUE,lo=NULL,up=NULL,by=NULL,xlab="Effect (95% confidence interval)",addcols=NULL,addcol_widths=NULL,addcol_titles="",subheading_size=6,shape_points=15,colour_scheme="black",col_text_size=5,weight=NULL) {
-	# if(is.null(lo) | is.null(up)) warning("Values missing for the lower or upper bounds of the x axis. Did you forget to set the lo and up arguments?")
+	# if (is.null(lo) | is.null(up)) warning("Values missing for the lower or upper bounds of the x axis. Did you forget to set the lo and up arguments?")
 
 	xlim=NULL
 	ncols=1+length(addcols)

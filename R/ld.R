@@ -23,34 +23,28 @@
 #'
 #' @export
 #' @return Data frame
-clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1, pop="EUR", bfile=NULL, plink_bin=NULL)
-{
+clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2=1, pop="EUR", bfile=NULL, plink_bin=NULL) {
 	# .Deprecated("ieugwasr::ld_clump()")
 
 	pval_column <- "pval.exposure"
 
-	if(!is.data.frame(dat))
-	{
+	if (!is.data.frame(dat)) {
 		stop("Expecting data frame returned from format_data().")
 	}
 
-	if("pval.exposure" %in% names(dat) && "pval.outcome" %in% names(dat))
-	{
+	if ("pval.exposure" %in% names(dat) && "pval.outcome" %in% names(dat)) {
 		message("pval.exposure and pval.outcome columns present. Using pval.exposure for clumping.")
-	} else if(!"pval.exposure" %in% names(dat) && "pval.outcome" %in% names(dat))
-	{
+	} else if (!"pval.exposure" %in% names(dat) && "pval.outcome" %in% names(dat)) {
 		message("pval.exposure column not present, using pval.outcome column for clumping.")
 		pval_column <- "pval.outcome"
-	} else if(! "pval.exposure" %in% names(dat))
-	{
+	} else if (! "pval.exposure" %in% names(dat)) {
 		message("pval.exposure not present, setting clumping p-value to 0.99 for all variants")
 		dat$pval.exposure <- 0.99
 	} else {
 		pval_column <- "pval.exposure"
 	}
 
-	if(! "id.exposure" %in% names(dat))
-	{
+	if (! "id.exposure" %in% names(dat)) {
 		dat$id.exposure <- random_string(1)
 	}
 
@@ -86,8 +80,7 @@ clump_data <- function(dat, clump_kb=10000, clump_r2=0.001, clump_p1=1, clump_p2
 #'
 #' @export
 #' @return Matrix of LD r values
-ld_matrix <- function(snps, with_alleles=TRUE, pop="EUR")
-{
+ld_matrix <- function(snps, with_alleles=TRUE, pop="EUR") {
 	# .Deprecated("ieugwasr::ld_matrix()")
 	ieugwasr::ld_matrix(variants=snps, with_alleles=with_alleles, pop=pop, x_api_source=x_api_source_header())
 }

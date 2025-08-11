@@ -44,17 +44,15 @@
 #'
 #' @export
 #' @return Data frame with harmonised effects and alleles
-harmonise_data <- function(exposure_dat, outcome_dat, action=2)
-{
+harmonise_data <- function(exposure_dat, outcome_dat, action=2) {
 	stopifnot(all(action %in% 1:3))
 	check_required_columns(exposure_dat, "exposure")
 	check_required_columns(outcome_dat, "outcome")
 	res.tab <- merge(outcome_dat, exposure_dat, by="SNP")
 	ncombinations <- length(unique(res.tab$id.outcome))
-	if(length(action) == 1)
-	{
+	if (length(action) == 1) {
 		action <- rep(action, ncombinations)
-	} else if(length(action) != ncombinations) {
+	} else if (length(action) != ncombinations) {
 		stop("Action argument must be of length 1 (where the same action will be used for all outcomes), or number of unique id.outcome values (where each outcome will use a different action value)")
 	}
 
@@ -72,8 +70,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 
 	fix.tab <- list()
 	mr_cols <- c("beta.exposure", "beta.outcome", "se.exposure", "se.outcome")
-	for(i in seq_len(nrow(combs)))
-	{
+	for (i in seq_len(nrow(combs))) {
 		x <- subset(res.tab, id.exposure == combs$id.exposure[i] & id.outcome == combs$id.outcome[i])
 		message("Harmonising ", x$exposure[1], " (", x$id.exposure[1], ") and ", x$outcome[1], " (", x$id.outcome[1], ")")
 		x <- harmonise(x, 0.08, x$action[1])
@@ -99,18 +96,15 @@ harmonise_data <- function(exposure_dat, outcome_dat, action=2)
 	attr(fix.tab, "log") <- jlog
 
 	# fix.tab <- harmonise_make_snp_effects_positive(fix.tab)
-	if(!"samplesize.outcome" %in% names(fix.tab))
-	{
+	if (!"samplesize.outcome" %in% names(fix.tab)) {
 		fix.tab$samplesize.outcome <- NA
 	}
-
 
 	return(fix.tab)
 }
 
 
-harmonise_cleanup_variables <- function(res.tab)
-{
+harmonise_cleanup_variables <- function(res.tab) {
 	res.tab$beta.exposure <- as.numeric(res.tab$beta.exposure)
 	res.tab$beta.outcome <- as.numeric(res.tab$beta.outcome)
 	res.tab$eaf.exposure <- as.numeric(res.tab$eaf.exposure)
@@ -129,8 +123,7 @@ harmonise_cleanup_variables <- function(res.tab)
 }
 
 
-harmonise_make_snp_effects_positive <- function(res.tab)
-{
+harmonise_make_snp_effects_positive <- function(res.tab) {
 	# code SNP effect so that effect allele is the allele that increases the trait
 	#res.tab[,c("SNP","beta.exposure","beta.outcome","effect_allele.exposure","other_allele.exposure","effect_allele","other_allele","eaf.exposure","eaf.outcome","info_s1","RSQ_s2","RSQ_s3","info_s4","q_p.value")]
 
@@ -146,8 +139,7 @@ harmonise_make_snp_effects_positive <- function(res.tab)
 }
 
 
-check_palindromic <- function(A1, A2)
-{
+check_palindromic <- function(A1, A2) {
 	(A1 == "T" & A2 == "A") |
 	(A1 == "A" & A2 == "T") |
 	(A1 == "G" & A2 == "C") |
@@ -155,8 +147,7 @@ check_palindromic <- function(A1, A2)
 }
 
 
-flip_alleles <- function(x)
-{
+flip_alleles <- function(x) {
 	x <- toupper(x)
 	x <- gsub("C", "g", x)
 	x <- gsub("G", "c", x)
@@ -166,14 +157,11 @@ flip_alleles <- function(x)
 }
 
 
-recode_indels_22 <- function(A1, A2, B1, B2)
-{
-
+recode_indels_22 <- function(A1, A2, B1, B2) {
 	ncA1 <- nchar(A1)
 	ncA2 <- nchar(A2)
 	ncB1 <- nchar(B1)
 	ncB2 <- nchar(B2)
-
 
 	i1 <- ncA1 > ncA2 & B1 == "I" & B2 == "D"
 	B1[i1] <- A1[i1]
@@ -190,7 +178,6 @@ recode_indels_22 <- function(A1, A2, B1, B2)
 	i1 <- ncA1 < ncA2 & B1 == "D" & B2 == "I"
 	B1[i1] <- A1[i1]
 	B2[i1] <- A2[i1]
-
 
 	i1 <- ncB1 > ncB2 & A1 == "I" & A2 == "D"
 	A1[i1] <- B1[i1]
@@ -218,8 +205,7 @@ recode_indels_22 <- function(A1, A2, B1, B2)
 }
 
 
-recode_indels_21 <- function(A1, A2, B1)
-{
+recode_indels_21 <- function(A1, A2, B1) {
 	ncA1 <- nchar(A1)
 	ncA2 <- nchar(A2)
 	ncB1 <- nchar(B1)
@@ -252,8 +238,7 @@ recode_indels_21 <- function(A1, A2, B1)
 }
 
 
-recode_indels_12 <- function(A1, B1, B2)
-{
+recode_indels_12 <- function(A1, B1, B2) {
 	ncA1 <- nchar(A1)
 	ncB1 <- nchar(B1)
 	ncB2 <- nchar(B2)
@@ -287,9 +272,8 @@ recode_indels_12 <- function(A1, B1, B2)
 
 
 
-harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action)
-{
-	if(length(SNP) == 0) return(data.frame())
+harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, action) {
+	if (length(SNP) == 0) return(data.frame())
 	jlog <- list()
 	jlog[['alleles']] <- "2-2"
 
@@ -301,12 +285,10 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	B1[indel_index] <- temp$B1
 	B2[indel_index] <- temp$B2
 
-
 	# Find SNPs with alleles that match in A and B
 	status1 <- (A1 == B1) & (A2 == B2)
 	to_swap <- (A1 == B2) & (A2 == B1)
 	jlog[['switched_alleles']] <- sum(to_swap)
-
 
 	# If B's alleles are the wrong way round then swap
 	Btemp <- B1[to_swap]
@@ -352,19 +334,16 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	ambiguousB <- tempfB > minf & tempfB < maxf
 
 	# If action = 2 (flip alleles based on frequency) then flip and swap
-	if(action == 2)
-	{
+	if (action == 2) {
 		status2 <- ((tempfA < 0.5 & tempfB > 0.5) | (tempfA > 0.5 & tempfB < 0.5)) & palindromic
 		to_swap <- status2 & !remove
 		betaB[to_swap] <- betaB[to_swap] * -1
 		fB[to_swap] <- 1 - fB[to_swap]
-		if(!is.null(jlog))
-		{
+		if (!is.null(jlog)) {
 			jlog[['flipped_alleles_palindrome']] <- sum(to_swap)
 		}
 	} else {
-		if(!is.null(jlog))
-		{
+		if (!is.null(jlog)) {
 			jlog[['flipped_alleles_palindrome']] <- 0
 		}
 	}
@@ -374,9 +353,8 @@ harmonise_22 <- function(SNP, A1, A2, B1, B2, betaA, betaB, fA, fB, tolerance, a
 	return(d)
 }
 
-harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, action)
-{
-	if(length(SNP) == 0) return(data.frame())
+harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, action) {
+	if (length(SNP) == 0) return(data.frame())
 	jlog <- list()
 	jlog[['alleles']] <- "2-1"
 
@@ -386,7 +364,6 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	palindromic <- check_palindromic(A1, A2)
 	remove <- palindromic
 
-
 	indel_index <- nchar(A1) > 1 | nchar(A2) > 1 | A1 == "D" | A1 == "I"
 	temp <- recode_indels_21(A1[indel_index], A2[indel_index], B1[indel_index])
 
@@ -395,7 +372,6 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	B1[indel_index] <- temp$B1
 	B2[indel_index] <- temp$B2
 	remove[indel_index][!temp$keep] <- TRUE
-
 
 	status1 <- A1 == B1
 	minf <- 0.5 - tolerance
@@ -436,17 +412,14 @@ harmonise_21 <- function(SNP, A1, A2, B1, betaA, betaB, fA, fB, tolerance, actio
 	betaB[to_swap] <- betaB[to_swap] * -1
 	fB[to_swap] <- 1 - fB[to_swap]
 
-
 	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
 
 	attr(d, "log") <- jlog
 	return(d)
-
 }
 
-harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, action)
-{
-	if(length(SNP) == 0) return(data.frame())
+harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, action) {
+	if (length(SNP) == 0) return(data.frame())
 	jlog <- list()
 	jlog[['alleles']] <- "1-2"
 
@@ -505,18 +478,15 @@ harmonise_12 <- function(SNP, A1, B1, B2, betaA, betaB, fA, fB, tolerance, actio
 	betaB[to_swap] <- betaB[to_swap] * -1
 	fB[to_swap] <- 1 - fB[to_swap]
 
-
 	d <- data.frame(SNP=SNP, effect_allele.exposure=A1, other_allele.exposure=A2, effect_allele.outcome=B1, other_allele.outcome=B2, beta.exposure=betaA, beta.outcome=betaB, eaf.exposure=fA, eaf.outcome=fB, remove=remove, palindromic=palindromic, ambiguous=ambiguous | palindromic)
 	attr(d, "log") <- jlog
 
 	return(d)
-
 }
 
 
-harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action)
-{
-	if(length(SNP) == 0) return(data.frame())
+harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action) {
+	if (length(SNP) == 0) return(data.frame())
 	jlog <- list()
 	jlog[['alleles']] <- "1-1"
 
@@ -547,8 +517,7 @@ harmonise_11 <- function(SNP, A1, B1, betaA, betaB, fA, fB, tolerance, action)
 }
 
 #' @import data.table
-harmonise <- function(dat, tolerance, action)
-{
+harmonise <- function(dat, tolerance, action) {
 	dat$orig_SNP<-dat$SNP
 	dat <- data.table::data.table(dat)[, SNP_index := seq_len(.N), by="SNP"]
 	dat$SNP <- paste0(dat$SNP, "_", dat$SNP_index)
@@ -581,7 +550,6 @@ harmonise <- function(dat, tolerance, action)
 	)
 	jlog <- cbind(data.frame(id.exposure=dat$id.exposure[1], id.outcome=dat$id.outcome[1], stringsAsFactors=FALSE), jlog)
 
-
 	d <- rbind(d21, d22, d12, d11)
 	d <- merge(d, dat, by="SNP", all.x=TRUE)
 	d$SNP <- d$orig_SNP
@@ -589,46 +557,37 @@ harmonise <- function(dat, tolerance, action)
 	d <- d[order(d$id.outcome), ]
 	d$mr_keep <- TRUE
 
-	if(action == 3)
-	{
+	if (action == 3) {
 		# d1 <- subset(d, !palindromic & !remove & !ambiguous)
 		d$mr_keep[d$palindromic | d$remove | d$ambiguous] <- FALSE
-		if(any(d$palindromic))
-		{
+		if (any(d$palindromic)) {
 			message("Removing the following SNPs for being palindromic:\n", paste(d$SNP[d$palindromic], collapse=", "))
 		}
-		if(any(d$remove))
-		{
+		if (any(d$remove)) {
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
 		}
 		jlog[['incompatible_alleles']] <- sum(d$remove)
-		if(any(d$ambiguous & !d$palindromic))
-		{
+		if (any(d$ambiguous & !d$palindromic)) {
 			message("Removing the following SNPs for having incompatible allele frequencies:\n", paste(d$SNP[d$ambiguous], collapse=", "))
 		}
 		jlog[['ambiguous_alleles']] <- sum(d$ambiguous)
 	}
-	if(action == 2)
-	{
+	if (action == 2) {
 		# d1 <- subset(d, !remove & !ambiguous)
 		d$mr_keep[d$remove | d$ambiguous] <- FALSE
-		if(any(d$remove))
-		{
+		if (any(d$remove)) {
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
 		}
 		jlog[['incompatible_alleles']] <- sum(d$remove)
-		if(any(d$ambiguous))
-		{
+		if (any(d$ambiguous)) {
 			message("Removing the following SNPs for being palindromic with intermediate allele frequencies:\n", paste(d$SNP[d$ambiguous], collapse=", "))
 		}
 		jlog[['ambiguous_alleles']] <- sum(d$ambiguous)
 	}
-	if(action == 1)
-	{
+	if (action == 1) {
 		# d1 <- subset(d, !remove)
 		d$mr_keep[d$remove] <- FALSE
-		if(any(d$remove))
-		{
+		if (any(d$remove)) {
 			message("Removing the following SNPs for incompatible alleles:\n", paste(d$SNP[d$remove], collapse=", "))
 		}
 		jlog[['incompatible_alleles']] <- sum(d$remove)
@@ -647,15 +606,13 @@ harmonise <- function(dat, tolerance, action)
 
 
 
-check_required_columns <- function(dat, type="exposure")
-{
+check_required_columns <- function(dat, type="exposure") {
 	required_columns <- c(
 		"SNP",
 		paste0(c("id.", "", "beta.", "se.", "effect_allele.", "other_allele."), type)
 	)
 	index <- required_columns %in% names(dat)
-	if(!all(index))
-	{
+	if (!all(index)) {
 		stop("The following required columns are missing from ", type, ": ", paste(required_columns[!index], collapse=", "))
 	}
 	return(NULL)

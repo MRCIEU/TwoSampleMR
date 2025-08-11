@@ -4,7 +4,6 @@ linters: linters_with_defaults(
     indentation_linter = NULL,
     infix_spaces_linter = NULL,
     quotes_linter = NULL,
-    brace_linter = NULL,
     commas_linter = NULL,
     whitespace_linter = NULL,
     object_name_linter = NULL,

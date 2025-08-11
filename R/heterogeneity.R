@@ -8,19 +8,15 @@
 #'
 #' @export
 #' @return Data frame
-mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list = subset(mr_method_list(), heterogeneity_test & use_by_default)$obj)
-{
-	het_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
-	{
+mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list = subset(mr_method_list(), heterogeneity_test & use_by_default)$obj) {
+	het_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1) {
 		# message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
 		x <- subset(x1, mr_keep)
-		if(nrow(x) < 2)
-		{
+		if (nrow(x) < 2) {
 			message("Not enough SNPs available for Heterogeneity analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
 			return(NULL)
 		}
-		res <- lapply(method_list, function(meth)
-		{
+		res <- lapply(method_list, function(meth) {
 			get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
 		})
 		methl <- mr_method_list()
@@ -48,13 +44,10 @@ mr_heterogeneity <- function(dat, parameters=default_parameters(), method_list =
 #'
 #' @export
 #' @return data frame
-mr_pleiotropy_test <- function(dat)
-{
-	ptab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1)
-	{
+mr_pleiotropy_test <- function(dat) {
+	ptab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1) {
 		x <- subset(x1, mr_keep)
-		if(nrow(x) < 2)
-		{
+		if (nrow(x) < 2) {
 			message("Not enough SNPs available for pleiotropy analysis of '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
 			return(NULL)
 		}

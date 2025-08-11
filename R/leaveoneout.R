@@ -6,10 +6,8 @@
 #'
 #' @export
 #' @return List of data frames
-mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
-{
-	if(!"samplesize.outcome" %in% names(dat))
-	{
+mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw) {
+	if (!"samplesize.outcome" %in% names(dat)) {
 		dat$samplesize.outcome <- NA
 	}
 
@@ -21,12 +19,10 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 	stopifnot("se.outcome" %in% names(dat))
 
 
-	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X)
-	{
+	res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X) {
 		x <- subset(X, mr_keep)
 		nsnp <- nrow(x)
-		if(nsnp == 0)
-		{
+		if (nsnp == 0) {
 			x <- X[1,]
 			d <- data.frame(
 				SNP = "All",
@@ -39,10 +35,8 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 			)
 			return(d)
 		}
-		if(nsnp > 2)
-		{
-			l <- lapply(1:nsnp, function(i)
-			{
+		if (nsnp > 2) {
+			l <- lapply(1:nsnp, function(i) {
 				with(x, method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i], parameters))
 			})
 			l[[nsnp+1]] <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
@@ -84,13 +78,11 @@ mr_leaveoneout <- function(dat, parameters=default_parameters(), method=mr_ivw)
 #'
 #' @export
 #' @return List of plots
-mr_leaveoneout_plot <- function(leaveoneout_results)
-{
-	res <- plyr::dlply(leaveoneout_results, c("id.exposure", "id.outcome"), function(d)
-	{
+mr_leaveoneout_plot <- function(leaveoneout_results) {
+	res <- plyr::dlply(leaveoneout_results, c("id.exposure", "id.outcome"), function(d) {
 		d <- plyr::mutate(d)
 		# Need to have at least 3 SNPs because IVW etc methods can't be performed with fewer than 2 SNPs
-		if(sum(!grepl("All", d$SNP)) < 3) {
+		if (sum(!grepl("All", d$SNP)) < 3) {
 			return(
 				blank_plot("Insufficient number of SNPs")
 			)
