@@ -1,9 +1,10 @@
 # TwoSampleMR v0.6.21
 
-(Release date 2025-08-##)
+(Release date 2025-08-11)
 
 * Fixed typos in Steiger related documentation (thanks to @eleanorsanderson and Kaitlin Wade for providing the motivating example for this).
 * Some code cleanup to make debugging easier.
+* Reduced size of installed package by removing some unused files.
 
 # TwoSampleMR v0.6.20
 
