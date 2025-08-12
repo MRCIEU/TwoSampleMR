@@ -21,7 +21,7 @@ jobs:
       TWOSAMPLEMR_ENABLE_OPENGWAS_TESTS: TRUE
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: r-lib/actions/setup-r@v2
 
