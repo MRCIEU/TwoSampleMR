@@ -1,6 +1,8 @@
 #' Add meta data to extracted data
 #'
-#' Previously the meta data was returned alongside association information. This is mostly unnecessary as it is needlessly repeating information. This is a convenience function that reinstates that information.
+#' Previously the meta data was returned alongside association information.
+#' This is mostly unnecessary as it is needlessly repeating information.
+#' This is a convenience function that reinstates that information.
 #' Can be applied to either exposure data, outcome data, or harmonised data
 #'
 #' @param dat Either exposure data, outcome data or harmonised data
