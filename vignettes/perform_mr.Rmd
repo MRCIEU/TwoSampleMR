@@ -267,7 +267,7 @@ res <- subset_on_method(res)
 res <- sort_1_to_many(res, b = "b", sort_action = 4)
 # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
 res <- split_exposure(res)
-res$weight <- 1/res$se
+res$weight <- 1 / res$se
 ```
 
 ```{r echo=FALSE, eval=TRUE, warning=FALSE}
@@ -277,9 +277,9 @@ load(system.file("extdata", "forestplot_1_to_many_data.RData", package = "TwoSam
 
 ```{r fig.alt="A forest plot showing the estimated causal effects for each risk factor on the outcome."}
 # identify value for 'lo' in forest_plot_1_to_many
-min(exp(res$b - 1.96*res$se))
+min(exp(res$b - 1.96 * res$se))
 # identify value for 'up' in forest_plot_1_to_many
-max(exp(res$b + 1.96*res$se))
+max(exp(res$b + 1.96 * res$se))
 
 forest_plot_1_to_many(
   res,
@@ -398,7 +398,7 @@ res <- split_exposure(res)
 res <- subset_on_method(res)
 res$subcategory[res$exposure %in% c("Adiponectin", "Hip circumference", "Waist circumference")] <- "Group 1"
 res$subcategory[is.na(res$subcategory)] <- "Group 2"
-res$weight <- 1/res$se
+res$weight <- 1 / res$se
 res <- sort_1_to_many(res, sort_action = 1, group = "subcategory")
 
 forest_plot_1_to_many(
