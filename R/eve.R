@@ -8,8 +8,8 @@ mr_mean_ivw <- function(d) {
   ratios <- b_out / b_exp
   stopifnot(length(unique(d$id.exposure)) == 1)
   stopifnot(length(unique(d$id.outcome)) == 1)
-  id.exposure = d$id.exposure[1]
-  id.outcome = d$id.outcome[1]
+  id.exposure <- d$id.exposure[1]
+  id.outcome <- d$id.outcome[1]
 
   if (nrow(d) == 1) {
     res <- mr_wald_ratio(b_exp, b_out, se_exp, se_out)
@@ -103,8 +103,8 @@ mr_mean_egger <- function(d) {
   se_out <- d$se.outcome
   stopifnot(length(unique(d$id.exposure)) == 1)
   stopifnot(length(unique(d$id.outcome)) == 1)
-  id.exposure = d$id.exposure[1]
-  id.outcome = d$id.outcome[1]
+  id.exposure <- d$id.exposure[1]
+  id.outcome <- d$id.outcome[1]
 
   ratios <- b_out / b_exp
   weights1 <- sqrt(b_exp^2 / se_out^2)

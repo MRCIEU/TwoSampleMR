@@ -23,7 +23,7 @@
 
   if (!inherits(a, 'try-error')) {
     latest <- gsub("Version: ", "", a[grep("Version", a)])
-    current = utils::packageDescription('TwoSampleMR')
+    current <- utils::packageDescription('TwoSampleMR')
 
     test <- utils::compareVersion(latest, current$Version)
     if (test == 1) {

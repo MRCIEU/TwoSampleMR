@@ -37,7 +37,7 @@ format_1_to_many <- function(
   }
 
   if (is.null(weight)) {
-    mr_res$weight = 3
+    mr_res$weight <- 3
   }
 
   if (TraitM == "exposure") {
@@ -818,8 +818,8 @@ forest_plot_1_to_many <- function(
 ) {
   # if (is.null(lo) | is.null(up)) warning("Values missing for the lower or upper bounds of the x axis. Did you forget to set the lo and up arguments?")
 
-  xlim = NULL
-  ncols = 1 + length(addcols)
+  xlim <- NULL
+  ncols <- 1 + length(addcols)
   if (all(addcol_titles == "")) {
     addcol_titles <- rep(addcol_titles, length(addcols))
   }

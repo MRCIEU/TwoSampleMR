@@ -31,7 +31,7 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...) {
   d$rgx <- rgx_o / d$rxx_o
   d$z <- d$rgy - d$rgx
   d$z[d$type == "A"] <- 0
-  mycolors.trans = grDevices::rgb(
+  mycolors.trans <- grDevices::rgb(
     c(255, 0),
     c(0, 0),
     c(0, 255),

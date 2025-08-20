@@ -683,7 +683,7 @@ mv_multiple <- function(
     result = result
   )
   if (plots) {
-    out$plots = p
+    out$plots <- p
   }
 
   return(out)

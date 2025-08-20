@@ -57,7 +57,7 @@ ldsc_h2_internal <- function(Z, r2, N, W = NULL) {
 #' @keywords internal
 ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc = 0, W = NULL) {
   if (is.null(W)) {
-    W = rep(1, length(r2))
+    W <- rep(1, length(r2))
   }
 
   Y <- Zs[, 1] * Zs[, 2]

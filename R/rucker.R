@@ -20,45 +20,45 @@ Isq <- function(y, s) {
 }
 
 PM <- function(y = y, s = s, Alpha = 0.1) {
-  k = length(y)
-  df = k - 1
-  sig = stats::qnorm(1 - Alpha / 2)
-  low = stats::qchisq((Alpha / 2), df)
-  up = stats::qchisq(1 - (Alpha / 2), df)
-  med = stats::qchisq(0.5, df)
-  mn = df
-  mode = df - 1
-  Quant = c(low, mode, mn, med, up)
-  L = length(Quant)
-  Tausq = NULL
-  Isq = NULL
-  CI = matrix(nrow = L, ncol = 2)
-  MU = NULL
-  v = 1 / s^2
-  sum.v = sum(v)
-  typS = sum(v * (k - 1)) / (sum.v^2 - sum(v^2))
+  k <- length(y)
+  df <- k - 1
+  sig <- stats::qnorm(1 - Alpha / 2)
+  low <- stats::qchisq((Alpha / 2), df)
+  up <- stats::qchisq(1 - (Alpha / 2), df)
+  med <- stats::qchisq(0.5, df)
+  mn <- df
+  mode <- df - 1
+  Quant <- c(low, mode, mn, med, up)
+  L <- length(Quant)
+  Tausq <- NULL
+  Isq <- NULL
+  CI <- matrix(nrow = L, ncol = 2)
+  MU <- NULL
+  v <- 1 / s^2
+  sum.v <- sum(v)
+  typS <- sum(v * (k - 1)) / (sum.v^2 - sum(v^2))
   for (j in 1:L) {
-    tausq = 0
-    Fstat = 1
-    TAUsq = NULL
+    tausq <- 0
+    Fstat <- 1
+    TAUsq <- NULL
     while (Fstat > 0) {
-      TAUsq = c(TAUsq, tausq)
-      w = 1 / (s^2 + tausq)
-      sum.w = sum(w)
-      w2 = w^2
-      yW = sum(y * w) / sum.w
-      Q1 = sum(w * (y - yW)^2)
-      Q2 = sum(w2 * (y - yW)^2)
-      Fstat = Q1 - Quant[j]
-      Ftau = max(Fstat, 0)
-      delta = Fstat / Q2
-      tausq = tausq + delta
+      TAUsq <- c(TAUsq, tausq)
+      w <- 1 / (s^2 + tausq)
+      sum.w <- sum(w)
+      w2 <- w^2
+      yW <- sum(y * w) / sum.w
+      Q1 <- sum(w * (y - yW)^2)
+      Q2 <- sum(w2 * (y - yW)^2)
+      Fstat <- Q1 - Quant[j]
+      Ftau <- max(Fstat, 0)
+      delta <- Fstat / Q2
+      tausq <- tausq + delta
     }
-    MU[j] = yW
-    V = 1 / sum(w)
-    Tausq[j] = max(tausq, 0)
-    Isq[j] = Tausq[j] / (Tausq[j] + typS)
-    CI[j, ] = yW + sig * c(-1, 1) * sqrt(V)
+    MU[j] <- yW
+    V <- 1 / sum(w)
+    Tausq[j] <- max(tausq, 0)
+    Isq[j] <- Tausq[j] / (Tausq[j] + typS)
+    CI[j, ] <- yW + sig * c(-1, 1) * sqrt(V)
   }
   return(list(tausq = Tausq, muhat = MU, Isq = Isq, CI = CI, quant = Quant))
 }

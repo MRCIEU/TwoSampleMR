@@ -526,8 +526,8 @@ mr_egger_regression <- function(b_exp, b_out, se_exp, se_out, parameters) {
   }
 
   to_flip <- sign0(b_exp) == -1
-  b_out = b_out * sign0(b_exp)
-  b_exp = abs(b_exp)
+  b_out <- b_out * sign0(b_exp)
+  b_exp <- abs(b_exp)
   dat <- data.frame(
     b_out = b_out,
     b_exp = b_exp,
@@ -743,7 +743,7 @@ weighted_median <- function(b_iv, weights) {
   weights.sum <- cumsum(weights.order) - 0.5 * weights.order
   weights.sum <- weights.sum / sum(weights.order)
   below <- max(which(weights.sum < 0.5))
-  b = betaIV.order[below] +
+  b <- betaIV.order[below] +
     (betaIV.order[below + 1] - betaIV.order[below]) *
       (0.5 - weights.sum[below]) /
       (weights.sum[below + 1] - weights.sum[below])
@@ -756,7 +756,7 @@ weighted_median <- function(b_iv, weights) {
   weights.sum <- cumsum(weights.order) - 0.5 * weights.order
   weights.sum <- weights.sum / sum(weights.order)
   below <- max(which(weights.sum < 0.5))
-  b = betaIV.order[below] +
+  b <- betaIV.order[below] +
     (betaIV.order[below + 1] - betaIV.order[below]) *
       (0.5 - weights.sum[below]) /
       (weights.sum[below + 1] - weights.sum[below])
@@ -780,10 +780,10 @@ weighted_median <- function(b_iv, weights) {
 weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nboot) {
   med <- rep(0, nboot)
   for (i in seq_len(nboot)) {
-    b_exp.boot = stats::rnorm(length(b_exp), mean = b_exp, sd = se_exp)
-    b_out.boot = stats::rnorm(length(b_out), mean = b_out, sd = se_out)
-    betaIV.boot = b_out.boot / b_exp.boot
-    med[i] = weighted_median(betaIV.boot, weights)
+    b_exp.boot <- stats::rnorm(length(b_exp), mean = b_exp, sd = se_exp)
+    b_out.boot <- stats::rnorm(length(b_out), mean = b_out, sd = se_out)
+    betaIV.boot <- b_out.boot / b_exp.boot
+    med[i] <- weighted_median(betaIV.boot, weights)
   }
   return(stats::sd(med))
 }
