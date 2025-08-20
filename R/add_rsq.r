@@ -103,7 +103,7 @@ test_r_from_pn <- function() {
 
 	param <- expand.grid(
 		n = c(10, 100, 1000, 10000, 100000),
-		rsq = 10^seq(-4,-0.5, length.out=30)
+		rsq = 10^seq(-4, -0.5, length.out=30)
 	)
 
 	for (i in seq_len(nrow(param))) {
@@ -111,7 +111,7 @@ test_r_from_pn <- function() {
 		x <- scale(stats::rnorm(param$n[i]))
 		y <- x * sqrt(param$rsq[i]) + scale(stats::rnorm(param$n[i])) * sqrt(1 - param$rsq[i])
 		param$rsq_emp[i] <- (stats::cor(x, y))^2
-		param$pval[i] <- max(stats::coefficients(summary(stats::lm(y ~ x)))[2,4], 1e-300)
+		param$pval[i] <- max(stats::coefficients(summary(stats::lm(y ~ x)))[2, 4], 1e-300)
 		param$rsq1[i] <- (get_r_from_pn_less_accurate(param$pval[i], param$n[i]))^2
 		param$rsq2[i] <- (get_r_from_pn(param$pval[i], param$n[i]))^2
 	}
@@ -194,7 +194,7 @@ get_r_from_bsen <- function(b, se, n) {
 	return(sqrt(R2) * sign(b))
 }
 
-compareNA <- function(v1,v2) {
+compareNA <- function(v1, v2) {
     same <- (v1 == v2) | (is.na(v1) & is.na(v2))
     same[is.na(same)] <- FALSE
     return(same)
@@ -279,13 +279,13 @@ contingency <- function(af, prop, odds_ratio, eps=1e-15) {
 		if (d < eps*eps) {
 			s <- 0
 		} else {
-			s <- c(-1,1)
+			s <- c(-1, 1)
 		}
 		z <- (-b + s*sqrt(max(0, d))) / (2*a)
 	}
 	y <- vapply(z, function(a) zapsmall(matrix(c(a, prop-a, af-a, 1+a-af-prop), 2, 2)), matrix(0.0, 2, 2))
 	i <- apply(y, 3, function(u) all(u >= 0))
-	return(y[,,i])
+	return(y[, , i])
 }
 
 #' Estimate allele frequency from SNP
@@ -313,8 +313,8 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence) {
 	stopifnot(length(prop) == length(odds_ratio))
 	for (i in seq_along(odds_ratio)) {
 		co <- contingency(af[i], prop[i], odds_ratio[i])
-		af_controls <- co[1,2] / (co[1,2] + co[2,2])
-		af_cases <- co[1,1] / (co[1,1] + co[2,1])
+		af_controls <- co[1, 2] / (co[1, 2] + co[2, 2])
+		af_cases <- co[1, 1] / (co[1, 1] + co[2, 1])
 		af[i] <- af_controls * (1 - prevalence) + af_cases * prevalence
 	}
 	return(af)
