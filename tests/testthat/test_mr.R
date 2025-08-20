@@ -1,7 +1,7 @@
 # Test mr()
 
 # dat <- make_dat("ieu-a-2", "ieu-a-7")
-load(system.file("extdata", "test_commondata.RData", package="TwoSampleMR"))
+load(system.file("extdata", "test_commondata.RData", package = "TwoSampleMR"))
 
 test_that("Test mr(): MR Egger, Weighted median, Inverse variance weighted, Simple mode, Weighted mode", {
   res <- mr(dat)

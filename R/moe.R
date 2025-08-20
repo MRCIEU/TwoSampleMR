@@ -1,141 +1,138 @@
 system_metrics <- function(dat) {
-	# Number of SNPs
-	# Sample size outcome
-	# Sample size exposure
-	metrics <- list()
-	metrics$nsnp <- nrow(dat)
-	metrics$nout <- mean(dat$samplesize.outcome, na.rm=TRUE)
-	metrics$nexp <- mean(dat$samplesize.exposure, na.rm=TRUE)
+  # Number of SNPs
+  # Sample size outcome
+  # Sample size exposure
+  metrics <- list()
+  metrics$nsnp <- nrow(dat)
+  metrics$nout <- mean(dat$samplesize.outcome, na.rm = TRUE)
+  metrics$nexp <- mean(dat$samplesize.exposure, na.rm = TRUE)
 
-	# F stats
-	# Fstat <- qf(dat$pval.exposure, 1, dat$samplesize.exposure, lower.tail=FALSE)
-	Fstat <- dat$beta.exposure^2 / dat$se.exposure^2
-	Fstat[is.infinite(Fstat)] <- 300
-	metrics$meanF <- mean(Fstat, na.rm=TRUE)
-	metrics$varF <- stats::var(Fstat, na.rm=TRUE)
-	metrics$medianF <- stats::median(Fstat, na.rm=TRUE)
+  # F stats
+  # Fstat <- qf(dat$pval.exposure, 1, dat$samplesize.exposure, lower.tail=FALSE)
+  Fstat <- dat$beta.exposure^2 / dat$se.exposure^2
+  Fstat[is.infinite(Fstat)] <- 300
+  metrics$meanF <- mean(Fstat, na.rm = TRUE)
+  metrics$varF <- stats::var(Fstat, na.rm = TRUE)
+  metrics$medianF <- stats::median(Fstat, na.rm = TRUE)
 
-	# IF more than 1 SNP
+  # IF more than 1 SNP
 
-	if (nrow(dat) > 1) {
-		# Egger-Isq
-		metrics$egger_isq <- Isq(abs(dat$beta.exposure), dat$se.exposure)
-	}
+  if (nrow(dat) > 1) {
+    # Egger-Isq
+    metrics$egger_isq <- Isq(abs(dat$beta.exposure), dat$se.exposure)
+  }
 
-	if (nrow(dat) > 2) {
-		sct <- mr_sign(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
-		metrics$sct <- -log10(sct$pval) * sign(sct$b)
-		# IF more than 2 SNP
-		ruck <- mr_rucker(dat)[[1]]
+  if (nrow(dat) > 2) {
+    sct <- mr_sign(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome)
+    metrics$sct <- -log10(sct$pval) * sign(sct$b)
+    # IF more than 2 SNP
+    ruck <- mr_rucker(dat)[[1]]
 
-		# Q_ivw
-		# Q_egger
-		# Q_diff
-		metrics$Isq <- (ruck$Q$Q[1] - (ruck$Q$df[1]-1))/ruck$Q$Q[1]
-		metrics$Isqe <- (ruck$Q$Q[2] - (ruck$Q$df[2]-1))/ruck$Q$Q[2]
-		metrics$Qdiff <- ruck$Q$Q[3]
+    # Q_ivw
+    # Q_egger
+    # Q_diff
+    metrics$Isq <- (ruck$Q$Q[1] - (ruck$Q$df[1] - 1)) / ruck$Q$Q[1]
+    metrics$Isqe <- (ruck$Q$Q[2] - (ruck$Q$df[2] - 1)) / ruck$Q$Q[2]
+    metrics$Qdiff <- ruck$Q$Q[3]
 
-		# Intercept / se
-		metrics$intercept <- abs(ruck$intercept$Estimate[1]) / ruck$intercept$SE[1]
+    # Intercept / se
+    metrics$intercept <- abs(ruck$intercept$Estimate[1]) / ruck$intercept$SE[1]
 
-		# Influential outliers
-		dfbeta_thresh <- 2 * nrow(dat)^-0.5
-		cooksthresh1 <- 4 / (nrow(dat) - 2)
-		cooksthresh2 <- 4 / (nrow(dat) - 3)
-		inf1 <- stats::influence.measures(ruck$lmod_ivw)$infmat
-		inf2 <- stats::influence.measures(ruck$lmod_egger)$infmat
-		metrics$dfb1_ivw <- sum(inf1[,1] > dfbeta_thresh) / nrow(dat)
-		metrics$dfb2_ivw <- sum(inf1[,2] > dfbeta_thresh) / nrow(dat)
-		metrics$dfb3_ivw <- sum(inf1[,3] > dfbeta_thresh) / nrow(dat)
-		metrics$cooks_ivw <- sum(inf1[,4] > cooksthresh1) / nrow(dat)
-		metrics$dfb1_egger <- sum(inf2[,1] > dfbeta_thresh) / nrow(dat)
-		metrics$dfb2_egger <- sum(inf2[,2] > dfbeta_thresh) / nrow(dat)
-		metrics$dfb3_egger <- sum(inf2[,3] > dfbeta_thresh) / nrow(dat)
-		metrics$cooks_egger <- sum(inf2[,4] > cooksthresh2) / nrow(dat)
+    # Influential outliers
+    dfbeta_thresh <- 2 * nrow(dat)^-0.5
+    cooksthresh1 <- 4 / (nrow(dat) - 2)
+    cooksthresh2 <- 4 / (nrow(dat) - 3)
+    inf1 <- stats::influence.measures(ruck$lmod_ivw)$infmat
+    inf2 <- stats::influence.measures(ruck$lmod_egger)$infmat
+    metrics$dfb1_ivw <- sum(inf1[, 1] > dfbeta_thresh) / nrow(dat)
+    metrics$dfb2_ivw <- sum(inf1[, 2] > dfbeta_thresh) / nrow(dat)
+    metrics$dfb3_ivw <- sum(inf1[, 3] > dfbeta_thresh) / nrow(dat)
+    metrics$cooks_ivw <- sum(inf1[, 4] > cooksthresh1) / nrow(dat)
+    metrics$dfb1_egger <- sum(inf2[, 1] > dfbeta_thresh) / nrow(dat)
+    metrics$dfb2_egger <- sum(inf2[, 2] > dfbeta_thresh) / nrow(dat)
+    metrics$dfb3_egger <- sum(inf2[, 3] > dfbeta_thresh) / nrow(dat)
+    metrics$cooks_egger <- sum(inf2[, 4] > cooksthresh2) / nrow(dat)
 
-		# Homoscedasticity
-		if (!requireNamespace("car", quietly = TRUE)) {
-		  stop(
-		    "Package \"car\" must be installed to use this function.",
-		    call. = FALSE
-		  )
-		}
-		metrics$homosc_ivw <- car::ncvTest(ruck$lmod_ivw)$ChiSquare
-		metrics$homosc_egg <- car::ncvTest(ruck$lmod_egger)$ChiSquare
+    # Homoscedasticity
+    if (!requireNamespace("car", quietly = TRUE)) {
+      stop(
+        "Package \"car\" must be installed to use this function.",
+        call. = FALSE
+      )
+    }
+    metrics$homosc_ivw <- car::ncvTest(ruck$lmod_ivw)$ChiSquare
+    metrics$homosc_egg <- car::ncvTest(ruck$lmod_egger)$ChiSquare
 
-		# Normality of residuals
-		metrics$shap_ivw <- stats::shapiro.test(stats::residuals(ruck$lmod_ivw))$statistic
-		metrics$shap_egger <- stats::shapiro.test(stats::residuals(ruck$lmod_egger))$statistic
-		metrics$ks_ivw <- stats::ks.test(stats::residuals(ruck$lmod_ivw), "pnorm")$statistic
-		metrics$ks_egger <- stats::ks.test(stats::residuals(ruck$lmod_egger), "pnorm")$statistic
-
-	}
-	return(metrics)
+    # Normality of residuals
+    metrics$shap_ivw <- stats::shapiro.test(stats::residuals(ruck$lmod_ivw))$statistic
+    metrics$shap_egger <- stats::shapiro.test(stats::residuals(ruck$lmod_egger))$statistic
+    metrics$ks_ivw <- stats::ks.test(stats::residuals(ruck$lmod_ivw), "pnorm")$statistic
+    metrics$ks_egger <- stats::ks.test(stats::residuals(ruck$lmod_egger), "pnorm")$statistic
+  }
+  return(metrics)
 }
 
 
 get_rsq <- function(dat) {
-	stopifnot(length(unique(dat$exposure)) == 1)
-	stopifnot(length(unique(dat$outcome)) == 1)
-	stopifnot(length(unique(dat$units.exposure)) == 1)
-	stopifnot(length(unique(dat$units.outcome)) == 1)
+  stopifnot(length(unique(dat$exposure)) == 1)
+  stopifnot(length(unique(dat$outcome)) == 1)
+  stopifnot(length(unique(dat$units.exposure)) == 1)
+  stopifnot(length(unique(dat$units.outcome)) == 1)
 
+  dat$pval.exposure[dat$pval.exposure < 1e-300] <- 1e-300
+  if (dat$units.exposure[1] == "log odds") {
+    ind1 <- !is.na(dat$beta.exposure) &
+      !is.na(dat$eaf.exposure) &
+      !is.na(dat$ncase.exposure) &
+      !is.na(dat$ncontrol.exposure)
+    dat$rsq.exposure <- NA
+    if (sum(ind1) > 0) {
+      dat$rsq.exposure[ind1] <- get_r_from_lor(
+        dat$beta.exposure[ind1],
+        dat$eaf.exposure[ind1],
+        dat$ncase.exposure[ind1],
+        dat$ncontrol.exposure[ind1],
+        0.1
+      )^2
+    }
+  } else {
+    ind1 <- !is.na(dat$pval.exposure) & !is.na(dat$samplesize.exposure)
+    dat$rsq.exposure <- NA
+    if (sum(ind1) > 0) {
+      dat$rsq.exposure[ind1] <- get_r_from_pn(
+        dat$pval.exposure[ind1],
+        dat$samplesize.exposure[ind1]
+      )
+    }
+  }
 
-	dat$pval.exposure[dat$pval.exposure < 1e-300] <- 1e-300
-	if (dat$units.exposure[1] == "log odds") {
-		ind1 <- !is.na(dat$beta.exposure) &
-			!is.na(dat$eaf.exposure) &
-			!is.na(dat$ncase.exposure) &
-			!is.na(dat$ncontrol.exposure)
-		dat$rsq.exposure <- NA
-		if (sum(ind1) > 0) {
-			dat$rsq.exposure[ind1] <- get_r_from_lor(
-				dat$beta.exposure[ind1],
-				dat$eaf.exposure[ind1],
-				dat$ncase.exposure[ind1],
-				dat$ncontrol.exposure[ind1],
-				0.1
-			)^2
-		}
-	} else {
-		ind1 <- !is.na(dat$pval.exposure) & !is.na(dat$samplesize.exposure)
-		dat$rsq.exposure <- NA
-		if (sum(ind1) > 0) {
-			dat$rsq.exposure[ind1] <- get_r_from_pn(
-				dat$pval.exposure[ind1],
-				dat$samplesize.exposure[ind1]
-			)
-		}
-	}
-
-
-	dat$pval.outcome[dat$pval.outcome < 1e-300] <- 1e-300
-	if (dat$units.outcome[1] == "log odds") {
-		ind1 <- !is.na(dat$beta.outcome) &
-			!is.na(dat$eaf.outcome) &
-			!is.na(dat$ncase.outcome) &
-			!is.na(dat$ncontrol.outcome)
-		dat$rsq.outcome <- NA
-		if (sum(ind1) > 0) {
-			dat$rsq.outcome[ind1] <- get_r_from_lor(
-				dat$beta.outcome[ind1],
-				dat$eaf.outcome[ind1],
-				dat$ncase.outcome[ind1],
-				dat$ncontrol.outcome[ind1],
-				0.1
-			)^2
-		}
-	} else {
-		ind1 <- !is.na(dat$pval.outcome) & !is.na(dat$samplesize.outcome)
-		dat$rsq.outcome <- NA
-		if (sum(ind1) > 0) {
-			dat$rsq.outcome[ind1] <- get_r_from_pn(
-				dat$pval.outcome[ind1],
-				dat$samplesize.outcome[ind1]
-			)
-		}
-	}
-	return(dat)
+  dat$pval.outcome[dat$pval.outcome < 1e-300] <- 1e-300
+  if (dat$units.outcome[1] == "log odds") {
+    ind1 <- !is.na(dat$beta.outcome) &
+      !is.na(dat$eaf.outcome) &
+      !is.na(dat$ncase.outcome) &
+      !is.na(dat$ncontrol.outcome)
+    dat$rsq.outcome <- NA
+    if (sum(ind1) > 0) {
+      dat$rsq.outcome[ind1] <- get_r_from_lor(
+        dat$beta.outcome[ind1],
+        dat$eaf.outcome[ind1],
+        dat$ncase.outcome[ind1],
+        dat$ncontrol.outcome[ind1],
+        0.1
+      )^2
+    }
+  } else {
+    ind1 <- !is.na(dat$pval.outcome) & !is.na(dat$samplesize.outcome)
+    dat$rsq.outcome <- NA
+    if (sum(ind1) > 0) {
+      dat$rsq.outcome[ind1] <- get_r_from_pn(
+        dat$pval.outcome[ind1],
+        dat$samplesize.outcome[ind1]
+      )
+    }
+  }
+  return(dat)
 }
 
 
@@ -179,20 +176,20 @@ get_rsq <- function(dat) {
 #' r[[1]]$estimates
 #'}
 mr_moe <- function(res, rf) {
-	if (!requireNamespace("randomForest", quietly = TRUE)) {
-	  stop(
-	    "Package \"randomForest\" must be installed to use this function.",
-	    call. = FALSE
-	  )
-	}
-	lapply(res, function(x) {
-		o <- try(mr_moe_single(x, rf))
-		if (inherits(o, "try-error")) {
-			return(x)
-		} else {
-			return(o)
-		}
-	})
+  if (!requireNamespace("randomForest", quietly = TRUE)) {
+    stop(
+      "Package \"randomForest\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
+  lapply(res, function(x) {
+    o <- try(mr_moe_single(x, rf))
+    if (inherits(o, "try-error")) {
+      return(x)
+    } else {
+      return(o)
+    }
+  })
 }
 
 mr_moe_single <- function(res, rf) {
@@ -202,27 +199,31 @@ mr_moe_single <- function(res, rf) {
       call. = FALSE
     )
   }
-	metric <- res$info[1,] %>% dplyr::select(-c(id.exposure, id.outcome, steiger_filtered, outlier_filtered, nsnp_removed))
+  metric <- res$info[1, ] %>%
+    dplyr::select(-c(id.exposure, id.outcome, steiger_filtered, outlier_filtered, nsnp_removed))
 
-	methodlist <- names(rf)
-	pred <- lapply(methodlist, function(m) {
-		d <- dplyr::tibble(
-			method = m,
-			MOE = predict(rf[[m]], metric, type="prob")[,2]
-		)
-		return(d)
-	}) %>%
-	  bind_rows %>%
-	  arrange(desc(MOE))
-	if ("MOE" %in% names(res$estimates)) {
-		message("Overwriting previous MOE estimate")
-		res$estimates <- subset(res$estimates, select=-c(MOE, method2))
-	}
-	res$estimates$selection <- "DF + HF"
-	res$estimates$selection[!res$estimates$outlier_filtered & res$estimates$steiger_filtered] <- "DF"
-	res$estimates$selection[res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "HF"
-	res$estimates$selection[!res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "Tophits"
-	res$estimates$method2 <- paste(res$estimates$method, "-", res$estimates$selection)
-	res$estimates <- dplyr::left_join(res$estimates, pred, by=c("method2"="method")) %>% dplyr::arrange(dplyr::desc(MOE))
-	return(res)
+  methodlist <- names(rf)
+  pred <- lapply(methodlist, function(m) {
+    d <- dplyr::tibble(
+      method = m,
+      MOE = predict(rf[[m]], metric, type = "prob")[, 2]
+    )
+    return(d)
+  }) %>%
+    bind_rows %>%
+    arrange(desc(MOE))
+  if ("MOE" %in% names(res$estimates)) {
+    message("Overwriting previous MOE estimate")
+    res$estimates <- subset(res$estimates, select = -c(MOE, method2))
+  }
+  res$estimates$selection <- "DF + HF"
+  res$estimates$selection[!res$estimates$outlier_filtered & res$estimates$steiger_filtered] <- "DF"
+  res$estimates$selection[res$estimates$outlier_filtered & !res$estimates$steiger_filtered] <- "HF"
+  res$estimates$selection[
+    !res$estimates$outlier_filtered & !res$estimates$steiger_filtered
+  ] <- "Tophits"
+  res$estimates$method2 <- paste(res$estimates$method, "-", res$estimates$selection)
+  res$estimates <- dplyr::left_join(res$estimates, pred, by = c("method2" = "method")) %>%
+    dplyr::arrange(dplyr::desc(MOE))
+  return(res)
 }
