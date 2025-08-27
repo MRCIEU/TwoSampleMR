@@ -19,3 +19,4 @@ cache$
 ^README\.html$
 ^\.lintr$
 ^inst/sandpit$
+^air\.toml$

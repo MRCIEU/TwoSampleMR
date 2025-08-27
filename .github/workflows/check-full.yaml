@@ -46,7 +46,7 @@ jobs:
       OPENGWAS_X_TEST_MODE_KEY: ${{ secrets.OPENGWAS_X_TEST_MODE_KEY }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -63,7 +63,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: >
-            any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0, car=?ignore-before-r=4.3.2
+            any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0, car=?ignore-before-r=4.3.2, Cairo=?ignore-before-r=4.3.0
           needs: check
           upgrade: 'TRUE'
 

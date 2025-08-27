@@ -28,9 +28,15 @@
 #' \item{dat}{Original data used for MR-GRIP}
 #' }
 mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
-  if (length(b_exp) != length(b_out)) stop("The lengths of b_exp and b_out are not equal.")
-  if (length(se_exp) != length(se_out)) stop("The lengths of se_exp and se_out are not equal.")
-  if (length(b_exp) != length(se_out)) stop("The lengths of b_exp and se_out are not equal.")
+  if (length(b_exp) != length(b_out)) {
+    stop("The lengths of b_exp and b_out are not equal.")
+  }
+  if (length(se_exp) != length(se_out)) {
+    stop("The lengths of se_exp and se_out are not equal.")
+  }
+  if (length(b_exp) != length(se_out)) {
+    stop("The lengths of b_exp and se_out are not equal.")
+  }
 
   nulllist <- list(
     b = NA,
@@ -47,9 +53,7 @@ mr_grip <- function(b_exp, b_out, se_exp, se_out, parameters) {
     smod = NA,
     dat = NA
   )
-  if (
-    sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3
-  ) {
+  if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 3) {
     return(nulllist)
   }
 

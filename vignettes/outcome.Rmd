@@ -29,12 +29,12 @@ library(TwoSampleMR)
 ao <- available_outcomes()
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat1 <- extract_outcome_data(
-	snps = bmi_exp_dat$SNP,
-	outcomes = 'ieu-a-7'
+  snps = bmi_exp_dat$SNP,
+  outcomes = 'ieu-a-7'
 )
 chd_out_dat2 <- extract_outcome_data(
-	snps = c("rs234", "rs17097147"),
-	outcomes = c('ieu-a-2', 'ieu-a-7')
+  snps = c("rs234", "rs17097147"),
+  outcomes = c('ieu-a-2', 'ieu-a-7')
 )
 save(ao, bmi_exp_dat, chd_out_dat1, chd_out_dat2, file = file.path("inst", "extdata", "vig_outcome.RData"), compress = "xz")
 ```
@@ -93,16 +93,16 @@ The most recent CARDIOGRAM GWAS is ID number `ieu-a-7`. We can extract the BMI S
 
 ```{r, eval=FALSE}
 chd_out_dat1 <- extract_outcome_data(
-	snps = bmi_exp_dat$SNP,
-	outcomes = 'ieu-a-7'
+  snps = bmi_exp_dat$SNP,
+  outcomes = 'ieu-a-7'
 )
 ```
 
 The `extract_outcome_data()` function is flexible. The `snps` argument only requires an array of rsIDs, and the `outcomes` argument can be a vector of outcomes, e.g.
 ```{r eval=FALSE}
 chd_out_dat2 <- extract_outcome_data(
-	snps = c("rs234", "rs17097147"),
-	outcomes = c('ieu-a-2', 'ieu-a-7')
+  snps = c("rs234", "rs17097147"),
+  outcomes = c('ieu-a-2', 'ieu-a-7')
 )
 ```
 
@@ -139,19 +139,19 @@ To extract the exposure SNPs from this data, we would use the following command:
 
 ```{r eval=FALSE}
 outcome_dat <- read_outcome_data(
-	snps = bmi_exp_dat$SNP,
-	filename = "gwas_summary.csv",
-	sep = ",",
-	snp_col = "rsid",
-	beta_col = "effect",
-	se_col = "SE",
-	effect_allele_col = "a1",
-	other_allele_col = "a2",
-	eaf_col = "a1_freq",
-	pval_col = "p-value",
-	units_col = "Units",
-	gene_col = "Gene",
-	samplesize_col = "n"
+  snps = bmi_exp_dat$SNP,
+  filename = "gwas_summary.csv",
+  sep = ",",
+  snp_col = "rsid",
+  beta_col = "effect",
+  se_col = "SE",
+  effect_allele_col = "a1",
+  other_allele_col = "a2",
+  eaf_col = "a1_freq",
+  pval_col = "p-value",
+  units_col = "Units",
+  gene_col = "Gene",
+  samplesize_col = "n"
 )
 ```
 

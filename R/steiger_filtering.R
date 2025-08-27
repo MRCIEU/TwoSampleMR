@@ -21,33 +21,32 @@
 #' @export
 #' @return [harmonise_data()] style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is `TRUE` if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome.
 steiger_filtering <- function(dat) {
-	plyr::ddply(dat, c("id.exposure", "id.outcome"), steiger_filtering_internal)
+  plyr::ddply(dat, c("id.exposure", "id.outcome"), steiger_filtering_internal)
 }
 
 
-
 steiger_filtering_internal <- function(dat) {
-	if (! "units.outcome" %in% names(dat)) {
-		dat$units.outcome <- NA
-	}
-	if (! "units.exposure" %in% names(dat)) {
-		dat$units.exposure <- NA
-	}
-	stopifnot(length(unique(dat$exposure)) == 1)
-	stopifnot(length(unique(dat$outcome)) == 1)
-	stopifnot(length(unique(dat$units.exposure)) == 1)
-	stopifnot(length(unique(dat$units.outcome)) == 1)
+  if (!"units.outcome" %in% names(dat)) {
+    dat$units.outcome <- NA
+  }
+  if (!"units.exposure" %in% names(dat)) {
+    dat$units.exposure <- NA
+  }
+  stopifnot(length(unique(dat$exposure)) == 1)
+  stopifnot(length(unique(dat$outcome)) == 1)
+  stopifnot(length(unique(dat$units.exposure)) == 1)
+  stopifnot(length(unique(dat$units.outcome)) == 1)
 
-	dat <- add_rsq(dat)
+  dat <- add_rsq(dat)
 
-	st <- psych::r.test(
-		n = dat$effective_n.exposure,
-		n2 = dat$effective_n.outcome,
-		r12 = sqrt(dat$rsq.exposure),
-		r34 = sqrt(dat$rsq.outcome)
-	)
-	dat$steiger_dir <- dat$rsq.exposure > dat$rsq.outcome
-	dat$steiger_pval <- stats::pnorm(-abs(st$z)) * 2
+  st <- psych::r.test(
+    n = dat$effective_n.exposure,
+    n2 = dat$effective_n.outcome,
+    r12 = sqrt(dat$rsq.exposure),
+    r34 = sqrt(dat$rsq.outcome)
+  )
+  dat$steiger_dir <- dat$rsq.exposure > dat$rsq.outcome
+  dat$steiger_pval <- stats::pnorm(-abs(st$z)) * 2
 
-	return(dat)
+  return(dat)
 }

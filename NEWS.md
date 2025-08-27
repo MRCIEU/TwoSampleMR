@@ -1,3 +1,10 @@
+# TwoSampleMR v0.6.22
+
+(Release date 2025-08-27)
+
+* Additional reformatting of code base.
+* Minor updates to GitHub Actions workflows.
+
 # TwoSampleMR v0.6.21
 
 (Release date 2025-08-11)

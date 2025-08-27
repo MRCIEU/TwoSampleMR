@@ -137,18 +137,18 @@ To read in this data:
 
 ```{r}
 bmi_exp_dat <- read_exposure_data(
-	filename = bmi2_file,
-	sep = ",",
-	snp_col = "rsid",
-	beta_col = "effect",
-	se_col = "SE",
-	effect_allele_col = "a1",
-	other_allele_col = "a2",
-	eaf_col = "a1_freq",
-	pval_col = "p-value",
-	units_col = "Units",
-	gene_col = "Gene",
-	samplesize_col = "n"
+  filename = bmi2_file,
+  sep = ",",
+  snp_col = "rsid",
+  beta_col = "effect",
+  se_col = "SE",
+  effect_allele_col = "a1",
+  other_allele_col = "a2",
+  eaf_col = "a1_freq",
+  pval_col = "p-value",
+  units_col = "Units",
+  gene_col = "Gene",
+  samplesize_col = "n"
 )
 head(bmi_exp_dat)
 ```

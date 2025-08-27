@@ -15,6 +15,8 @@ add_metadata(dat, cols = c("sample_size", "ncase", "ncontrol", "unit", "sd"))
 Data frame
 }
 \description{
-Previously the meta data was returned alongside association information. This is mostly unnecessary as it is needlessly repeating information. This is a convenience function that reinstates that information.
+Previously the meta data was returned alongside association information.
+This is mostly unnecessary as it is needlessly repeating information.
+This is a convenience function that reinstates that information.
 Can be applied to either exposure data, outcome data, or harmonised data
 }
