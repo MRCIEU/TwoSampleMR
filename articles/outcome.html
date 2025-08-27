@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.22</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 Hemani</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.21/vignettes/outcome.Rmd" class="external-link"><code>vignettes/outcome.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/outcome.Rmd" class="external-link"><code>vignettes/outcome.Rmd</code></a></small>
       <div class="d-none name"><code>outcome.Rmd</code></div>
     </div>
 
@@ -418,16 +418,16 @@ can search the available studies:</p>
 can extract the BMI SNPs from this GWAS as follows:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chd_out_dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span></span>
-<span>    snps <span class="op">=</span> <span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">SNP</span>,</span>
-<span>    outcomes <span class="op">=</span> <span class="st">'ieu-a-7'</span></span>
+<span>  snps <span class="op">=</span> <span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">SNP</span>,</span>
+<span>  outcomes <span class="op">=</span> <span class="st">'ieu-a-7'</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The <code><a href="../reference/extract_outcome_data.html">extract_outcome_data()</a></code> function is flexible. The
 <code>snps</code> argument only requires an array of rsIDs, and the
 <code>outcomes</code> argument can be a vector of outcomes, e.g.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chd_out_dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span></span>
-<span>    snps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rs234"</span>, <span class="st">"rs17097147"</span><span class="op">)</span>,</span>
-<span>    outcomes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ieu-a-2'</span>, <span class="st">'ieu-a-7'</span><span class="op">)</span></span>
+<span>  snps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rs234"</span>, <span class="st">"rs17097147"</span><span class="op">)</span>,</span>
+<span>  outcomes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ieu-a-2'</span>, <span class="st">'ieu-a-7'</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>will extract the two SNPs from each of the outcomes
 <code>ieu-a-2</code> and <code>ieu-a-7</code>.</p>
@@ -475,19 +475,19 @@ rs1558902,0.39,0.020408163,A,T,0.42,5.00E-120,kg/m2,FTO,222476
 following command:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_outcome_data.html">read_outcome_data</a></span><span class="op">(</span></span>
-<span>    snps <span class="op">=</span> <span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">SNP</span>,</span>
-<span>    filename <span class="op">=</span> <span class="st">"gwas_summary.csv"</span>,</span>
-<span>    sep <span class="op">=</span> <span class="st">","</span>,</span>
-<span>    snp_col <span class="op">=</span> <span class="st">"rsid"</span>,</span>
-<span>    beta_col <span class="op">=</span> <span class="st">"effect"</span>,</span>
-<span>    se_col <span class="op">=</span> <span class="st">"SE"</span>,</span>
-<span>    effect_allele_col <span class="op">=</span> <span class="st">"a1"</span>,</span>
-<span>    other_allele_col <span class="op">=</span> <span class="st">"a2"</span>,</span>
-<span>    eaf_col <span class="op">=</span> <span class="st">"a1_freq"</span>,</span>
-<span>    pval_col <span class="op">=</span> <span class="st">"p-value"</span>,</span>
-<span>    units_col <span class="op">=</span> <span class="st">"Units"</span>,</span>
-<span>    gene_col <span class="op">=</span> <span class="st">"Gene"</span>,</span>
-<span>    samplesize_col <span class="op">=</span> <span class="st">"n"</span></span>
+<span>  snps <span class="op">=</span> <span class="va">bmi_exp_dat</span><span class="op">$</span><span class="va">SNP</span>,</span>
+<span>  filename <span class="op">=</span> <span class="st">"gwas_summary.csv"</span>,</span>
+<span>  sep <span class="op">=</span> <span class="st">","</span>,</span>
+<span>  snp_col <span class="op">=</span> <span class="st">"rsid"</span>,</span>
+<span>  beta_col <span class="op">=</span> <span class="st">"effect"</span>,</span>
+<span>  se_col <span class="op">=</span> <span class="st">"SE"</span>,</span>
+<span>  effect_allele_col <span class="op">=</span> <span class="st">"a1"</span>,</span>
+<span>  other_allele_col <span class="op">=</span> <span class="st">"a2"</span>,</span>
+<span>  eaf_col <span class="op">=</span> <span class="st">"a1_freq"</span>,</span>
+<span>  pval_col <span class="op">=</span> <span class="st">"p-value"</span>,</span>
+<span>  units_col <span class="op">=</span> <span class="st">"Units"</span>,</span>
+<span>  gene_col <span class="op">=</span> <span class="st">"Gene"</span>,</span>
+<span>  samplesize_col <span class="op">=</span> <span class="st">"n"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>This returns an outcome data frame with only the SNPs that were
 requested (if those SNPs were present in the “gwas_summary.csv”

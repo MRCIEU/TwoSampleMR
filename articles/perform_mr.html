@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.22</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 and Philip Haycock</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.21/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
       <div class="d-none name"><code>perform_mr.Rmd</code></div>
     </div>
 
@@ -486,13 +486,13 @@ information.</p>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_1_to_many.html">sort_1_to_many</a></span><span class="op">(</span><span class="va">res</span>, b <span class="op">=</span> <span class="st">"b"</span>, sort_action <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">weight</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="va">res</span><span class="op">$</span><span class="va">se</span></span></code></pre></div>
+<span><span class="va">res</span><span class="op">$</span><span class="va">weight</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">res</span><span class="op">$</span><span class="va">se</span></span></code></pre></div>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># identify value for 'lo' in forest_plot_1_to_many</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">-</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">res</span><span class="op">$</span><span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">res</span><span class="op">$</span><span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.3233985</span></span>
 <span><span class="co"># identify value for 'up' in forest_plot_1_to_many</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">+</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">res</span><span class="op">$</span><span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">b</span> <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> <span class="va">res</span><span class="op">$</span><span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2.489726</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/forest_plot_1_to_many.html">forest_plot_1_to_many</a></span><span class="op">(</span></span>
@@ -643,7 +643,7 @@ top).</p>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">subcategory</span><span class="op">[</span><span class="va">res</span><span class="op">$</span><span class="va">exposure</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Adiponectin"</span>, <span class="st">"Hip circumference"</span>, <span class="st">"Waist circumference"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Group 1"</span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">subcategory</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">subcategory</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Group 2"</span></span>
-<span><span class="va">res</span><span class="op">$</span><span class="va">weight</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">/</span><span class="va">res</span><span class="op">$</span><span class="va">se</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">weight</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">res</span><span class="op">$</span><span class="va">se</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_1_to_many.html">sort_1_to_many</a></span><span class="op">(</span><span class="va">res</span>, sort_action <span class="op">=</span> <span class="fl">1</span>, group <span class="op">=</span> <span class="st">"subcategory"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/forest_plot_1_to_many.html">forest_plot_1_to_many</a></span><span class="op">(</span></span>

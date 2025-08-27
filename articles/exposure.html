@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.21</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.22</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 Hemani</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.21/vignettes/exposure.Rmd" class="external-link"><code>vignettes/exposure.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/exposure.Rmd" class="external-link"><code>vignettes/exposure.Rmd</code></a></small>
       <div class="d-none name"><code>exposure.Rmd</code></div>
     </div>
 
@@ -233,18 +233,18 @@ is located here:</p>
 <p>To read in this data:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bmi_exp_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_exposure_data.html">read_exposure_data</a></span><span class="op">(</span></span>
-<span>    filename <span class="op">=</span> <span class="va">bmi2_file</span>,</span>
-<span>    sep <span class="op">=</span> <span class="st">","</span>,</span>
-<span>    snp_col <span class="op">=</span> <span class="st">"rsid"</span>,</span>
-<span>    beta_col <span class="op">=</span> <span class="st">"effect"</span>,</span>
-<span>    se_col <span class="op">=</span> <span class="st">"SE"</span>,</span>
-<span>    effect_allele_col <span class="op">=</span> <span class="st">"a1"</span>,</span>
-<span>    other_allele_col <span class="op">=</span> <span class="st">"a2"</span>,</span>
-<span>    eaf_col <span class="op">=</span> <span class="st">"a1_freq"</span>,</span>
-<span>    pval_col <span class="op">=</span> <span class="st">"p-value"</span>,</span>
-<span>    units_col <span class="op">=</span> <span class="st">"Units"</span>,</span>
-<span>    gene_col <span class="op">=</span> <span class="st">"Gene"</span>,</span>
-<span>    samplesize_col <span class="op">=</span> <span class="st">"n"</span></span>
+<span>  filename <span class="op">=</span> <span class="va">bmi2_file</span>,</span>
+<span>  sep <span class="op">=</span> <span class="st">","</span>,</span>
+<span>  snp_col <span class="op">=</span> <span class="st">"rsid"</span>,</span>
+<span>  beta_col <span class="op">=</span> <span class="st">"effect"</span>,</span>
+<span>  se_col <span class="op">=</span> <span class="st">"SE"</span>,</span>
+<span>  effect_allele_col <span class="op">=</span> <span class="st">"a1"</span>,</span>
+<span>  other_allele_col <span class="op">=</span> <span class="st">"a2"</span>,</span>
+<span>  eaf_col <span class="op">=</span> <span class="st">"a1_freq"</span>,</span>
+<span>  pval_col <span class="op">=</span> <span class="st">"p-value"</span>,</span>
+<span>  units_col <span class="op">=</span> <span class="st">"Units"</span>,</span>
+<span>  gene_col <span class="op">=</span> <span class="st">"Gene"</span>,</span>
+<span>  samplesize_col <span class="op">=</span> <span class="st">"n"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; No phenotype name specified, defaulting to 'exposure'.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bmi_exp_dat</span><span class="op">)</span></span>
