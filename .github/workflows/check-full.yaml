@@ -63,7 +63,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: >
-            any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0, car=?ignore-before-r=4.3.2
+            any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0, car=?ignore-before-r=4.3.2, Cairo=?ignore-before-r=4.3.0
           needs: check
           upgrade: 'TRUE'
 
