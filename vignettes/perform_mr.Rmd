@@ -520,7 +520,7 @@ res
 
 MR-RAPS comes with two main options: `over.dispersion` (whether the method should consider systematic pleiotropy) and `loss.function` (either `"l2"`, `"huber"`, or `"tukey"`). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is `over.dispersion = TRUE`, `loss.function = "huber"`, and `shrinkage = FALSE`. To change these options, modify the `parameters` argument of `mr()` by, for example,
 
-```{r eval=FALSE}
+```{r}
 res <-
   mr(
     dat,
