@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.22</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.23</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -776,9 +776,6 @@ TwoSampleMR by</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span>, method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_raps"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning in mr.raps.overdispersed.robust(b_exp, b_out, se_exp, se_out,</span></span>
-<span><span class="co">#&gt; loss.function, : The estimated overdispersion parameter is very small. Consider</span></span>
-<span><span class="co">#&gt; using the simple model without overdispersion.</span></span>
 <span><span class="va">res</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
 <span><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
@@ -803,7 +800,14 @@ example,</p>
 <span>    method_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_raps"</span><span class="op">)</span>,</span>
 <span>    parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>over.dispersion <span class="op">=</span> <span class="cn">FALSE</span>, loss.function <span class="op">=</span> <span class="st">"l2"</span>, shrinkage <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="va">res</span></span></code></pre></div>
+<span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
+<span><span class="va">res</span></span>
+<span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
+<span><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
+<span><span class="co">#&gt;                        exposure                               method nsnp</span></span>
+<span><span class="co">#&gt; 1 Body mass index || id:ieu-a-2 Robust adjusted profile score (RAPS)   79</span></span>
+<span><span class="co">#&gt;           b         se        pval</span></span>
+<span><span class="co">#&gt; 1 0.4580697 0.04515624 3.51986e-24</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="mr-grip">MR-GRIP<a class="anchor" aria-label="anchor" href="#mr-grip"></a>
@@ -1196,10 +1200,10 @@ outcome name using the split_outcome function:</p>
 <span><span class="co">#&gt; 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
 <span><span class="co">#&gt;                      method nsnp         b         se         pval</span></span>
 <span><span class="co">#&gt; 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04</span></span>
-<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07758313 6.091883e-07</span></span>
+<span><span class="co">#&gt; 2           Weighted median   79 0.3870065 0.07671416 4.540309e-07</span></span>
 <span><span class="co">#&gt; 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14</span></span>
-<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.16119271 3.804304e-02</span></span>
-<span><span class="co">#&gt; 5             Weighted mode   79 0.3790910 0.09744255 2.092939e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 4               Simple mode   79 0.3401554 0.15196883 2.805152e-02</span></span>
+<span><span class="co">#&gt; 5             Weighted mode   79 0.3790910 0.10242200 3.980416e-04</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="split-exposure-names">Split exposure names<a class="anchor" aria-label="anchor" href="#split-exposure-names"></a>
@@ -1230,10 +1234,10 @@ confidence intervals using:</p>
 <span><span class="co">#&gt; 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3790910</span></span>
 <span><span class="co">#&gt;           se         pval      lo_ci     up_ci       or or_lci95 or_uci95</span></span>
 <span><span class="co">#&gt; 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653</span></span>
-<span><span class="co">#&gt; 2 0.07758313 6.091883e-07 0.23494354 0.5390694 1.472566 1.264837 1.714411</span></span>
+<span><span class="co">#&gt; 2 0.07671416 4.540309e-07 0.23664672 0.5373662 1.472566 1.266993 1.711493</span></span>
 <span><span class="co">#&gt; 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328</span></span>
-<span><span class="co">#&gt; 4 0.16119271 3.804304e-02 0.02421772 0.6560931 1.405166 1.024513 1.927248</span></span>
-<span><span class="co">#&gt; 5 0.09744255 2.092939e-04 0.18810358 0.5700784 1.460956 1.206959 1.768406</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 0.15196883 2.805152e-02 0.04229652 0.6380143 1.405166 1.043204 1.892719</span></span>
+<span><span class="co">#&gt; 5 0.10242200 3.980416e-04 0.17834387 0.5798381 1.460956 1.195236 1.785749</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="subset-on-method">Subset on method<a class="anchor" aria-label="anchor" href="#subset-on-method"></a>
