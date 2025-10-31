@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.24
+
+(Release date 2025-10-31)
+
+* We once again obtain **mr.raps** from its default branch. We issue a warning if the user has a version less than version 0.4.3 installed.
+
 # TwoSampleMR v0.6.23
 
 (Release date 2025-10-31)
