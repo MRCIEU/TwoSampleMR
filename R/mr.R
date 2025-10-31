@@ -1079,6 +1079,10 @@ mr_raps <- function(b_exp, b_out, se_exp, se_out, parameters = default_parameter
     )
   }
 
+  if (utils::packageVersion('mr.raps') < '0.4.3') {
+    message(paste("The version of mr.raps is", utils::packageVersion('mr.raps'), "please consider updating to version 0.4.3 or higher, e.g., install.packages('mr.raps', repos = c('https://mrcieu.r-universe.dev', 'https://cloud.r-project.org')) "))
+  }
+
   data <- data.frame(
     beta.exposure = b_exp,
     beta.outcome = b_out,
