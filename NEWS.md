@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.23
+
+(Release date 2025-10-31)
+
+* We now obtain **mr.raps** (version 0.4.3) from the open pull request which includes a fix. We will switch back to the default branch once that pull request is merged.
+
 # TwoSampleMR v0.6.22
 
 (Release date 2025-08-27)
