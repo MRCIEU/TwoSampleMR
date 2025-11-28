@@ -76,7 +76,7 @@
 and Philip Haycock</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.24/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
       <div class="d-none name"><code>perform_mr.Rmd</code></div>
     </div>
 
@@ -356,7 +356,7 @@ in <code>p1</code> as a list of plots. For example, to plot the first
 scatter plot:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-18-1.png" alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted, MR-Egger, Simple mode, Weighted median, and Weighted mode." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted, MR-Egger, Simple mode, Weighted median, and Weighted mode." width="700" style="display: block; margin: auto;"></p>
 <p>And to see how many plots there are:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></span>
@@ -370,7 +370,7 @@ draw the lines for the MR Egger and IVW causal effect estimates:</p>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_scatter_plot.html">mr_scatter_plot</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">p1</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-20-1.png" alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted and MR-Egger." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="A scatter plot visualising the two-sample data points and the following fitted models; Inverse Variance Weighted and MR-Egger." width="700" style="display: block; margin: auto;"></p>
 <p>It is possible to save this plot using the <code><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave()</a></code>
 function from the <code>ggplot2</code> package, e.g. to save as a
 pdf</p>
@@ -390,7 +390,7 @@ tests.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_forest_plot.html">mr_forest_plot</a></span><span class="op">(</span><span class="va">res_single</span><span class="op">)</span></span>
 <span><span class="va">p2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-23-1.png" alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-23-1.png" class="r-plt" alt="A forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and MR-Egger estimates using all the SNPs." width="700" style="display: block; margin: auto;"></p>
 <p>Here, the plot shows the causal effect as estimated using each of the
 SNPs individually, and comparing against the causal effect as estimated
 using the methods that use all the SNPs.</p>
@@ -400,7 +400,7 @@ using the methods that use all the SNPs.</p>
 <code class="sourceCode R"><span><span class="va">res_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_singlesnp.html">mr_singlesnp</a></span><span class="op">(</span><span class="va">dat</span>, all_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr_ivw"</span>, <span class="st">"mr_two_sample_ml"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_forest_plot.html">mr_forest_plot</a></span><span class="op">(</span><span class="va">res_single</span><span class="op">)</span></span>
 <span><span class="va">p2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-24-1.png" alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-24-1.png" class="r-plt" alt="An alternative forest plot showing the estimated causal effects using each SNP separately, and the Inverse Variance Weighted and Maximum Likelihood estimates using all the SNPs." width="700" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="leave-one-out-plot">Leave-one-out plot<a class="anchor" aria-label="anchor" href="#leave-one-out-plot"></a>
@@ -410,7 +410,7 @@ leave-one-out analysis:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_leaveoneout_plot.html">mr_leaveoneout_plot</a></span><span class="op">(</span><span class="va">res_loo</span><span class="op">)</span></span>
 <span><span class="va">p3</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-25-1.png" alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-25-1.png" class="r-plt" alt="A leave one out plot showing the Inverse Variance Weighted estimate with each SNP omitted." width="700" style="display: block; margin: auto;"></p>
 <p>We can also specify the method to use in the function call, e.g., to
 use MR-Egger regression in the leave-one-out analysis specify</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
@@ -425,7 +425,7 @@ SNP results as follows:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_funnel_plot.html">mr_funnel_plot</a></span><span class="op">(</span><span class="va">res_single</span><span class="op">)</span></span>
 <span><span class="va">p4</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-26-1.png" alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-26-1.png" class="r-plt" alt="A funnel plot showing the causal effect for each SNP and the inverse variance weighted and MR-Egger estimates using all the SNPs." width="700" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -512,7 +512,7 @@ information.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 6 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_vline()`).</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-30-1.png" alt="A forest plot showing the estimated causal effects for each risk factor on the outcome." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-30-1.png" class="r-plt" alt="A forest plot showing the estimated causal effects for each risk factor on the outcome." width="700" style="display: block; margin: auto;"></p>
 <p>It is also possible to add additional columns and column titles and
 to choose the size of the text in the columns:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
@@ -543,7 +543,7 @@ to choose the size of the text in the columns:</p>
 <span><span class="co">#&gt; [1] "pval"</span></span>
 <span><span class="co">#&gt; Warning: Removed 6 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_vline()`).</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-31-1.png" alt="A forest plot showing the estimated causal effects for each risk factor on the outcome including columns for the no. SNPs and p-value." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-31-1.png" class="r-plt" alt="A forest plot showing the estimated causal effects for each risk factor on the outcome including columns for the no. SNPs and p-value." width="700" style="display: block; margin: auto;"></p>
 <p>In my own workflow I prefer to to keep the plot free of axis and
 column titles and to add them separately in a program like
 Powerpoint:</p>
@@ -569,7 +569,7 @@ Powerpoint:</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "nsnp"</span></span>
 <span><span class="co">#&gt; [1] "pval"</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-32-1.png" alt="A forest plot showing the estimated causal effects for each risk factor on the outcome including columns for the no. SNPs and p-value without column headers." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-32-1.png" class="r-plt" alt="A forest plot showing the estimated causal effects for each risk factor on the outcome including columns for the no. SNPs and p-value without column headers." width="700" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="example-2--mr-results-for-multiple-mr-methods-grouped-by-multiple-exposures">Example 2. MR results for multiple MR methods grouped by multiple
@@ -621,7 +621,7 @@ method.</p>
 <span>  subheading_size <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  col_text_size <span class="op">=</span> <span class="fl">4</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-34-1.png" alt="A forest plot showing the estimated causal effects for each method for each risk factor on the outcome." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-34-1.png" class="r-plt" alt="A forest plot showing the estimated causal effects for each method for each risk factor on the outcome." width="700" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="example-3--stratify-results-on-a-grouping-variable">Example 3. Stratify results on a grouping variable<a class="anchor" aria-label="anchor" href="#example-3--stratify-results-on-a-grouping-variable"></a>
@@ -667,7 +667,7 @@ top).</p>
 <span><span class="co">#&gt; (`geom_vline()`).</span></span>
 <span><span class="co">#&gt; Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_vline()`).</span></span></code></pre></div>
-<p><img src="perform_mr_files/figure-html/unnamed-chunk-35-1.png" alt="Forest plot split by a subcategory variable." width="700" style="display: block; margin: auto;"></p>
+<p><img src="perform_mr_files/figure-html/unnamed-chunk-35-1.png" class="r-plt" alt="Forest plot split by a subcategory variable." width="700" style="display: block; margin: auto;"></p>
 <p>In the above example we made up an arbitrary grouping variable called
 “subcategory” with values “Group 1” and “Group 2”. Typically, however,
 the grouping variable might correspond to something like a trait
@@ -1345,7 +1345,7 @@ profile score</span>”</span> 48: 1742–69. <a href="https://doi.org/10.1214/1
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
