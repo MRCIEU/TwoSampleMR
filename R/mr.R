@@ -346,6 +346,12 @@ mr_meta_fixed <- function(b_exp, b_out, se_exp, se_out, parameters) {
   if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 1) {
     return(list(b = NA, se = NA, pval = NA, nsnp = NA, Q = NA, Q_df = NA, Q_pval = NA))
   }
+  if (!requireNamespace("meta", quietly = TRUE)) {
+    stop(
+      "Package \"meta\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
   ratio <- b_out / b_exp
   ratio.se <- sqrt(
     (se_out^2 / b_exp^2) + (b_out^2 / b_exp^4) * se_exp^2 - 2 * (b_out / b_exp^3) * parameters$Cov
@@ -387,6 +393,14 @@ mr_meta_random <- function(b_exp, b_out, se_exp, se_out, parameters) {
   if (sum(!is.na(b_exp) & !is.na(b_out) & !is.na(se_exp) & !is.na(se_out)) < 2) {
     return(list(b = NA, se = NA, pval = NA, nsnp = NA, Q = NA, Q_df = NA, Q_pval = NA))
   }
+
+  if (!requireNamespace("meta", quietly = TRUE)) {
+    stop(
+      "Package \"meta\" must be installed to use this function.",
+      call. = FALSE
+    )
+  }
+
   ratio <- b_out / b_exp
   ratio.se <- sqrt(
     (se_out^2 / b_exp^2) + (b_out^2 / b_exp^4) * se_exp^2 - 2 * (b_out / b_exp^3) * parameters$Cov
