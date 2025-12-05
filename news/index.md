@@ -1,5 +1,13 @@
 # Changelog
 
+## TwoSampleMR v0.6.25
+
+(Release date 2025-12-05)
+
+- The **meta** package has been moved to a soft (Suggests list)
+  dependency due to installation problems of new versions of its hard
+  dependencies on R 4.1.
+
 ## TwoSampleMR v0.6.24
 
 (Release date 2025-10-31)
