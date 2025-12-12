@@ -33,7 +33,7 @@ extract_instruments <- function(
     clump = clump,
     r2 = r2,
     kb = kb,
-    force_server = FALSE,
+    force_server = force_server,
     opengwas_jwt = opengwas_jwt,
     x_api_source = x_api_source_header()
   )
