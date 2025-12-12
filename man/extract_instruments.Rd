@@ -30,7 +30,7 @@ extract_instruments(
 
 \item{opengwas_jwt}{Used to authenticate protected endpoints. Login to \url{https://api.opengwas.io} to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
 
-\item{force_server}{Force the analysis to extract results from the server rather than the MRInstruments package.}
+\item{force_server}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is \code{FALSE}.}
 }
 \value{
 data frame
