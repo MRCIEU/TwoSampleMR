@@ -1,3 +1,9 @@
+# TwoSampleMR v0.6.26
+
+(Release date 2025-12-12)
+
+* Fixed the passing of the `force_server` argument within `extract_instruments()` through to `ieugwasr::tophits()` (thanks @yikeshu0611).
+
 # TwoSampleMR v0.6.25
 
 (Release date 2025-12-05)
