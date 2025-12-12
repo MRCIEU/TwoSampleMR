@@ -1,5 +1,21 @@
 # Changelog
 
+## TwoSampleMR v0.6.26
+
+(Release date 2025-12-12)
+
+- Fixed the passing of the `force_server` argument within
+  [`extract_instruments()`](https://mrcieu.github.io/TwoSampleMR/reference/extract_instruments.md)
+  through to
+  [`ieugwasr::tophits()`](https://mrcieu.github.io/ieugwasr/reference/tophits.html)
+  (thanks [@yikeshu0611](https://github.com/yikeshu0611)).
+- Amended the
+  [`extract_instruments()`](https://mrcieu.github.io/TwoSampleMR/reference/extract_instruments.md)
+  `clump` argument to additionally take values `1` or `0` as per the
+  [`ieugwasr::tophits()`](https://mrcieu.github.io/ieugwasr/reference/tophits.html)
+  `clump` argument (thanks
+  [@yikeshu0611](https://github.com/yikeshu0611)).
+
 ## TwoSampleMR v0.6.25
 
 (Release date 2025-12-05)

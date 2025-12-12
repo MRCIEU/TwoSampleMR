@@ -9,7 +9,7 @@ It then performs LD based clumping to return only independent significant associ
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.25</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.26</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@ It then performs LD based clumping to return only independent significant associ
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Find instruments for use in MR from the OpenGWAS database</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.25/R/instruments.R" class="external-link"><code>R/instruments.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/R/instruments.R" class="external-link"><code>R/instruments.R</code></a></small>
       <div class="d-none name"><code>extract_instruments.Rd</code></div>
     </div>
 
@@ -61,7 +61,7 @@ It then performs LD based clumping to return only independent significant associ
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_instruments</span><span class="op">(</span></span>
 <span>  <span class="va">outcomes</span>,</span>
 <span>  p1 <span class="op">=</span> <span class="fl">5e-08</span>,</span>
-<span>  clump <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  clump <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  p2 <span class="op">=</span> <span class="fl">5e-08</span>,</span>
 <span>  r2 <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  kb <span class="op">=</span> <span class="fl">10000</span>,</span>
@@ -83,7 +83,7 @@ It then performs LD based clumping to return only independent significant associ
 
 
 <dt id="arg-clump">clump<a class="anchor" aria-label="anchor" href="#arg-clump"></a></dt>
-<dd><p>Logical; whether to clump results. The default is <code>TRUE</code>.</p></dd>
+<dd><p>Whether to clump results (<code>1</code>) or not (<code>0</code>). Default is <code>1</code>. (<code>TRUE</code> and <code>FALSE</code> are also allowed for backwards compatibility.)</p></dd>
 
 
 <dt id="arg-p-">p2<a class="anchor" aria-label="anchor" href="#arg-p-"></a></dt>
@@ -103,7 +103,7 @@ It then performs LD based clumping to return only independent significant associ
 
 
 <dt id="arg-force-server">force_server<a class="anchor" aria-label="anchor" href="#arg-force-server"></a></dt>
-<dd><p>Force the analysis to extract results from the server rather than the MRInstruments package.</p></dd>
+<dd><p>Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

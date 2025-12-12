@@ -10,7 +10,7 @@ return only independent significant associations.
 extract_instruments(
   outcomes,
   p1 = 5e-08,
-  clump = TRUE,
+  clump = 1,
   p2 = 5e-08,
   r2 = 0.001,
   kb = 10000,
@@ -32,7 +32,8 @@ extract_instruments(
 
 - clump:
 
-  Logical; whether to clump results. The default is `TRUE`.
+  Whether to clump results (`1`) or not (`0`). Default is `1`. (`TRUE`
+  and `FALSE` are also allowed for backwards compatibility.)
 
 - p2:
 
@@ -54,8 +55,8 @@ extract_instruments(
 
 - force_server:
 
-  Force the analysis to extract results from the server rather than the
-  MRInstruments package.
+  Whether to search through pre-clumped dataset or to re-extract and
+  clump directly from the server. The default is `FALSE`.
 
 ## Value
 
