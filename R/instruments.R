@@ -5,7 +5,7 @@
 #'
 #' @param outcomes Array of outcome IDs (see [available_outcomes()]).
 #' @param p1 Significance threshold. The default is `5e-8`.
-#' @param clump Logical; whether to clump results. The default is `TRUE`.
+#' @param clump Whether to clump results (`1`) or not (`0`). Default is `1`. (`TRUE` and `FALSE` are also allowed for backwards compatibility.)
 #' @param p2 Secondary clumping threshold. The default is `5e-8`.
 #' @param r2 Clumping r2 cut off. The default is `0.001`.
 #' @param kb Clumping distance cutoff. The default is `10000`.
@@ -17,13 +17,16 @@
 extract_instruments <- function(
   outcomes,
   p1 = 5e-8,
-  clump = TRUE,
+  clump = 1,
   p2 = 5e-8,
   r2 = 0.001,
   kb = 10000,
   opengwas_jwt = ieugwasr::get_opengwas_jwt(),
   force_server = FALSE
 ) {
+  if (!(clump %in% c(0, 1, FALSE, TRUE))) stop("The clump argument should be 0 or 1.")
+  if (clump) clump <- 1
+  if (!clump) clump <- 0
   # .Deprecated("ieugwasr::tophits()")
   outcomes <- ieugwasr::legacy_ids(unique(outcomes))
 

@@ -3,6 +3,7 @@
 (Release date 2025-12-12)
 
 * Fixed the passing of the `force_server` argument within `extract_instruments()` through to `ieugwasr::tophits()` (thanks @yikeshu0611).
+* Amended the `extract_instruments()` `clump` argument to additionally take values `1` or `0` as per the `ieugwasr::tophits()` `clump` argument (thanks @yikeshu0611).
 
 # TwoSampleMR v0.6.25
 
