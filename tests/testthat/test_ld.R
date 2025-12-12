@@ -6,7 +6,7 @@ skip_if_offline(host = "api.opengwas.io")
 skip_on_cran()
 
 # extract some data
-a <- try(extract_instruments("ieu-a-2", clump = FALSE))
+a <- try(extract_instruments("ieu-a-2", clump = 0))
 if (class(a) == "try-error") {
   skip("Server issues")
 }
@@ -37,7 +37,7 @@ test_that("matrix", {
 
 
 test_that("clump multiple", {
-  a <- try(extract_instruments(c("ieu-a-2", "ieu-a-1001"), clump = FALSE))
+  a <- try(extract_instruments(c("ieu-a-2", "ieu-a-1001"), clump = 0))
   if (class(a) == "try-error") {
     skip("Server issues")
   }
