@@ -10,7 +10,7 @@
 #' @param r2 Clumping r2 cut off. The default is `0.001`.
 #' @param kb Clumping distance cutoff. The default is `10000`.
 #' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
-#' @param force_server Force the analysis to extract results from the server rather than the MRInstruments package.
+#' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
 #'
 #' @export
 #' @return data frame
