@@ -20,3 +20,4 @@ cache$
 ^\.lintr$
 ^inst/sandpit$
 ^air\.toml$
+^vignettes/rf\.rdata$

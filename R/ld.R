@@ -16,7 +16,6 @@
 #' @param clump_kb Clumping window, default is `10000`.
 #' @param clump_r2 Clumping r2 cutoff. Note that this default value has recently changed from `0.01` to `0.001`.
 #' @param clump_p1 Clumping sig level for index SNPs, default is `1`.
-#' @param clump_p2 Clumping sig level for secondary SNPs, default is `1`.
 #' @param pop Super-population to use as reference panel. Default = `"EUR"`. Options are `"EUR"`, `"SAS"`, `"EAS"`, `"AFR"`, `"AMR"`. `'legacy'` also available - which is a previously used version of the EUR panel with a slightly different set of markers
 #' @param bfile If this is provided then will use the API. Default = `NULL`
 #' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
@@ -28,7 +27,6 @@ clump_data <- function(
   clump_kb = 10000,
   clump_r2 = 0.001,
   clump_p1 = 1,
-  clump_p2 = 1,
   pop = "EUR",
   bfile = NULL,
   plink_bin = NULL

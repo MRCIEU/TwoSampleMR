@@ -21,6 +21,7 @@ jobs:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      OPENGWAS_X_TEST_MODE_KEY: ${{ secrets.OPENGWAS_X_TEST_MODE_KEY }}
     permissions:
       contents: write
     steps:

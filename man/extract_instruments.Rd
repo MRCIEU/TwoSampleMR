@@ -8,7 +8,6 @@ extract_instruments(
   outcomes,
   p1 = 5e-08,
   clump = 1,
-  p2 = 5e-08,
   r2 = 0.001,
   kb = 10000,
   opengwas_jwt = ieugwasr::get_opengwas_jwt(),
@@ -21,8 +20,6 @@ extract_instruments(
 \item{p1}{Significance threshold. The default is \code{5e-8}.}
 
 \item{clump}{Whether to clump results (\code{1}) or not (\code{0}). Default is \code{1}. (\code{TRUE} and \code{FALSE} are also allowed for backwards compatibility.)}
-
-\item{p2}{Secondary clumping threshold. The default is \code{5e-8}.}
 
 \item{r2}{Clumping r2 cut off. The default is \code{0.001}.}
 
