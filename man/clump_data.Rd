@@ -9,7 +9,6 @@ clump_data(
   clump_kb = 10000,
   clump_r2 = 0.001,
   clump_p1 = 1,
-  clump_p2 = 1,
   pop = "EUR",
   bfile = NULL,
   plink_bin = NULL
@@ -23,8 +22,6 @@ clump_data(
 \item{clump_r2}{Clumping r2 cutoff. Note that this default value has recently changed from \code{0.01} to \code{0.001}.}
 
 \item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}.}
-
-\item{clump_p2}{Clumping sig level for secondary SNPs, default is \code{1}.}
 
 \item{pop}{Super-population to use as reference panel. Default = \code{"EUR"}. Options are \code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}. \code{'legacy'} also available - which is a previously used version of the EUR panel with a slightly different set of markers}
 
