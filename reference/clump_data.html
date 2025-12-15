@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.27</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Perform LD clumping on SNP data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.26/R/ld.R" class="external-link"><code>R/ld.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/R/ld.R" class="external-link"><code>R/ld.R</code></a></small>
       <div class="d-none name"><code>clump_data.Rd</code></div>
     </div>
 
@@ -60,7 +60,6 @@
 <span>  clump_kb <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  clump_r2 <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  clump_p1 <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  clump_p2 <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  pop <span class="op">=</span> <span class="st">"EUR"</span>,</span>
 <span>  bfile <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plink_bin <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -85,10 +84,6 @@
 
 <dt id="arg-clump-p-">clump_p1<a class="anchor" aria-label="anchor" href="#arg-clump-p-"></a></dt>
 <dd><p>Clumping sig level for index SNPs, default is <code>1</code>.</p></dd>
-
-
-<dt id="arg-clump-p-">clump_p2<a class="anchor" aria-label="anchor" href="#arg-clump-p-"></a></dt>
-<dd><p>Clumping sig level for secondary SNPs, default is <code>1</code>.</p></dd>
 
 
 <dt id="arg-pop">pop<a class="anchor" aria-label="anchor" href="#arg-pop"></a></dt>

@@ -11,7 +11,6 @@ extract_instruments(
   outcomes,
   p1 = 5e-08,
   clump = 1,
-  p2 = 5e-08,
   r2 = 0.001,
   kb = 10000,
   opengwas_jwt = ieugwasr::get_opengwas_jwt(),
@@ -34,10 +33,6 @@ extract_instruments(
 
   Whether to clump results (`1`) or not (`0`). Default is `1`. (`TRUE`
   and `FALSE` are also allowed for backwards compatibility.)
-
-- p2:
-
-  Secondary clumping threshold. The default is `5e-8`.
 
 - r2:
 

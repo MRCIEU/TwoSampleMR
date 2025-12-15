@@ -1,5 +1,15 @@
 # Changelog
 
+## TwoSampleMR v0.6.27
+
+(Release date 2025-12-15)
+
+- Removed the unused `p2` argument from
+  [`extract_instruments()`](https://mrcieu.github.io/TwoSampleMR/reference/extract_instruments.md)
+  and the unused `clump_p2` argument from
+  [`clump_data()`](https://mrcieu.github.io/TwoSampleMR/reference/clump_data.md)
+  (thanks [@yikeshu0611](https://github.com/yikeshu0611)).
+
 ## TwoSampleMR v0.6.26
 
 (Release date 2025-12-12)

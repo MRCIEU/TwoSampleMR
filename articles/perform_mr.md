@@ -1137,11 +1137,25 @@ dat2 <- try(dat_to_MRInput(dat, get_correlation = TRUE))
 #>  - outcome: Coronary heart disease || id:ieu-a-7
 #>  - obtaining LD matrix
 #> Please look at vignettes for options on running this locally if you need to run many instances of this command.
-#> Error in get_query_content(.) : 
-#> Status code from OpenGWAS API: 401
-#> 
-#> Message: ERROR - Go to https://api.opengwas.io/ - From 1st May 2024 you must provide a token (JWT) alongside most of your requests. Read more at https://api.opengwas.io/ and also check for the latest version at https://mrcieu.github.io/ieugwasr/
+#> Warning in ieugwasr::ld_matrix(variants = snps, with_alleles = with_alleles, : The following variants are not present in the LD reference panel
+#> rs2033529
 if (class(dat2) != "try-error") MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
+#> 
+#> Inverse-variance weighted method
+#> (variants correlated, random-effect model)
+#> 
+#> Number of Variants : 78 
+#> 
+#> ------------------------------------------------------------------
+#>  Method Estimate Std Error 95% CI       p-value
+#>     IVW    0.441     0.056 0.331, 0.551   0.000
+#> ------------------------------------------------------------------
+#> Residual standard error =  1.414 
+#> Heterogeneity test statistic (Cochran's Q) = 153.8519 on 77 degrees of freedom, (p-value = 0.0000). I^2 = 50.0%. 
+#> F statistic = 80.3. 
+#> 
+#> (Estimates with correlated variants are sensitive to the signs in the correlation matrix
+#>  - please ensure that your correlations are expressed with respect to the same effect alleles as your summarized association estimates.)
 ```
 
 ## MR-MoE: Using a mixture of experts machine learning approach

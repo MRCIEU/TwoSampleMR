@@ -11,7 +11,6 @@ clump_data(
   clump_kb = 10000,
   clump_r2 = 0.001,
   clump_p1 = 1,
-  clump_p2 = 1,
   pop = "EUR",
   bfile = NULL,
   plink_bin = NULL
@@ -40,10 +39,6 @@ clump_data(
 - clump_p1:
 
   Clumping sig level for index SNPs, default is `1`.
-
-- clump_p2:
-
-  Clumping sig level for secondary SNPs, default is `1`.
 
 - pop:
 
