@@ -6,6 +6,7 @@ load(system.file("extdata", "test_commondata.RData", package = "TwoSampleMR"))
 
 test_that("MRInput", {
   skip_if(getRversion() < '4.4.0') # because MendelianRandomization will not be installed
+  skip_if_not_installed("MendelianRandomization")
   w <- dat_to_MRInput(dat, get_correlations = FALSE)
   expect_true(length(w) == 1)
   expect_true(class(w) == "list")
@@ -18,6 +19,7 @@ test_that("MRInput with cor", {
   skip_if_offline()
   skip_if_offline(host = "api.opengwas.io")
   skip_if(getRversion() < '4.4.0') # because MendelianRandomization will not be installed
+  skip_if_not_installed("MendelianRandomization")
   w <- tryCatch(
     dat_to_MRInput(dat, get_correlations = TRUE)[[1]],
     error = skip("Server issues"),
