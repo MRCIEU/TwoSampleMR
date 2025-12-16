@@ -13,7 +13,7 @@ vignette: >
 ---
 
 ```{r, include=FALSE}
-evalinr44 <- getRversion() >= '4.4.0'
+evalinr44 <- (getRversion() >= '4.4.0') && requireNamespace("MendelianRandomization", quietly = TRUE)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
