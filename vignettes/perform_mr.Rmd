@@ -754,7 +754,7 @@ The TwoSampleMR package also provides the following functions for managing or ed
 
 ### Split outcome names
 
-The outcome column in the output of mr() combines the original outcome name with the outcome trait ID.
+The outcome column in the output of `mr()` combines the original outcome name with the outcome trait ID.
 
 ```{r}
 head(res)
