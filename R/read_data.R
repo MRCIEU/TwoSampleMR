@@ -104,7 +104,7 @@ read_outcome_data <- function(
 #' @param log_pval The p-value is -log10(P). The default is `FALSE`.
 #' @param chr_col Optional column name for chromosome. Default is `"chr"`.
 #' @param pos_col Optional column name for genetic position Default is `"pos"`.
-#'
+#' @inheritParams clump_data
 #' @export
 #' @return data frame
 read_exposure_data <- function(
@@ -128,7 +128,13 @@ read_exposure_data <- function(
   min_pval = 1e-200,
   log_pval = FALSE,
   chr_col = "chr",
-  pos_col = "pos"
+  pos_col = "pos",
+  clump_kb = 10000,
+  clump_r2 = 0.001,
+  clump_p1 = 1,
+  pop = "EUR",
+  bfile = NULL,
+  plink_bin = NULL
 ) {
   exposure_dat <- data.table::fread(filename, header = TRUE, sep = sep)
   exposure_dat <- format_data(
@@ -156,7 +162,15 @@ read_exposure_data <- function(
   )
   exposure_dat$data_source.exposure <- "textfile"
   if (clump) {
-    exposure_dat <- clump_data(exposure_dat)
+    exposure_dat <- clump_data(
+      exposure_dat,
+      clump_kb = clump_kb,
+      clump_r2 = clump_r2,
+      clump_p1 = clump_p1,
+      pop = pop,
+      bfile = bfile,
+      plink_bin = plink_bin
+    )
   }
   return(exposure_dat)
 }
@@ -593,7 +607,7 @@ check_units <- function(x, id, col) {
 #' data(gwas_catalog)
 #' bmi <- subset(gwas_catalog, Phenotype=="Body mass index" & Year==2010 & grepl("kg", Units))
 #' bmi <- format_data(bmi)
-#'}
+#' }
 format_gwas_catalog <- function(gwas_catalog_subset, type = "exposure") {
   message("This function is now deprecated and has been replaced by 'format_data'.")
   return(NULL)

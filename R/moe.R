@@ -174,7 +174,7 @@ get_rsq <- function(dat) {
 #' # been sorted in order from most likely to least likely to
 #' # be accurate, based on MOE prediction
 #' r[[1]]$estimates
-#'}
+#' }
 mr_moe <- function(res, rf) {
   if (!requireNamespace("randomForest", quietly = TRUE)) {
     stop(
@@ -210,8 +210,8 @@ mr_moe_single <- function(res, rf) {
     )
     return(d)
   }) %>%
-    bind_rows %>%
-    arrange(desc(MOE))
+    dplyr::bind_rows() %>%
+    dplyr::arrange(desc(MOE))
   if ("MOE" %in% names(res$estimates)) {
     message("Overwriting previous MOE estimate")
     res$estimates <- subset(res$estimates, select = -c(MOE, method2))
