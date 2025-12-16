@@ -210,8 +210,8 @@ mr_moe_single <- function(res, rf) {
     )
     return(d)
   }) %>%
-    bind_rows %>%
-    arrange(desc(MOE))
+    dplyr::bind_rows() %>%
+    dplyr::arrange(desc(MOE))
   if ("MOE" %in% names(res$estimates)) {
     message("Overwriting previous MOE estimate")
     res$estimates <- subset(res$estimates, select = -c(MOE, method2))
