@@ -174,7 +174,7 @@ get_rsq <- function(dat) {
 #' # been sorted in order from most likely to least likely to
 #' # be accurate, based on MOE prediction
 #' r[[1]]$estimates
-#'}
+#' }
 mr_moe <- function(res, rf) {
   if (!requireNamespace("randomForest", quietly = TRUE)) {
     stop(
