@@ -711,7 +711,7 @@ In order to run the analysis you must download an RData object that contains the
 Once downloaded, read in the object and use the `mr_moe()` function to perform the analysis. An example is shown here, estimating the causal effect of BMI on coronary heart disease:
 
 ```{r eval=FALSE}
-# Extact instruments for BMI
+# Extract instruments for BMI
 exposure_dat <- extract_instruments("ieu-a-2")
 
 # Get corresponding effects for CHD
