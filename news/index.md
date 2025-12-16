@@ -2,7 +2,14 @@
 
 ## TwoSampleMR v0.6.28
 
-(Release date 2025-12-15)
+(Release date 2025-12-16)
+
+- Skip two tests if the **MendelianRandomization** package is not
+  installed and protected the running of the perform_mr vignette.
+
+## TwoSampleMR v0.6.28
+
+(Release date 2025-12-16)
 
 - Allowed the arguments for
   [`clump_data()`](https://mrcieu.github.io/TwoSampleMR/reference/clump_data.md)
