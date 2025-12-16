@@ -728,6 +728,11 @@ res_all <- mr_wrapper(dat)
 
 # MR-MoE - predict the performance of each method
 res_moe <- mr_moe(res_all, rf)
+
+# Now you can view the estimates, and see that they have
+# been sorted in order from most likely to least likely to
+# be accurate, based on MOE prediction
+res_moe[[1]]$estimates
 ```
 
 The function does the following:
