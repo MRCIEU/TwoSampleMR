@@ -9,7 +9,7 @@ Infers p-values when possible from beta and se."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.27</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.28</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@ Infers p-values when possible from beta and se."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Read exposure data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.6.27/R/read_data.R" class="external-link"><code>R/read_data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/R/read_data.R" class="external-link"><code>R/read_data.R</code></a></small>
       <div class="d-none name"><code>read_exposure_data.Rd</code></div>
     </div>
 
@@ -79,7 +79,13 @@ Infers p-values when possible from beta and se.</p>
 <span>  min_pval <span class="op">=</span> <span class="fl">1e-200</span>,</span>
 <span>  log_pval <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  chr_col <span class="op">=</span> <span class="st">"chr"</span>,</span>
-<span>  pos_col <span class="op">=</span> <span class="st">"pos"</span></span>
+<span>  pos_col <span class="op">=</span> <span class="st">"pos"</span>,</span>
+<span>  clump_kb <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  clump_r2 <span class="op">=</span> <span class="fl">0.001</span>,</span>
+<span>  clump_p1 <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  pop <span class="op">=</span> <span class="st">"EUR"</span>,</span>
+<span>  bfile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plink_bin <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -169,6 +175,30 @@ Infers p-values when possible from beta and se.</p>
 
 <dt id="arg-pos-col">pos_col<a class="anchor" aria-label="anchor" href="#arg-pos-col"></a></dt>
 <dd><p>Optional column name for genetic position Default is <code>"pos"</code>.</p></dd>
+
+
+<dt id="arg-clump-kb">clump_kb<a class="anchor" aria-label="anchor" href="#arg-clump-kb"></a></dt>
+<dd><p>Clumping window, default is <code>10000</code>.</p></dd>
+
+
+<dt id="arg-clump-r-">clump_r2<a class="anchor" aria-label="anchor" href="#arg-clump-r-"></a></dt>
+<dd><p>Clumping r2 cutoff. Note that this default value has recently changed from <code>0.01</code> to <code>0.001</code>.</p></dd>
+
+
+<dt id="arg-clump-p-">clump_p1<a class="anchor" aria-label="anchor" href="#arg-clump-p-"></a></dt>
+<dd><p>Clumping sig level for index SNPs, default is <code>1</code>.</p></dd>
+
+
+<dt id="arg-pop">pop<a class="anchor" aria-label="anchor" href="#arg-pop"></a></dt>
+<dd><p>Super-population to use as reference panel. Default = <code>"EUR"</code>. Options are <code>"EUR"</code>, <code>"SAS"</code>, <code>"EAS"</code>, <code>"AFR"</code>, <code>"AMR"</code>. <code>'legacy'</code> also available - which is a previously used version of the EUR panel with a slightly different set of markers</p></dd>
+
+
+<dt id="arg-bfile">bfile<a class="anchor" aria-label="anchor" href="#arg-bfile"></a></dt>
+<dd><p>If this is provided then will use the API. Default = <code>NULL</code></p></dd>
+
+
+<dt id="arg-plink-bin">plink_bin<a class="anchor" aria-label="anchor" href="#arg-plink-bin"></a></dt>
+<dd><p>If <code>NULL</code> and <code>bfile</code> is not <code>NULL</code> then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = <code>NULL</code></p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -1175,7 +1175,7 @@ In order to run the analysis you must download an RData object that
 contains the trained random forests that are used to predict the
 efficacy of each method. This can be downloaded from here:
 
-[dropbox.com/s/5la7y38od95swcf](https://mrcieu.github.io/TwoSampleMR/articles/dropbox.com/s/5la7y38od95swcf)
+<https://www.dropbox.com/s/5la7y38od95swcf>
 
 **Caution: this is a large file (approx 167Mb)**
 
@@ -1185,7 +1185,7 @@ function to perform the analysis. An example is shown here, estimating
 the causal effect of BMI on coronary heart disease:
 
 ``` r
-# Extact instruments for BMI
+# Extract instruments for BMI
 exposure_dat <- extract_instruments("ieu-a-2")
 
 # Get corresponding effects for CHD
@@ -1202,6 +1202,11 @@ res_all <- mr_wrapper(dat)
 
 # MR-MoE - predict the performance of each method
 res_moe <- mr_moe(res_all, rf)
+
+# Now you can view the estimates, and see that they have
+# been sorted in order from most likely to least likely to
+# be accurate, based on MOE prediction
+res_moe[[1]]$estimates
 ```
 
 The function does the following:
@@ -1243,8 +1248,9 @@ managing or editing MR results.
 
 ### Split outcome names
 
-The outcome column in the output of mr() combines the original outcome
-name with the outcome trait ID.
+The outcome column in the output of
+[`mr()`](https://mrcieu.github.io/TwoSampleMR/reference/mr.md) combines
+the original outcome name with the outcome trait ID.
 
 ``` r
 head(res)

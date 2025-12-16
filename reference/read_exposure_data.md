@@ -27,7 +27,13 @@ read_exposure_data(
   min_pval = 1e-200,
   log_pval = FALSE,
   chr_col = "chr",
-  pos_col = "pos"
+  pos_col = "pos",
+  clump_kb = 10000,
+  clump_r2 = 0.001,
+  clump_p1 = 1,
+  pop = "EUR",
+  bfile = NULL,
+  plink_bin = NULL
 )
 ```
 
@@ -129,6 +135,36 @@ read_exposure_data(
 - pos_col:
 
   Optional column name for genetic position Default is `"pos"`.
+
+- clump_kb:
+
+  Clumping window, default is `10000`.
+
+- clump_r2:
+
+  Clumping r2 cutoff. Note that this default value has recently changed
+  from `0.01` to `0.001`.
+
+- clump_p1:
+
+  Clumping sig level for index SNPs, default is `1`.
+
+- pop:
+
+  Super-population to use as reference panel. Default = `"EUR"`. Options
+  are `"EUR"`, `"SAS"`, `"EAS"`, `"AFR"`, `"AMR"`. `'legacy'` also
+  available - which is a previously used version of the EUR panel with a
+  slightly different set of markers
+
+- bfile:
+
+  If this is provided then will use the API. Default = `NULL`
+
+- plink_bin:
+
+  If `NULL` and `bfile` is not `NULL` then will detect packaged plink
+  binary for specific OS. Otherwise specify path to plink binary.
+  Default = `NULL`
 
 ## Value
 

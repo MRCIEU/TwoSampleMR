@@ -1,5 +1,16 @@
 # Changelog
 
+## TwoSampleMR v0.6.28
+
+(Release date 2025-12-15)
+
+- Allowed the arguments for
+  [`clump_data()`](https://mrcieu.github.io/TwoSampleMR/reference/clump_data.md)
+  to be specified from
+  [`read_exposure_data()`](https://mrcieu.github.io/TwoSampleMR/reference/read_exposure_data.md)
+  (thanks [@al3xjwood](https://github.com/al3xjwood)).
+- Fixed two function calls in `mr_moe_single()`
+
 ## TwoSampleMR v0.6.27
 
 (Release date 2025-12-15)
