@@ -3,6 +3,7 @@
 (Release date 2025-12-15)
 
 * Allowed the arguments for `clump_data()` to be specified from `read_exposure_data()` (thanks @al3xjwood).
+* Fixed two function calls in `mr_moe_single()`
 
 # TwoSampleMR v0.6.27
 
