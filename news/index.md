@@ -1,6 +1,6 @@
 # Changelog
 
-## TwoSampleMR v0.6.28
+## TwoSampleMR v0.6.29
 
 (Release date 2025-12-16)
 
