@@ -764,19 +764,6 @@ weighted_median <- function(b_iv, weights) {
   return(b)
 }
 
-weighted_median <- function(b_iv, weights) {
-  betaIV.order <- b_iv[order(b_iv)]
-  weights.order <- weights[order(b_iv)]
-  weights.sum <- cumsum(weights.order) - 0.5 * weights.order
-  weights.sum <- weights.sum / sum(weights.order)
-  below <- max(which(weights.sum < 0.5))
-  b <- betaIV.order[below] +
-    (betaIV.order[below + 1] - betaIV.order[below]) *
-      (0.5 - weights.sum[below]) /
-      (weights.sum[below + 1] - weights.sum[below])
-  return(b)
-}
-
 
 #' Calculate standard errors for weighted median method using bootstrap
 #'
