@@ -300,13 +300,15 @@ format_data <- function(
   }
 
   # Remove duplicated SNPs
-  dat <- plyr::ddply(dat, type, function(x) {
-    x <- plyr::mutate(x)
+  dat_dt <- data.table::as.data.table(dat)
+  types <- unique(dat_dt[[type]])
+  dat_list <- lapply(types, function(t) {
+    x <- dat_dt[dat_dt[[type]] == t]
     dup <- duplicated(x$SNP)
     if (any(dup)) {
       warning(
         "Duplicated SNPs present in exposure data for phenotype '",
-        x[[type]][1],
+        t,
         ". Just keeping the first instance:\n",
         paste(x$SNP[dup], collapse = "\n")
       )
@@ -314,6 +316,8 @@ format_data <- function(
     }
     return(x)
   })
+  dat <- data.table::rbindlist(dat_list, fill = TRUE, use.names = TRUE)
+  data.table::setDF(dat)
 
   # Check if columns required for MR are present
   mr_cols_required <- c(snp_col, beta_col, se_col, effect_allele_col)
@@ -580,15 +584,19 @@ format_data <- function(
 }
 
 check_units <- function(x, id, col) {
-  temp <- plyr::ddply(x, id, function(x1) {
+  x_dt <- data.table::as.data.table(x)
+  ids <- unique(x_dt[[id]])
+  temp_list <- lapply(ids, function(id_val) {
+    x1 <- x_dt[x_dt[[id]] == id_val]
     ph <- FALSE
     if (length(unique(x1[[col]])) > 1) {
-      warning("More than one type of unit specified for ", x1[[id]][1])
-      x1 <- plyr::mutate(x1)
+      warning("More than one type of unit specified for ", id_val)
       ph <- TRUE
     }
     return(data.frame(ph = ph[1], stringsAsFactors = FALSE))
   })
+  temp <- data.table::rbindlist(temp_list, fill = TRUE, use.names = TRUE)
+  data.table::setDF(temp)
   return(temp)
 }
 
@@ -774,14 +782,18 @@ combine_data <- function(x) {
 
   id_col <- paste0("id.", type)
   mr_keep_col <- paste0("mr_keep.", type)
-  x <- plyr::rbind.fill(x)
+  x <- data.table::rbindlist(x, fill = TRUE, use.names = TRUE)
+  data.table::setDF(x)
 
-  x <- plyr::ddply(x, id_col, function(x) {
-    x <- plyr::mutate(x)
-    x <- x[order(x[[mr_keep_col]], decreasing = TRUE), ]
-    x <- subset(x, !duplicated(SNP))
-    return(x)
+  ids <- unique(x[[id_col]])
+  x_list <- lapply(ids, function(id_val) {
+    x1 <- x[x[[id_col]] == id_val, , drop = FALSE]
+    x1 <- x1[order(x1[[mr_keep_col]], decreasing = TRUE), ]
+    x1 <- x1[!duplicated(x1$SNP), ]
+    return(x1)
   })
+  x <- data.table::rbindlist(x_list, fill = TRUE, use.names = TRUE)
+  data.table::setDF(x)
 
   rownames(x) <- NULL
   return(x)

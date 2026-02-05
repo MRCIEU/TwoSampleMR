@@ -294,7 +294,8 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
     l[[i]] <- mr_rucker(dat2, parameters)
   }
 
-  modsel <- plyr::rbind.fill(lapply(l, function(x) x$selected))
+  modsel <- data.table::rbindlist(lapply(l, function(x) x$selected), fill = TRUE, use.names = TRUE)
+  data.table::setDF(modsel)
   modsel$model <- sapply(l, function(x) x$res)
 
   bootstrap <- data.frame(
@@ -444,7 +445,8 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
       l[[i]] <- mr_rucker_internal(dat2, parameters)
     }
 
-    modsel <- plyr::rbind.fill(lapply(l, function(x) x$selected))
+    modsel <- data.table::rbindlist(lapply(l, function(x) x$selected), fill = TRUE, use.names = TRUE)
+    data.table::setDF(modsel)
     modsel$model <- sapply(l, function(x) x$res)
 
     bootstrap <- data.frame(

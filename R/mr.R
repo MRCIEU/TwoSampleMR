@@ -23,37 +23,54 @@ mr <- function(
     }
   }
 
-  mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1) {
-    # message("Performing MR analysis of '", x1$id.exposure[1], "' on '", x18WII58$id.outcome[1], "'")
-    x <- subset(x1, mr_keep)
+  # Convert to data.table for efficient grouped operations
+
+  dat_dt <- data.table::as.data.table(dat)
+  
+  # Get unique combinations of id.exposure and id.outcome
+  combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
+  
+  # Process each combination
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    exp_id <- combos$id.exposure[i]
+    out_id <- combos$id.outcome[i]
+    x1 <- dat_dt[id.exposure == exp_id & id.outcome == out_id]
+    x <- x1[mr_keep == TRUE]
+    
     if (nrow(x) == 0) {
       message(
         "No SNPs available for MR analysis of '",
-        x1$id.exposure[1],
+        exp_id,
         "' on '",
-        x1$id.outcome[1],
+        out_id,
         "'"
       )
       return(NULL)
     } else {
-      message("Analysing '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
+      message("Analysing '", exp_id, "' on '", out_id, "'")
     }
     res <- lapply(method_list, function(meth) {
       get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
     })
     methl <- mr_method_list()
     mr_tab <- data.frame(
+      id.exposure = exp_id,
+      id.outcome = out_id,
       outcome = x$outcome[1],
       exposure = x$exposure[1],
       method = methl$name[match(method_list, methl$obj)],
       nsnp = sapply(res, function(x) x$nsnp),
       b = sapply(res, function(x) x$b),
       se = sapply(res, function(x) x$se),
-      pval = sapply(res, function(x) x$pval)
+      pval = sapply(res, function(x) x$pval),
+      stringsAsFactors = FALSE
     )
-    mr_tab <- subset(mr_tab, !(is.na(b) & is.na(se) & is.na(pval)))
+    mr_tab <- mr_tab[!(is.na(mr_tab$b) & is.na(mr_tab$se) & is.na(mr_tab$pval)), ]
     return(mr_tab)
   })
+  
+  mr_tab <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(mr_tab)
 
   return(mr_tab)
 }
@@ -243,7 +260,8 @@ mr_method_list <- function() {
     )
   )
   a <- lapply(a, as.data.frame)
-  a <- plyr::rbind.fill(a)
+  a <- data.table::rbindlist(a, fill = TRUE, use.names = TRUE)
+  data.table::setDF(a)
   a <- as.data.frame(lapply(a, as.character), stringsAsFactors = FALSE)
   a$heterogeneity_test <- as.logical(a$heterogeneity_test)
   a$use_by_default <- as.logical(a$use_by_default)
