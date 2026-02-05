@@ -173,12 +173,9 @@ check_palindromic <- function(A1, A2) {
 
 
 flip_alleles <- function(x) {
-  x <- toupper(x)
-  x <- gsub("C", "g", x)
-  x <- gsub("G", "c", x)
-  x <- gsub("A", "t", x)
-  x <- gsub("T", "a", x)
-  return(toupper(x))
+  # Use chartr for efficient single-pass character substitution
+  # This is much faster than 4 sequential gsub calls
+  chartr("ACGTacgt", "TGCAtgca", x)
 }
 
 
