@@ -736,11 +736,13 @@ format_aries_mqtl <- function(aries_mqtl_subset, type = "exposure") {
 
 
 random_string <- function(n = 1, len = 6) {
-  randomString <- c(1:n)
-  for (i in 1:n) {
-    randomString[i] <- paste(sample(c(0:9, letters, LETTERS), len, replace = TRUE), collapse = "")
-  }
-  return(randomString)
+  # Vectorized random string generation
+  # Generate all random characters at once and reshape into matrix
+  chars <- c(0:9, letters, LETTERS)
+  random_chars <- sample(chars, n * len, replace = TRUE)
+  # Reshape to matrix with n rows and len columns, then collapse each row
+  random_matrix <- matrix(random_chars, nrow = n, ncol = len)
+  apply(random_matrix, 1, paste, collapse = "")
 }
 
 create_ids <- function(x) {
