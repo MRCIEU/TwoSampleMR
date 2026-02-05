@@ -783,13 +783,25 @@ weighted_median <- function(b_iv, weights) {
 #' @export
 #' @return Empirical standard error
 weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nboot) {
-  med <- rep(0, nboot)
-  for (i in seq_len(nboot)) {
-    b_exp.boot <- stats::rnorm(length(b_exp), mean = b_exp, sd = se_exp)
-    b_out.boot <- stats::rnorm(length(b_out), mean = b_out, sd = se_out)
-    betaIV.boot <- b_out.boot / b_exp.boot
-    med[i] <- weighted_median(betaIV.boot, weights)
-  }
+  nsnp <- length(b_exp)
+
+  # Vectorized bootstrap: generate all random values at once
+  # Matrix dimensions: nboot rows x nsnp columns
+  b_exp_mat <- matrix(stats::rnorm(nboot * nsnp, mean = rep(b_exp, each = nboot),
+                                   sd = rep(se_exp, each = nboot)),
+                      nrow = nboot, ncol = nsnp)
+  b_out_mat <- matrix(stats::rnorm(nboot * nsnp, mean = rep(b_out, each = nboot),
+                                   sd = rep(se_out, each = nboot)),
+                      nrow = nboot, ncol = nsnp)
+
+  # Compute Wald ratios for all bootstrap samples (element-wise division)
+  betaIV_mat <- b_out_mat / b_exp_mat
+
+  # Apply weighted_median to each bootstrap iteration
+  med <- vapply(seq_len(nboot), function(i) {
+    weighted_median(betaIV_mat[i, ], weights)
+  }, numeric(1))
+
   return(stats::sd(med))
 }
 
