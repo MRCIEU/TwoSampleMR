@@ -636,36 +636,40 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
     ))
   }
   nboot <- parameters$nboot
-  # Do bootstraps
-  res <- array(0, c(nboot + 1, 2))
-  # pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style=3)
-  for (i in 1:nboot) {
-    # setTxtProgressBar(pb, i)
-    #sample from distributions of SNP betas
-    xs <- stats::rnorm(length(b_exp), b_exp, se_exp)
-    ys <- stats::rnorm(length(b_out), b_out, se_out)
+  nsnp <- length(b_exp)
+  weights <- 1 / se_out^2
 
-    # Use absolute values for Egger reg
-    ys <- ys * sign(xs)
-    xs <- abs(xs)
+  # Vectorized bootstrap: generate all random values at once
+  # Matrix dimensions: nboot rows x nsnp columns
+  xs_mat <- matrix(stats::rnorm(nboot * nsnp, mean = rep(b_exp, each = nboot),
+                                sd = rep(se_exp, each = nboot)),
+                   nrow = nboot, ncol = nsnp)
+  ys_mat <- matrix(stats::rnorm(nboot * nsnp, mean = rep(b_out, each = nboot),
+                                sd = rep(se_out, each = nboot)),
+                   nrow = nboot, ncol = nsnp)
 
-    #weighted regression with given formula
-    # r <- summary(lm(ys ~ xs, weights=1/se_out^2))
-    r <- linreg(xs, ys, 1 / se_out^2)
+  # Apply sign correction for Egger regression (vectorized)
+  ys_mat <- ys_mat * sign(xs_mat)
+  xs_mat <- abs(xs_mat)
 
-    #collect coefficient from given line.
-    res[i, 1] <- r$ahat
-    res[i, 2] <- r$bhat
-    # res[i, 1] <- r$coefficients[1,1]
-    # res[i, 2] <- r$coefficients[2,1]
-  }
-  cat("\n")
+  # Vectorized weighted linear regression for all bootstrap iterations
+  # For each bootstrap iteration, compute weighted regression coefficients
+  # Using the formula: bhat = cov(x*w, y*w) / var(x*w), ahat = mean(y) - mean(x)*bhat
+  res <- t(vapply(seq_len(nboot), function(i) {
+    xs <- xs_mat[i, ]
+    ys <- ys_mat[i, ]
+    xw <- xs * weights
+    yw <- ys * weights
+    bhat <- stats::cov(xw, yw, use = "pair") / stats::var(xw, na.rm = TRUE)
+    ahat <- mean(ys, na.rm = TRUE) - mean(xs, na.rm = TRUE) * bhat
+    c(ahat, bhat)
+  }, numeric(2)))
 
   return(list(
     b = mean(res[, 2], na.rm = TRUE),
     se = stats::sd(res[, 2], na.rm = TRUE),
     pval = sum(sign(mean(res[, 2], na.rm = TRUE)) * res[, 2] < 0) / nboot,
-    nsnp = length(b_exp),
+    nsnp = nsnp,
     b_i = mean(res[, 1], na.rm = TRUE),
     se_i = stats::sd(res[, 1], na.rm = TRUE),
     pval_i = sum(sign(mean(res[, 1], na.rm = TRUE)) * res[, 1] < 0) / nboot
