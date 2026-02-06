@@ -30,6 +30,8 @@ mr <- function(
   # Get unique combinations of id.exposure and id.outcome
   combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
   
+  # Pre-compute method names once, outside the loop
+  methl <- mr_method_list()
   # Process each combination
   results <- lapply(seq_len(nrow(combos)), function(i) {
     exp_id <- combos$id.exposure[i]
@@ -52,7 +54,6 @@ mr <- function(
     res <- lapply(method_list, function(meth) {
       get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
     })
-    methl <- mr_method_list()
     mr_tab <- data.frame(
       id.exposure = exp_id,
       id.outcome = out_id,
