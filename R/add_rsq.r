@@ -267,29 +267,22 @@ get_r_from_lor <- function(
     ncontrol <- rep(ncontrol, length(lor))
   }
 
-  nsnp <- length(lor)
-  r <- array(NA, nsnp)
-  for (i in 1:nsnp) {
-    if (model == "logit") {
-      ve <- pi^2 / 3
-    } else if (model == "probit") {
-      ve <- 1
-    } else {
-      stop("Model must be probit or logit")
-    }
-    popaf <- get_population_allele_frequency(
-      af[i],
-      ncase[i] / (ncase[i] + ncontrol[i]),
-      exp(lor[i]),
-      prevalence[i]
-    )
-    vg <- (lor[i])^2 * popaf * (1 - popaf)
-    r[i] <- vg / (vg + ve)
-    if (correction) {
-      r[i] <- r[i] / 0.58
-    }
-    r[i] <- sqrt(r[i]) * sign(lor[i])
+  if (model == "logit") {
+    ve <- pi^2 / 3
+  } else if (model == "probit") {
+    ve <- 1
+  } else {
+    stop("Model must be probit or logit")
   }
+
+  prop <- ncase / (ncase + ncontrol)
+  popaf <- get_population_allele_frequency(af, prop, exp(lor), prevalence)
+  vg <- lor^2 * popaf * (1 - popaf)
+  r <- vg / (vg + ve)
+  if (correction) {
+    r <- r / 0.58
+  }
+  r <- sqrt(r) * sign(lor)
   return(r)
 }
 
