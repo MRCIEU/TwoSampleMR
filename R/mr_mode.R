@@ -35,17 +35,17 @@ mr_mode <- function(dat, parameters = default_parameters(), mode_method = "all")
     #Standardised weights
     weights <- seBetaIV.in^-2 / sum(seBetaIV.in^-2)
 
-    beta <- NULL
+    result <- numeric(length(phi))
 
-    for (cur_phi in phi) {
+    for (j in seq_along(phi)) {
       #Define the actual bandwidth
-      h <- max(0.00000001, s * cur_phi)
+      h <- max(0.00000001, s * phi[j])
       #Compute the smoothed empirical density function
       densityIV <- stats::density(BetaIV.in, weights = weights, bw = h)
       #Extract the point with the highest density as the point estimate
-      beta[length(beta) + 1] <- densityIV$x[densityIV$y == max(densityIV$y)]
+      result[j] <- densityIV$x[which.max(densityIV$y)]
     }
-    return(beta)
+    return(result)
   }
 
   #------------------------------------------#
@@ -55,50 +55,65 @@ mr_mode <- function(dat, parameters = default_parameters(), mode_method = "all")
   #seBetaIV.in: standard errors of ratio estimates
   #beta_Mode.in: point causal effect estimates
   boot <- function(BetaIV.in, seBetaIV.in, beta_Mode.in, nboot) {
+    n <- length(BetaIV.in)
+    nphi <- length(phi)
+
+    #Pre-generate all random values as matrices (nboot x n)
+    #mean and sd recycle in lockstep (both length n), filling column-by-column
+    BetaIV.boot_mat <- matrix(
+      stats::rnorm(nboot * n, mean = BetaIV.in, sd = seBetaIV.in[, 1]),
+      nrow = nboot, ncol = n
+    )
+    BetaIV.boot_NOME_mat <- matrix(
+      stats::rnorm(nboot * n, mean = BetaIV.in, sd = seBetaIV.in[, 2]),
+      nrow = nboot, ncol = n
+    )
+
+    #Pre-compute constants
+    ones <- rep(1, n)
+    weights <- 1 / seBetaIV.in[, 1]^2
+
     #Set up a matrix to store the results from each bootstrap iteration
     beta.boot <- matrix(nrow = nboot, ncol = length(beta_Mode.in))
 
     for (i in 1:nboot) {
-      #Re-sample each ratio estimate using SEs derived not assuming NOME
-      BetaIV.boot <- stats::rnorm(length(BetaIV.in), mean = BetaIV.in, sd = seBetaIV.in[, 1])
-      #Re-sample each ratio estimate using SEs derived under NOME
-      BetaIV.boot_NOME <- stats::rnorm(length(BetaIV.in), mean = BetaIV.in, sd = seBetaIV.in[, 2])
+      BetaIV.boot <- BetaIV.boot_mat[i, ]
+      BetaIV.boot_NOME <- BetaIV.boot_NOME_mat[i, ]
 
       #Simple mode, not assuming NOME
-      beta.boot[i, seq_along(phi)] <- beta(
+      beta.boot[i, seq_len(nphi)] <- beta(
         BetaIV.in = BetaIV.boot,
-        seBetaIV.in = rep(1, length(BetaIV)),
+        seBetaIV.in = ones,
         phi = phi
       )
       #Weighted mode, not assuming NOME
-      beta.boot[i, (length(phi) + 1):(2 * length(phi))] <- beta(
+      beta.boot[i, (nphi + 1):(2 * nphi)] <- beta(
         BetaIV.in = BetaIV.boot,
         seBetaIV.in = seBetaIV.in[, 1],
         phi = phi
       )
       #Penalised mode, not assuming NOME
-      weights <- 1 / seBetaIV.in[, 1]^2
       penalty <- stats::pchisq(
-        weights * (BetaIV.boot - beta.boot[i, (length(phi) + 1):(2 * length(phi))])^2,
+        weights * (BetaIV.boot - beta.boot[i, (nphi + 1):(2 * nphi)])^2,
         df = 1,
         lower.tail = FALSE
       )
       pen.weights <- weights * pmin(1, penalty * parameters$penk)
 
-      beta.boot[i, (2 * length(phi) + 1):(3 * length(phi))] <- beta(
+      beta.boot[i, (2 * nphi + 1):(3 * nphi)] <- beta(
         BetaIV.in = BetaIV.boot,
         seBetaIV.in = sqrt(1 / pen.weights),
         phi = phi
       )
 
       #Simple mode, assuming NOME
-      beta.boot[i, (3 * length(phi) + 1):(4 * length(phi))] <- beta(
+      beta.boot[i, (3 * nphi + 1):(4 * nphi)] <- beta(
         BetaIV.in = BetaIV.boot_NOME,
-        seBetaIV.in = rep(1, length(BetaIV)),
+        seBetaIV.in = ones,
         phi = phi
       )
       #Weighted mode, assuming NOME
-      beta.boot[i, (4 * length(phi) + 1):(5 * length(phi))] <- beta(
+      beta.boot[i, (4 * nphi + 1):(5 * nphi)] <- beta(
         BetaIV.in = BetaIV.boot_NOME,
         seBetaIV.in = seBetaIV.in[, 2],
         phi = phi
