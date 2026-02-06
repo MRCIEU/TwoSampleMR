@@ -15,6 +15,7 @@
 * Optimized `mr_mode()`
 * Replaced `apply(..., any(is.na()))` with `complete.case()`
 * Optimized the `mr()` function
+* Optimized the `Optimize get_r_from_lor()` function
 
 # TwoSampleMR v0.6.29
 
