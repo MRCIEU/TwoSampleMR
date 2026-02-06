@@ -32,6 +32,8 @@ mr <- function(
   
   # Pre-compute method names once, outside the loop
   methl <- mr_method_list()
+  method_names <- methl$name[match(method_list, methl$obj)]
+
   # Process each combination
   results <- lapply(seq_len(nrow(combos)), function(i) {
     exp_id <- combos$id.exposure[i]
@@ -59,7 +61,6 @@ mr <- function(
       id.outcome = out_id,
       outcome = x$outcome[1],
       exposure = x$exposure[1],
-      method = methl$name[match(method_list, methl$obj)],
       nsnp = sapply(res, function(x) x$nsnp),
       b = sapply(res, function(x) x$b),
       se = sapply(res, function(x) x$se),
