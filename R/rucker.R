@@ -286,22 +286,33 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
 
   # Main result
   rucker <- mr_rucker(dat, parameters)
+
+  # Pre-generate all random values as matrices (nboot x nsnp)
+  boot_exp <- matrix(
+    stats::rnorm(nboot * nsnp, mean = dat$beta.exposure, sd = dat$se.exposure),
+    nrow = nboot, ncol = nsnp
+  )
+  boot_out <- matrix(
+    stats::rnorm(nboot * nsnp, mean = dat$beta.outcome, sd = dat$se.outcome),
+    nrow = nboot, ncol = nsnp
+  )
+
   dat2 <- dat
   l <- list()
   for (i in 1:nboot) {
-    dat2$beta.exposure <- stats::rnorm(nsnp, mean = dat$beta.exposure, sd = dat$se.exposure)
-    dat2$beta.outcome <- stats::rnorm(nsnp, mean = dat$beta.outcome, sd = dat$se.outcome)
+    dat2$beta.exposure <- boot_exp[i, ]
+    dat2$beta.outcome <- boot_out[i, ]
     l[[i]] <- mr_rucker(dat2, parameters)
   }
 
   modsel <- data.table::rbindlist(lapply(l, function(x) x$selected), fill = TRUE, use.names = TRUE)
   data.table::setDF(modsel)
-  modsel$model <- sapply(l, function(x) x$res)
+  modsel$model <- vapply(l, function(x) x$res, character(1))
 
   bootstrap <- data.frame(
-    Q = c(rucker$Q$Q[1], sapply(l, function(x) x$Q$Q[1])),
-    Qdash = c(rucker$Q$Q[2], sapply(l, function(x) x$Q$Q[2])),
-    model = c(rucker$res, sapply(l, function(x) x$res)),
+    Q = c(rucker$Q$Q[1], vapply(l, function(x) x$Q$Q[1], numeric(1))),
+    Qdash = c(rucker$Q$Q[2], vapply(l, function(x) x$Q$Q[2], numeric(1))),
+    model = c(rucker$res, vapply(l, function(x) x$res, character(1))),
     i = c("Full", rep("Bootstrap", nboot))
   )
 
