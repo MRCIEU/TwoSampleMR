@@ -4,10 +4,7 @@ ids_new_to_old <- function(id) {
 
 ids_new_to_old2 <- function(id) {
   id <- gsub("IEU-a-", "", id)
-  id <- gsub("-a-", "-a:", id)
-  id <- gsub("-b-", "-b:", id)
-  id <- gsub("-c-", "-c:", id)
-  id <- gsub("-d-", "-d:", id)
+  id <- gsub("-([a-d])-", "-\\1:", id)
   return(id)
 }
 
