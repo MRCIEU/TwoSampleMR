@@ -96,7 +96,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action = 2) {
     ) -
       nrow(x)
 
-    x$mr_keep[apply(x[, mr_cols], 1, function(y) any(is.na(y)))] <- FALSE
+    x$mr_keep[!complete.cases(x[, mr_cols])] <- FALSE
     attr(x, "log")[["total_variants"]] <- nrow(x)
     attr(x, "log")[["total_variants_for_mr"]] <- sum(x$mr_keep)
     attr(x, "log")[["proxy_variants"]] <- ifelse(

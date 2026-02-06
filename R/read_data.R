@@ -549,7 +549,7 @@ format_data <- function(
     mrcols <- c("SNP", "beta.outcome", "se.outcome", "effect_allele.outcome")
     mrcols_present <- mrcols[mrcols %in% names(dat)]
     dat$mr_keep.outcome <- dat$mr_keep.outcome &
-      apply(dat[, mrcols_present], 1, function(x) !any(is.na(x)))
+      complete.cases(dat[, mrcols_present])
     if (any(!dat$mr_keep.outcome)) {
       missinginfosnps <- paste(subset(dat, !mr_keep.outcome)$SNP, collapse = " ")
       warning(
