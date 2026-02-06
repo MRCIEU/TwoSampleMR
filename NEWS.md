@@ -14,6 +14,7 @@
 * In `random_string()` use single call to `sample()` instead of n calls
 * Optimized `mr_mode()`
 * Replaced `apply(..., any(is.na()))` with `complete.case()`
+* Optimized the `mr()` function
 
 # TwoSampleMR v0.6.29
 
