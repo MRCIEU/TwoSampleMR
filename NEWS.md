@@ -11,6 +11,7 @@
   - Added `data.table::setDF()` calls to convert back to data.frame for compatibility
 * In `flip_alleles()` use `chartr()` instead of 4 `gsub()` calls
 * In `random_string()` use single call to `sample()` instead of n calls
+* Optimized `mr_mode()`
 
 # TwoSampleMR v0.6.29
 
