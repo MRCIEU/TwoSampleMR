@@ -61,6 +61,14 @@ jobs:
         shell: bash
         run: echo 'options(pkg.sysreqs_db_update_timeout = as.difftime(59, units = "secs"))' >> ~/.Rprofile
 
+      - name: Install gettext system dependency on macOS for robustbase package build from source
+        if: runner.os == 'macOS'
+        run: |
+          brew install gettext
+          mkdir -p ~/.R
+          echo "CPPFLAGS=-I$(brew --prefix gettext)/include" >> ~/.R/Makevars
+          echo "LDFLAGS=-L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: >
