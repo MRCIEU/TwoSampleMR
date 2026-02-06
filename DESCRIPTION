@@ -43,7 +43,6 @@ Imports:
     MRMix,
     MRPRESSO,
     pbapply,
-    plyr,
     psych,
     RadialMR,
     reshape2,

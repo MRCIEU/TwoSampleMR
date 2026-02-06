@@ -17,8 +17,9 @@ dat_to_MRInput <- function(dat, get_correlations = FALSE, pop = "EUR") {
       call. = FALSE
     )
   }
-  out <- plyr::dlply(dat, c("exposure", "outcome"), function(x) {
-    x <- plyr::mutate(x)
+  combos <- unique(dat[, c("exposure", "outcome")])
+  out <- lapply(seq_len(nrow(combos)), function(i) {
+    x <- dat[dat$exposure == combos$exposure[i] & dat$outcome == combos$outcome[i], ]
     message("Converting:")
     message(" - exposure: ", x$exposure[1])
     message(" - outcome: ", x$outcome[1])
@@ -60,6 +61,7 @@ dat_to_MRInput <- function(dat, get_correlations = FALSE, pop = "EUR") {
       )
     }
   })
+  names(out) <- paste(combos$exposure, combos$outcome, sep = ".")
   return(out)
 }
 
@@ -179,8 +181,9 @@ run_mr_presso <- function(dat, NbDistribution = 1000, SignifThreshold = 0.05) {
 #' @export
 #' @return List of RadialMR format datasets
 dat_to_RadialMR <- function(dat) {
-  out <- plyr::dlply(dat, c("exposure", "outcome"), function(x) {
-    x <- plyr::mutate(x)
+  combos <- unique(dat[, c("exposure", "outcome")])
+  out <- lapply(seq_len(nrow(combos)), function(i) {
+    x <- dat[dat$exposure == combos$exposure[i] & dat$outcome == combos$outcome[i], ]
     message("Converting:")
     message(" - exposure: ", x$exposure[1])
     message(" - outcome: ", x$outcome[1])
@@ -194,6 +197,7 @@ dat_to_RadialMR <- function(dat) {
     )
     return(d)
   })
+  names(out) <- paste(combos$exposure, combos$outcome, sep = ".")
   return(out)
 }
 
@@ -251,7 +255,9 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters = default_par
 #' @export
 #' @return List of results, with one list item for every exposure/outcome pair in dat object
 run_mrmix <- function(dat) {
-  plyr::dlply(dat, c("id.exposure", "id.outcome"), function(x) {
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  out <- lapply(seq_len(nrow(combos)), function(i) {
+    x <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     message("Analysing ", x$id.exposure[1], " against ", x$id.outcome[1])
     if (grepl("log odds", x$units.exposure[1])) {
       xunit <- "binary"
@@ -294,4 +300,6 @@ run_mrmix <- function(dat) {
     x$se.outcome <- l$sy_std
     MRMix::MRMix(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome)
   })
+  names(out) <- paste(combos$id.exposure, combos$id.outcome, sep = ".")
+  out
 }

@@ -101,9 +101,9 @@ format_mr_results <- function(
 
   # Fill in missing values
   exps <- unique(dat$exposure)
-  dat <- plyr::ddply(dat, c("outcome"), function(x) {
-    x <- plyr::mutate(x)
-    nc <- ncol(x)
+  outcomes <- unique(dat$outcome)
+  results <- lapply(outcomes, function(out_val) {
+    x <- dat[dat$outcome == out_val, ]
     missed <- exps[!exps %in% x$exposure]
     if (length(missed) >= 1) {
       out <- unique(x$outcome)
@@ -116,10 +116,13 @@ format_mr_results <- function(
         sample_size = n,
         stringsAsFactors = FALSE
       )
-      x <- plyr::rbind.fill(x, md)
+      x <- data.table::rbindlist(list(x, md), fill = TRUE, use.names = TRUE)
+      data.table::setDF(x)
     }
     return(x)
   })
+  dat <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(dat)
   # dat <- dplyr::group_by(dat, outcome) %>%
   # 	dplyr::do({
   # 		x <- .

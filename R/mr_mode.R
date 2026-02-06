@@ -374,9 +374,13 @@ mr_simple_mode_nome <- function(b_exp, b_out, se_exp, se_out, parameters = defau
 
 
 mr_mode_broken <- function(dat, parameters = default_parameters(), mode_method = "all") {
-  res <- plyr::ddply(dat, c("id.exposure", "exposure", "id.outcome", "outcome"), function(x) {
+  combos <- unique(dat[, c("id.exposure", "exposure", "id.outcome", "outcome")])
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    x <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     mr_mode_internal(x, parameters, mode_method = "all")
   })
+  res <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(res)
   if (mode_method != "all") {
     return(subset(res, method %in% mode_method))
   } else {

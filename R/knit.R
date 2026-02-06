@@ -122,14 +122,13 @@ mr_report <- function(
     mr_leaveoneout_plot = mr_leaveoneout_plot(m$mr_leaveoneout)
   )
 
-  combinations <- plyr::ddply(
-    dat,
-    c("id.exposure", "id.outcome"),
-    plyr::summarise,
-    n = length(exposure),
+  dat_dt <- data.table::as.data.table(dat)
+  combinations <- dat_dt[, .(
+    n = .N,
     exposure = exposure[1],
     outcome = outcome[1]
-  )
+  ), by = c("id.exposure", "id.outcome")]
+  data.table::setDF(combinations)
 
   output_file <- array("", nrow(combinations))
   for (i in seq_len(nrow(combinations))) {

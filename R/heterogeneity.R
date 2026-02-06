@@ -13,8 +13,10 @@ mr_heterogeneity <- function(
   parameters = default_parameters(),
   method_list = subset(mr_method_list(), heterogeneity_test & use_by_default)$obj
 ) {
-  het_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1) {
-    # message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
+  methl <- mr_method_list()
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    x1 <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     x <- subset(x1, mr_keep)
     if (nrow(x) < 2) {
       message(
@@ -29,18 +31,22 @@ mr_heterogeneity <- function(
     res <- lapply(method_list, function(meth) {
       get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
     })
-    methl <- mr_method_list()
     het_tab <- data.frame(
+      id.exposure = x1$id.exposure[1],
+      id.outcome = x1$id.outcome[1],
       outcome = x$outcome[1],
       exposure = x$exposure[1],
       method = methl$name[match(method_list, methl$obj)],
-      Q = sapply(res, function(x) x$Q),
-      Q_df = sapply(res, function(x) x$Q_df),
-      Q_pval = sapply(res, function(x) x$Q_pval)
+      Q = vapply(res, function(x) x$Q, numeric(1)),
+      Q_df = vapply(res, function(x) x$Q_df, numeric(1)),
+      Q_pval = vapply(res, function(x) x$Q_pval, numeric(1)),
+      stringsAsFactors = FALSE
     )
     het_tab <- subset(het_tab, !(is.na(Q) & is.na(Q_df) & is.na(Q_pval)))
     return(het_tab)
   })
+  het_tab <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(het_tab)
 
   return(het_tab)
 }
@@ -55,7 +61,9 @@ mr_heterogeneity <- function(
 #' @export
 #' @return data frame
 mr_pleiotropy_test <- function(dat) {
-  ptab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1) {
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    x1 <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     x <- subset(x1, mr_keep)
     if (nrow(x) < 2) {
       message(
@@ -74,14 +82,18 @@ mr_pleiotropy_test <- function(dat) {
       x$se.outcome,
       default_parameters()
     )
-    out <- data.frame(
+    data.frame(
+      id.exposure = x1$id.exposure[1],
+      id.outcome = x1$id.outcome[1],
       outcome = x$outcome[1],
       exposure = x$exposure[1],
       egger_intercept = res$b_i,
       se = res$se_i,
-      pval = res$pval_i
+      pval = res$pval_i,
+      stringsAsFactors = FALSE
     )
-    return(out)
   })
+  ptab <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(ptab)
   return(ptab)
 }

@@ -11,14 +11,20 @@
 #' @return data frame
 add_rsq <- function(dat) {
   if ("id.exposure" %in% names(dat)) {
-    dat <- plyr::ddply(dat, c("id.exposure"), function(x) {
-      add_rsq_one(x, "exposure")
+    ids <- unique(dat$id.exposure)
+    results <- lapply(ids, function(id) {
+      add_rsq_one(dat[dat$id.exposure == id, ], "exposure")
     })
+    dat <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+    data.table::setDF(dat)
   }
   if ("id.outcome" %in% names(dat)) {
-    dat <- plyr::ddply(dat, c("id.outcome"), function(x) {
-      add_rsq_one(x, "outcome")
+    ids <- unique(dat$id.outcome)
+    results <- lapply(ids, function(id) {
+      add_rsq_one(dat[dat$id.outcome == id, ], "outcome")
     })
+    dat <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+    data.table::setDF(dat)
   }
   return(dat)
 }

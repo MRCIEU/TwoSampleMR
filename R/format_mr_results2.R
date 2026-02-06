@@ -185,10 +185,11 @@ combine_all_mrresults <- function(
   names(sin)[names(sin) == "method"] <- "Method"
 
   res <- merge(res, het, by = c("id.outcome", "id.exposure", "Method"), all.x = TRUE)
-  res <- plyr::rbind.fill(
-    res,
-    sin[, c("exposure", "outcome", "id.exposure", "id.outcome", "SNP", "b", "se", "pval", "Method")]
+  res <- data.table::rbindlist(
+    list(res, sin[, c("exposure", "outcome", "id.exposure", "id.outcome", "SNP", "b", "se", "pval", "Method")]),
+    fill = TRUE, use.names = TRUE
   )
+  data.table::setDF(res)
 
   if (ao_slc) {
     ao <- available_outcomes()

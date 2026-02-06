@@ -7,7 +7,9 @@
 #' @export
 #' @return Data frame
 standardise_units <- function(dat) {
-  out <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(d) {
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    d <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     if (d$units.exposure[1] != "log odds") {
       estsd <- mean(
         estimate_trait_sd(d$beta.exposure, d$se.exposure, d$samplesize.exposure, d$eaf.exposure),
@@ -35,6 +37,8 @@ standardise_units <- function(dat) {
     }
     return(d)
   })
+  out <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(out)
   return(out)
 }
 
