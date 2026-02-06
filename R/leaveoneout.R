@@ -58,9 +58,9 @@ mr_leaveoneout <- function(dat, parameters = default_parameters(), method = mr_i
         id.exposure = exp_id,
         id.outcome = out_id,
         SNP = c(as.character(x$SNP), "All"),
-        b = sapply(l, function(y) y$b),
-        se = sapply(l, function(y) y$se),
-        p = sapply(l, function(y) y$pval),
+        b = vapply(l, function(y) y$b, numeric(1)),
+        se = vapply(l, function(y) y$se, numeric(1)),
+        p = vapply(l, function(y) y$pval, numeric(1)),
         samplesize = x$samplesize.outcome[1],
         stringsAsFactors = FALSE
       )
