@@ -61,10 +61,11 @@ mr <- function(
       id.outcome = out_id,
       outcome = x$outcome[1],
       exposure = x$exposure[1],
-      nsnp = sapply(res, function(x) x$nsnp),
-      b = sapply(res, function(x) x$b),
-      se = sapply(res, function(x) x$se),
-      pval = sapply(res, function(x) x$pval),
+      method = method_names,
+      nsnp = vapply(res, function(x) x$nsnp, numeric(1)),
+      b = vapply(res, function(x) x$b, numeric(1)),
+      se = vapply(res, function(x) x$se, numeric(1)),
+      pval = vapply(res, function(x) x$pval, numeric(1)),
       stringsAsFactors = FALSE
     )
     mr_tab <- mr_tab[!(is.na(mr_tab$b) & is.na(mr_tab$se) & is.na(mr_tab$pval)), ]
