@@ -13,6 +13,7 @@
 * In `flip_alleles()` use `chartr()` instead of 4 `gsub()` calls
 * In `random_string()` use single call to `sample()` instead of n calls
 * Optimized `mr_mode()`
+* Replaced `apply(..., any(is.na()))` with `complete.case()`
 
 # TwoSampleMR v0.6.29
 
