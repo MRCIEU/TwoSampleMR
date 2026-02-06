@@ -1,6 +1,6 @@
 # TwoSampleMR v0.6.30
 
-(Release date 2026-02-00)
+(Release date 2026-02-06)
 
 * Vectorised `mr_egger_regression_bootstrap()`
 * Vectorised `weighted_median_bootstrap()`
