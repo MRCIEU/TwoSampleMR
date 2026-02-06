@@ -6,8 +6,8 @@
 * Vectorised `weighted_median_bootstrap()`
 * Deleted duplicated `weighted_median()` function
 * Replace **plyr** function calls with **data.table** function calls
-  - `plyr::rbind.fill(...)` → `data.table::rbindlist(..., fill = TRUE, use.names = TRUE)`
-  - `plyr::ddply(dat, cols, func)` → `lapply()` over unique combinations + `data.table::rbindlist()`
+  - `plyr::rbind.fill(...)` to `data.table::rbindlist(..., fill = TRUE, use.names = TRUE)`
+  - `plyr::ddply(dat, cols, func)` to `lapply()` over unique combinations + `data.table::rbindlist()`
   - Added `data.table::setDF()` calls to convert back to data.frame for compatibility
   - And removed **plyr** from Imports list
 * In `flip_alleles()` use `chartr()` instead of 4 `gsub()` calls
