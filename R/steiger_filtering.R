@@ -21,7 +21,14 @@
 #' @export
 #' @return [harmonise_data()] style data frame with additional columns rsq.exposure, rsq.outcome, steiger_dir (which is `TRUE` if the rsq.exposure is larger than rsq.outcome) and steiger_pval which is a test to see if rsq.exposure is significantly larger than rsq.outcome.
 steiger_filtering <- function(dat) {
-  plyr::ddply(dat, c("id.exposure", "id.outcome"), steiger_filtering_internal)
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    x <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
+    steiger_filtering_internal(x)
+  })
+  out <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(out)
+  return(out)
 }
 
 

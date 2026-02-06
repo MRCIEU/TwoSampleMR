@@ -8,8 +8,9 @@
 #' @return List of plots
 mr_scatter_plot <- function(mr_results, dat) {
   # dat <- subset(dat, paste(id.outcome, id.exposure) %in% paste(mr_results$id.outcome, mr_results$id.exposure))
-  mrres <- plyr::dlply(dat, c("id.exposure", "id.outcome"), function(d) {
-    d <- plyr::mutate(d)
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  mrres <- lapply(seq_len(nrow(combos)), function(i) {
+    d <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     if (nrow(d) < 2 | sum(d$mr_keep) == 0) {
       return(blank_plot("Insufficient number of SNPs"))
     }
@@ -161,6 +162,7 @@ mr_scatter_plot <- function(mr_results, dat) {
         ggplot2::guides(colour = ggplot2::guide_legend(ncol = 2))
     }
   })
+  names(mrres) <- paste(combos$id.exposure, combos$id.outcome, sep = ".")
   mrres
 }
 

@@ -24,55 +24,72 @@ mr_singlesnp <- function(
   stopifnot("se.exposure" %in% names(dat))
   stopifnot("se.outcome" %in% names(dat))
 
-  res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X) {
-    x <- subset(X, mr_keep)
+  dat_dt <- data.table::as.data.table(dat)
+  combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
+  
+  # Pre-compute method names outside the loop
+  method_list <- mr_method_list()
+  method_names <- vapply(all_method, function(m) {
+    paste0("All - ", method_list$name[method_list$obj == m])
+  }, character(1))
+  
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    exp_id <- combos$id.exposure[i]
+    out_id <- combos$id.outcome[i]
+    X <- dat_dt[id.exposure == exp_id & id.outcome == out_id]
+    x <- X[mr_keep == TRUE]
     nsnp <- nrow(x)
     if (nsnp == 0) {
       x <- X[1, ]
       d <- data.frame(
+        id.exposure = exp_id,
+        id.outcome = out_id,
         SNP = "No available data",
         b = NA,
         se = NA,
         p = NA,
         samplesize = NA,
         outcome = x$outcome[1],
-        exposure = x$exposure[1]
+        exposure = x$exposure[1],
+        stringsAsFactors = FALSE
       )
       return(d)
     }
-    l <- lapply(1:nsnp, function(i) {
+    l <- lapply(1:nsnp, function(j) {
       with(
         x,
         get(single_method)(
-          beta.exposure[i],
-          beta.outcome[i],
-          se.exposure[i],
-          se.outcome[i],
+          beta.exposure[j],
+          beta.outcome[j],
+          se.exposure[j],
+          se.outcome[j],
           parameters
         )
       )
     })
-    nom <- c()
-    for (i in seq_along(all_method)) {
-      l[[nsnp + i]] <- with(
+    for (j in seq_along(all_method)) {
+      l[[nsnp + j]] <- with(
         x,
-        get(all_method[i])(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters)
+        get(all_method[j])(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters)
       )
-
-      nom <- c(nom, paste0("All - ", subset(mr_method_list(), obj == all_method[i])$name))
     }
 
     d <- data.frame(
-      SNP = c(as.character(x$SNP), nom),
-      b = sapply(l, function(y) y$b),
-      se = sapply(l, function(y) y$se),
-      p = sapply(l, function(y) y$pval),
-      samplesize = x$samplesize.outcome[1]
+      id.exposure = exp_id,
+      id.outcome = out_id,
+      SNP = c(as.character(x$SNP), method_names),
+      b = vapply(l, function(y) y$b, numeric(1)),
+      se = vapply(l, function(y) y$se, numeric(1)),
+      p = vapply(l, function(y) y$pval, numeric(1)),
+      samplesize = x$samplesize.outcome[1],
+      stringsAsFactors = FALSE
     )
     d$outcome <- x$outcome[1]
     d$exposure <- x$exposure[1]
     return(d)
   })
+  res <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(res)
   res <- subset(
     res,
     select = c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p)
@@ -89,8 +106,13 @@ mr_singlesnp <- function(
 #' @export
 #' @return List of plots
 mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE) {
-  res <- plyr::dlply(singlesnp_results, c("id.exposure", "id.outcome"), function(d) {
-    d <- plyr::mutate(d)
+  dat_dt <- data.table::as.data.table(singlesnp_results)
+  combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
+  
+  res <- lapply(seq_len(nrow(combos)), function(i) {
+    exp_id <- combos$id.exposure[i]
+    out_id <- combos$id.outcome[i]
+    d <- as.data.frame(dat_dt[id.exposure == exp_id & id.outcome == out_id])
     if (sum(!grepl("All", d$SNP)) < 2) {
       return(
         blank_plot("Insufficient number of SNPs")
@@ -195,8 +217,13 @@ mr_density_plot <- function(
   exponentiate = FALSE,
   bandwidth = "nrd0"
 ) {
-  res <- plyr::dlply(singlesnp_results, c("id.exposure", "id.outcome"), function(d) {
-    d <- plyr::mutate(d)
+  dat_dt <- data.table::as.data.table(singlesnp_results)
+  combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
+  
+  res <- lapply(seq_len(nrow(combos)), function(i) {
+    exp_id <- combos$id.exposure[i]
+    out_id <- combos$id.outcome[i]
+    d <- as.data.frame(dat_dt[id.exposure == exp_id & id.outcome == out_id])
     if (sum(!grepl("All", d$SNP)) < 2) {
       return(
         blank_plot("Insufficient number of SNPs")
@@ -235,8 +262,13 @@ mr_density_plot <- function(
 #' @export
 #' @return List of plots
 mr_funnel_plot <- function(singlesnp_results) {
-  res <- plyr::dlply(singlesnp_results, c("id.exposure", "id.outcome"), function(d) {
-    d <- plyr::mutate(d)
+  dat_dt <- data.table::as.data.table(singlesnp_results)
+  combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
+  
+  res <- lapply(seq_len(nrow(combos)), function(i) {
+    exp_id <- combos$id.exposure[i]
+    out_id <- combos$id.outcome[i]
+    d <- as.data.frame(dat_dt[id.exposure == exp_id & id.outcome == out_id])
     if (sum(!grepl("All", d$SNP)) < 2) {
       return(
         blank_plot("Insufficient number of SNPs")

@@ -34,7 +34,8 @@ enrichment_method_list <- function() {
     )
   )
   a <- lapply(a, as.data.frame)
-  a <- plyr::rbind.fill(a)
+  a <- data.table::rbindlist(a, fill = TRUE, use.names = TRUE)
+  data.table::setDF(a)
   a <- as.data.frame(lapply(a, as.character), stringsAsFactors = FALSE)
   return(a)
 }
@@ -50,9 +51,10 @@ enrichment_method_list <- function() {
 #' @export
 #' @return data frame
 enrichment <- function(dat, method_list = enrichment_method_list()$obj) {
-  res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1) {
-    # message("Performing enrichment analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
-
+  methl <- enrichment_method_list()
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    x1 <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     x <- subset(x1, !is.na(pval.outcome))
     if (nrow(x) == 0) {
       message(
@@ -67,16 +69,20 @@ enrichment <- function(dat, method_list = enrichment_method_list()$obj) {
     res <- lapply(method_list, function(meth) {
       get(meth)(x$pval.outcome)
     })
-    methl <- enrichment_method_list()
     enrichment_tab <- data.frame(
+      id.exposure = x1$id.exposure[1],
+      id.outcome = x1$id.outcome[1],
       outcome = x$outcome[1],
       exposure = x$exposure[1],
       method = methl$name[methl$obj %in% method_list],
-      nsnp = sapply(res, function(x) x$nsnp),
-      pval = sapply(res, function(x) x$pval)
+      nsnp = vapply(res, function(x) x$nsnp, numeric(1)),
+      pval = vapply(res, function(x) x$pval, numeric(1)),
+      stringsAsFactors = FALSE
     )
     enrichment_tab <- subset(enrichment_tab, !is.na(pval))
     return(enrichment_tab)
   })
+  res <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(res)
   return(res)
 }

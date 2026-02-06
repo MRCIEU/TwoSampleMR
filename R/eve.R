@@ -327,10 +327,13 @@ mr_wrapper_single <- function(dat, parameters = default_parameters()) {
 #' @export
 #' @return list
 mr_wrapper <- function(dat, parameters = default_parameters()) {
-  plyr::dlply(dat, c("id.exposure", "id.outcome"), function(x) {
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  res <- lapply(seq_len(nrow(combos)), function(i) {
+    x <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     message("Performing MR analysis of '", x$id.exposure[1], "' on '", x$id.outcome[1], "'")
     d <- subset(x, mr_keep)
-    o <- mr_wrapper_single(d, parameters = parameters)
-    o
+    mr_wrapper_single(d, parameters = parameters)
   })
+  names(res) <- paste(combos$id.exposure, combos$id.outcome, sep = ".")
+  res
 }

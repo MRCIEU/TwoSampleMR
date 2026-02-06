@@ -18,19 +18,28 @@ mr_leaveoneout <- function(dat, parameters = default_parameters(), method = mr_i
   stopifnot("se.exposure" %in% names(dat))
   stopifnot("se.outcome" %in% names(dat))
 
-  res <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(X) {
-    x <- subset(X, mr_keep)
+  dat_dt <- data.table::as.data.table(dat)
+  combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
+  
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    exp_id <- combos$id.exposure[i]
+    out_id <- combos$id.outcome[i]
+    X <- dat_dt[id.exposure == exp_id & id.outcome == out_id]
+    x <- X[mr_keep == TRUE]
     nsnp <- nrow(x)
     if (nsnp == 0) {
       x <- X[1, ]
       d <- data.frame(
+        id.exposure = exp_id,
+        id.outcome = out_id,
         SNP = "All",
         b = NA,
         se = NA,
         p = NA,
         samplesize = NA,
         outcome = x$outcome[1],
-        exposure = x$exposure[1]
+        exposure = x$exposure[1],
+        stringsAsFactors = FALSE
       )
       return(d)
     }
@@ -46,28 +55,36 @@ mr_leaveoneout <- function(dat, parameters = default_parameters(), method = mr_i
         method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters)
       )
       d <- data.frame(
+        id.exposure = exp_id,
+        id.outcome = out_id,
         SNP = c(as.character(x$SNP), "All"),
-        b = sapply(l, function(y) y$b),
-        se = sapply(l, function(y) y$se),
-        p = sapply(l, function(y) y$pval),
-        samplesize = x$samplesize.outcome[1]
+        b = vapply(l, function(y) y$b, numeric(1)),
+        se = vapply(l, function(y) y$se, numeric(1)),
+        p = vapply(l, function(y) y$pval, numeric(1)),
+        samplesize = x$samplesize.outcome[1],
+        stringsAsFactors = FALSE
       )
       d$outcome <- x$outcome[1]
       d$exposure <- x$exposure[1]
     } else {
       a <- with(x, method(beta.exposure, beta.outcome, se.exposure, se.outcome, parameters))
       d <- data.frame(
+        id.exposure = exp_id,
+        id.outcome = out_id,
         SNP = "All",
         b = a$b,
         se = a$se,
         p = a$pval,
-        samplesize = x$samplesize.outcome[1]
+        samplesize = x$samplesize.outcome[1],
+        stringsAsFactors = FALSE
       )
       d$outcome <- x$outcome[1]
       d$exposure <- x$exposure[1]
     }
     return(d)
   })
+  res <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(res)
   res <- subset(
     res,
     select = c(exposure, outcome, id.exposure, id.outcome, samplesize, SNP, b, se, p)
@@ -85,8 +102,13 @@ mr_leaveoneout <- function(dat, parameters = default_parameters(), method = mr_i
 #' @export
 #' @return List of plots
 mr_leaveoneout_plot <- function(leaveoneout_results) {
-  res <- plyr::dlply(leaveoneout_results, c("id.exposure", "id.outcome"), function(d) {
-    d <- plyr::mutate(d)
+  dat_dt <- data.table::as.data.table(leaveoneout_results)
+  combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
+  
+  res <- lapply(seq_len(nrow(combos)), function(i) {
+    exp_id <- combos$id.exposure[i]
+    out_id <- combos$id.outcome[i]
+    d <- as.data.frame(dat_dt[id.exposure == exp_id & id.outcome == out_id])
     # Need to have at least 3 SNPs because IVW etc methods can't be performed with fewer than 2 SNPs
     if (sum(!grepl("All", d$SNP)) < 3) {
       return(

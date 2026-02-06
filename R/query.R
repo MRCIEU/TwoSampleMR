@@ -83,7 +83,8 @@ extract_outcome_data <- function(
           splitsize = proxy_splitsize
         )
         if (!is.null(temp)) {
-          firstpass <- plyr::rbind.fill(firstpass, temp)
+          firstpass <- data.table::rbindlist(list(firstpass, temp), fill = TRUE, use.names = TRUE)
+          data.table::setDF(firstpass)
         }
       }
     }
@@ -149,9 +150,10 @@ extract_outcome_data_internal <- function(
     for (i in seq_along(outcomes)) {
       message(i, " of ", length(outcomes), " outcomes")
 
-      d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x) {
-        x <- plyr::mutate(x)
-        message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
+      chunk_ids <- unique(splits$chunk_id)
+      d[[i]] <- lapply(chunk_ids, function(cid) {
+        x <- splits[splits$chunk_id == cid, , drop = FALSE]
+        message(" [>] ", cid, " of ", max(splits$chunk_id), " chunks")
         out <- ieugwasr::associations(
           variants = x$snps,
           id = outcomes[i],
@@ -168,9 +170,11 @@ extract_outcome_data_internal <- function(
         }
         return(out)
       })
+      d[[i]] <- data.table::rbindlist(d[[i]], fill = TRUE, use.names = TRUE)
     }
 
-    d <- plyr::rbind.fill(d)
+    d <- data.table::rbindlist(d, fill = TRUE, use.names = TRUE)
+    data.table::setDF(d)
   } else {
     # Split outcomes
     n <- length(outcomes)
@@ -182,9 +186,10 @@ extract_outcome_data_internal <- function(
     for (i in seq_along(snps)) {
       message(i, " of ", length(snps), " snps")
 
-      d[[i]] <- plyr::ddply(splits, c("chunk_id"), function(x) {
-        x <- plyr::mutate(x)
-        message(" [>] ", x$chunk_id[1], " of ", max(splits$chunk_id), " chunks")
+      chunk_ids <- unique(splits$chunk_id)
+      d[[i]] <- lapply(chunk_ids, function(cid) {
+        x <- splits[splits$chunk_id == cid, , drop = FALSE]
+        message(" [>] ", cid, " of ", max(splits$chunk_id), " chunks")
 
         out <- ieugwasr::associations(
           variants = snps[i],
@@ -203,9 +208,11 @@ extract_outcome_data_internal <- function(
         }
         return(out)
       })
+      d[[i]] <- data.table::rbindlist(d[[i]], fill = TRUE, use.names = TRUE)
     }
 
-    d <- plyr::rbind.fill(d)
+    d <- data.table::rbindlist(d, fill = TRUE, use.names = TRUE)
+    data.table::setDF(d)
   }
   if (is.null(nrow(d)) || nrow(d) == 0) {
     # message("None of the requested SNPs were available in the specified GWASs.")
@@ -281,10 +288,9 @@ format_d <- function(d) {
     d <- cbind(d1, p)
 
     # If two SNPs have the same proxy SNP then one has to be removed
-    d <- plyr::ddply(d, c("outcome"), function(x) {
-      x <- plyr::mutate(x)
-      subset(x, !duplicated(proxy_snp.outcome))
-    })
+    d <- data.table::as.data.table(d)
+    d <- d[!duplicated(proxy_snp.outcome), , by = outcome]
+    data.table::setDF(d)
   } else {
     d <- d1
   }
@@ -311,7 +317,7 @@ format_d <- function(d) {
   d <- cleanup_outcome_data(d)
 
   mrcols <- c("beta.outcome", "se.outcome", "effect_allele.outcome")
-  d$mr_keep.outcome <- apply(d[, mrcols], 1, function(x) !any(is.na(x)))
+  d$mr_keep.outcome <- complete.cases(d[, mrcols])
   if (any(!d$mr_keep.outcome)) {
     missinginfosnps <- paste(subset(d, !mr_keep.outcome)$SNP, collapse = " ")
     warning(

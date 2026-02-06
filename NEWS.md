@@ -1,3 +1,26 @@
+# TwoSampleMR v0.6.30
+
+(Release date 2026-02-06)
+
+* Vectorised `mr_egger_regression_bootstrap()`
+* Vectorised `weighted_median_bootstrap()`
+* Deleted duplicated `weighted_median()` function
+* Replace **plyr** function calls with **data.table** function calls
+  - `plyr::rbind.fill(...)` to `data.table::rbindlist(..., fill = TRUE, use.names = TRUE)`
+  - `plyr::ddply(dat, cols, func)` to `lapply()` over unique combinations + `data.table::rbindlist()`
+  - Added `data.table::setDF()` calls to convert back to data.frame for compatibility
+  - And removed **plyr** from Imports list
+* In `flip_alleles()` use `chartr()` instead of 4 `gsub()` calls
+* In `random_string()` use single call to `sample()` instead of n calls
+* Optimized `mr_mode()`
+* Replaced `apply(..., any(is.na()))` with `complete.case()`
+* Optimized the `mr()` function
+* Optimized the `Optimize get_r_from_lor()` function
+* Optimized the `mr_rucker_bootstrap()` and `mr_rucker_jackknife_internal()` functions
+* Replaced `sapply()` with `vapply()` in several cases
+* Optimized the `simple_cap()` function
+* And a few other minor optimizations
+
 # TwoSampleMR v0.6.29
 
 (Release date 2025-12-16)

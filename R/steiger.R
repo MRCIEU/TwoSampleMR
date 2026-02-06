@@ -183,7 +183,9 @@ directionality_test <- function(dat) {
       )
     }
   }
-  dtest <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x) {
+  combos <- unique(dat[, c("id.exposure", "id.outcome")])
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    x <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
     if (!"r.exposure" %in% names(x)) {
       x$r.exposure <- NA
     }
@@ -198,16 +200,20 @@ directionality_test <- function(dat) {
       x$r.exposure,
       x$r.outcome
     )
-    a <- data.frame(
+    data.frame(
+      id.exposure = combos$id.exposure[i],
+      id.outcome = combos$id.outcome[i],
       exposure = x$exposure[1],
       outcome = x$outcome[1],
       snp_r2.exposure = b$r2_exp,
       snp_r2.outcome = b$r2_out,
       correct_causal_direction = b$correct_causal_direction,
-      steiger_pval = b$steiger_test
+      steiger_pval = b$steiger_test,
+      stringsAsFactors = FALSE
     )
-    return(a)
   })
+  dtest <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(dtest)
 
   return(dtest)
 }

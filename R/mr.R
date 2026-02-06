@@ -23,37 +23,57 @@ mr <- function(
     }
   }
 
-  mr_tab <- plyr::ddply(dat, c("id.exposure", "id.outcome"), function(x1) {
-    # message("Performing MR analysis of '", x1$id.exposure[1], "' on '", x18WII58$id.outcome[1], "'")
-    x <- subset(x1, mr_keep)
+  # Convert to data.table for efficient grouped operations
+
+  dat_dt <- data.table::as.data.table(dat)
+  
+  # Get unique combinations of id.exposure and id.outcome
+  combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
+  
+  # Pre-compute method names once, outside the loop
+  methl <- mr_method_list()
+  method_names <- methl$name[match(method_list, methl$obj)]
+
+  # Process each combination
+  results <- lapply(seq_len(nrow(combos)), function(i) {
+    exp_id <- combos$id.exposure[i]
+    out_id <- combos$id.outcome[i]
+    x1 <- dat_dt[id.exposure == exp_id & id.outcome == out_id]
+    x <- x1[mr_keep == TRUE]
+    
     if (nrow(x) == 0) {
       message(
         "No SNPs available for MR analysis of '",
-        x1$id.exposure[1],
+        exp_id,
         "' on '",
-        x1$id.outcome[1],
+        out_id,
         "'"
       )
       return(NULL)
     } else {
-      message("Analysing '", x1$id.exposure[1], "' on '", x1$id.outcome[1], "'")
+      message("Analysing '", exp_id, "' on '", out_id, "'")
     }
     res <- lapply(method_list, function(meth) {
       get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
     })
-    methl <- mr_method_list()
     mr_tab <- data.frame(
+      id.exposure = exp_id,
+      id.outcome = out_id,
       outcome = x$outcome[1],
       exposure = x$exposure[1],
-      method = methl$name[match(method_list, methl$obj)],
-      nsnp = sapply(res, function(x) x$nsnp),
-      b = sapply(res, function(x) x$b),
-      se = sapply(res, function(x) x$se),
-      pval = sapply(res, function(x) x$pval)
+      method = method_names,
+      nsnp = vapply(res, function(x) x$nsnp, numeric(1)),
+      b = vapply(res, function(x) x$b, numeric(1)),
+      se = vapply(res, function(x) x$se, numeric(1)),
+      pval = vapply(res, function(x) x$pval, numeric(1)),
+      stringsAsFactors = FALSE
     )
-    mr_tab <- subset(mr_tab, !(is.na(b) & is.na(se) & is.na(pval)))
+    mr_tab <- mr_tab[!(is.na(mr_tab$b) & is.na(mr_tab$se) & is.na(mr_tab$pval)), ]
     return(mr_tab)
   })
+  
+  mr_tab <- data.table::rbindlist(results, fill = TRUE, use.names = TRUE)
+  data.table::setDF(mr_tab)
 
   return(mr_tab)
 }
@@ -243,7 +263,8 @@ mr_method_list <- function() {
     )
   )
   a <- lapply(a, as.data.frame)
-  a <- plyr::rbind.fill(a)
+  a <- data.table::rbindlist(a, fill = TRUE, use.names = TRUE)
+  data.table::setDF(a)
   a <- as.data.frame(lapply(a, as.character), stringsAsFactors = FALSE)
   a$heterogeneity_test <- as.logical(a$heterogeneity_test)
   a$use_by_default <- as.logical(a$use_by_default)
@@ -636,36 +657,40 @@ mr_egger_regression_bootstrap <- function(b_exp, b_out, se_exp, se_out, paramete
     ))
   }
   nboot <- parameters$nboot
-  # Do bootstraps
-  res <- array(0, c(nboot + 1, 2))
-  # pb <- txtProgressBar(min = 0, max = nboot, initial = 0, style=3)
-  for (i in 1:nboot) {
-    # setTxtProgressBar(pb, i)
-    #sample from distributions of SNP betas
-    xs <- stats::rnorm(length(b_exp), b_exp, se_exp)
-    ys <- stats::rnorm(length(b_out), b_out, se_out)
+  nsnp <- length(b_exp)
+  weights <- 1 / se_out^2
 
-    # Use absolute values for Egger reg
-    ys <- ys * sign(xs)
-    xs <- abs(xs)
+  # Vectorized bootstrap: generate all random values at once
+  # Matrix dimensions: nboot rows x nsnp columns
+  xs_mat <- matrix(stats::rnorm(nboot * nsnp, mean = rep(b_exp, each = nboot),
+                                sd = rep(se_exp, each = nboot)),
+                   nrow = nboot, ncol = nsnp)
+  ys_mat <- matrix(stats::rnorm(nboot * nsnp, mean = rep(b_out, each = nboot),
+                                sd = rep(se_out, each = nboot)),
+                   nrow = nboot, ncol = nsnp)
 
-    #weighted regression with given formula
-    # r <- summary(lm(ys ~ xs, weights=1/se_out^2))
-    r <- linreg(xs, ys, 1 / se_out^2)
+  # Apply sign correction for Egger regression (vectorized)
+  ys_mat <- ys_mat * sign(xs_mat)
+  xs_mat <- abs(xs_mat)
 
-    #collect coefficient from given line.
-    res[i, 1] <- r$ahat
-    res[i, 2] <- r$bhat
-    # res[i, 1] <- r$coefficients[1,1]
-    # res[i, 2] <- r$coefficients[2,1]
-  }
-  cat("\n")
+  # Vectorized weighted linear regression for all bootstrap iterations
+  # For each bootstrap iteration, compute weighted regression coefficients
+  # Using the formula: bhat = cov(x*w, y*w) / var(x*w), ahat = mean(y) - mean(x)*bhat
+  res <- t(vapply(seq_len(nboot), function(i) {
+    xs <- xs_mat[i, ]
+    ys <- ys_mat[i, ]
+    xw <- xs * weights
+    yw <- ys * weights
+    bhat <- stats::cov(xw, yw, use = "pair") / stats::var(xw, na.rm = TRUE)
+    ahat <- mean(ys, na.rm = TRUE) - mean(xs, na.rm = TRUE) * bhat
+    c(ahat, bhat)
+  }, numeric(2)))
 
   return(list(
     b = mean(res[, 2], na.rm = TRUE),
     se = stats::sd(res[, 2], na.rm = TRUE),
     pval = sum(sign(mean(res[, 2], na.rm = TRUE)) * res[, 2] < 0) / nboot,
-    nsnp = length(b_exp),
+    nsnp = nsnp,
     b_i = mean(res[, 1], na.rm = TRUE),
     se_i = stats::sd(res[, 1], na.rm = TRUE),
     pval_i = sum(sign(mean(res[, 1], na.rm = TRUE)) * res[, 1] < 0) / nboot
@@ -764,19 +789,6 @@ weighted_median <- function(b_iv, weights) {
   return(b)
 }
 
-weighted_median <- function(b_iv, weights) {
-  betaIV.order <- b_iv[order(b_iv)]
-  weights.order <- weights[order(b_iv)]
-  weights.sum <- cumsum(weights.order) - 0.5 * weights.order
-  weights.sum <- weights.sum / sum(weights.order)
-  below <- max(which(weights.sum < 0.5))
-  b <- betaIV.order[below] +
-    (betaIV.order[below + 1] - betaIV.order[below]) *
-      (0.5 - weights.sum[below]) /
-      (weights.sum[below + 1] - weights.sum[below])
-  return(b)
-}
-
 
 #' Calculate standard errors for weighted median method using bootstrap
 #'
@@ -792,13 +804,25 @@ weighted_median <- function(b_iv, weights) {
 #' @export
 #' @return Empirical standard error
 weighted_median_bootstrap <- function(b_exp, b_out, se_exp, se_out, weights, nboot) {
-  med <- rep(0, nboot)
-  for (i in seq_len(nboot)) {
-    b_exp.boot <- stats::rnorm(length(b_exp), mean = b_exp, sd = se_exp)
-    b_out.boot <- stats::rnorm(length(b_out), mean = b_out, sd = se_out)
-    betaIV.boot <- b_out.boot / b_exp.boot
-    med[i] <- weighted_median(betaIV.boot, weights)
-  }
+  nsnp <- length(b_exp)
+
+  # Vectorized bootstrap: generate all random values at once
+  # Matrix dimensions: nboot rows x nsnp columns
+  b_exp_mat <- matrix(stats::rnorm(nboot * nsnp, mean = rep(b_exp, each = nboot),
+                                   sd = rep(se_exp, each = nboot)),
+                      nrow = nboot, ncol = nsnp)
+  b_out_mat <- matrix(stats::rnorm(nboot * nsnp, mean = rep(b_out, each = nboot),
+                                   sd = rep(se_out, each = nboot)),
+                      nrow = nboot, ncol = nsnp)
+
+  # Compute Wald ratios for all bootstrap samples (element-wise division)
+  betaIV_mat <- b_out_mat / b_exp_mat
+
+  # Apply weighted_median to each bootstrap iteration
+  med <- vapply(seq_len(nboot), function(i) {
+    weighted_median(betaIV_mat[i, ], weights)
+  }, numeric(1))
+
   return(stats::sd(med))
 }
 

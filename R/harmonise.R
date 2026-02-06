@@ -96,7 +96,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action = 2) {
     ) -
       nrow(x)
 
-    x$mr_keep[apply(x[, mr_cols], 1, function(y) any(is.na(y)))] <- FALSE
+    x$mr_keep[!complete.cases(x[, mr_cols])] <- FALSE
     attr(x, "log")[["total_variants"]] <- nrow(x)
     attr(x, "log")[["total_variants_for_mr"]] <- sum(x$mr_keep)
     attr(x, "log")[["proxy_variants"]] <- ifelse(
@@ -114,8 +114,10 @@ harmonise_data <- function(exposure_dat, outcome_dat, action = 2) {
   # 	return(x)
   # })
 
-  jlog <- plyr::rbind.fill(lapply(fix.tab, function(x) attr(x, "log")))
-  fix.tab <- plyr::rbind.fill(fix.tab)
+  jlog <- data.table::rbindlist(lapply(fix.tab, function(x) attr(x, "log")), fill = TRUE, use.names = TRUE)
+  data.table::setDF(jlog)
+  fix.tab <- data.table::rbindlist(fix.tab, fill = TRUE, use.names = TRUE)
+  data.table::setDF(fix.tab)
   attr(fix.tab, "log") <- jlog
 
   # fix.tab <- harmonise_make_snp_effects_positive(fix.tab)
@@ -171,12 +173,9 @@ check_palindromic <- function(A1, A2) {
 
 
 flip_alleles <- function(x) {
-  x <- toupper(x)
-  x <- gsub("C", "g", x)
-  x <- gsub("G", "c", x)
-  x <- gsub("A", "t", x)
-  x <- gsub("T", "a", x)
-  return(toupper(x))
+  # Use chartr for efficient single-pass character substitution
+  # This is much faster than 4 sequential gsub calls
+  chartr("ACGTacgt", "TGCAtgca", x)
 }
 
 
@@ -680,12 +679,16 @@ harmonise <- function(dat, tolerance, action) {
     action
   )
 
-  jlog <- plyr::rbind.fill(
-    as.data.frame(attr(d22, "log"), stringsAsFactors = FALSE),
-    as.data.frame(attr(d21, "log"), stringsAsFactors = FALSE),
-    as.data.frame(attr(d12, "log"), stringsAsFactors = FALSE),
-    as.data.frame(attr(d11, "log"), stringsAsFactors = FALSE)
+  jlog <- data.table::rbindlist(
+    list(
+      as.data.frame(attr(d22, "log"), stringsAsFactors = FALSE),
+      as.data.frame(attr(d21, "log"), stringsAsFactors = FALSE),
+      as.data.frame(attr(d12, "log"), stringsAsFactors = FALSE),
+      as.data.frame(attr(d11, "log"), stringsAsFactors = FALSE)
+    ),
+    fill = TRUE, use.names = TRUE
   )
+  data.table::setDF(jlog)
   jlog <- cbind(
     data.frame(
       id.exposure = dat$id.exposure[1],
