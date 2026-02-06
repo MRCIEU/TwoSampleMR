@@ -1,5 +1,49 @@
 # Changelog
 
+## TwoSampleMR v0.6.30
+
+(Release date 2026-02-06)
+
+- Vectorised
+  [`mr_egger_regression_bootstrap()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_egger_regression_bootstrap.md)
+- Vectorised
+  [`weighted_median_bootstrap()`](https://mrcieu.github.io/TwoSampleMR/reference/weighted_median_bootstrap.md)
+- Deleted duplicated
+  [`weighted_median()`](https://mrcieu.github.io/TwoSampleMR/reference/weighted_median.md)
+  function
+- Replace **plyr** function calls with **data.table** function calls
+  - `plyr::rbind.fill(...)` to
+    `data.table::rbindlist(..., fill = TRUE, use.names = TRUE)`
+  - `plyr::ddply(dat, cols, func)` to
+    [`lapply()`](https://rdrr.io/r/base/lapply.html) over unique
+    combinations +
+    [`data.table::rbindlist()`](https://rdrr.io/pkg/data.table/man/rbindlist.html)
+  - Added
+    [`data.table::setDF()`](https://rdrr.io/pkg/data.table/man/setDF.html)
+    calls to convert back to data.frame for compatibility
+  - And removed **plyr** from Imports list
+- In `flip_alleles()` use
+  [`chartr()`](https://rdrr.io/r/base/chartr.html) instead of 4
+  [`gsub()`](https://rdrr.io/r/base/grep.html) calls
+- In `random_string()` use single call to
+  [`sample()`](https://rdrr.io/r/base/sample.html) instead of n calls
+- Optimized
+  [`mr_mode()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_mode.md)
+- Replaced `apply(..., any(is.na()))` with `complete.case()`
+- Optimized the
+  [`mr()`](https://mrcieu.github.io/TwoSampleMR/reference/mr.md)
+  function
+- Optimized the `Optimize get_r_from_lor()` function
+- Optimized the
+  [`mr_rucker_bootstrap()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_rucker_bootstrap.md)
+  and `mr_rucker_jackknife_internal()` functions
+- Replaced [`sapply()`](https://rdrr.io/r/base/lapply.html) with
+  [`vapply()`](https://rdrr.io/r/base/lapply.html) in several cases
+- Optimized the
+  [`simple_cap()`](https://mrcieu.github.io/TwoSampleMR/reference/simple_cap.md)
+  function
+- And a few other minor optimizations
+
 ## TwoSampleMR v0.6.29
 
 (Release date 2025-12-16)

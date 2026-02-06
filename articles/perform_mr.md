@@ -43,10 +43,10 @@ res
 #> 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3790910
 #>           se         pval
 #> 1 0.14396056 8.012590e-04
-#> 2 0.07639889 4.071091e-07
+#> 2 0.07175210 6.903640e-08
 #> 3 0.05898302 4.032020e-14
-#> 4 0.15001315 2.612742e-02
-#> 5 0.10221374 3.881092e-04
+#> 4 0.16190133 3.887034e-02
+#> 5 0.25502073 1.411753e-01
 ```
 
 This returns a data frame of estimates of the causal effect of the
@@ -606,12 +606,12 @@ example we want the row names to correspond to the MR method.
 
 ``` r
 res <- mr(dat2)
-#> Analysing 'ieu-a-1' on 'ieu-a-7'
-#> Analysing 'ieu-a-100' on 'ieu-a-7'
-#> Analysing 'ieu-a-104' on 'ieu-a-7'
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
 #> Analysing 'ieu-a-72' on 'ieu-a-7'
+#> Analysing 'ieu-a-1' on 'ieu-a-7'
+#> Analysing 'ieu-a-100' on 'ieu-a-7'
 #> Analysing 'ieu-a-999' on 'ieu-a-7'
+#> Analysing 'ieu-a-104' on 'ieu-a-7'
 # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
 res <- split_exposure(res)
 
@@ -657,12 +657,12 @@ effect size within each group (i.e. largest effect at the top).
 
 ``` r
 res <- mr(dat2)
-#> Analysing 'ieu-a-1' on 'ieu-a-7'
-#> Analysing 'ieu-a-100' on 'ieu-a-7'
-#> Analysing 'ieu-a-104' on 'ieu-a-7'
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
 #> Analysing 'ieu-a-72' on 'ieu-a-7'
+#> Analysing 'ieu-a-1' on 'ieu-a-7'
+#> Analysing 'ieu-a-100' on 'ieu-a-7'
 #> Analysing 'ieu-a-999' on 'ieu-a-7'
+#> Analysing 'ieu-a-104' on 'ieu-a-7'
 res <- split_exposure(res)
 res <- subset_on_method(res)
 res$subcategory[res$exposure %in% c("Adiponectin", "Hip circumference", "Waist circumference")] <- "Group 1"
@@ -1280,10 +1280,10 @@ split_outcome(res)
 #> 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2
 #>                      method nsnp         b         se         pval
 #> 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04
-#> 2           Weighted median   79 0.3870065 0.07671416 4.540309e-07
+#> 2           Weighted median   79 0.3870065 0.07398375 1.686262e-07
 #> 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14
-#> 4               Simple mode   79 0.3401554 0.15196883 2.805152e-02
-#> 5             Weighted mode   79 0.3790910 0.10242200 3.980416e-04
+#> 4               Simple mode   79 0.3401554 0.15359534 2.970497e-02
+#> 5             Weighted mode   79 0.3790910 0.26241685 1.525717e-01
 ```
 
 ### Split exposure names
@@ -1313,12 +1313,12 @@ generate_odds_ratios(res)
 #> 3 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091
 #> 4 Body mass index || id:ieu-a-2               Simple mode   79 0.3401554
 #> 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3790910
-#>           se         pval      lo_ci     up_ci       or or_lci95 or_uci95
-#> 1 0.14396056 8.012590e-04 0.22033081 0.7846562 1.652838 1.246489 2.191653
-#> 2 0.07671416 4.540309e-07 0.23664672 0.5373662 1.472566 1.266993 1.711493
-#> 3 0.05898302 4.032020e-14 0.33030238 0.5615158 1.561909 1.391389 1.753328
-#> 4 0.15196883 2.805152e-02 0.04229652 0.6380143 1.405166 1.043204 1.892719
-#> 5 0.10242200 3.980416e-04 0.17834387 0.5798381 1.460956 1.195236 1.785749
+#>           se         pval       lo_ci     up_ci       or or_lci95 or_uci95
+#> 1 0.14396056 8.012590e-04  0.22033081 0.7846562 1.652838 1.246489 2.191653
+#> 2 0.07398375 1.686262e-07  0.24199834 0.5320146 1.472566 1.273792 1.702358
+#> 3 0.05898302 4.032020e-14  0.33030238 0.5615158 1.561909 1.391389 1.753328
+#> 4 0.15359534 2.970497e-02  0.03910856 0.6412023 1.405166 1.039883 1.898762
+#> 5 0.26241685 1.525717e-01 -0.13524604 0.8934280 1.460956 0.873501 2.443492
 ```
 
 ### Subset on method

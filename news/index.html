@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.29</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.30</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,37 @@
       <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.30" id="twosamplemr-v0630">TwoSampleMR v0.6.30<a class="anchor" aria-label="anchor" href="#twosamplemr-v0630"></a></h2>
+<p>(Release date 2026-02-06)</p>
+<ul><li>Vectorised <code><a href="../reference/mr_egger_regression_bootstrap.html">mr_egger_regression_bootstrap()</a></code>
+</li>
+<li>Vectorised <code><a href="../reference/weighted_median_bootstrap.html">weighted_median_bootstrap()</a></code>
+</li>
+<li>Deleted duplicated <code><a href="../reference/weighted_median.html">weighted_median()</a></code> function</li>
+<li>Replace <strong>plyr</strong> function calls with <strong>data.table</strong> function calls
+<ul><li>
+<code>plyr::rbind.fill(...)</code> to <code>data.table::rbindlist(..., fill = TRUE, use.names = TRUE)</code>
+</li>
+<li>
+<code>plyr::ddply(dat, cols, func)</code> to <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply()</a></code> over unique combinations + <code><a href="https://rdrr.io/pkg/data.table/man/rbindlist.html" class="external-link">data.table::rbindlist()</a></code>
+</li>
+<li>Added <code><a href="https://rdrr.io/pkg/data.table/man/setDF.html" class="external-link">data.table::setDF()</a></code> calls to convert back to data.frame for compatibility</li>
+<li>And removed <strong>plyr</strong> from Imports list</li>
+</ul></li>
+<li>In <code>flip_alleles()</code> use <code><a href="https://rdrr.io/r/base/chartr.html" class="external-link">chartr()</a></code> instead of 4 <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub()</a></code> calls</li>
+<li>In <code>random_string()</code> use single call to <code><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample()</a></code> instead of n calls</li>
+<li>Optimized <code><a href="../reference/mr_mode.html">mr_mode()</a></code>
+</li>
+<li>Replaced <code>apply(..., any(is.na()))</code> with <code>complete.case()</code>
+</li>
+<li>Optimized the <code><a href="../reference/mr.html">mr()</a></code> function</li>
+<li>Optimized the <code>Optimize get_r_from_lor()</code> function</li>
+<li>Optimized the <code><a href="../reference/mr_rucker_bootstrap.html">mr_rucker_bootstrap()</a></code> and <code>mr_rucker_jackknife_internal()</code> functions</li>
+<li>Replaced <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply()</a></code> with <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply()</a></code> in several cases</li>
+<li>Optimized the <code><a href="../reference/simple_cap.html">simple_cap()</a></code> function</li>
+<li>And a few other minor optimizations</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.29" id="twosamplemr-v0629">TwoSampleMR v0.6.29<a class="anchor" aria-label="anchor" href="#twosamplemr-v0629"></a></h2>
 <p>(Release date 2025-12-16)</p>
