@@ -163,8 +163,22 @@ combine_all_mrresults <- function(
 
   res <- merge(res, het, by = c("id.outcome", "id.exposure", "Method"), all.x = TRUE)
   res <- data.table::rbindlist(
-    list(res, sin[, c("exposure", "outcome", "id.exposure", "id.outcome", "SNP", "b", "se", "pval", "Method")]),
-    fill = TRUE, use.names = TRUE
+    list(
+      res,
+      sin[, c(
+        "exposure",
+        "outcome",
+        "id.exposure",
+        "id.outcome",
+        "SNP",
+        "b",
+        "se",
+        "pval",
+        "Method"
+      )]
+    ),
+    fill = TRUE,
+    use.names = TRUE
   )
   data.table::setDF(res)
 

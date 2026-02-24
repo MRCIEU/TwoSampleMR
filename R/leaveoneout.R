@@ -20,7 +20,7 @@ mr_leaveoneout <- function(dat, parameters = default_parameters(), method = mr_i
 
   dat_dt <- data.table::as.data.table(dat)
   combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
-  
+
   results <- lapply(seq_len(nrow(combos)), function(i) {
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]
@@ -104,7 +104,7 @@ mr_leaveoneout <- function(dat, parameters = default_parameters(), method = mr_i
 mr_leaveoneout_plot <- function(leaveoneout_results) {
   dat_dt <- data.table::as.data.table(leaveoneout_results)
   combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
-  
+
   res <- lapply(seq_len(nrow(combos)), function(i) {
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]

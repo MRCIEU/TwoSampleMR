@@ -22,9 +22,15 @@ extract_instruments <- function(
   opengwas_jwt = ieugwasr::get_opengwas_jwt(),
   force_server = FALSE
 ) {
-  if (!(clump %in% c(0, 1, FALSE, TRUE))) stop("The clump argument should be 0 or 1.")
-  if (clump) clump <- 1
-  if (!clump) clump <- 0
+  if (!(clump %in% c(0, 1, FALSE, TRUE))) {
+    stop("The clump argument should be 0 or 1.")
+  }
+  if (clump) {
+    clump <- 1
+  }
+  if (!clump) {
+    clump <- 0
+  }
   # .Deprecated("ieugwasr::tophits()")
   outcomes <- ieugwasr::legacy_ids(unique(outcomes))
 

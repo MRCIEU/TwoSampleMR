@@ -26,13 +26,17 @@ mr_singlesnp <- function(
 
   dat_dt <- data.table::as.data.table(dat)
   combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
-  
+
   # Pre-compute method names outside the loop
   method_list <- mr_method_list()
-  method_names <- vapply(all_method, function(m) {
-    paste0("All - ", method_list$name[method_list$obj == m])
-  }, character(1))
-  
+  method_names <- vapply(
+    all_method,
+    function(m) {
+      paste0("All - ", method_list$name[method_list$obj == m])
+    },
+    character(1)
+  )
+
   results <- lapply(seq_len(nrow(combos)), function(i) {
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]
@@ -108,7 +112,7 @@ mr_singlesnp <- function(
 mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE) {
   dat_dt <- data.table::as.data.table(singlesnp_results)
   combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
-  
+
   res <- lapply(seq_len(nrow(combos)), function(i) {
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]
@@ -219,7 +223,7 @@ mr_density_plot <- function(
 ) {
   dat_dt <- data.table::as.data.table(singlesnp_results)
   combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
-  
+
   res <- lapply(seq_len(nrow(combos)), function(i) {
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]
@@ -264,7 +268,7 @@ mr_density_plot <- function(
 mr_funnel_plot <- function(singlesnp_results) {
   dat_dt <- data.table::as.data.table(singlesnp_results)
   combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
-  
+
   res <- lapply(seq_len(nrow(combos)), function(i) {
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]

@@ -63,8 +63,10 @@ test_that("Inferred p-value calculation is correct for outcome", {
     "pheno_id" = c("traita", "traita")
   )
 
-  suppressWarnings({datformat <- format_data(df2, type = "outcome")})
-  pvals <- 2 * stats::pnorm(abs(datformat$beta.outcome)/datformat$se.outcome, lower.tail = FALSE)
+  suppressWarnings({
+    datformat <- format_data(df2, type = "outcome")
+  })
+  pvals <- 2 * stats::pnorm(abs(datformat$beta.outcome) / datformat$se.outcome, lower.tail = FALSE)
   expect_equal(datformat$pval.outcome, pvals)
   expect_equal(datformat$pval_origin.outcome, c("inferred", "inferred"))
 })
@@ -81,8 +83,11 @@ test_that("Inferred p-value calculation is correct for exposure", {
     "pheno_id" = c("traita", "traita")
   )
 
-  suppressWarnings({datformat2 <- format_data(df3, type = "exposure")})
-  pvals2 <- 2 * stats::pnorm(abs(datformat2$beta.exposure)/datformat2$se.exposure, lower.tail = FALSE)
+  suppressWarnings({
+    datformat2 <- format_data(df3, type = "exposure")
+  })
+  pvals2 <- 2 *
+    stats::pnorm(abs(datformat2$beta.exposure) / datformat2$se.exposure, lower.tail = FALSE)
   expect_equal(datformat2$pval.exposure, pvals2)
   expect_equal(datformat2$pval_origin.exposure, c("inferred", "inferred"))
 })

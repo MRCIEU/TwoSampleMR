@@ -123,11 +123,14 @@ mr_report <- function(
   )
 
   dat_dt <- data.table::as.data.table(dat)
-  combinations <- dat_dt[, .(
-    n = .N,
-    exposure = exposure[1],
-    outcome = outcome[1]
-  ), by = c("id.exposure", "id.outcome")]
+  combinations <- dat_dt[,
+    .(
+      n = .N,
+      exposure = exposure[1],
+      outcome = outcome[1]
+    ),
+    by = c("id.exposure", "id.outcome")
+  ]
   data.table::setDF(combinations)
 
   output_file <- array("", nrow(combinations))
