@@ -114,7 +114,11 @@ harmonise_data <- function(exposure_dat, outcome_dat, action = 2) {
   # 	return(x)
   # })
 
-  jlog <- data.table::rbindlist(lapply(fix.tab, function(x) attr(x, "log")), fill = TRUE, use.names = TRUE)
+  jlog <- data.table::rbindlist(
+    lapply(fix.tab, function(x) attr(x, "log")),
+    fill = TRUE,
+    use.names = TRUE
+  )
   data.table::setDF(jlog)
   fix.tab <- data.table::rbindlist(fix.tab, fill = TRUE, use.names = TRUE)
   data.table::setDF(fix.tab)
@@ -686,7 +690,8 @@ harmonise <- function(dat, tolerance, action) {
       as.data.frame(attr(d12, "log"), stringsAsFactors = FALSE),
       as.data.frame(attr(d11, "log"), stringsAsFactors = FALSE)
     ),
-    fill = TRUE, use.names = TRUE
+    fill = TRUE,
+    use.names = TRUE
   )
   data.table::setDF(jlog)
   jlog <- cbind(

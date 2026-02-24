@@ -62,11 +62,13 @@ mr_mode <- function(dat, parameters = default_parameters(), mode_method = "all")
     #mean and sd recycle in lockstep (both length n), filling column-by-column
     BetaIV.boot_mat <- matrix(
       stats::rnorm(nboot * n, mean = BetaIV.in, sd = seBetaIV.in[, 1]),
-      nrow = nboot, ncol = n
+      nrow = nboot,
+      ncol = n
     )
     BetaIV.boot_NOME_mat <- matrix(
       stats::rnorm(nboot * n, mean = BetaIV.in, sd = seBetaIV.in[, 2]),
-      nrow = nboot, ncol = n
+      nrow = nboot,
+      ncol = n
     )
 
     #Pre-compute constants

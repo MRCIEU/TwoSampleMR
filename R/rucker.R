@@ -189,9 +189,10 @@ mr_rucker_internal <- function(dat, parameters = default_parameters()) {
   se0_egger_re <- stats::coefficients(mod_egger)[1, 2]
   if (parameters$test_dist == "z") {
     pval0_egger_re <- stats::pnorm(
-      stats::coefficients(mod_egger)[1, 1] / stats::coefficients(mod_egger)[1, 2],
+      abs(stats::coefficients(mod_egger)[1, 1]) / stats::coefficients(mod_egger)[1, 2],
       lower.tail = FALSE
-    )
+    ) *
+      2
   } else {
     pval0_egger_re <- stats::coefficients(mod_egger)[1, 4]
   }
@@ -290,11 +291,13 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
   # Pre-generate all random values as matrices (nboot x nsnp)
   boot_exp <- matrix(
     stats::rnorm(nboot * nsnp, mean = dat$beta.exposure, sd = dat$se.exposure),
-    nrow = nboot, ncol = nsnp
+    nrow = nboot,
+    ncol = nsnp
   )
   boot_out <- matrix(
     stats::rnorm(nboot * nsnp, mean = dat$beta.outcome, sd = dat$se.outcome),
-    nrow = nboot, ncol = nsnp
+    nrow = nboot,
+    ncol = nsnp
   )
 
   dat2 <- dat
@@ -456,7 +459,11 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
       l[[i]] <- mr_rucker_internal(dat2, parameters)
     }
 
-    modsel <- data.table::rbindlist(lapply(l, function(x) x$selected), fill = TRUE, use.names = TRUE)
+    modsel <- data.table::rbindlist(
+      lapply(l, function(x) x$selected),
+      fill = TRUE,
+      use.names = TRUE
+    )
     data.table::setDF(modsel)
     modsel$model <- vapply(l, function(x) x$res, character(1))
 
