@@ -451,7 +451,7 @@ format_data <- function(
     if (any(is.na(dat$pval.outcome))) {
       if ("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat)) {
         index <- is.na(dat$pval.outcome)
-        dat$pval.outcome[index] <- stats::pnorm(
+        dat$pval.outcome[index] <- 2 * stats::pnorm(
           abs(dat$beta.outcome[index]) / dat$se.outcome[index],
           lower.tail = FALSE
         )
