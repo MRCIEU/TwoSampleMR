@@ -1,5 +1,18 @@
 # Changelog
 
+## TwoSampleMR v0.7.0
+
+(Release date 2026-02-24)
+
+- Fixed a bug in the calculation in one of the code paths for the
+  inferred p-value in
+  [`format_data()`](https://mrcieu.github.io/TwoSampleMR/reference/format_data.md)
+  (thanks [@j-brody](https://github.com/j-brody))
+- Fixed the calculation of a p-value in `mr_rucker_internal()`
+- Fixed a replacement length warning in
+  [`get_population_allele_frequency()`](https://mrcieu.github.io/TwoSampleMR/reference/get_population_allele_frequency.md)
+- Reformatted code base with `air`
+
 ## TwoSampleMR v0.6.30
 
 (Release date 2026-02-06)
