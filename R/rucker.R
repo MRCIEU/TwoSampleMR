@@ -189,9 +189,10 @@ mr_rucker_internal <- function(dat, parameters = default_parameters()) {
   se0_egger_re <- stats::coefficients(mod_egger)[1, 2]
   if (parameters$test_dist == "z") {
     pval0_egger_re <- stats::pnorm(
-      stats::coefficients(mod_egger)[1, 1] / stats::coefficients(mod_egger)[1, 2],
+      abs(stats::coefficients(mod_egger)[1, 1]) / stats::coefficients(mod_egger)[1, 2],
       lower.tail = FALSE
-    )
+    ) *
+      2
   } else {
     pval0_egger_re <- stats::coefficients(mod_egger)[1, 4]
   }
