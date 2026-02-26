@@ -64,7 +64,7 @@ jobs:
       - name: Install gettext system dependency on macOS for robustbase package build from source
         if: runner.os == 'macOS'
         run: |
-          brew install gettext
+          # brew install gettext
           mkdir -p ~/.R
           echo "CPPFLAGS=-I$(brew --prefix gettext)/include" >> ~/.R/Makevars
           echo "LDFLAGS=-L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
@@ -72,7 +72,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: >
-            any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0, car=?ignore-before-r=4.3.2, Cairo=?ignore-before-r=4.3.0, meta=?ignore-before-r=4.4.0
+            any::rcmdcheck, MendelianRandomization=?ignore-before-r=4.4.0, car=?ignore-before-r=4.3.2, Cairo=?ignore-before-r=4.3.0, meta=?ignore-before-r=4.4.0, mr.raps=?ignore-before-r=4.5.0
           needs: check
           upgrade: 'TRUE'
 
