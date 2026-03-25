@@ -1,3 +1,10 @@
+# TwoSampleMR v0.7.1
+
+(Release date 2026-03-25)
+
+* Added error message if unsupported method listed in the `method_list` argument to the `mr()` function (thanks @42kuroniko)
+* Added warning if `mr_wald_ratio()` passed more than one genotype's summary statistics
+
 # TwoSampleMR v0.7.0
 
 (Release date 2026-02-24)

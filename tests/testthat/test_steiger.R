@@ -21,6 +21,6 @@ test_that("directionality cc", {
 })
 
 test_that("steiger filtering", {
-  expect_warning(dat <- steiger_filtering(dat))
+  dat <- expect_warning(steiger_filtering(dat))
   expect_true("steiger_pval" %in% names(dat))
 })

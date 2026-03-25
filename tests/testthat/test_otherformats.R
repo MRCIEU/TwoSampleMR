@@ -30,7 +30,7 @@ test_that("MRInput with cor", {
 
 
 test_that("mrpresso", {
-  expect_warning(w <- run_mr_presso(dat))
+  w <- expect_warning(run_mr_presso(dat))
   expect_true(length(w) == 1)
   expect_true(class(w) == "list")
   expect_true(class(w[[1]]) == "list")

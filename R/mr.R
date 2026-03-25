@@ -15,6 +15,25 @@ mr <- function(
   parameters = default_parameters(),
   method_list = subset(mr_method_list(), use_by_default)$obj
 ) {
+  supported_methods <- mr_method_list()$obj
+  unsupported <- setdiff(method_list, supported_methods)
+  if (length(unsupported) > 0) {
+    msg <- paste0(
+      "The following methods are not supported by mr(): ",
+      paste(unsupported, collapse = ", "),
+      ".\nSupported methods are: ",
+      paste(supported_methods, collapse = ", "),
+      "."
+    )
+    if (any(unsupported %in% c("mr_presso", "run_mr_presso"))) {
+      msg <- paste0(
+        msg,
+        "\nFor MR-PRESSO, please use run_mr_presso() instead of mr()."
+      )
+    }
+    stop(msg)
+  }
+
   if ("mr_raps" %in% method_list) {
     if (!(requireNamespace("mr.raps", quietly = TRUE))) {
       stop(
@@ -311,6 +330,14 @@ default_parameters <- function() {
 #' }
 mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters) {
   if (length(b_exp) > 1) {
+    warning(
+      "mr_wald_ratio requires exactly one SNP, but ",
+      length(b_exp),
+      " were provided. ",
+      "Use a method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a single SNP. ",
+      "Returning NA.",
+      call. = FALSE
+    )
     return(list(b = NA, se = NA, pval = NA, nsnp = NA))
   }
   b <- b_out / b_exp
