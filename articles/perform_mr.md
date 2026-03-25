@@ -28,6 +28,9 @@ randomization (MR) analysis. To do this, simply run:
 ``` r
 res <- mr(dat)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 res
 #>   id.exposure id.outcome                              outcome
 #> 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7
@@ -304,6 +307,9 @@ against the SNP effects on the outcome using a scatter plot.
 ``` r
 res <- mr(dat)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 p1 <- mr_scatter_plot(res, dat)
 ```
 
@@ -607,10 +613,25 @@ example we want the row names to correspond to the MR method.
 ``` r
 res <- mr(dat2)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-72' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 30 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-1' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 14 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-100' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 2 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-999' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 10 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-104' on 'ieu-a-7'
 # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
 res <- split_exposure(res)
@@ -658,10 +679,25 @@ effect size within each group (i.e. largest effect at the top).
 ``` r
 res <- mr(dat2)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-72' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 30 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-1' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 14 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-100' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 2 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-999' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 10 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 #> Analysing 'ieu-a-104' on 'ieu-a-7'
 res <- split_exposure(res)
 res <- subset_on_method(res)
@@ -689,7 +725,7 @@ forest_plot_1_to_many(
 )
 #> Warning: Removed 3 rows containing missing values or values outside the scale range
 #> (`geom_vline()`).
-#> Removed 3 rows containing missing values or values outside the scale range
+#> Warning: Removed 3 rows containing missing values or values outside the scale range
 #> (`geom_vline()`).
 ```
 
@@ -1271,6 +1307,9 @@ outcome name using the split_outcome function:
 ``` r
 res <- mr(dat)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
+#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
+#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
+#> single SNP. Returning NA.
 split_outcome(res)
 #>   id.exposure id.outcome                outcome                      exposure
 #> 1     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2

@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,6 +103,9 @@ randomization (MR) analysis. To do this, simply run:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="va">res</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
 <span><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
@@ -350,6 +353,9 @@ against the SNP effects on the outcome using a scatter plot.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_scatter_plot.html">mr_scatter_plot</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">dat</span><span class="op">)</span></span></code></pre></div>
 <p>A scatter plot is created for each exposure-outcome test, and stored
 in <code>p1</code> as a list of plots. For example, to plot the first
@@ -588,10 +594,25 @@ method.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-72' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 30 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-1' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 14 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-100' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 2 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-999' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 10 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-104' on 'ieu-a-7'</span></span>
 <span><span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
@@ -634,10 +655,25 @@ top).</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-72' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 30 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-1' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 14 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-100' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 2 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-999' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 10 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-104' on 'ieu-a-7'</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
@@ -665,7 +701,7 @@ top).</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_vline()`).</span></span>
-<span><span class="co">#&gt; Removed 3 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_vline()`).</span></span></code></pre></div>
 <p><img src="perform_mr_files/figure-html/unnamed-chunk-35-1.png" class="r-plt" alt="Forest plot split by a subcategory variable." width="700" style="display: block; margin: auto;"></p>
 <p>In the above example we made up an arbitrary grouping variable called
@@ -1210,6 +1246,9 @@ outcome name using the split_outcome function:</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
+<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
+<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
+<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="fu"><a href="../reference/split_outcome.html">split_outcome</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                outcome                      exposure</span></span>
 <span><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
