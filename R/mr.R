@@ -330,6 +330,14 @@ default_parameters <- function() {
 #' }
 mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters) {
   if (length(b_exp) > 1) {
+    warning(
+      "mr_wald_ratio requires exactly one SNP, but ",
+      length(b_exp),
+      " were provided. ",
+      "Use a method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a single SNP. ",
+      "Returning NA.",
+      call. = FALSE
+    )
     return(list(b = NA, se = NA, pval = NA, nsnp = NA))
   }
   b <- b_out / b_exp

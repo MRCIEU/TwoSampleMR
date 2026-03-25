@@ -77,3 +77,16 @@ test_that("Including MR-PRESSO in the list", {
 test_that("Including MR-PRESSO in the list", {
   expect_error(res8 <- mr(dat, method_list = c("run_mr_presso")))
 })
+
+test_that("mr_wald_ratio works with a single SNP", {
+  res9 <- mr(dat[1, ], method_list = "mr_wald_ratio")
+  expect_equal(nrow(res9), 1L)
+})
+
+test_that("mr_wald_ratio warns with multiple SNPs and returns 0 rows", {
+  res10 <- expect_warning(
+    mr(dat, method_list = "mr_wald_ratio"),
+    "mr_wald_ratio requires exactly one SNP"
+  )
+  expect_equal(nrow(res10), 0L)
+})
