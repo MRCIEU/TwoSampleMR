@@ -55,8 +55,8 @@ rm(list = ls())
 load(system.file("extdata", "forestplot_1_to_many_data.RData", package = "TwoSampleMR"))
 
 test_that("Forest plot 1 to many", {
-  expect_warning(
-    p8 <- forest_plot_1_to_many(
+  p8 <- expect_warning(
+    forest_plot_1_to_many(
       res,
       b = "b",
       se = "se",
@@ -113,8 +113,8 @@ test_that("Forest plot 1 to many test 3 - with subcategory in by argument", {
   res$subcategory[is.na(res$subcategory)] <- "Group 2"
   res$weight <- 1 / res$se
   res <- sort_1_to_many(res, sort_action = 1, group = "subcategory")
-  expect_warning(
-    p10 <- forest_plot_1_to_many(
+  p10 <- expect_warning(
+    forest_plot_1_to_many(
       res,
       b = "b",
       se = "se",
