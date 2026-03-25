@@ -69,3 +69,11 @@ test_that("mr_grip() not from mr()", {
   expect_equal(tst$se.adj, 0.16389, tol = 1e-4)
   expect_equal(tst$nsnp, 79L)
 })
+
+test_that("Including MR-PRESSO in the list", {
+  expect_error(res7 <- mr(dat, method_list = c("mr_presso")))
+})
+
+test_that("Including MR-PRESSO in the list", {
+  expect_error(res8 <- mr(dat, method_list = c("run_mr_presso")))
+})
