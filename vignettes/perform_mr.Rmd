@@ -14,6 +14,7 @@ vignette: >
 
 ```{r, include=FALSE}
 evalinr44 <- (getRversion() >= '4.4.0') && requireNamespace("MendelianRandomization", quietly = TRUE)
+evalmrraps <- requireNamespace("mr.raps", quietly = TRUE)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -561,14 +562,14 @@ load(system.file("extdata", "vig_perform_mr.RData", package = "TwoSampleMR"))
 dat <- harmonise_data(bmi_exp_dat, chd_out_dat)
 ```
 
-```{r}
+```{r eval=evalmrraps}
 res <- mr(dat, method_list = c("mr_raps"))
 res
 ```
 
 MR-RAPS comes with two main options: `over.dispersion` (whether the method should consider systematic pleiotropy) and `loss.function` (either `"l2"`, `"huber"`, or `"tukey"`). The latter two loss functions are robust to idiosyncratic pleiotropy. The default option is `over.dispersion = TRUE`, `loss.function = "huber"`, and `shrinkage = FALSE`. To change these options, modify the `parameters` argument of `mr()` by, for example,
 
-```{r}
+```{r eval=evalmrraps}
 res <-
   mr(
     dat,
