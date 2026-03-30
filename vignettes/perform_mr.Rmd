@@ -209,6 +209,54 @@ p2 <- mr_forest_plot(res_single)
 p2[[1]]
 ```
 
+### Forest plot with categories
+
+If you have a categorical grouping for your SNPs (e.g., outlier flags or cluster assignments), you can add a `category` column to the single SNP results. SNPs will be coloured and grouped by category in the forest plot. See Figure 4 of @vabistsevits2024 for examples.
+
+#### RadialMR outlier example
+
+```{r fig.alt="A forest plot showing the estimated causal effects for each SNP, with RadialMR outliers highlighted.", warning=FALSE, message=FALSE, fig.height=10}
+res_single <- mr_singlesnp(dat)
+
+# Run RadialMR to detect outliers
+radial_dat <- dat_to_RadialMR(dat)
+radial_res <- RadialMR::ivw_radial(radial_dat[[1]], alpha = 0.05, weights = 3)
+outlier_snps <- radial_res$outliers$SNP
+
+# Label SNPs as outliers or not (leave "All" summary rows as NA)
+snp_rows <- !grepl("^All", res_single$SNP)
+res_single$category <- NA_character_
+res_single$category[snp_rows] <- ifelse(
+  res_single$SNP[snp_rows] %in% outlier_snps, "Outlier", "Main"
+)
+p_radial <- mr_forest_plot(res_single)
+p_radial[[1]]
+```
+
+#### MR-PRESSO outlier example
+
+The same approach works with MR-PRESSO outliers. Note that `run_mr_presso()` uses bootstrapping so can be slow with large numbers of SNPs.
+
+```r
+res_single <- mr_singlesnp(dat)
+
+# Run MR-PRESSO to detect outliers
+set.seed(42)
+presso <- run_mr_presso(dat, NbDistribution = 3000)
+presso_pval <- as.numeric(presso[[1]]$`MR-PRESSO results`$`Outlier Test`$Pvalue)
+# Map outlier rows back to SNP names
+dat_kept <- dat[dat$mr_keep, ]
+outlier_snps <- dat_kept$SNP[which(presso_pval < 0.05)]
+
+# Label SNPs as outliers or not (leave "All" summary rows as NA)
+snp_rows <- !grepl("^All", res_single$SNP)
+res_single$category <- NA_character_
+res_single$category[snp_rows] <- ifelse(
+  res_single$SNP[snp_rows] %in% outlier_snps, "Outlier", "Main"
+)
+mr_forest_plot(res_single)
+```
+
 ### Leave-one-out plot
 
 Use the `mr_leaveoneout_plot()` function to visualise the leave-one-out analysis:
