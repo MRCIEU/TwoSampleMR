@@ -26,7 +26,7 @@ Authors:
   \item Jie Zheng \email{Jie.Zheng@bristol.ac.uk} (\href{https://orcid.org/0000-0002-6623-6839}{ORCID})
   \item Tom Gaunt \email{Tom.Gaunt@bristol.ac.uk} (\href{https://orcid.org/0000-0003-0924-3247}{ORCID})
   \item Ben Elsworth \email{Ben.Elsworth@bristol.ac.uk} (\href{https://orcid.org/0000-0001-7328-4233}{ORCID})
-  \item Tom Palmer \email{tom.palmer@bristol.ac.uk} (\href{https://orcid.org/0000-0003-4655-4511}{ORCID})
+  \item Tom Palmer \email{remlapmot@hotmail.com} (\href{https://orcid.org/0000-0003-4655-4511}{ORCID})
 }
 
 }
