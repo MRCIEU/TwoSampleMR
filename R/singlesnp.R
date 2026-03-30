@@ -104,12 +104,51 @@ mr_singlesnp <- function(
 
 #' Forest plot
 #'
+#' If the data frame contains a `category` column, SNPs will be coloured and
+#' grouped by category in the forest plot (e.g., cluster assignments from
+#' MR-Clust). See Figure 4 of Vabistsevits et al. (2024) for examples.
+#'
 #' @param singlesnp_results from [mr_singlesnp()].
 #' @param exponentiate Plot on exponential scale. The default is `FALSE`.
+#' @param category_colours Named character vector of colours for categories.
+#'   Names should match the values in the `category` column. If `NULL`
+#'   (the default), the Okabe-Ito colourblind-friendly palette is used.
+#'
+#' @references
+#' Vabistsevits, M., Davey Smith, G., Richardson, T.G. et al.
+#' Mammographic density mediates the protective effect of early-life body size
+#' on breast cancer risk.
+#' *Nature Communications*, **15**, 4021 (2024).
+#' \doi{10.1038/s41467-024-48105-7}
 #'
 #' @export
 #' @return List of plots
-mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE) {
+#' @examples
+#' \dontrun{
+#' # Basic forest plot
+#' bmi_exp_dat <- extract_instruments(outcomes = "ieu-a-2")
+#' chd_out_dat <- extract_outcome_data(
+#'   snps = bmi_exp_dat$SNP, outcomes = "ieu-a-7"
+#' )
+#' dat <- harmonise_data(bmi_exp_dat, chd_out_dat)
+#' res <- mr_singlesnp(dat)
+#' mr_forest_plot(res)
+#'
+#' # Forest plot with RadialMR outliers
+#' radial_dat <- dat_to_RadialMR(dat)
+#' radial_res <- RadialMR::ivw_radial(radial_dat[[1]], alpha = 0.05, weights = 3)
+#' outlier_snps <- radial_res$outliers$SNP
+#' snp_rows <- !grepl("^All", res$SNP)
+#' res$category <- NA_character_
+#' res$category[snp_rows] <- ifelse(
+#'   res$SNP[snp_rows] %in% outlier_snps, "Outlier", "Main"
+#' )
+#' mr_forest_plot(res)
+#'
+#' # With custom colours
+#' mr_forest_plot(res, category_colours = c(Main = "grey50", Outlier = "red"))
+#' }
+mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE, category_colours = NULL) {
   dat_dt <- data.table::as.data.table(singlesnp_results)
   combos <- unique(dat_dt[, .(id.exposure, id.outcome)])
 
@@ -130,14 +169,80 @@ mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE) {
     d$tot <- 0.01
     d$tot[d$SNP %in% am] <- 1
     d$SNP <- as.character(d$SNP)
-    nom <- d$SNP[!d$SNP %in% am]
-    nom <- nom[order(d$b)]
-    d <- rbind(d, d[nrow(d), ])
-    d$SNP[nrow(d) - 1] <- ""
-    d$b[nrow(d) - 1] <- NA
-    d$up[nrow(d) - 1] <- NA
-    d$lo[nrow(d) - 1] <- NA
-    d$SNP <- ordered(d$SNP, levels = c(am, "", nom))
+
+    has_category <- "category" %in% names(d)
+
+    if (has_category) {
+      d$category <- as.character(d$category)
+      d$category[is.na(d$category)] <- "Uncategorized"
+
+      # Order SNPs by overall effect size
+      snp_rows <- d[!d$SNP %in% am, ]
+      snp_rows <- snp_rows[order(snp_rows$b), ]
+      nom <- snp_rows$SNP
+
+      # Assign summary category to "All" rows
+      d$category[d$SNP %in% am] <- "Summary"
+
+      # Insert separator row
+      sep_row <- d[nrow(d), ]
+      sep_row$SNP <- ""
+      sep_row$b <- NA
+      sep_row$se <- NA
+      sep_row$up <- NA
+      sep_row$lo <- NA
+      sep_row$category <- "Summary"
+      d <- rbind(d, sep_row)
+
+      d$SNP <- ordered(d$SNP, levels = c(am, "", nom))
+
+      # Build colour palette for categories
+      cats <- sort(unique(snp_rows$category))
+      n_cats <- length(cats)
+      if (!is.null(category_colours)) {
+        cat_colours <- category_colours
+      } else {
+        # Okabe-Ito colourblind-friendly palette
+        palette <- c(
+          "#000000", "#0072B2", "#D55E00", "#009E73",
+          "#CC79A7", "#E69F00", "#56B4E9", "#F0E442", "#999999"
+        )[seq_len(min(n_cats, 9))]
+        if (n_cats > 9) {
+          hues <- seq(15, 375, length.out = n_cats - 8)[seq_len(n_cats - 9)]
+          palette <- c(palette, grDevices::hcl(h = hues, c = 100, l = 65))
+        }
+        cat_colours <- palette
+        names(cat_colours) <- cats
+      }
+      cat_colours["Summary"] <- "black"
+
+      # Map category to each factor level for y-axis label colouring
+      level_cats <- vapply(
+        levels(d$SNP),
+        function(s) {
+          if (s == "") {
+            return("Summary")
+          }
+          d$category[d$SNP == s][1L]
+        },
+        character(1)
+      )
+      label_colours <- cat_colours[level_cats]
+    } else {
+      # Original ordering: non-All SNPs sorted by effect size
+      snp_rows <- d[!d$SNP %in% am, ]
+      nom <- snp_rows$SNP[order(snp_rows$b)]
+
+      # Insert separator row
+      d <- rbind(d, d[nrow(d), ])
+      d$SNP[nrow(d) - 1] <- ""
+      d$b[nrow(d) - 1] <- NA
+      d$up[nrow(d) - 1] <- NA
+      d$lo[nrow(d) - 1] <- NA
+
+      d$SNP <- ordered(d$SNP, levels = c(am, "", nom))
+      label_colours <- "black"
+    }
 
     xint <- 0
     if (exponentiate) {
@@ -147,60 +252,63 @@ mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE) {
       xint <- 1
     }
 
+    # Build colour aesthetic and scale based on category mode
+    if (has_category) {
+      colour_aes <- ggplot2::aes(colour = category)
+      colour_scale <- ggplot2::scale_colour_manual(values = cat_colours)
+    } else {
+      colour_aes <- ggplot2::aes(colour = as.factor(tot))
+      colour_scale <- ggplot2::scale_colour_manual(values = c("black", "red"))
+    }
+
     if (utils::packageVersion("ggplot2") <= "3.5.2") {
-      ggplot2::ggplot(d, ggplot2::aes(y = SNP, x = b)) +
+      p <- ggplot2::ggplot(d, ggplot2::aes(y = SNP, x = b)) +
         ggplot2::geom_vline(xintercept = xint, linetype = "dotted") +
-        # ggplot2::geom_errorbarh(ggplot2::aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=as.factor(tot), colour=as.factor(tot)), height=0) +
         ggplot2::geom_errorbarh(
-          ggplot2::aes(xmin = lo, xmax = up, linewidth = as.factor(tot), colour = as.factor(tot)),
+          utils::modifyList(
+            ggplot2::aes(xmin = lo, xmax = up, linewidth = as.factor(tot)),
+            colour_aes
+          ),
           height = 0
         ) +
-        ggplot2::geom_point(ggplot2::aes(colour = as.factor(tot))) +
+        ggplot2::geom_point(colour_aes) +
         ggplot2::geom_hline(
           ggplot2::aes(yintercept = which(levels(SNP) %in% "")),
           colour = "grey"
         ) +
-        ggplot2::scale_colour_manual(values = c("black", "red")) +
-        ggplot2::scale_linewidth_manual(values = c(0.3, 1)) +
-        # xlim(c(min(c(0, d$b), na.rm=T), max(c(0, d$b), na.rm=T))) +
-        ggplot2::theme(
-          legend.position = "none",
-          axis.text.y = ggplot2::element_text(size = 8),
-          axis.ticks.y = ggplot2::element_line(linewidth = 0),
-          axis.title.x = ggplot2::element_text(size = 8)
-        ) +
-        ggplot2::labs(
-          y = "",
-          x = paste0("MR effect size for\n'", d$exposure[1], "' on '", d$outcome[1], "'")
-        )
+        colour_scale +
+        ggplot2::scale_linewidth_manual(values = c(0.3, 1))
     } else {
-      ggplot2::ggplot(d, ggplot2::aes(y = SNP, x = b)) +
+      p <- ggplot2::ggplot(d, ggplot2::aes(y = SNP, x = b)) +
         ggplot2::geom_vline(xintercept = xint, linetype = "dotted") +
-        # ggplot2::geom_errorbarh(ggplot2::aes(xmin=pmax(lo, min(d$b, na.rm=T)), xmax=pmin(up, max(d$b, na.rm=T)), size=as.factor(tot), colour=as.factor(tot)), height=0) +
         ggplot2::geom_errorbar(
-          ggplot2::aes(xmin = lo, xmax = up, linewidth = as.factor(tot), colour = as.factor(tot)),
+          utils::modifyList(
+            ggplot2::aes(xmin = lo, xmax = up, linewidth = as.factor(tot)),
+            colour_aes
+          ),
           width = 0,
           orientation = "y"
         ) +
-        ggplot2::geom_point(ggplot2::aes(colour = as.factor(tot))) +
+        ggplot2::geom_point(colour_aes) +
         ggplot2::geom_hline(
           ggplot2::aes(yintercept = which(levels(SNP) %in% "")),
           colour = "grey"
         ) +
-        ggplot2::scale_colour_manual(values = c("black", "red")) +
-        ggplot2::scale_linewidth_manual(values = c(0.3, 1)) +
-        # xlim(c(min(c(0, d$b), na.rm=T), max(c(0, d$b), na.rm=T))) +
-        ggplot2::theme(
-          legend.position = "none",
-          axis.text.y = ggplot2::element_text(size = 8),
-          axis.ticks.y = ggplot2::element_line(linewidth = 0),
-          axis.title.x = ggplot2::element_text(size = 8)
-        ) +
-        ggplot2::labs(
-          y = "",
-          x = paste0("MR effect size for\n'", d$exposure[1], "' on '", d$outcome[1], "'")
-        )
+        colour_scale +
+        ggplot2::scale_linewidth_manual(values = c(0.3, 1))
     }
+
+    p +
+      ggplot2::theme(
+        legend.position = "none",
+        axis.text.y = ggplot2::element_text(size = 8, colour = label_colours),
+        axis.ticks.y = ggplot2::element_line(linewidth = 0),
+        axis.title.x = ggplot2::element_text(size = 8)
+      ) +
+      ggplot2::labs(
+        y = "",
+        x = paste0("MR effect size for\n'", d$exposure[1], "' on '", d$outcome[1], "'")
+      )
   })
   res
 }
