@@ -120,13 +120,13 @@ This returns a data.frame of results that is similar to the output from `mr()` e
 
 The method used to perform the single SNP MR is the Wald ratio by default, though this can be changed, e.g. to use the fixed effects meta analysis method instead:
 
-```{r}
+```{r eval=evalinr44}
 res_single <- mr_singlesnp(dat, single_method = "mr_meta_fixed")
 ```
 
 The `mr_singlesnp()` function calculates the full MR using all available SNPs as well, and by default it uses the IVW and MR Egger methods. This can be specified as so:
 
-```{r}
+```{r eval=evalinr44}
 res_single <- mr_singlesnp(dat, all_method = "mr_two_sample_ml")
 ```
 
