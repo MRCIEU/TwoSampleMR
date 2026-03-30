@@ -34,5 +34,5 @@ Authors:
 - Ben Elsworth <Ben.Elsworth@bristol.ac.uk>
   ([ORCID](https://orcid.org/0000-0001-7328-4233))
 
-- Tom Palmer <tom.palmer@bristol.ac.uk>
+- Tom Palmer <remlapmot@hotmail.com>
   ([ORCID](https://orcid.org/0000-0003-4655-4511))

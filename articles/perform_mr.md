@@ -400,6 +400,80 @@ each SNP separately, and the Inverse Variance Weighted and Maximum
 Likelihood estimates using all the
 SNPs.](perform_mr_files/figure-html/unnamed-chunk-24-1.png)
 
+### Forest plot with categories
+
+If you have a categorical grouping for your SNPs (e.g., outlier flags or
+cluster assignments), you can add a `category` column to the single SNP
+results. SNPs will be coloured and grouped by category in the forest
+plot. See Figure 4 of Vabistsevits et al. (2024) for examples.
+
+#### RadialMR outlier example
+
+``` r
+res_single <- mr_singlesnp(dat)
+
+# Run RadialMR to detect outliers
+radial_dat <- dat_to_RadialMR(dat)
+radial_res <- RadialMR::ivw_radial(radial_dat[[1]], alpha = 0.05, weights = 3)
+#> 
+#> Radial IVW
+#> 
+#>                   Estimate  Std.Error   t value     Pr(>|t|)
+#> Effect (Mod.2nd) 0.4457431 0.05900084  7.554860 4.193098e-14
+#> Iterative        0.4457432 0.05900083  7.554864 4.192978e-14
+#> Exact (FE)       0.4580587 0.04393667 10.425430 1.897987e-25
+#> Exact (RE)       0.4525728 0.06039039  7.494118 8.923018e-11
+#> 
+#> 
+#> Residual standard error: 1.344 on 78 degrees of freedom
+#> 
+#> F-statistic: 57.08 on 1 and 78 DF, p-value: 6.82e-11
+#> Q-Statistic for heterogeneity: 140.8134 on 78 DF , p-value: 1.72481e-05
+#> 
+#>  Outliers detected 
+#> Number of iterations = 3
+outlier_snps <- radial_res$outliers$SNP
+
+# Label SNPs as outliers or not (leave "All" summary rows as NA)
+snp_rows <- !grepl("^All", res_single$SNP)
+res_single$category <- NA_character_
+res_single$category[snp_rows] <- ifelse(
+  res_single$SNP[snp_rows] %in% outlier_snps, "Outlier", "Main"
+)
+p_radial <- mr_forest_plot(res_single)
+p_radial[[1]]
+```
+
+![A forest plot showing the estimated causal effects for each SNP, with
+RadialMR outliers
+highlighted.](perform_mr_files/figure-html/unnamed-chunk-25-1.png)
+
+#### MR-PRESSO outlier example
+
+The same approach works with MR-PRESSO outliers. Note that
+[`run_mr_presso()`](https://mrcieu.github.io/TwoSampleMR/reference/run_mr_presso.md)
+uses bootstrapping so can be slow with large numbers of SNPs.
+
+``` r
+res_single <- mr_singlesnp(dat)
+
+# Run MR-PRESSO to detect outliers
+set.seed(42)
+presso <- run_mr_presso(dat, NbDistribution = 3000)
+presso_pval <- as.numeric(presso[[1]]$`MR-PRESSO results`$`Outlier Test`$Pvalue)
+# Map outlier rows back to SNP names
+dat_kept <- dat[dat$mr_keep, ]
+outlier_snps <- dat_kept$SNP[which(presso_pval < 0.05)]
+
+# Label SNPs as outliers or not (leave "All" summary rows as NA)
+snp_rows <- !grepl("^All", res_single$SNP)
+res_single$category <- NA_character_
+res_single$category[snp_rows] <- ifelse(
+  res_single$SNP[snp_rows] %in% outlier_snps, "Outlier", "Main"
+)
+mr_forest_plot(res_single)
+```
+
 ### Leave-one-out plot
 
 Use the
@@ -413,7 +487,7 @@ p3[[1]]
 
 ![A leave one out plot showing the Inverse Variance Weighted estimate
 with each SNP
-omitted.](perform_mr_files/figure-html/unnamed-chunk-25-1.png)
+omitted.](perform_mr_files/figure-html/unnamed-chunk-26-1.png)
 
 We can also specify the method to use in the function call, e.g., to use
 MR-Egger regression in the leave-one-out analysis specify
@@ -435,7 +509,7 @@ p4[[1]]
 
 ![A funnel plot showing the causal effect for each SNP and the inverse
 variance weighted and MR-Egger estimates using all the
-SNPs.](perform_mr_files/figure-html/unnamed-chunk-26-1.png)
+SNPs.](perform_mr_files/figure-html/unnamed-chunk-27-1.png)
 
 ## 1-to-many forest plot
 
@@ -527,7 +601,7 @@ forest_plot_1_to_many(
 
 ![A forest plot showing the estimated causal effects for each risk
 factor on the
-outcome.](perform_mr_files/figure-html/unnamed-chunk-30-1.png)
+outcome.](perform_mr_files/figure-html/unnamed-chunk-31-1.png)
 
 It is also possible to add additional columns and column titles and to
 choose the size of the text in the columns:
@@ -564,7 +638,7 @@ forest_plot_1_to_many(
 
 ![A forest plot showing the estimated causal effects for each risk
 factor on the outcome including columns for the no. SNPs and
-p-value.](perform_mr_files/figure-html/unnamed-chunk-31-1.png)
+p-value.](perform_mr_files/figure-html/unnamed-chunk-32-1.png)
 
 In my own workflow I prefer to to keep the plot free of axis and column
 titles and to add them separately in a program like Powerpoint:
@@ -596,7 +670,7 @@ forest_plot_1_to_many(
 ![A forest plot showing the estimated causal effects for each risk
 factor on the outcome including columns for the no. SNPs and p-value
 without column
-headers.](perform_mr_files/figure-html/unnamed-chunk-32-1.png)
+headers.](perform_mr_files/figure-html/unnamed-chunk-33-1.png)
 
 #### Example 2. MR results for multiple MR methods grouped by multiple exposures
 
@@ -667,7 +741,7 @@ forest_plot_1_to_many(
 
 ![A forest plot showing the estimated causal effects for each method for
 each risk factor on the
-outcome.](perform_mr_files/figure-html/unnamed-chunk-34-1.png)
+outcome.](perform_mr_files/figure-html/unnamed-chunk-35-1.png)
 
 #### Example 3. Stratify results on a grouping variable
 
@@ -730,7 +804,7 @@ forest_plot_1_to_many(
 ```
 
 ![Forest plot split by a subcategory
-variable.](perform_mr_files/figure-html/unnamed-chunk-35-1.png)
+variable.](perform_mr_files/figure-html/unnamed-chunk-36-1.png)
 
 In the above example we made up an arbitrary grouping variable called
 “subcategory” with values “Group 1” and “Group 2”. Typically, however,
@@ -1319,10 +1393,10 @@ split_outcome(res)
 #> 5     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2
 #>                      method nsnp         b         se         pval
 #> 1                  MR Egger   79 0.5024935 0.14396056 8.012590e-04
-#> 2           Weighted median   79 0.3870065 0.07398375 1.686262e-07
+#> 2           Weighted median   79 0.3870065 0.07246116 9.249563e-08
 #> 3 Inverse variance weighted   79 0.4459091 0.05898302 4.032020e-14
-#> 4               Simple mode   79 0.3401554 0.15359534 2.970497e-02
-#> 5             Weighted mode   79 0.3790910 0.26241685 1.525717e-01
+#> 4               Simple mode   79 0.3401554 0.14830159 2.450175e-02
+#> 5             Weighted mode   79 0.3790910 0.26140032 1.510034e-01
 ```
 
 ### Split exposure names
@@ -1352,12 +1426,12 @@ generate_odds_ratios(res)
 #> 3 Body mass index || id:ieu-a-2 Inverse variance weighted   79 0.4459091
 #> 4 Body mass index || id:ieu-a-2               Simple mode   79 0.3401554
 #> 5 Body mass index || id:ieu-a-2             Weighted mode   79 0.3790910
-#>           se         pval       lo_ci     up_ci       or or_lci95 or_uci95
-#> 1 0.14396056 8.012590e-04  0.22033081 0.7846562 1.652838 1.246489 2.191653
-#> 2 0.07398375 1.686262e-07  0.24199834 0.5320146 1.472566 1.273792 1.702358
-#> 3 0.05898302 4.032020e-14  0.33030238 0.5615158 1.561909 1.391389 1.753328
-#> 4 0.15359534 2.970497e-02  0.03910856 0.6412023 1.405166 1.039883 1.898762
-#> 5 0.26241685 1.525717e-01 -0.13524604 0.8934280 1.460956 0.873501 2.443492
+#>           se         pval       lo_ci     up_ci       or  or_lci95 or_uci95
+#> 1 0.14396056 8.012590e-04  0.22033081 0.7846562 1.652838 1.2464890 2.191653
+#> 2 0.07246116 9.249563e-08  0.24498261 0.5290304 1.472566 1.2775991 1.697286
+#> 3 0.05898302 4.032020e-14  0.33030238 0.5615158 1.561909 1.3913888 1.753328
+#> 4 0.14830159 2.450175e-02  0.04948431 0.6308265 1.405166 1.0507291 1.879163
+#> 5 0.26140032 1.510034e-01 -0.13325363 0.8914356 1.460956 0.8752431 2.438628
 ```
 
 ### Subset on method
@@ -1450,6 +1524,13 @@ Hemani, Gibran, Kate Tilling, and George Davey Smith. 2017. “Orienting
 the Causal Relationship Between Imprecisely Measured Traits Using GWAS
 Summary Data.” *PLOS Genetics* 13 (11): e1007081.
 <https://doi.org/10.1371/journal.pgen.1007081>.
+
+Vabistsevits, Marina, George Davey Smith, Tom G Richardson, Rebecca C
+Richmond, Weiva Sieh, Joseph H Rothstein, Laurel A Habel, Stacey E
+Alexeeff, Bethan Lloyd-Lewis, and Eleanor Sanderson. 2024. “Mammographic
+density mediates the protective effect of early-life body size on breast
+cancer risk.” *Nature Communications* 15: 4021.
+<https://doi.org/10.1038/s41467-024-48105-7>.
 
 Zhao, Qingyuan, Jingshu Wang, Gibran Hemani, Jack Bowden, and Dylan S
 Small. 2020. “Statistical inference in two-sample summary-data Mendelian

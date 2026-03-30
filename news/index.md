@@ -1,5 +1,13 @@
 # Changelog
 
+## TwoSampleMR v0.7.2
+
+(Release date 2026-03-30)
+
+- Add outlier categorisation on
+  [`mr_forest_plot()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_forest_plot.md)
+  forest plot.
+
 ## TwoSampleMR v0.7.1
 
 (Release date 2026-03-25)
