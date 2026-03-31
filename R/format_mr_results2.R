@@ -450,6 +450,6 @@ size.prune <- function(dat) {
   dat$ncase[is.na(dat$ncase)] <- dat$samplesize[is.na(dat$ncase)]
   dat <- dat[order(dat$ncase, decreasing = TRUE), ]
   id.expout <- paste(dat$exposure, dat$outcome)
-  id.keep <- id.expout[!duplicated(paste(dat$exposure, dat$originalname.outcome))]
+  id.keep <- id.expout[!duplicated(data.frame(dat$exposure, dat$originalname.outcome))]
   dat <- dat[id.expout %in% id.keep, ]
 }

@@ -146,7 +146,7 @@ run_mr_presso <- function(dat, NbDistribution = 1000, SignifThreshold = 0.05) {
   dat <- subset(dat, mr_keep)
   d <- subset(
     dat,
-    !duplicated(paste(id.exposure, " - ", id.outcome)),
+    !duplicated(data.frame(id.exposure, id.outcome)),
     select = c(exposure, outcome, id.exposure, id.outcome)
   )
   res <- list()

@@ -70,7 +70,7 @@ harmonise_data <- function(exposure_dat, outcome_dat, action = 2) {
 
   combs <- subset(
     res.tab,
-    !duplicated(paste(id.exposure, id.outcome)),
+    !duplicated(data.frame(id.exposure, id.outcome)),
     select = c(id.exposure, id.outcome)
   )
 
