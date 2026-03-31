@@ -334,7 +334,7 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
       dat1 <- dat1[nexp == nexp[1], ]
       L[[i]] <- dat1
     }
-    dat <- do.call(rbind, L)
+    dat <- data.table::rbindlist(L)
     dat <- dat[, !names(dat1) %in% c("id.set", "id.subset")]
     # if (drop.duplicates == T) {
     # 	dat<-dat[dat$power.prune=="keep",]
@@ -405,9 +405,9 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
         # dat2$power<-power
         L1[[j]] <- dat2
       }
-      L[[i]] <- do.call(rbind, L1)
+      L[[i]] <- data.table::rbindlist(L1)
     }
-    dat2 <- do.call(rbind, L)
+    dat2 <- data.table::rbindlist(L)
     dat2 <- dat2[order(dat2$id.set, dat2$iv.se), ]
     id.sets <- unique(dat2$id.set)
     id.keep <- vector("list", length(id.sets))
