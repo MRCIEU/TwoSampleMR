@@ -146,9 +146,13 @@ combine_all_mrresults <- function(
   het <- het[, c("id.exposure", "id.outcome", "method", "Q", "Q_df", "Q_pval")]
 
   # Convert all factors to character
-  res[] <- lapply(res, function(x) if (is.factor(x)) as.character(x) else x)
-  het[] <- lapply(het, function(x) if (is.factor(x)) as.character(x) else x)
-  sin[] <- lapply(sin, function(x) if (is.factor(x)) as.character(x) else x)
+  factors_to_character <- function(df) {
+    df[] <- lapply(df, function(x) if (is.factor(x)) as.character(x) else x)
+    df
+  }
+  res <- factors_to_character(res)
+  het <- factors_to_character(het)
+  sin <- factors_to_character(sin)
 
   sin <- sin[grep("[:0-9:]", sin$SNP), ]
   sin$method <- "Wald ratio"
