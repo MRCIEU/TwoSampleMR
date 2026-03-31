@@ -146,9 +146,13 @@ combine_all_mrresults <- function(
   het <- het[, c("id.exposure", "id.outcome", "method", "Q", "Q_df", "Q_pval")]
 
   # Convert all factors to character
-  res[] <- lapply(res, function(x) if (is.factor(x)) as.character(x) else x)
-  het[] <- lapply(het, function(x) if (is.factor(x)) as.character(x) else x)
-  sin[] <- lapply(sin, function(x) if (is.factor(x)) as.character(x) else x)
+  factors_to_character <- function(df) {
+    df[] <- lapply(df, function(x) if (is.factor(x)) as.character(x) else x)
+    df
+  }
+  res <- factors_to_character(res)
+  het <- factors_to_character(het)
+  sin <- factors_to_character(sin)
 
   sin <- sin[grep("[:0-9:]", sin$SNP), ]
   sin$method <- "Wald ratio"
@@ -285,10 +289,10 @@ combine_all_mrresults <- function(
 power_prune <- function(dat, method = 1, dist.outcome = "binary") {
   # dat[,c("eaf.exposure","beta.exposure","se.exposure","samplesize.outcome","ncase.outcome","ncontrol.outcome")]
   if (method == 1) {
-    L <- NULL
     id.sets <- paste(split_exposure(dat)$exposure, split_outcome(dat)$outcome)
     id.set.unique <- unique(id.sets)
     dat$id.set <- as.numeric(factor(id.sets))
+    L <- vector("list", length(id.set.unique))
     for (i in seq_along(id.set.unique)) {
       # print(i)
       print(paste(
@@ -334,7 +338,7 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
       dat1 <- dat1[nexp == nexp[1], ]
       L[[i]] <- dat1
     }
-    dat <- do.call(rbind, L)
+    dat <- data.table::rbindlist(L)
     dat <- dat[, !names(dat1) %in% c("id.set", "id.subset")]
     # if (drop.duplicates == T) {
     # 	dat<-dat[dat$power.prune=="keep",]
@@ -343,17 +347,17 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
   }
 
   if (method == 2) {
-    L <- NULL
     id.sets <- paste(split_exposure(dat)$exposure, split_outcome(dat)$outcome)
     id.set.unique <- unique(id.sets)
     dat$id.set <- as.numeric(factor(id.sets))
+    L <- vector("list", length(id.set.unique))
     for (i in seq_along(id.set.unique)) {
       dat1 <- dat[id.sets == id.set.unique[i], ]
       # unique(dat1[,c("exposure","outcome")])
       id.subset <- paste(dat1$exposure, dat1$id.exposure, dat1$outcome, dat1$id.outcome)
       id.subset.unique <- unique(id.subset)
       dat1$id.subset <- as.numeric(factor(id.subset))
-      L1 <- NULL
+      L1 <- vector("list", length(id.subset.unique))
       for (j in seq_along(id.subset.unique)) {
         # print(j)
         print(paste("identifying best powered summary set: ", id.subset.unique[j], sep = ""))
@@ -405,12 +409,12 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
         # dat2$power<-power
         L1[[j]] <- dat2
       }
-      L[[i]] <- do.call(rbind, L1)
+      L[[i]] <- data.table::rbindlist(L1)
     }
-    dat2 <- do.call(rbind, L)
+    dat2 <- data.table::rbindlist(L)
     dat2 <- dat2[order(dat2$id.set, dat2$iv.se), ]
     id.sets <- unique(dat2$id.set)
-    id.keep <- NULL
+    id.keep <- vector("list", length(id.sets))
     for (i in seq_along(id.sets)) {
       # print(i)
       # print(id.sets[i])
@@ -450,6 +454,6 @@ size.prune <- function(dat) {
   dat$ncase[is.na(dat$ncase)] <- dat$samplesize[is.na(dat$ncase)]
   dat <- dat[order(dat$ncase, decreasing = TRUE), ]
   id.expout <- paste(dat$exposure, dat$outcome)
-  id.keep <- id.expout[!duplicated(paste(dat$exposure, dat$originalname.outcome))]
+  id.keep <- id.expout[!duplicated(data.frame(dat$exposure, dat$originalname.outcome))]
   dat <- dat[id.expout %in% id.keep, ]
 }

@@ -30,10 +30,10 @@ PM <- function(y = y, s = s, Alpha = 0.1) {
   mode <- df - 1
   Quant <- c(low, mode, mn, med, up)
   L <- length(Quant)
-  Tausq <- NULL
-  Isq <- NULL
+  Tausq <- numeric(L)
+  Isq <- numeric(L)
   CI <- matrix(nrow = L, ncol = 2)
-  MU <- NULL
+  MU <- numeric(L)
   v <- 1 / s^2
   sum.v <- sum(v)
   typS <- sum(v * (k - 1)) / (sum.v^2 - sum(v^2))
@@ -77,7 +77,7 @@ mr_rucker <- function(dat, parameters = default_parameters()) {
   dat <- subset(dat, mr_keep)
   d <- subset(
     dat,
-    !duplicated(paste(id.exposure, " - ", id.outcome)),
+    !duplicated(data.frame(id.exposure, id.outcome)),
     select = c(exposure, outcome, id.exposure, id.outcome)
   )
   res <- list()
@@ -409,7 +409,7 @@ mr_rucker_jackknife <- function(dat, parameters = default_parameters()) {
   dat <- subset(dat, mr_keep)
   d <- subset(
     dat,
-    !duplicated(paste(id.exposure, " - ", id.outcome)),
+    !duplicated(data.frame(id.exposure, id.outcome)),
     select = c(exposure, outcome, id.exposure, id.outcome)
   )
   res <- list()
