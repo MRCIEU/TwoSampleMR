@@ -1,5 +1,11 @@
 # Changelog
 
+## TwoSampleMR v0.7.3
+
+(Release date 2026-03-31)
+
+- Some further code optimizations.
+
 ## TwoSampleMR v0.7.2
 
 (Release date 2026-03-30)
