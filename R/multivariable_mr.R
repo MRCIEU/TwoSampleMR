@@ -176,8 +176,6 @@ mv_extract_exposures_local <- function(
   pop = "EUR",
   harmonise_strictness = 2
 ) {
-  message("WARNING: Experimental function")
-
   stopifnot(inherits(filenames_exposure, "character") | inherits(filenames_exposure, "list"))
   if (inherits(filenames_exposure, "list")) {
     stopifnot(all(sapply(filenames_exposure, function(x) inherits(x, "data.frame"))))
