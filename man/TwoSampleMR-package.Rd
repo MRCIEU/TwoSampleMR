@@ -29,5 +29,10 @@ Authors:
   \item Tom Palmer \email{remlapmot@hotmail.com} (\href{https://orcid.org/0000-0003-4655-4511}{ORCID})
 }
 
+Other contributors:
+\itemize{
+  \item Marina Vabistsevits (\href{https://orcid.org/0000-0003-1121-6790}{ORCID}) [contributor]
+}
+
 }
 \keyword{internal}

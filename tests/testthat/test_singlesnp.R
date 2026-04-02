@@ -40,3 +40,36 @@ test_that("forest_plot_with_category", {
   expect_true(length(p) == 1)
   expect_s3_class(p[[1]], "ggplot")
 })
+
+rm(list = ls())
+
+test_that("RadialMR outliers on forest plot with categories", {
+  load(system.file("extdata", "test_commondata.RData", package = "TwoSampleMR"))
+
+  # Subset to 20 SNPs for a cleaner plot
+  set.seed(42)
+  snps_keep <- sample(unique(dat$SNP), 20)
+  dat20 <- dat[dat$SNP %in% snps_keep, ]
+
+  res_single <- mr_singlesnp(dat20)
+
+  # Run RadialMR to detect outliers
+  radial_dat <- dat_to_RadialMR(dat20)
+  invisible(utils::capture.output(
+    radial_res <- suppressWarnings(RadialMR::ivw_radial(radial_dat[[1]], alpha = 0.05, weights = 3))
+  ))
+  outlier_snps <- radial_res$outliers$SNP
+
+  # Label SNPs as Outlier or Main
+  snp_rows <- !grepl("^All", res_single$SNP)
+  res_single$category <- NA_character_
+  res_single$category[snp_rows] <- ifelse(
+    res_single$SNP[snp_rows] %in% outlier_snps, "Outlier", "Main"
+  )
+
+  p <- mr_forest_plot(res_single)
+  expect_true(length(p) == 1)
+  expect_s3_class(p[[1]], "ggplot")
+})
+
+
