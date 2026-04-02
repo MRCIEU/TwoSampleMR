@@ -216,18 +216,15 @@ mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE, category_col
       }
       cat_colours["Summary"] <- "black"
 
-      # Map category to each factor level for y-axis label colouring
-      level_cats <- vapply(
-        levels(d$SNP),
-        function(s) {
-          if (s == "") {
-            return("Summary")
-          }
-          d$category[d$SNP == s][1L]
-        },
-        character(1)
+      # Black-coloured categories and Uncategorized get thin lines;
+      # coloured categories and Summary get thick lines
+      thin_cats <- c(
+        names(cat_colours)[cat_colours %in% c("black", "#000000")],
+        "Uncategorized"
       )
-      label_colours <- cat_colours[level_cats]
+      thin_cats <- setdiff(thin_cats, "Summary")
+      d$lw_cat <- ifelse(d$category %in% thin_cats, "thin", "thick")
+
     } else {
       # Original ordering: non-All SNPs sorted by effect size
       snp_rows <- d[!d$SNP %in% am, ]
@@ -241,7 +238,6 @@ mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE, category_col
       d$lo[nrow(d) - 1] <- NA
 
       d$SNP <- ordered(d$SNP, levels = c(am, "", nom))
-      label_colours <- "black"
     }
 
     xint <- 0
@@ -261,47 +257,47 @@ mr_forest_plot <- function(singlesnp_results, exponentiate = FALSE, category_col
       colour_scale <- ggplot2::scale_colour_manual(values = c("black", "red"))
     }
 
+    if (has_category) {
+      lw_aes <- ggplot2::aes(linewidth = lw_cat)
+      lw_scale <- ggplot2::scale_linewidth_manual(values = c(thin = 0.3, thick = 0.5))
+    } else {
+      lw_aes <- ggplot2::aes(linewidth = as.factor(tot))
+      lw_scale <- ggplot2::scale_linewidth_manual(values = c(0.3, 1))
+    }
+
+    bar_aes <- utils::modifyList(
+      utils::modifyList(ggplot2::aes(xmin = lo, xmax = up), lw_aes),
+      colour_aes
+    )
+
     if (utils::packageVersion("ggplot2") <= "3.5.2") {
       p <- ggplot2::ggplot(d, ggplot2::aes(y = SNP, x = b)) +
         ggplot2::geom_vline(xintercept = xint, linetype = "dotted") +
-        ggplot2::geom_errorbarh(
-          utils::modifyList(
-            ggplot2::aes(xmin = lo, xmax = up, linewidth = as.factor(tot)),
-            colour_aes
-          ),
-          height = 0
-        ) +
+        ggplot2::geom_errorbarh(bar_aes, height = 0) +
         ggplot2::geom_point(colour_aes) +
         ggplot2::geom_hline(
           ggplot2::aes(yintercept = which(levels(SNP) %in% "")),
           colour = "grey"
         ) +
         colour_scale +
-        ggplot2::scale_linewidth_manual(values = c(0.3, 1))
+        lw_scale
     } else {
       p <- ggplot2::ggplot(d, ggplot2::aes(y = SNP, x = b)) +
         ggplot2::geom_vline(xintercept = xint, linetype = "dotted") +
-        ggplot2::geom_errorbar(
-          utils::modifyList(
-            ggplot2::aes(xmin = lo, xmax = up, linewidth = as.factor(tot)),
-            colour_aes
-          ),
-          width = 0,
-          orientation = "y"
-        ) +
+        ggplot2::geom_errorbar(bar_aes, width = 0, orientation = "y") +
         ggplot2::geom_point(colour_aes) +
         ggplot2::geom_hline(
           ggplot2::aes(yintercept = which(levels(SNP) %in% "")),
           colour = "grey"
         ) +
         colour_scale +
-        ggplot2::scale_linewidth_manual(values = c(0.3, 1))
+        lw_scale
     }
 
     p +
       ggplot2::theme(
         legend.position = "none",
-        axis.text.y = ggplot2::element_text(size = 8, colour = label_colours),
+        axis.text.y = ggplot2::element_text(size = 8),
         axis.ticks.y = ggplot2::element_line(linewidth = 0),
         axis.title.x = ggplot2::element_text(size = 8)
       ) +

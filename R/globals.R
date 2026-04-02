@@ -109,5 +109,6 @@ utils::globalVariables(c(
   "z",
   "orig_SNP",
   "df",
-  "SNP_index"
+  "SNP_index",
+  "lw_cat"
 ))
