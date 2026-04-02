@@ -15,10 +15,13 @@
 
 - **Tom Palmer**. Author. [](https://orcid.org/0000-0003-4655-4511)
 
+- **Marina Vabistsevits**. Contributor.
+  [](https://orcid.org/0000-0003-1121-6790)
+
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.3/inst/CITATION)
+[`inst/CITATION`](https://github.com/MRCIEU/TwoSampleMR/blob/master/inst/CITATION)
 
 Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C,
 Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA,

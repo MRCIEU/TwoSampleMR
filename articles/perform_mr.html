@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 and Philip Haycock</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.3/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
       <div class="d-none name"><code>perform_mr.Rmd</code></div>
     </div>
 
@@ -1122,10 +1122,147 @@ plots because they are conditional on the other exposures.</p>
 <div class="section level3">
 <h3 id="using-your-own-summary-data">Using your own summary data<a class="anchor" aria-label="anchor" href="#using-your-own-summary-data"></a>
 </h3>
-<p>If you want to perform analysis with your local summary data
-(i.e. not in the OpenGWAS database) then use then look up the
-<code><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local()</a></code> function instead of the
-<code><a href="../reference/mv_extract_exposures.html">mv_extract_exposures()</a></code> function.</p>
+<p>If your exposure GWAS summary statistics are not in the OpenGWAS
+database, use <code><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local()</a></code> instead of
+<code><a href="../reference/mv_extract_exposures.html">mv_extract_exposures()</a></code>. This function accepts either file
+paths or pre-formatted data frames. The approach described here follows
+<span class="citation">Vabistsevits (2021)</span>.</p>
+<div class="section level4">
+<h4 id="from-local-files">From local files<a class="anchor" aria-label="anchor" href="#from-local-files"></a>
+</h4>
+<p>If your GWAS summary data is in files, you can pass the file paths
+directly. Each file should contain the full summary statistics (not just
+the top hits) — the function will extract instruments, clump within each
+exposure, then clump across exposures:</p>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">filenames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"path/to/exposure1_gwas.txt"</span>, <span class="st">"path/to/exposure2_gwas.txt"</span><span class="op">)</span></span>
+<span><span class="va">mv_exposure_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local</a></span><span class="op">(</span></span>
+<span>  <span class="va">filenames</span>,</span>
+<span>  sep <span class="op">=</span> <span class="st">"\t"</span>,</span>
+<span>  phenotype_col <span class="op">=</span> <span class="st">"Phenotype"</span>,</span>
+<span>  snp_col <span class="op">=</span> <span class="st">"SNP"</span>,</span>
+<span>  beta_col <span class="op">=</span> <span class="st">"BETA"</span>,</span>
+<span>  se_col <span class="op">=</span> <span class="st">"SE"</span>,</span>
+<span>  eaf_col <span class="op">=</span> <span class="st">"EAF"</span>,</span>
+<span>  effect_allele_col <span class="op">=</span> <span class="st">"A1"</span>,</span>
+<span>  other_allele_col <span class="op">=</span> <span class="st">"A2"</span>,</span>
+<span>  pval_col <span class="op">=</span> <span class="st">"P"</span>,</span>
+<span>  pval_threshold <span class="op">=</span> <span class="fl">5e-8</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="from-data-frames">From data frames<a class="anchor" aria-label="anchor" href="#from-data-frames"></a>
+</h4>
+<p>If your data is already loaded in R, pass a list of data frames
+instead. Each data frame should contain the full GWAS summary statistics
+with appropriate column names:</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mv_exposure_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">gwas_df1</span>, <span class="va">gwas_df2</span><span class="op">)</span>,</span>
+<span>  snp_col <span class="op">=</span> <span class="st">"SNP"</span>,</span>
+<span>  beta_col <span class="op">=</span> <span class="st">"BETA"</span>,</span>
+<span>  se_col <span class="op">=</span> <span class="st">"SE"</span>,</span>
+<span>  eaf_col <span class="op">=</span> <span class="st">"EAF"</span>,</span>
+<span>  effect_allele_col <span class="op">=</span> <span class="st">"A1"</span>,</span>
+<span>  other_allele_col <span class="op">=</span> <span class="st">"A2"</span>,</span>
+<span>  pval_col <span class="op">=</span> <span class="st">"P"</span>,</span>
+<span>  phenotype_col <span class="op">=</span> <span class="st">"trait"</span>,</span>
+<span>  pval_threshold <span class="op">=</span> <span class="fl">5e-8</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>From this point, the workflow is the same as the OpenGWAS example
+above:</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># The outcome can be from OpenGWAS or local data</span></span>
+<span><span class="va">mv_outcome_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span><span class="va">mv_exposure_dat</span><span class="op">$</span><span class="va">SNP</span>, <span class="st">"ieu-a-7"</span><span class="op">)</span></span>
+<span><span class="va">mvdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mv_harmonise_data.html">mv_harmonise_data</a></span><span class="op">(</span><span class="va">mv_exposure_dat</span>, <span class="va">mv_outcome_dat</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mv_multiple.html">mv_multiple</a></span><span class="op">(</span><span class="va">mvdat</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="mixing-local-and-opengwas-data">Mixing local and OpenGWAS data<a class="anchor" aria-label="anchor" href="#mixing-local-and-opengwas-data"></a>
+</h4>
+<p>Sometimes one exposure is available locally while another is in
+OpenGWAS. The approach is to format each source into the same structure
+and combine them. The key is that
+<code><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local()</a></code> expects full GWAS summary
+statistics (not just top hits), because it needs to look up the effects
+of <em>all</em> instruments across <em>all</em> exposures, including
+instruments that were identified for a different exposure.</p>
+<p>If you have one local exposure (e.g., local GWAS for early-life BMI)
+and one OpenGWAS exposure (e.g., age at menarche,
+<code>ieu-a-1095</code>):</p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Step 1: Format local data as "outcome" (the internal format used for full GWAS)</span></span>
+<span><span class="va">local_gwas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_data.html">format_data</a></span><span class="op">(</span></span>
+<span>  <span class="va">local_df</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"outcome"</span>,</span>
+<span>  snp_col <span class="op">=</span> <span class="st">"SNP"</span>, beta_col <span class="op">=</span> <span class="st">"BETA"</span>, se_col <span class="op">=</span> <span class="st">"SE"</span>,</span>
+<span>  effect_allele_col <span class="op">=</span> <span class="st">"A1"</span>, other_allele_col <span class="op">=</span> <span class="st">"A2"</span>,</span>
+<span>  eaf_col <span class="op">=</span> <span class="st">"EAF"</span>, pval_col <span class="op">=</span> <span class="st">"P"</span></span>
+<span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>outcome <span class="op">=</span> <span class="st">"Early life BMI"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Step 2: Extract instruments from the local trait</span></span>
+<span><span class="va">local_tophits</span> <span class="op">&lt;-</span> <span class="va">local_gwas</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pval.outcome</span> <span class="op">&lt;</span> <span class="fl">5e-8</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/convert_outcome_to_exposure.html">convert_outcome_to_exposure</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/clump_data.html">clump_data</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Step 3: Get instruments for the OpenGWAS trait</span></span>
+<span><span class="va">menarche_tophits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span><span class="op">(</span><span class="st">"ieu-a-1095"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Step 4: Combine all instrument SNPs and get them from all exposures</span></span>
+<span><span class="va">all_snps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">local_tophits</span><span class="op">$</span><span class="va">SNP</span>, <span class="va">menarche_tophits</span><span class="op">$</span><span class="va">SNP</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get all SNPs from OpenGWAS trait (in outcome format)</span></span>
+<span><span class="va">menarche_gwas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span>snps <span class="op">=</span> <span class="va">all_snps</span>, outcomes <span class="op">=</span> <span class="st">"ieu-a-1095"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Step 5: Use mv_extract_exposures_local() with both full GWAS as data frames</span></span>
+<span><span class="va">mv_exposure_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">local_gwas</span>, <span class="va">menarche_gwas</span><span class="op">)</span>,</span>
+<span>  phenotype_col <span class="op">=</span> <span class="st">"outcome"</span>,</span>
+<span>  snp_col <span class="op">=</span> <span class="st">"SNP"</span>,</span>
+<span>  beta_col <span class="op">=</span> <span class="st">"beta.outcome"</span>,</span>
+<span>  se_col <span class="op">=</span> <span class="st">"se.outcome"</span>,</span>
+<span>  eaf_col <span class="op">=</span> <span class="st">"eaf.outcome"</span>,</span>
+<span>  effect_allele_col <span class="op">=</span> <span class="st">"effect_allele.outcome"</span>,</span>
+<span>  other_allele_col <span class="op">=</span> <span class="st">"other_allele.outcome"</span>,</span>
+<span>  pval_col <span class="op">=</span> <span class="st">"pval.outcome"</span>,</span>
+<span>  pval_threshold <span class="op">=</span> <span class="fl">5e-8</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="converting-to-mvmr-format">Converting to MVMR format<a class="anchor" aria-label="anchor" href="#converting-to-mvmr-format"></a>
+</h3>
+<p>The <a href="https://github.com/WSpiller/MVMR" class="external-link">MVMR</a> package
+provides additional sensitivity analyses for multivariable MR, including
+conditional F-statistics for instrument strength and Q-statistics for
+pleiotropy. After preparing your data with TwoSampleMR, you can convert
+the harmonised output for use with MVMR:</p>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># remotes::install_github("WSpiller/MVMR")</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MVMR</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Here we use the example dataset from the MVMR package</span></span>
+<span><span class="co"># In general you want the output from mv_harmonise_data()</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"rawdat_mvmr"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mvmr_input</span> <span class="op">&lt;-</span> <span class="fu">format_mvmr</span><span class="op">(</span></span>
+<span>  BXGs   <span class="op">=</span> <span class="va">rawdat_mvmr</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LDL_beta"</span>, <span class="st">"HDL_beta"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  BYG    <span class="op">=</span> <span class="va">rawdat_mvmr</span><span class="op">$</span><span class="va">SBP_beta</span>,</span>
+<span>  seBXGs <span class="op">=</span> <span class="va">rawdat_mvmr</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LDL_se"</span>, <span class="st">"HDL_se"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  seBYG  <span class="op">=</span> <span class="va">rawdat_mvmr</span><span class="op">$</span><span class="va">SBP_se</span>,</span>
+<span>  RSID   <span class="op">=</span> <span class="va">rawdat_mvmr</span><span class="op">$</span><span class="va">SNP</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># IVW MVMR estimate (equivalent to mv_multiple)</span></span>
+<span><span class="va">mvmr_res</span> <span class="op">&lt;-</span> <span class="fu">ivw_mvmr</span><span class="op">(</span>r_input <span class="op">=</span> <span class="va">mvmr_input</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Test for weak instruments (conditional F-statistics)</span></span>
+<span><span class="fu">strength_mvmr</span><span class="op">(</span>r_input <span class="op">=</span> <span class="va">mvmr_input</span>, gencov <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Test for horizontal pleiotropy (Q-statistic)</span></span>
+<span><span class="fu">pleiotropy_mvmr</span><span class="op">(</span>r_input <span class="op">=</span> <span class="va">mvmr_input</span>, gencov <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -1143,10 +1280,10 @@ then convert to the format required by the MendelianRandomization
 package. The IEU GWAS database server has the individual level genetic
 data for ~500 Europeans in 1000 genomes data, and can obtain the LD
 matrix for a set of SNPs using these data. For example:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snplist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rs234"</span>, <span class="st">"rs1205"</span><span class="op">)</span></span>
 <span><span class="va">ld_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ld_matrix.html">ld_matrix</a></span><span class="op">(</span><span class="va">snplist</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ld_mat</span></span>
 <span><span class="co">#&gt;            rs234_A_G rs1205_T_C</span></span>
 <span><span class="co">#&gt; rs234_A_G  1.0000000  0.0797023</span></span>
@@ -1154,7 +1291,7 @@ matrix for a set of SNPs using these data. For example:</p>
 <p>Here <code><a href="../reference/ld_matrix.html">ld_matrix()</a></code> returns the LD correlation values (not
 R<sup>2</sup>) for each pair of variants present in the 1000 genomes
 data set.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/harmonise_data.html">harmonise_data</a></span><span class="op">(</span></span>
 <span>  exposure_dat <span class="op">=</span> <span class="va">bmi_exp_dat</span>,</span>
 <span>  outcome_dat <span class="op">=</span> <span class="va">chd_out_dat</span></span>
@@ -1162,14 +1299,14 @@ data set.</p>
 <span><span class="co">#&gt; Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span></code></pre></div>
 <p>Convert to the <code>MRInput</code> format for the
 MendelianRandomization package:</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dat_to_MRInput.html">dat_to_MRInput</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Converting:</span></span>
 <span><span class="co">#&gt;  - exposure: Body mass index || id:ieu-a-2</span></span>
 <span><span class="co">#&gt;  - outcome: Coronary heart disease || id:ieu-a-7</span></span></code></pre></div>
 <p>This produces a list of <code>MRInput</code> objects that can be used
 with the MendelianRandomization functions, e.g.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">MendelianRandomization</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MendelianRandomization/man/mr_ivw.html" class="external-link">mr_ivw</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Inverse-variance weighted method</span></span>
@@ -1186,7 +1323,7 @@ with the MendelianRandomization functions, e.g.</p>
 <span><span class="co">#&gt; F statistic = 65.6.</span></span></code></pre></div>
 <p>Alternatively, convert to the <code>MRInput</code> format but also
 obtaining the LD matrix for the instruments</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="../reference/dat_to_MRInput.html">dat_to_MRInput</a></span><span class="op">(</span><span class="va">dat</span>, get_correlation <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Converting:</span></span>
 <span><span class="co">#&gt;  - exposure: Body mass index || id:ieu-a-2</span></span>
@@ -1233,7 +1370,7 @@ efficacy of each method. This can be downloaded from here:</p>
 <p>Once downloaded, read in the object and use the <code><a href="../reference/mr_moe.html">mr_moe()</a></code>
 function to perform the analysis. An example is shown here, estimating
 the causal effect of BMI on coronary heart disease:</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract instruments for BMI</span></span>
 <span><span class="va">exposure_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_instruments.html">extract_instruments</a></span><span class="op">(</span><span class="st">"ieu-a-2"</span><span class="op">)</span></span>
 <span></span>
@@ -1302,7 +1439,7 @@ managing or editing MR results.</p>
 </h3>
 <p>The outcome column in the output of <code><a href="../reference/mr.html">mr()</a></code> combines the
 original outcome name with the outcome trait ID.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $result</span></span>
 <span><span class="co">#&gt;   id.exposure                        exposure id.outcome</span></span>
@@ -1315,7 +1452,7 @@ original outcome name with the outcome trait ID.</p>
 <span><span class="co">#&gt; 3 Coronary heart disease || id:ieu-a-7   42  0.13584165 0.06738291 4.380354e-02</span></span></code></pre></div>
 <p>The outcome column can be split into separate columns for the id and
 outcome name using the split_outcome function:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
 <span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
@@ -1348,7 +1485,7 @@ exposure name using the split_exposure function.</p>
 </h3>
 <p>Users can convert log odds ratios into odds ratios with 95%
 confidence intervals using:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/generate_odds_ratios.html">generate_odds_ratios</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
 <span><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
@@ -1374,7 +1511,7 @@ confidence intervals using:</p>
 </h3>
 <p>It is sometimes useful to subset results on MR method, so that there
 is one unique result for each exposure-outcome combination:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
 <span><span class="co">#&gt; 3     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
@@ -1394,7 +1531,7 @@ characteristics into a single dataframe or table, e.g. for sharing
 results with collaborators or when the user wishes to present all
 results in a single table or figure. This can be done using the
 <code><a href="../reference/combine_all_mrresults.html">combine_all_mrresults()</a></code> function:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">het</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_heterogeneity.html">mr_heterogeneity</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="va">plt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_pleiotropy_test.html">mr_pleiotropy_test</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
@@ -1455,6 +1592,10 @@ Hemani, Gibran, Kate Tilling, and George Davey Smith. 2017.
 <span>“Orienting the Causal Relationship Between Imprecisely Measured
 Traits Using <span>GWAS</span> Summary Data.”</span> <em>PLOS
 Genetics</em> 13 (11): e1007081. <a href="https://doi.org/10.1371/journal.pgen.1007081" class="external-link">https://doi.org/10.1371/journal.pgen.1007081</a>.
+</div>
+<div id="ref-vabistsevits2021" class="csl-entry">
+Vabistsevits, Marina. 2021. <span>“<span class="nocase">Setting up
+multivariable Mendelian randomization analysis</span>.”</span> <a href="https://marinalearning.netlify.app/2021/03/22/setting-up-multivariable-mendelian-randomization-analysis/" class="external-link">https://marinalearning.netlify.app/2021/03/22/setting-up-multivariable-mendelian-randomization-analysis/</a>.
 </div>
 <div id="ref-vabistsevits2024" class="csl-entry">
 Vabistsevits, Marina, George Davey Smith, Tom G Richardson, Rebecca C

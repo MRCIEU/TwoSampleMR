@@ -1160,12 +1160,156 @@ plots because they are conditional on the other exposures.
 
 ### Using your own summary data
 
-If you want to perform analysis with your local summary data (i.e. not
-in the OpenGWAS database) then use then look up the
+If your exposure GWAS summary statistics are not in the OpenGWAS
+database, use
 [`mv_extract_exposures_local()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures_local.md)
-function instead of the
-[`mv_extract_exposures()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.md)
-function.
+instead of
+[`mv_extract_exposures()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.md).
+This function accepts either file paths or pre-formatted data frames.
+The approach described here follows Vabistsevits (2021).
+
+#### From local files
+
+If your GWAS summary data is in files, you can pass the file paths
+directly. Each file should contain the full summary statistics (not just
+the top hits) — the function will extract instruments, clump within each
+exposure, then clump across exposures:
+
+``` r
+filenames <- c("path/to/exposure1_gwas.txt", "path/to/exposure2_gwas.txt")
+mv_exposure_dat <- mv_extract_exposures_local(
+  filenames,
+  sep = "\t",
+  phenotype_col = "Phenotype",
+  snp_col = "SNP",
+  beta_col = "BETA",
+  se_col = "SE",
+  eaf_col = "EAF",
+  effect_allele_col = "A1",
+  other_allele_col = "A2",
+  pval_col = "P",
+  pval_threshold = 5e-8
+)
+```
+
+#### From data frames
+
+If your data is already loaded in R, pass a list of data frames instead.
+Each data frame should contain the full GWAS summary statistics with
+appropriate column names:
+
+``` r
+mv_exposure_dat <- mv_extract_exposures_local(
+  list(gwas_df1, gwas_df2),
+  snp_col = "SNP",
+  beta_col = "BETA",
+  se_col = "SE",
+  eaf_col = "EAF",
+  effect_allele_col = "A1",
+  other_allele_col = "A2",
+  pval_col = "P",
+  phenotype_col = "trait",
+  pval_threshold = 5e-8
+)
+```
+
+From this point, the workflow is the same as the OpenGWAS example above:
+
+``` r
+# The outcome can be from OpenGWAS or local data
+mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, "ieu-a-7")
+mvdat <- mv_harmonise_data(mv_exposure_dat, mv_outcome_dat)
+res <- mv_multiple(mvdat)
+```
+
+#### Mixing local and OpenGWAS data
+
+Sometimes one exposure is available locally while another is in
+OpenGWAS. The approach is to format each source into the same structure
+and combine them. The key is that
+[`mv_extract_exposures_local()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures_local.md)
+expects full GWAS summary statistics (not just top hits), because it
+needs to look up the effects of *all* instruments across *all*
+exposures, including instruments that were identified for a different
+exposure.
+
+If you have one local exposure (e.g., local GWAS for early-life BMI) and
+one OpenGWAS exposure (e.g., age at menarche, `ieu-a-1095`):
+
+``` r
+# Step 1: Format local data as "outcome" (the internal format used for full GWAS)
+local_gwas <- format_data(
+  local_df,
+  type = "outcome",
+  snp_col = "SNP", beta_col = "BETA", se_col = "SE",
+  effect_allele_col = "A1", other_allele_col = "A2",
+  eaf_col = "EAF", pval_col = "P"
+) %>%
+  dplyr::mutate(outcome = "Early life BMI")
+
+# Step 2: Extract instruments from the local trait
+local_tophits <- local_gwas %>%
+  dplyr::filter(pval.outcome < 5e-8) %>%
+  convert_outcome_to_exposure() %>%
+  clump_data()
+
+# Step 3: Get instruments for the OpenGWAS trait
+menarche_tophits <- extract_instruments("ieu-a-1095")
+
+# Step 4: Combine all instrument SNPs and get them from all exposures
+all_snps <- unique(c(local_tophits$SNP, menarche_tophits$SNP))
+
+# Get all SNPs from OpenGWAS trait (in outcome format)
+menarche_gwas <- extract_outcome_data(snps = all_snps, outcomes = "ieu-a-1095")
+
+# Step 5: Use mv_extract_exposures_local() with both full GWAS as data frames
+mv_exposure_dat <- mv_extract_exposures_local(
+  list(local_gwas, menarche_gwas),
+  phenotype_col = "outcome",
+  snp_col = "SNP",
+  beta_col = "beta.outcome",
+  se_col = "se.outcome",
+  eaf_col = "eaf.outcome",
+  effect_allele_col = "effect_allele.outcome",
+  other_allele_col = "other_allele.outcome",
+  pval_col = "pval.outcome",
+  pval_threshold = 5e-8
+)
+```
+
+### Converting to MVMR format
+
+The [MVMR](https://github.com/WSpiller/MVMR) package provides additional
+sensitivity analyses for multivariable MR, including conditional
+F-statistics for instrument strength and Q-statistics for pleiotropy.
+After preparing your data with TwoSampleMR, you can convert the
+harmonised output for use with MVMR:
+
+``` r
+# remotes::install_github("WSpiller/MVMR")
+library(MVMR)
+
+# Here we use the example dataset from the MVMR package
+# In general you want the output from mv_harmonise_data()
+data("rawdat_mvmr")
+
+mvmr_input <- format_mvmr(
+  BXGs   = rawdat_mvmr[, c("LDL_beta", "HDL_beta")],
+  BYG    = rawdat_mvmr$SBP_beta,
+  seBXGs = rawdat_mvmr[, c("LDL_se", "HDL_se")],
+  seBYG  = rawdat_mvmr$SBP_se,
+  RSID   = rawdat_mvmr$SNP
+)
+
+# IVW MVMR estimate (equivalent to mv_multiple)
+mvmr_res <- ivw_mvmr(r_input = mvmr_input)
+
+# Test for weak instruments (conditional F-statistics)
+strength_mvmr(r_input = mvmr_input, gencov = 0)
+
+# Test for horizontal pleiotropy (Q-statistic)
+pleiotropy_mvmr(r_input = mvmr_input, gencov = 0)
+```
 
 ## MR estimates when instruments are correlated
 
@@ -1524,6 +1668,10 @@ Hemani, Gibran, Kate Tilling, and George Davey Smith. 2017. “Orienting
 the Causal Relationship Between Imprecisely Measured Traits Using GWAS
 Summary Data.” *PLOS Genetics* 13 (11): e1007081.
 <https://doi.org/10.1371/journal.pgen.1007081>.
+
+Vabistsevits, Marina. 2021. “Setting up multivariable Mendelian
+randomization analysis.”
+<https://marinalearning.netlify.app/2021/03/22/setting-up-multivariable-mendelian-randomization-analysis/>.
 
 Vabistsevits, Marina, George Davey Smith, Tom G Richardson, Rebecca C
 Richmond, Weiva Sieh, Joseph H Rothstein, Laurel A Habel, Stacey E

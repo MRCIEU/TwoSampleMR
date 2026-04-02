@@ -36,3 +36,8 @@ Authors:
 
 - Tom Palmer <remlapmot@hotmail.com>
   ([ORCID](https://orcid.org/0000-0003-4655-4511))
+
+Other contributors:
+
+- Marina Vabistsevits ([ORCID](https://orcid.org/0000-0003-1121-6790))
+  \[contributor\]

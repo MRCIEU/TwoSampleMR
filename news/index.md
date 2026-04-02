@@ -1,5 +1,14 @@
 # Changelog
 
+## TwoSampleMR v0.7.4
+
+(Release date 2026-04-02)
+
+- Small tweaks to the categorized forest plots to make them more similar
+  to the original ones in the article.
+- Expanded the multivariable MR section of the Perform MR vignette
+  (thanks [@mvab](https://github.com/mvab))
+
 ## TwoSampleMR v0.7.3
 
 (Release date 2026-03-31)
