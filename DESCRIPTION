@@ -14,7 +14,9 @@ Authors@R: c(
     person("Ben", "Elsworth", , "Ben.Elsworth@bristol.ac.uk", role = "aut",
            comment = c(ORCID = "0000-0001-7328-4233")),
     person("Tom", "Palmer", , "remlapmot@hotmail.com", role = "aut",
-           comment = c(ORCID = "0000-0003-4655-4511"))
+           comment = c(ORCID = "0000-0003-4655-4511")),
+    person("Marina", "Vabistsevits", role = "ctb",
+           comment = c(ORCID = "0000-0003-1121-6790"))
   )
 Description: A package for performing Mendelian randomization using GWAS
     summary data. It uses the IEU OpenGWAS database
