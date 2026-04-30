@@ -26,3 +26,4 @@ vignettes/mr_report.md
 vignettes/figure/*.png
 vignettes/*.html
 rf.rdata
+.positai
