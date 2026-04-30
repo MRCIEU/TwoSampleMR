@@ -49,7 +49,7 @@ Once instruments for the exposure trait have been specified, those variants need
 
 The IEU GWAS database (IGD) contains complete GWAS summary statistics from a large number of studies. You can browse them here:
 
-https://gwas.mrcieu.ac.uk/
+https://opengwas.io
 
 To obtain details about the available GWASs programmatically do the following:
 

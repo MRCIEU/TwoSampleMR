@@ -20,7 +20,7 @@ Authors@R: c(
   )
 Description: A package for performing Mendelian randomization using GWAS
     summary data. It uses the IEU OpenGWAS database
-    <https://gwas.mrcieu.ac.uk/> to automatically obtain data, and a wide
+    <https://opengwas.io> to automatically obtain data, and a wide
     range of methods to run the analysis.
 License: MIT + file LICENSE
 URL: https://github.com/MRCIEU/TwoSampleMR,

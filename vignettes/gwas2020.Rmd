@@ -53,7 +53,7 @@ We are using Elasticsearch and Neo4j on an Oracle Cloud Infrastructure to serve 
 
 ### Browse available datasets online
 
-We have a new home for the GWAS summary data: <https://gwas.mrcieu.ac.uk/>.
+We have a new home for the GWAS summary data: <https://opengwas.io>.
 
 ### Chromosome and position
 
@@ -89,7 +89,7 @@ It is now possible to perform clumping, or create LD matrices, using your own lo
 
 ### Access the data directly
 
-Previously the data was only accessible through the database. Now the data can be downloaded in "GWAS VCF" format from here https://gwas.mrcieu.ac.uk/. (IEU members can access all the data on RDSF or bluecrystal4 directly). This means that if you want to perform very large or numerous operations, you can do it on HPC or locally in a more performant manner by using the data files directly. Please see the [gwasvcf R package](https://github.com/mrcieu/gwasvcf) on how to work with these data.
+Previously the data was only accessible through the database. Now the data can be downloaded in "GWAS VCF" format from here https://opengwas.io. (IEU members can access all the data on RDSF or bluecrystal4 directly). This means that if you want to perform very large or numerous operations, you can do it on HPC or locally in a more performant manner by using the data files directly. Please see the [gwasvcf R package](https://github.com/mrcieu/gwasvcf) on how to work with these data.
 
 ### Connect the data to different analytical tools
 
@@ -97,7 +97,7 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 
 ## Key links
 
-- The IEU OpenGWAS database: https://gwas.mrcieu.ac.uk
+- The IEU OpenGWAS database: https://opengwas.io
 - API to the IEU OpenGWAS database: https://api.opengwas.io/api/
 - ieugwasr package, for R access to the API: https://mrcieu.github.io/ieugwasr/
 - ieugwaspy package, for python access to the API: https://github.com/MRCIEU/ieugwaspy/
