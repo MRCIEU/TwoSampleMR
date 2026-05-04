@@ -21,7 +21,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/MRCIEU/TwoSampleMR/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.5/inst/CITATION)
 
 Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C,
 Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA,
