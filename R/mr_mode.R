@@ -78,7 +78,7 @@ mr_mode <- function(dat, parameters = default_parameters(), mode_method = "all")
     #Set up a matrix to store the results from each bootstrap iteration
     beta.boot <- matrix(nrow = nboot, ncol = length(beta_Mode.in))
 
-    for (i in 1:nboot) {
+    for (i in seq_len(nboot)) {
       BetaIV.boot <- BetaIV.boot_mat[i, ]
       BetaIV.boot_NOME <- BetaIV.boot_NOME_mat[i, ]
 

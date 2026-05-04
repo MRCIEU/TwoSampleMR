@@ -37,7 +37,7 @@ PM <- function(y = y, s = s, Alpha = 0.1) {
   v <- 1 / s^2
   sum.v <- sum(v)
   typS <- sum(v * (k - 1)) / (sum.v^2 - sum(v^2))
-  for (j in 1:L) {
+  for (j in seq_len(L)) {
     tausq <- 0
     Fstat <- 1
     TAUsq <- NULL
@@ -302,7 +302,7 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
 
   dat2 <- dat
   l <- list()
-  for (i in 1:nboot) {
+  for (i in seq_len(nboot)) {
     dat2$beta.exposure <- boot_exp[i, ]
     dat2$beta.outcome <- boot_out[i, ]
     l[[i]] <- mr_rucker(dat2, parameters)
@@ -452,7 +452,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
     ))
   } else {
     l <- list()
-    for (i in 1:nboot) {
+    for (i in seq_len(nboot)) {
       # dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
       # dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
       dat2 <- dat[sample(seq_len(nrow(dat)), nrow(dat), replace = TRUE), ]
