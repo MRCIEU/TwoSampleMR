@@ -451,13 +451,15 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
       e_plot = NULL
     ))
   } else {
-    l <- list()
-    for (i in seq_len(nboot)) {
-      # dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
-      # dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
-      dat2 <- dat[sample(seq_len(nrow(dat)), nrow(dat), replace = TRUE), ]
-      l[[i]] <- mr_rucker_internal(dat2, parameters)
-    }
+    n <- nrow(dat)
+    boot_idx <- matrix(
+      sample.int(n, n * nboot, replace = TRUE),
+      nrow = nboot,
+      ncol = n
+    )
+    l <- lapply(seq_len(nboot), function(i) {
+      mr_rucker_internal(dat[boot_idx[i, ], ], parameters)
+    })
 
     modsel <- data.table::rbindlist(
       lapply(l, function(x) x$selected),
@@ -505,7 +507,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
 
     p1 <- ggplot2::ggplot(bootstrap, ggplot2::aes_string(x = "Q", y = "Qdash")) +
       ggplot2::geom_point(ggplot2::aes_string(colour = "model")) +
-      ggplot2::geom_point(data = subset(bootstrap, i == "Full")) +
+      ggplot2::geom_point(data = bootstrap[bootstrap$i == "Full", ]) +
       ggplot2::scale_colour_brewer(type = "qual") +
       ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
       ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +
