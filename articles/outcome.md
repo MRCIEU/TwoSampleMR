@@ -1,6 +1,7 @@
 # Outcome data
 
 ``` r
+
 library(TwoSampleMR)
 ```
 
@@ -12,16 +13,18 @@ variants need to be extracted from the outcome trait.
 The IEU GWAS database (IGD) contains complete GWAS summary statistics
 from a large number of studies. You can browse them here:
 
-<https://gwas.mrcieu.ac.uk/>
+<https://opengwas.io>
 
 To obtain details about the available GWASs programmatically do the
 following:
 
 ``` r
+
 ao <- available_outcomes()
 ```
 
 ``` r
+
 head(ao)
 #>           id         trait ncase group_name year       author consortium
 #> 1 ieu-b-5103 Schizophrenia  1234     public 2022 Trubetskoy V        PGC
@@ -67,6 +70,7 @@ The `available_outcomes` function returns a table of all the available
 studies in the database. Each study has a unique ID. e.g.
 
 ``` r
+
 head(subset(ao, select = c(trait, id)))
 #>           trait         id
 #> 1 Schizophrenia ieu-b-5103
@@ -86,10 +90,12 @@ from a GWAS on coronary heart disease.
 Let’s get the Locke et al 2014 instruments for BMI as an example:
 
 ``` r
+
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 ```
 
 ``` r
+
 head(bmi_exp_dat)
 #>   pval.exposure samplesize.exposure chr.exposure se.exposure beta.exposure
 #> 1   2.18198e-08              339152            1      0.0030       -0.0168
@@ -125,6 +131,7 @@ We now need to find a suitable GWAS for coronary heart disease. We can
 search the available studies:
 
 ``` r
+
 ao[grepl("heart disease", ao$trait), ]
 #>                                 id
 #> 7958                 finn-b-I9_CHD
@@ -356,6 +363,7 @@ The most recent CARDIOGRAM GWAS is ID number `ieu-a-7`. We can extract
 the BMI SNPs from this GWAS as follows:
 
 ``` r
+
 chd_out_dat1 <- extract_outcome_data(
   snps = bmi_exp_dat$SNP,
   outcomes = 'ieu-a-7'
@@ -368,6 +376,7 @@ function is flexible. The `snps` argument only requires an array of
 rsIDs, and the `outcomes` argument can be a vector of outcomes, e.g.
 
 ``` r
+
 chd_out_dat2 <- extract_outcome_data(
   snps = c("rs234", "rs17097147"),
   outcomes = c('ieu-a-2', 'ieu-a-7')
@@ -415,6 +424,7 @@ To extract the exposure SNPs from this data, we would use the following
 command:
 
 ``` r
+
 outcome_dat <- read_outcome_data(
   snps = bmi_exp_dat$SNP,
   filename = "gwas_summary.csv",

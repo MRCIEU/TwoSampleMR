@@ -15,10 +15,10 @@ components
 - connection to a large repository of the actual GWAS summary statistics
   needed to perform the analyses.
 
-The general principles (G. Davey Smith and Ebrahim 2003; George Davey
-Smith and Hemani 2014), and statistical methods (Pierce and Burgess
-2013; Bowden, Davey Smith, and Burgess 2015) can be found elsewhere,
-here we will just outline how to use the R package.
+The general principles (Davey Smith and Ebrahim 2003; Davey Smith and
+Hemani 2014), and statistical methods (Pierce and Burgess 2013; Bowden
+et al. 2015) can be found elsewhere, here we will just outline how to
+use the R package.
 
 This package uses the [ieugwasr](https://github.com/mrcieu/ieugwasr)
 package to connect to the IEU OpenGWAS database of thousands of complete
@@ -31,6 +31,7 @@ TwoSampleMR from our <https://mrcieu.r-universe.dev> with the following
 code.
 
 ``` r
+
 install.packages("TwoSampleMR", repos = c("https://mrcieu.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
@@ -39,6 +40,7 @@ If you are using the latest long term support version of Ubuntu Linux
 TwoSampleMR with the following code.
 
 ``` r
+
 options(HTTPUserAgent = sprintf(
   "R/%s R (%s)",
   getRversion(),
@@ -62,6 +64,7 @@ To install TwoSampleMR from source from our GitHub repository run the
 following code.
 
 ``` r
+
 # install.packages("remotes") # Run if remotes package not installed
 library(remotes)
 install_github("MRCIEU/TwoSampleMR")
@@ -71,6 +74,7 @@ TwoSampleMR can be installed in
 [WebR](https://docs.r-wasm.org/webr/latest/) using the following code.
 
 ``` r
+
 install.packages('TwoSampleMR',
   repos = c('https://mrcieu.r-universe.dev', 'https://repo.r-wasm.org'))
 ```
@@ -82,7 +86,7 @@ The workflow for performing MR is as follows:
 1.  Select instruments for the exposure (perform LD clumping if
     necessary)
 2.  Extract the instruments from the [IEU GWAS
-    database](https://gwas.mrcieu.ac.uk/) for the outcomes of interest
+    database](https://opengwas.io) for the outcomes of interest
 3.  Harmonise the effect sizes for the instruments on the exposures and
     the outcomes to be each for the same reference allele
 4.  Perform MR analysis, sensitivity analyses, create plots, compile
@@ -97,6 +101,7 @@ A basic analysis, e.g. the causal effect of body mass index on coronary
 heart disease, looks like this:
 
 ``` r
+
 library(TwoSampleMR)
 
 # List available GWASs

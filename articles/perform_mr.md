@@ -1,6 +1,7 @@
 # Perform MR
 
 ``` r
+
 library(TwoSampleMR)
 library(ggplot2)
 ```
@@ -11,11 +12,13 @@ Let’s continue with the example of body mass index (BMI) on coronary
 heart disease (CHD):
 
 ``` r
+
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
 ```
 
 ``` r
+
 dat <- harmonise_data(bmi_exp_dat, chd_out_dat)
 #> Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)
 ```
@@ -26,11 +29,9 @@ outcome traits. We can use this information to perform a Mendelian
 randomization (MR) analysis. To do this, simply run:
 
 ``` r
+
 res <- mr(dat)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 res
 #>   id.exposure id.outcome                              outcome
 #> 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7
@@ -65,6 +66,7 @@ traits.
 The list of available MR methods can be obtained:
 
 ``` r
+
 mr_method_list()
 #>                              obj
 #> 1                  mr_wald_ratio
@@ -154,6 +156,7 @@ e.g. to only perform MR Egger regression and Inverse variance weighted
 methods,
 
 ``` r
+
 mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
 #>   id.exposure id.outcome                              outcome
@@ -179,6 +182,7 @@ Some of the MR methods can also perform tests for heterogeneity. To
 obtain those statistics:
 
 ``` r
+
 mr_heterogeneity(dat)
 #>   id.exposure id.outcome                              outcome
 #> 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7
@@ -199,6 +203,7 @@ function can take an argument to only perform heterogeneity tests using
 specified methods, e.g.
 
 ``` r
+
 mr_heterogeneity(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 #>   id.exposure id.outcome                              outcome
 #> 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7
@@ -218,6 +223,7 @@ whether directional horizontal pleiotropy is driving the results of an
 MR analysis. This can be obtained as follows:
 
 ``` r
+
 mr_pleiotropy_test(dat)
 #>   id.exposure id.outcome                              outcome
 #> 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7
@@ -231,6 +237,7 @@ To obtain the MR estimates using each of the SNPs singly we can do the
 following:
 
 ``` r
+
 res_single <- mr_singlesnp(dat)
 ```
 
@@ -245,6 +252,7 @@ default, though this can be changed, e.g. to use the fixed effects meta
 analysis method instead:
 
 ``` r
+
 res_single <- mr_singlesnp(dat, single_method = "mr_meta_fixed")
 ```
 
@@ -255,6 +263,7 @@ default it uses the IVW and MR Egger methods. This can be specified as
 so:
 
 ``` r
+
 res_single <- mr_singlesnp(dat, all_method = "mr_two_sample_ml")
 ```
 
@@ -267,6 +276,7 @@ performed again but leaving out each SNP in turn, to identify if a
 single SNP is driving the association.
 
 ``` r
+
 res_loo <- mr_leaveoneout(dat)
 head(res_loo)
 #>                        exposure                              outcome
@@ -305,11 +315,9 @@ We can depict the relationship of the SNP effects on the exposure
 against the SNP effects on the outcome using a scatter plot.
 
 ``` r
+
 res <- mr(dat)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 p1 <- mr_scatter_plot(res, dat)
 ```
 
@@ -317,6 +325,7 @@ A scatter plot is created for each exposure-outcome test, and stored in
 `p1` as a list of plots. For example, to plot the first scatter plot:
 
 ``` r
+
 p1[[1]]
 ```
 
@@ -328,6 +337,7 @@ mode.](perform_mr_files/figure-html/unnamed-chunk-18-1.png)
 And to see how many plots there are:
 
 ``` r
+
 length(p1)
 #> [1] 1
 ```
@@ -338,6 +348,7 @@ drawn, simply specify the desired methods, e.g., to only draw the lines
 for the MR Egger and IVW causal effect estimates:
 
 ``` r
+
 res <- mr(dat, method_list = c("mr_egger_regression", "mr_ivw"))
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
 p1 <- mr_scatter_plot(res, dat)
@@ -353,12 +364,14 @@ It is possible to save this plot using the
 function from the `ggplot2` package, e.g. to save as a pdf
 
 ``` r
+
 ggsave(p1[[1]], file = "filename.pdf", width = 7, height = 7)
 ```
 
 Or to save as a png.
 
 ``` r
+
 ggsave(p1[[1]], file = "filename.png", width = 7, height = 7)
 ```
 
@@ -372,6 +385,7 @@ function to compare the MR estimates using the different MR methods
 against the single SNP tests.
 
 ``` r
+
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
 ```
@@ -390,6 +404,7 @@ To obtain plots that use different methods, specify them in the
 function:
 
 ``` r
+
 res_single <- mr_singlesnp(dat, all_method = c("mr_ivw", "mr_two_sample_ml"))
 p2 <- mr_forest_plot(res_single)
 p2[[1]]
@@ -410,6 +425,7 @@ plot. See Figure 4 of Vabistsevits et al. (2024) for examples.
 #### RadialMR outlier example
 
 ``` r
+
 res_single <- mr_singlesnp(dat)
 
 # Run RadialMR to detect outliers
@@ -455,6 +471,7 @@ The same approach works with MR-PRESSO outliers. Note that
 uses bootstrapping so can be slow with large numbers of SNPs.
 
 ``` r
+
 res_single <- mr_singlesnp(dat)
 
 # Run MR-PRESSO to detect outliers
@@ -481,6 +498,7 @@ Use the
 function to visualise the leave-one-out analysis:
 
 ``` r
+
 p3 <- mr_leaveoneout_plot(res_loo)
 p3[[1]]
 ```
@@ -493,6 +511,7 @@ We can also specify the method to use in the function call, e.g., to use
 MR-Egger regression in the leave-one-out analysis specify
 
 ``` r
+
 mr_leaveoneout(dat, method = mr_egger_regression)
 ```
 
@@ -503,6 +522,7 @@ particular MR analysis. Funnel plots can be produced using the single
 SNP results as follows:
 
 ``` r
+
 p4 <- mr_funnel_plot(res_single)
 p4[[1]]
 ```
@@ -533,6 +553,7 @@ function.
 ### Step 1: generate 1-to-many MR results
 
 ``` r
+
 exp_dat <- extract_instruments(outcomes = c("ieu-a-2", "ieu-a-100", "ieu-a-1032", "ieu-a-104", "ieu-a-1", "ieu-a-72", "ieu-a-999"))
 table(exp_dat$exposure)
 chd_out_dat <- extract_outcome_data(
@@ -563,6 +584,7 @@ argument to the name of the column in the data with the weight
 information.
 
 ``` r
+
 # default is to subset on either the IVW method (>1 instrumental SNP) or Wald ratio method (1 instrumental SNP).
 res <- subset_on_method(res)
 # this sorts results by decreasing effect size (largest effect at top of the plot)
@@ -573,6 +595,7 @@ res$weight <- 1 / res$se
 ```
 
 ``` r
+
 # identify value for 'lo' in forest_plot_1_to_many
 min(exp(res$b - 1.96 * res$se))
 #> [1] 0.3233985
@@ -607,6 +630,7 @@ It is also possible to add additional columns and column titles and to
 choose the size of the text in the columns:
 
 ``` r
+
 res$pval <- formatC(res$pval, format = "e", digits = 2)
 
 forest_plot_1_to_many(
@@ -644,6 +668,7 @@ In my own workflow I prefer to to keep the plot free of axis and column
 titles and to add them separately in a program like Powerpoint:
 
 ``` r
+
 forest_plot_1_to_many(
   res,
   b = "b",
@@ -685,27 +710,13 @@ Normally the row labels would correspond to the exposures but in this
 example we want the row names to correspond to the MR method.
 
 ``` r
+
 res <- mr(dat2)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-72' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 30 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-1' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 14 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-100' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 2 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-999' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 10 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-104' on 'ieu-a-7'
 # to keep the Y axis label clean we exclude the exposure ID labels from the exposure column
 res <- split_exposure(res)
@@ -721,6 +732,7 @@ res <-
 ```
 
 ``` r
+
 forest_plot_1_to_many(
   res,
   b = "b",
@@ -751,27 +763,13 @@ unique exposure-outcome combination and sort the results by decreasing
 effect size within each group (i.e. largest effect at the top).
 
 ``` r
+
 res <- mr(dat2)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-72' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 30 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-1' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 14 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-100' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 2 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-999' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 10 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 #> Analysing 'ieu-a-104' on 'ieu-a-7'
 res <- split_exposure(res)
 res <- subset_on_method(res)
@@ -799,7 +797,7 @@ forest_plot_1_to_many(
 )
 #> Warning: Removed 3 rows containing missing values or values outside the scale range
 #> (`geom_vline()`).
-#> Warning: Removed 3 rows containing missing values or values outside the scale range
+#> Removed 3 rows containing missing values or values outside the scale range
 #> (`geom_vline()`).
 ```
 
@@ -822,6 +820,7 @@ different plots. In the example below we select BMI as the exposure and
 test this against 103 diseases in the IEU GWAS database:
 
 ``` r
+
 # extract instruments for BMI
 exp_dat <- extract_instruments(outcomes = "ieu-a-2")
 ao <- available_outcomes()
@@ -859,6 +858,7 @@ the plot and the shape of the point estimates. Type
 for further details.
 
 ``` r
+
 res1 <- res[1:52, ]
 res2 <- res[53:103, ]
 
@@ -898,6 +898,7 @@ plot2
 ```
 
 ``` r
+
 pdf("plot1.pdf", height = 10, width = 8)
 plot1
 dev.off()
@@ -919,6 +920,7 @@ by
     #> Harmonising Body mass index || id:ieu-a-2 (ieu-a-2) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)
 
 ``` r
+
 res <- mr(dat, method_list = c("mr_raps"))
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
 res
@@ -941,6 +943,7 @@ argument of
 example,
 
 ``` r
+
 res <-
   mr(
     dat,
@@ -965,6 +968,7 @@ Genotype Recoding Invariance Property (GRIP), it can be implemented
 using the code below.
 
 ``` r
+
 res <- mr(dat, method_list = c("mr_grip"))
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
 res
@@ -977,6 +981,7 @@ res
 Or include it with the default set of methods as follows.
 
 ``` r
+
 mr(dat, method_list = c(subset(mr_method_list(), use_by_default)$obj, "mr_grip"))
 ```
 
@@ -987,6 +992,7 @@ analyses, and plots, and presents them in a single self-contained html
 web page, word document, or pdf document.
 
 ``` r
+
 mr_report(dat)
 ```
 
@@ -1010,18 +1016,19 @@ and then the outcome through the exposure. But sometimes this is
 difficult to evaluate, for example is a cis-acting SNP influencing gene
 expression levels or DNA methylation levels first? The causal direction
 between the hypothesised exposure and outcomes can be tested using the
-Steiger test (Hemani, Tilling, and Davey Smith 2017). For example:
+Steiger test (Hemani et al. 2017). For example:
 
 ``` r
+
 out <- directionality_test(dat)
 #> r.exposure and/or r.outcome not present.
 #> Calculating approximate SNP-exposure and/or SNP-outcome correlations, assuming all are quantitative traits. Please pre-calculate r.exposure and/or r.outcome using get_r_from_lor() for any binary traits
 knitr::kable(out)
 ```
 
-| id.exposure | id.outcome | exposure                        | outcome                                | snp_r2.exposure | snp_r2.outcome | correct_causal_direction | steiger_pval |
-|:------------|:-----------|:--------------------------------|:---------------------------------------|----------------:|---------------:|:-------------------------|-------------:|
-| ieu-a-2     | ieu-a-7    | Body mass index \|\| id:ieu-a-2 | Coronary heart disease \|\| id:ieu-a-7 |       0.0158082 |      0.0013505 | TRUE                     |            0 |
+| id.exposure | id.outcome | exposure | outcome | snp_r2.exposure | snp_r2.outcome | correct_causal_direction | steiger_pval |
+|:---|:---|:---|:---|---:|---:|:---|---:|
+| ieu-a-2 | ieu-a-7 | Body mass index \|\| id:ieu-a-2 | Coronary heart disease \|\| id:ieu-a-7 | 0.0158082 | 0.0013505 | TRUE | 0 |
 
 It calculates the variance explained in the exposure and the outcome by
 the instrumenting SNPs, and tests if the variance in the outcome is less
@@ -1043,6 +1050,7 @@ causal direction is liable to measurement error, in two ways.
 These tests are obtained using:
 
 ``` r
+
 mr_steiger(
   p_exp = dat$pval.exposure,
   p_out = dat$pval.outcome,
@@ -1078,6 +1086,7 @@ heart disease (CHD) is `ieu-a-7`. In this example we will estimate the
 multivariable effects of HDL, LDL and total cholesterol on CHD.
 
 ``` r
+
 id_exposure <- c("ieu-a-299", "ieu-a-300", "ieu-a-302")
 id_outcome <- "ieu-a-7"
 ```
@@ -1090,12 +1099,14 @@ unique SNPs, then we need to extract each of the 30 SNPs from each lipid
 fraction (exposure).
 
 ``` r
+
 mv_exposure_dat <- mv_extract_exposures(id_exposure)
 ```
 
 Next, also extract those SNPs from the outcome.
 
 ``` r
+
 mv_outcome_dat <- extract_outcome_data(exposure_dat$SNP, id_outcome)
 ```
 
@@ -1103,6 +1114,7 @@ Once the data has been obtained, harmonise so that all are on the same
 reference allele.
 
 ``` r
+
 mvdat <- mv_harmonise_data(mv_exposure_dat, mv_outcome_dat)
 #> Harmonising HDL cholesterol || id:ieu-a-299 (ieu-a-299) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)
 ```
@@ -1111,6 +1123,7 @@ Finally, perform the multivariable MR analysis, which generates a table
 of results.
 
 ``` r
+
 res <- mv_multiple(mvdat)
 res
 #> $result
@@ -1176,6 +1189,7 @@ the top hits) — the function will extract instruments, clump within each
 exposure, then clump across exposures:
 
 ``` r
+
 filenames <- c("path/to/exposure1_gwas.txt", "path/to/exposure2_gwas.txt")
 mv_exposure_dat <- mv_extract_exposures_local(
   filenames,
@@ -1199,6 +1213,7 @@ Each data frame should contain the full GWAS summary statistics with
 appropriate column names:
 
 ``` r
+
 mv_exposure_dat <- mv_extract_exposures_local(
   list(gwas_df1, gwas_df2),
   snp_col = "SNP",
@@ -1216,6 +1231,7 @@ mv_exposure_dat <- mv_extract_exposures_local(
 From this point, the workflow is the same as the OpenGWAS example above:
 
 ``` r
+
 # The outcome can be from OpenGWAS or local data
 mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, "ieu-a-7")
 mvdat <- mv_harmonise_data(mv_exposure_dat, mv_outcome_dat)
@@ -1237,6 +1253,7 @@ If you have one local exposure (e.g., local GWAS for early-life BMI) and
 one OpenGWAS exposure (e.g., age at menarche, `ieu-a-1095`):
 
 ``` r
+
 # Step 1: Format local data as "outcome" (the internal format used for full GWAS)
 local_gwas <- format_data(
   local_df,
@@ -1286,6 +1303,7 @@ After preparing your data with TwoSampleMR, you can convert the
 harmonised output for use with MVMR:
 
 ``` r
+
 # remotes::install_github("WSpiller/MVMR")
 library(MVMR)
 
@@ -1328,11 +1346,13 @@ data for ~500 Europeans in 1000 genomes data, and can obtain the LD
 matrix for a set of SNPs using these data. For example:
 
 ``` r
+
 snplist <- c("rs234", "rs1205")
 ld_mat <- ld_matrix(snplist)
 ```
 
 ``` r
+
 ld_mat
 #>            rs234_A_G rs1205_T_C
 #> rs234_A_G  1.0000000  0.0797023
@@ -1345,6 +1365,7 @@ returns the LD correlation values (not R²) for each pair of variants
 present in the 1000 genomes data set.
 
 ``` r
+
 dat <- harmonise_data(
   exposure_dat = bmi_exp_dat,
   outcome_dat = chd_out_dat
@@ -1355,6 +1376,7 @@ dat <- harmonise_data(
 Convert to the `MRInput` format for the MendelianRandomization package:
 
 ``` r
+
 dat2 <- dat_to_MRInput(dat)
 #> Converting:
 #>  - exposure: Body mass index || id:ieu-a-2
@@ -1365,6 +1387,7 @@ This produces a list of `MRInput` objects that can be used with the
 MendelianRandomization functions, e.g.
 
 ``` r
+
 MendelianRandomization::mr_ivw(dat2[[1]])
 #> 
 #> Inverse-variance weighted method
@@ -1385,6 +1408,7 @@ Alternatively, convert to the `MRInput` format but also obtaining the LD
 matrix for the instruments
 
 ``` r
+
 dat2 <- try(dat_to_MRInput(dat, get_correlation = TRUE))
 #> Converting:
 #>  - exposure: Body mass index || id:ieu-a-2
@@ -1439,6 +1463,7 @@ function to perform the analysis. An example is shown here, estimating
 the causal effect of BMI on coronary heart disease:
 
 ``` r
+
 # Extract instruments for BMI
 exposure_dat <- extract_instruments("ieu-a-2")
 
@@ -1507,6 +1532,7 @@ The outcome column in the output of
 the original outcome name with the outcome trait ID.
 
 ``` r
+
 head(res)
 #> $result
 #>   id.exposure                        exposure id.outcome
@@ -1523,11 +1549,9 @@ The outcome column can be split into separate columns for the id and
 outcome name using the split_outcome function:
 
 ``` r
+
 res <- mr(dat)
 #> Analysing 'ieu-a-2' on 'ieu-a-7'
-#> Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a
-#> method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a
-#> single SNP. Returning NA.
 split_outcome(res)
 #>   id.exposure id.outcome                outcome                      exposure
 #> 1     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2
@@ -1557,6 +1581,7 @@ Users can convert log odds ratios into odds ratios with 95% confidence
 intervals using:
 
 ``` r
+
 generate_odds_ratios(res)
 #>   id.exposure id.outcome                              outcome
 #> 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7
@@ -1584,6 +1609,7 @@ It is sometimes useful to subset results on MR method, so that there is
 one unique result for each exposure-outcome combination:
 
 ``` r
+
 subset_on_method(res)
 #>   id.exposure id.outcome                              outcome
 #> 3     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7
@@ -1607,6 +1633,7 @@ results in a single table or figure. This can be done using the
 function:
 
 ``` r
+
 res <- mr(dat)
 het <- mr_heterogeneity(dat)
 plt <- mr_pleiotropy_test(dat)
@@ -1669,18 +1696,16 @@ the Causal Relationship Between Imprecisely Measured Traits Using GWAS
 Summary Data.” *PLOS Genetics* 13 (11): e1007081.
 <https://doi.org/10.1371/journal.pgen.1007081>.
 
-Vabistsevits, Marina. 2021. “Setting up multivariable Mendelian
-randomization analysis.”
+Vabistsevits, Marina. 2021. *Setting up multivariable Mendelian
+randomization analysis*.
 <https://marinalearning.netlify.app/2021/03/22/setting-up-multivariable-mendelian-randomization-analysis/>.
 
-Vabistsevits, Marina, George Davey Smith, Tom G Richardson, Rebecca C
-Richmond, Weiva Sieh, Joseph H Rothstein, Laurel A Habel, Stacey E
-Alexeeff, Bethan Lloyd-Lewis, and Eleanor Sanderson. 2024. “Mammographic
-density mediates the protective effect of early-life body size on breast
-cancer risk.” *Nature Communications* 15: 4021.
+Vabistsevits, Marina, George Davey Smith, Tom G Richardson, et al. 2024.
+“Mammographic density mediates the protective effect of early-life body
+size on breast cancer risk.” *Nature Communications* 15: 4021.
 <https://doi.org/10.1038/s41467-024-48105-7>.
 
 Zhao, Qingyuan, Jingshu Wang, Gibran Hemani, Jack Bowden, and Dylan S
-Small. 2020. “Statistical inference in two-sample summary-data Mendelian
-randomization using robust adjusted profile score” 48: 1742–69.
+Small. 2020. *Statistical inference in two-sample summary-data Mendelian
+randomization using robust adjusted profile score*. 48: 1742–69.
 <https://doi.org/10.1214/19-AOS1866>.

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,21 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.4/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.5" id="twosamplemr-v075">TwoSampleMR v0.7.5<a class="anchor" aria-label="anchor" href="#twosamplemr-v075"></a></h2>
+<p>(Release date 2026-05-04)</p>
+<ul><li>Amend <a href="https://gwas.mrcieu.ac.uk" class="external-link uri">https://gwas.mrcieu.ac.uk</a> URLs to <a href="https://opengwas.io/" class="external-link uri">https://opengwas.io/</a>
+</li>
+<li>Bump version of roxygen2 to 8.0.0 and regenerate documentation</li>
+<li>Replace <code>array(1:nexp)</code> placeholder allocations with <code>numeric(nexp)</code>/<code>integer(nexp)</code> in multivariable MR functions</li>
+<li>Replace <code>1:n</code> with <code>seq_len(n)</code> in loop indices across <code>singlesnp</code>, <code>leaveoneout</code>, <code>rucker</code>, <code>mr_mode</code>, and <code>multivariable_mr</code> for empty-vector safety</li>
+<li>Pre-generate jackknife resample indices in <code>mr_rucker_jackknife_internal</code> and switch to <code>lapply</code>, matching the bootstrap function pattern</li>
+<li>Vectorise <code>get_population_allele_frequency</code> by inlining the quadratic-root logic from <code><a href="../reference/contingency.html">contingency()</a></code> and picking the valid root with vectorised constraint checks</li>
+<li>Skip <code>mr_wald_ratio</code> inside <code><a href="../reference/mr.html">mr()</a></code> when more than one SNP is provided and other methods are also requested, suppressing the multi-SNP warning for default method runs while preserving the warning when <code>mr_wald_ratio</code> is requested on its own</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.4" id="twosamplemr-v074">TwoSampleMR v0.7.4<a class="anchor" aria-label="anchor" href="#twosamplemr-v074"></a></h2>
 <p>(Release date 2026-04-02)</p>

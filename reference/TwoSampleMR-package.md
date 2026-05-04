@@ -1,7 +1,7 @@
 # TwoSampleMR: Two Sample MR Functions and Interface to MRC Integrative Epidemiology Unit OpenGWAS Database
 
 A package for performing Mendelian randomization using GWAS summary
-data. It uses the IEU OpenGWAS database <https://gwas.mrcieu.ac.uk/> to
+data. It uses the IEU OpenGWAS database <https://opengwas.io> to
 automatically obtain data, and a wide range of methods to run the
 analysis.
 
@@ -21,6 +21,9 @@ Useful links:
 ([ORCID](https://orcid.org/0000-0003-0920-1055))
 
 Authors:
+
+- Gibran Hemani <g.hemani@bristol.ac.uk>
+  ([ORCID](https://orcid.org/0000-0003-0920-1055))
 
 - Philip Haycock <philip.haycock@bristol.ac.uk>
   ([ORCID](https://orcid.org/0000-0001-5001-3350))

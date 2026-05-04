@@ -1,6 +1,7 @@
 # Harmonise data
 
 ``` r
+
 library(TwoSampleMR)
 ```
 
@@ -9,6 +10,7 @@ library(TwoSampleMR)
 The exposure data and outcome data are now obtained, e.g.:
 
 ``` r
+
 bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
 ```
@@ -28,6 +30,7 @@ represented as different bi-allelic variants in different studies.
 To harmonise the exposure and outcome data, do the following:
 
 ``` r
+
 dat <- harmonise_data(
   exposure_dat = bmi_exp_dat,
   outcome_dat = chd_out_dat
@@ -154,10 +157,12 @@ analyses for the same trait. For example, there are multiple GWAS
 summary datasets for body mass index and coronary heart disease:
 
 ``` r
+
 ao <- available_outcomes()
 ```
 
 ``` r
+
 ao[ao$trait == "Body mass index", c("trait", "id", "pmid", "author", "sample_size", "nsnp")]
 #>                 trait                 id     pmid                    author
 #> 3958  Body mass index ebi-a-GCST90103751 35051171                   Wong HS
@@ -233,6 +238,7 @@ with the largest sample size for the outcome, using the power_prune
 function:
 
 ``` r
+
 dat <- power_prune(dat, method = 1, dist.outcome = "binary")
 ```
 
@@ -249,6 +255,7 @@ instrumental SNPs) as well as sample size. This can be done by setting
 the method argument to 2:
 
 ``` r
+
 dat <- power_prune(dat, method = 2, dist.outcome = "binary")
 ```
 

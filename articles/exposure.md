@@ -1,6 +1,7 @@
 # Exposure data
 
 ``` r
+
 library(TwoSampleMR)
 ```
 
@@ -58,12 +59,14 @@ The exact path to the file will be different on everyone’s computer, but
 it can be located like this:
 
 ``` r
+
 bmi_file <- system.file("extdata", "bmi.txt", package = "TwoSampleMR")
 ```
 
 You can read the data in like this:
 
 ``` r
+
 bmi_exp_dat <- read_exposure_data(bmi_file)
 head(bmi_exp_dat)
 #>          SNP beta.exposure se.exposure effect_allele.exposure
@@ -137,12 +140,14 @@ Note that this is a CSV file, with commas separating fields. The file is
 located here:
 
 ``` r
+
 bmi2_file <- system.file("extdata/bmi.csv", package = "TwoSampleMR")
 ```
 
 To read in this data:
 
 ``` r
+
 bmi_exp_dat <- read_exposure_data(
   filename = bmi2_file,
   sep = ",",
@@ -195,6 +200,7 @@ example) then it will assume that the phenotype’s name is simply
 manually:
 
 ``` r
+
 bmi_exp_dat$exposure <- "BMI"
 ```
 
@@ -206,6 +212,7 @@ into the correct format using the
 function. For example, here is some randomly created data:
 
 ``` r
+
 random_df <- data.frame(
   SNP = c("rs1", "rs2"),
   beta = c(1, 2),
@@ -221,6 +228,7 @@ random_df
 This can be formatted like so:
 
 ``` r
+
 random_exp_dat <- format_data(random_df, type = "exposure")
 #> No phenotype name specified, defaulting to 'exposure'.
 #> Warning in format_data(random_df, type = "exposure"): The following columns are not present but are helpful for harmonisation
@@ -245,6 +253,7 @@ available for use. They are provided as data objects in the
 `MRInstruments` package. To install:
 
 ``` r
+
 remotes::install_github("MRCIEU/MRInstruments")
 ```
 
@@ -263,6 +272,7 @@ particular study are all the same, and other data cleaning operations.
 To use the GWAS catalog:
 
 ``` r
+
 library(MRInstruments)
 data(gwas_catalog)
 head(gwas_catalog)
@@ -335,6 +345,7 @@ For example, to obtain instruments for body mass index using the
 Speliotes et al 2010 study:
 
 ``` r
+
 bmi_gwas <-
   subset(gwas_catalog,
          grepl("Speliotes", Author) &
@@ -350,6 +361,7 @@ stored in the `metab_qtls` data object. Use
 to get more information.
 
 ``` r
+
 data(metab_qtls)
 head(metab_qtls)
 #>   phenotype chromosome  position       SNP effect_allele other_allele      eaf
@@ -371,6 +383,7 @@ head(metab_qtls)
 For example, to obtain instruments for Alanine:
 
 ``` r
+
 ala_exp_dat <- format_metab_qtls(subset(metab_qtls, phenotype == "Ala"))
 ```
 
@@ -382,6 +395,7 @@ stored in the `proteomic_qtls` data object. Use
 to get more information.
 
 ``` r
+
 data(proteomic_qtls)
 head(proteomic_qtls)
 #>   analyte chr  position        SNP  gene location annotation other_allele
@@ -403,6 +417,7 @@ head(proteomic_qtls)
 For example, to obtain instruments for the ApoH protein:
 
 ``` r
+
 apoh_exp_dat <-
   format_proteomic_qtls(subset(proteomic_qtls, analyte == "ApoH"))
 ```
@@ -415,6 +430,7 @@ tissues are available from the GTEX study in `gtex_eqtl`. Use
 get more information.
 
 ``` r
+
 data(gtex_eqtl)
 head(gtex_eqtl)
 #>                 tissue     gene_name gene_start         SNP snp_position
@@ -437,6 +453,7 @@ For example, to obtain instruments for the IRAK1BP1 gene expression
 levels in subcutaneous adipose tissue:
 
 ``` r
+
 irak1bp1_exp_dat <-
   format_gtex_eqtl(subset(
     gtex_eqtl,
@@ -456,6 +473,7 @@ blood across 5 time points are available from the ARIES study in
 to get more information.
 
 ``` r
+
 data(aries_mqtl)
 head(aries_mqtl)
 #>          SNP timepoint        cpg    beta        pval         se snp_chr
@@ -485,6 +503,7 @@ For example, to obtain instruments for cg25212131 CpG DNA methylation
 levels in at birth:
 
 ``` r
+
 cg25212131_exp_dat <-
   format_aries_mqtl(subset(aries_mqtl, cpg == "cg25212131" &
                              age == "Birth"))
@@ -493,8 +512,7 @@ cg25212131_exp_dat <-
 ### IEU OpenGWAS database
 
 The IEU OpenGWAS database contains the entire summary statistics for
-thousands of GWASs. You can browse them here:
-<https://gwas.mrcieu.ac.uk/>
+thousands of GWASs. You can browse them here: <https://opengwas.io>
 
 You can use this database to define the instruments for a particular
 exposure. You can also use this database to obtain the effects for
@@ -503,12 +521,14 @@ constructing polygenic risk scores using different p-value thresholds.
 You can check the status of the API:
 
 ``` r
+
 ieugwasr::api_status()
 ```
 
 To obtain a list and details about the available GWASs do the following:
 
 ``` r
+
 ao <- available_outcomes()
 head(ao)
 ```
@@ -522,6 +542,7 @@ function returns a table of all the available studies in the database.
 Each study has a unique ID. e.g., You might obtain
 
 ``` r
+
 head(subset(ao, select = c(trait, id)))
 #>           trait         id
 #> 1 Schizophrenia ieu-b-5103
@@ -537,10 +558,12 @@ for example to obtain SNPs for body mass index using the Locke et
 al. 2015 GIANT study, you specify the study ID as follows:
 
 ``` r
+
 bmi2014_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
 ```
 
 ``` r
+
 str(bmi2014_exp_dat)
 #> 'data.frame':    79 obs. of  15 variables:
 #>  $ pval.exposure         : num  2.18e-08 4.57e-11 5.06e-14 5.45e-10 1.88e-28 ...
@@ -585,10 +608,12 @@ have LD R-square above the specified threshold only the SNP with the
 lowest P-value will be retained. To do this, use the following command:
 
 ``` r
+
 bmi_exp_dat <- clump_data(bmi2014_exp_dat)
 ```
 
 ``` r
+
 str(bmi_exp_dat)
 #> 'data.frame':    30 obs. of  16 variables:
 #>  $ SNP                   : chr  "rs10767664" "rs13078807" "rs1514175" "rs1558902" ...

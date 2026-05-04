@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 and Philip Haycock</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.4/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
       <div class="d-none name"><code>perform_mr.Rmd</code></div>
     </div>
 
@@ -103,9 +103,6 @@ randomization (MR) analysis. To do this, simply run:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="va">res</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                              outcome</span></span>
 <span><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease || id:ieu-a-7</span></span>
@@ -353,9 +350,6 @@ against the SNP effects on the outcome using a scatter plot.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr_scatter_plot.html">mr_scatter_plot</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">dat</span><span class="op">)</span></span></code></pre></div>
 <p>A scatter plot is created for each exposure-outcome test, and stored
 in <code>p1</code> as a list of plots. For example, to plot the first
@@ -666,25 +660,10 @@ method.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-72' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 30 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-1' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 14 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-100' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 2 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-999' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 10 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-104' on 'ieu-a-7'</span></span>
 <span><span class="co"># to keep the Y axis label clean we exclude the exposure ID labels from the exposure column</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
@@ -727,25 +706,10 @@ top).</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-72' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 30 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-1' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 14 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-100' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 2 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-999' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 10 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-104' on 'ieu-a-7'</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/split_exposure.html">split_exposure</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_on_method.html">subset_on_method</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
@@ -773,7 +737,7 @@ top).</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_vline()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_vline()`).</span></span></code></pre></div>
 <p><img src="perform_mr_files/figure-html/unnamed-chunk-36-1.png" class="r-plt" alt="Forest plot split by a subcategory variable." width="700" style="display: block; margin: auto;"></p>
 <p>In the above example we made up an arbitrary grouping variable called
@@ -963,8 +927,8 @@ and then the outcome through the exposure. But sometimes this is
 difficult to evaluate, for example is a cis-acting SNP influencing gene
 expression levels or DNA methylation levels first? The causal direction
 between the hypothesised exposure and outcomes can be tested using the
-Steiger test <span class="citation">(Hemani, Tilling, and Davey Smith
-2017)</span>. For example:</p>
+Steiger test <span class="citation">(Hemani et al. 2017)</span>. For
+example:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/directionality_test.html">directionality_test</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; r.exposure and/or r.outcome not present.</span></span>
@@ -1455,9 +1419,6 @@ outcome name using the split_outcome function:</p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mr.html">mr</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analysing 'ieu-a-2' on 'ieu-a-7'</span></span>
-<span><span class="co">#&gt; Warning: mr_wald_ratio requires exactly one SNP, but 79 were provided. Use a</span></span>
-<span><span class="co">#&gt; method that supports multiple SNPs (e.g. mr_ivw) or subset your data to a</span></span>
-<span><span class="co">#&gt; single SNP. Returning NA.</span></span>
 <span><span class="fu"><a href="../reference/split_outcome.html">split_outcome</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   id.exposure id.outcome                outcome                      exposure</span></span>
 <span><span class="co">#&gt; 1     ieu-a-2    ieu-a-7 Coronary heart disease Body mass index || id:ieu-a-2</span></span>
@@ -1580,7 +1541,7 @@ confidence intervals).</p>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-burgess-2015" class="csl-entry">
 Burgess, S, and S Thompson. 2015. <span>“<span>Multivariable</span>
 <span>Mendelian</span> Randomization: The Use of Pleiotropic Genetic
@@ -1594,21 +1555,20 @@ Traits Using <span>GWAS</span> Summary Data.”</span> <em>PLOS
 Genetics</em> 13 (11): e1007081. <a href="https://doi.org/10.1371/journal.pgen.1007081" class="external-link">https://doi.org/10.1371/journal.pgen.1007081</a>.
 </div>
 <div id="ref-vabistsevits2021" class="csl-entry">
-Vabistsevits, Marina. 2021. <span>“<span class="nocase">Setting up
-multivariable Mendelian randomization analysis</span>.”</span> <a href="https://marinalearning.netlify.app/2021/03/22/setting-up-multivariable-mendelian-randomization-analysis/" class="external-link">https://marinalearning.netlify.app/2021/03/22/setting-up-multivariable-mendelian-randomization-analysis/</a>.
+Vabistsevits, Marina. 2021. <em><span class="nocase">Setting up
+multivariable Mendelian randomization analysis</span></em>. <a href="https://marinalearning.netlify.app/2021/03/22/setting-up-multivariable-mendelian-randomization-analysis/" class="external-link">https://marinalearning.netlify.app/2021/03/22/setting-up-multivariable-mendelian-randomization-analysis/</a>.
 </div>
 <div id="ref-vabistsevits2024" class="csl-entry">
-Vabistsevits, Marina, George Davey Smith, Tom G Richardson, Rebecca C
-Richmond, Weiva Sieh, Joseph H Rothstein, Laurel A Habel, Stacey E
-Alexeeff, Bethan Lloyd-Lewis, and Eleanor Sanderson. 2024. <span>“<span class="nocase">Mammographic density mediates the protective effect of
-early-life body size on breast cancer risk</span>.”</span> <em>Nature
-Communications</em> 15: 4021. <a href="https://doi.org/10.1038/s41467-024-48105-7" class="external-link">https://doi.org/10.1038/s41467-024-48105-7</a>.
+Vabistsevits, Marina, George Davey Smith, Tom G Richardson, et al. 2024.
+<span>“<span class="nocase">Mammographic density mediates the protective
+effect of early-life body size on breast cancer risk</span>.”</span>
+<em>Nature Communications</em> 15: 4021. <a href="https://doi.org/10.1038/s41467-024-48105-7" class="external-link">https://doi.org/10.1038/s41467-024-48105-7</a>.
 </div>
 <div id="ref-zhao2020" class="csl-entry">
 Zhao, Qingyuan, Jingshu Wang, Gibran Hemani, Jack Bowden, and Dylan S
-Small. 2020. <span>“<span class="nocase">Statistical inference in
+Small. 2020. <em><span class="nocase">Statistical inference in
 two-sample summary-data Mendelian randomization using robust adjusted
-profile score</span>”</span> 48: 1742–69. <a href="https://doi.org/10.1214/19-AOS1866" class="external-link">https://doi.org/10.1214/19-AOS1866</a>.
+profile score</span></em>. 48: 1742–69. <a href="https://doi.org/10.1214/19-AOS1866" class="external-link">https://doi.org/10.1214/19-AOS1866</a>.
 </div>
 </div>
 </div>

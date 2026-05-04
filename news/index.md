@@ -1,5 +1,29 @@
 # Changelog
 
+## TwoSampleMR v0.7.5
+
+(Release date 2026-05-04)
+
+- Amend <https://gwas.mrcieu.ac.uk> URLs to <https://opengwas.io/>
+- Bump version of roxygen2 to 8.0.0 and regenerate documentation
+- Replace `array(1:nexp)` placeholder allocations with
+  `numeric(nexp)`/`integer(nexp)` in multivariable MR functions
+- Replace `1:n` with `seq_len(n)` in loop indices across `singlesnp`,
+  `leaveoneout`, `rucker`, `mr_mode`, and `multivariable_mr` for
+  empty-vector safety
+- Pre-generate jackknife resample indices in
+  `mr_rucker_jackknife_internal` and switch to `lapply`, matching the
+  bootstrap function pattern
+- Vectorise `get_population_allele_frequency` by inlining the
+  quadratic-root logic from
+  [`contingency()`](https://mrcieu.github.io/TwoSampleMR/reference/contingency.md)
+  and picking the valid root with vectorised constraint checks
+- Skip `mr_wald_ratio` inside
+  [`mr()`](https://mrcieu.github.io/TwoSampleMR/reference/mr.md) when
+  more than one SNP is provided and other methods are also requested,
+  suppressing the multi-SNP warning for default method runs while
+  preserving the warning when `mr_wald_ratio` is requested on its own
+
 ## TwoSampleMR v0.7.4
 
 (Release date 2026-04-02)
