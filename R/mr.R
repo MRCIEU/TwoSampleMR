@@ -72,7 +72,13 @@ mr <- function(
     } else {
       message("Analysing '", exp_id, "' on '", out_id, "'")
     }
-    res <- lapply(method_list, function(meth) {
+    keep <- if (nrow(x) > 1 && length(method_list) > 1) {
+      method_list != "mr_wald_ratio"
+    } else {
+      rep(TRUE, length(method_list))
+    }
+    methods_to_run <- method_list[keep]
+    res <- lapply(methods_to_run, function(meth) {
       get(meth)(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, parameters)
     })
     mr_tab <- data.frame(
@@ -80,7 +86,7 @@ mr <- function(
       id.outcome = out_id,
       outcome = x$outcome[1],
       exposure = x$exposure[1],
-      method = method_names,
+      method = method_names[keep],
       nsnp = vapply(res, function(x) x$nsnp, numeric(1)),
       b = vapply(res, function(x) x$b, numeric(1)),
       se = vapply(res, function(x) x$se, numeric(1)),
