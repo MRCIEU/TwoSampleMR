@@ -347,13 +347,35 @@ allele_frequency <- function(g) {
 get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence) {
   stopifnot(length(af) == length(odds_ratio))
   stopifnot(length(prop) == length(odds_ratio))
-  for (i in seq_along(odds_ratio)) {
-    co <- contingency(af[i], prop[i], odds_ratio[i])
-    af_controls <- co[1, 2] / (co[1, 2] + co[2, 2])
-    af_cases <- co[1, 1] / (co[1, 1] + co[2, 1])
-    af[i] <- af_controls * (1 - prevalence[i]) + af_cases * prevalence[i]
+  eps <- 1e-15
+  a <- odds_ratio - 1
+  b <- (af + prop) * (1 - odds_ratio) - 1
+  c_ <- odds_ratio * af * prop
+
+  z <- numeric(length(odds_ratio))
+  linear <- abs(a) < eps
+  z[linear] <- -c_[linear] / b[linear]
+
+  quad <- !linear
+  if (any(quad)) {
+    d <- pmax(0, b[quad]^2 - 4 * a[quad] * c_[quad])
+    sqrt_d <- sqrt(d)
+    two_a <- 2 * a[quad]
+    z_pos <- (-b[quad] + sqrt_d) / two_a
+    z_neg <- (-b[quad] - sqrt_d) / two_a
+    af_q <- af[quad]
+    prop_q <- prop[quad]
+    tol <- -1e-7
+    valid_pos <- z_pos >= tol &
+      (prop_q - z_pos) >= tol &
+      (af_q - z_pos) >= tol &
+      (1 + z_pos - af_q - prop_q) >= tol
+    z[quad] <- ifelse(valid_pos, z_pos, z_neg)
   }
-  return(af)
+
+  af_controls <- (af - z) / (1 - prop)
+  af_cases <- z / prop
+  return(af_controls * (1 - prevalence) + af_cases * prevalence)
 }
 
 

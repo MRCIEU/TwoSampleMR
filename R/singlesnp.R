@@ -59,7 +59,7 @@ mr_singlesnp <- function(
       )
       return(d)
     }
-    l <- lapply(1:nsnp, function(j) {
+    l <- lapply(seq_len(nsnp), function(j) {
       with(
         x,
         get(single_method)(

@@ -44,7 +44,7 @@ mr_leaveoneout <- function(dat, parameters = default_parameters(), method = mr_i
       return(d)
     }
     if (nsnp > 2) {
-      l <- lapply(1:nsnp, function(i) {
+      l <- lapply(seq_len(nsnp), function(i) {
         with(
           x,
           method(beta.exposure[-i], beta.outcome[-i], se.exposure[-i], se.outcome[-i], parameters)

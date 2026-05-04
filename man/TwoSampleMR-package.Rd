@@ -6,7 +6,7 @@
 \alias{TwoSampleMR-package}
 \title{TwoSampleMR: Two Sample MR Functions and Interface to MRC Integrative Epidemiology Unit OpenGWAS Database}
 \description{
-A package for performing Mendelian randomization using GWAS summary data. It uses the IEU OpenGWAS database \url{https://gwas.mrcieu.ac.uk/} to automatically obtain data, and a wide range of methods to run the analysis.
+A package for performing Mendelian randomization using GWAS summary data. It uses the IEU OpenGWAS database \url{https://opengwas.io} to automatically obtain data, and a wide range of methods to run the analysis.
 }
 \seealso{
 Useful links:
@@ -22,6 +22,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Gibran Hemani \email{g.hemani@bristol.ac.uk} (\href{https://orcid.org/0000-0003-0920-1055}{ORCID})
   \item Philip Haycock \email{philip.haycock@bristol.ac.uk} (\href{https://orcid.org/0000-0001-5001-3350}{ORCID})
   \item Jie Zheng \email{Jie.Zheng@bristol.ac.uk} (\href{https://orcid.org/0000-0002-6623-6839}{ORCID})
   \item Tom Gaunt \email{Tom.Gaunt@bristol.ac.uk} (\href{https://orcid.org/0000-0003-0924-3247}{ORCID})

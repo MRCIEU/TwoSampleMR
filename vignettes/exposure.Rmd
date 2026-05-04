@@ -281,7 +281,7 @@ cg25212131_exp_dat <-
 
 ### IEU OpenGWAS database
 
-The IEU OpenGWAS database contains the entire summary statistics for thousands of GWASs. You can browse them here: https://gwas.mrcieu.ac.uk/
+The IEU OpenGWAS database contains the entire summary statistics for thousands of GWASs. You can browse them here: https://opengwas.io
 
 You can use this database to define the instruments for a particular exposure. You can also use this database to obtain the effects for constructing polygenic risk scores using different p-value thresholds.
 

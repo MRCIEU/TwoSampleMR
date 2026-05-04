@@ -37,7 +37,7 @@ PM <- function(y = y, s = s, Alpha = 0.1) {
   v <- 1 / s^2
   sum.v <- sum(v)
   typS <- sum(v * (k - 1)) / (sum.v^2 - sum(v^2))
-  for (j in 1:L) {
+  for (j in seq_len(L)) {
     tausq <- 0
     Fstat <- 1
     TAUsq <- NULL
@@ -302,7 +302,7 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
 
   dat2 <- dat
   l <- list()
-  for (i in 1:nboot) {
+  for (i in seq_len(nboot)) {
     dat2$beta.exposure <- boot_exp[i, ]
     dat2$beta.outcome <- boot_out[i, ]
     l[[i]] <- mr_rucker(dat2, parameters)
@@ -451,13 +451,15 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
       e_plot = NULL
     ))
   } else {
-    l <- list()
-    for (i in 1:nboot) {
-      # dat2$beta.exposure <- rnorm(nsnp, mean=dat$beta.exposure, sd=dat$se.exposure)
-      # dat2$beta.outcome <- rnorm(nsnp, mean=dat$beta.outcome, sd=dat$se.outcome)
-      dat2 <- dat[sample(seq_len(nrow(dat)), nrow(dat), replace = TRUE), ]
-      l[[i]] <- mr_rucker_internal(dat2, parameters)
-    }
+    n <- nrow(dat)
+    boot_idx <- matrix(
+      sample.int(n, n * nboot, replace = TRUE),
+      nrow = nboot,
+      ncol = n
+    )
+    l <- lapply(seq_len(nboot), function(i) {
+      mr_rucker_internal(dat[boot_idx[i, ], ], parameters)
+    })
 
     modsel <- data.table::rbindlist(
       lapply(l, function(x) x$selected),
@@ -505,7 +507,7 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
 
     p1 <- ggplot2::ggplot(bootstrap, ggplot2::aes_string(x = "Q", y = "Qdash")) +
       ggplot2::geom_point(ggplot2::aes_string(colour = "model")) +
-      ggplot2::geom_point(data = subset(bootstrap, i == "Full")) +
+      ggplot2::geom_point(data = bootstrap[bootstrap$i == "Full", ]) +
       ggplot2::scale_colour_brewer(type = "qual") +
       ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
       ggplot2::ylim(0, max(bootstrap$Q, bootstrap$Qdash)) +

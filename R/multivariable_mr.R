@@ -498,15 +498,15 @@ mv_residual <- function(
   pval.exposure <- mvdat$exposure_pval
 
   nexp <- ncol(beta.exposure)
-  effs <- array(1:nexp)
-  se <- array(1:nexp)
-  pval <- array(1:nexp)
-  nsnp <- array(1:nexp)
+  effs <- numeric(nexp)
+  se <- numeric(nexp)
+  pval <- numeric(nexp)
+  nsnp <- integer(nexp)
   marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
   p <- list()
   nom <- colnames(beta.exposure)
   nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
-  for (i in 1:nexp) {
+  for (i in seq_len(nexp)) {
     # For this exposure, only keep SNPs that meet some p-value threshold
     index <- pval.exposure[, i] < pval_threshold
 
@@ -607,15 +607,15 @@ mv_multiple <- function(
   w <- 1 / mvdat$outcome_se^2
 
   nexp <- ncol(beta.exposure)
-  effs <- array(1:nexp)
-  se <- array(1:nexp)
-  pval <- array(1:nexp)
-  nsnp <- array(1:nexp)
+  effs <- numeric(nexp)
+  se <- numeric(nexp)
+  pval <- numeric(nexp)
+  nsnp <- integer(nexp)
   # marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
   p <- list()
   nom <- colnames(beta.exposure)
   nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
-  for (i in 1:nexp) {
+  for (i in seq_len(nexp)) {
     # For this exposure, only keep SNPs that meet some p-value threshold
     index <- pval.exposure[, i] < pval_threshold
 
@@ -704,15 +704,15 @@ mv_basic <- function(mvdat, pval_threshold = 5e-8) {
   pval.exposure <- mvdat$exposure_pval
 
   nexp <- ncol(beta.exposure)
-  effs <- array(1:nexp)
-  se <- array(1:nexp)
-  pval <- array(1:nexp)
-  nsnp <- array(1:nexp)
+  effs <- numeric(nexp)
+  se <- numeric(nexp)
+  pval <- numeric(nexp)
+  nsnp <- integer(nexp)
   marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
   p <- list()
   nom <- colnames(beta.exposure)
   nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
-  for (i in 1:nexp) {
+  for (i in seq_len(nexp)) {
     # For this exposure, only keep SNPs that meet some p-value threshold
     index <- pval.exposure[, i] < pval_threshold
 
@@ -772,15 +772,15 @@ mv_ivw <- function(mvdat, pval_threshold = 5e-8) {
   w <- 1 / mvdat$outcome_se^2
 
   nexp <- ncol(beta.exposure)
-  effs <- array(1:nexp)
-  se <- array(1:nexp)
-  pval <- array(1:nexp)
-  nsnp <- array(1:nexp)
+  effs <- numeric(nexp)
+  se <- numeric(nexp)
+  pval <- numeric(nexp)
+  nsnp <- integer(nexp)
   # marginal_outcome <- matrix(0, nrow(beta.exposure), ncol(beta.exposure))
   p <- list()
   nom <- colnames(beta.exposure)
   nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
-  for (i in 1:nexp) {
+  for (i in seq_len(nexp)) {
     # For this exposure, only keep SNPs that meet some p-value threshold
     index <- pval.exposure[, i] < pval_threshold
 
