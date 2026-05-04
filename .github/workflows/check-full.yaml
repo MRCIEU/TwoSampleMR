@@ -38,6 +38,7 @@ jobs:
           - {os: ubuntu-latest,   r: '4.3.2'}
           - {os: ubuntu-latest,   r: 'oldrel-3'}
           - {os: ubuntu-latest,   r: 'oldrel-4'}
+          - {os: ubuntu-latest,   r: 'oldrel-5'}  
           - {os: macos-14, r: 'release'}
           # - {os: ubuntu-24.04-arm, r: 'release', rspm: 'no' }
 
