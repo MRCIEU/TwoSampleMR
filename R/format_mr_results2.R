@@ -7,7 +7,7 @@
 #' @export
 #' @return data frame
 split_outcome <- function(mr_res) {
-  Pos <- grep("\\|\\|", mr_res$outcome) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
+  Pos <- grep("\\|\\|", mr_res$outcome) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it won't look like this e.g. if the user has supplied their own outcomes
   if (sum(Pos) != 0) {
     Outcome <- as.character(mr_res$outcome[Pos])
     Vars <- strsplit(Outcome, split = "\\|\\|")
@@ -30,7 +30,7 @@ split_outcome <- function(mr_res) {
 #' @export
 #' @return data frame
 split_exposure <- function(mr_res) {
-  Pos <- grep("\\|\\|", mr_res$exposure) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it wont look like this e.g. if the user has supplied their own outcomes
+  Pos <- grep("\\|\\|", mr_res$exposure) #the "||"" indicates that the outcome column was derived from summary data in MR-Base. Sometimes it won't look like this e.g. if the user has supplied their own outcomes
   # Pos2<-grep("\\|\\|",mr_res$exposure,invert=T)
   # mr_res2 <-mr_res[Pos2,]
   # mr_res1<-mr_res[Pos,]
