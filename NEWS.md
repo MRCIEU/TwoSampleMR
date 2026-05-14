@@ -62,7 +62,7 @@
 * Optimized `mr_mode()`
 * Replaced `apply(..., any(is.na()))` with `complete.case()`
 * Optimized the `mr()` function
-* Optimized the `Optimize get_r_from_lor()` function
+* Optimized the `get_r_from_lor()` function
 * Optimized the `mr_rucker_bootstrap()` and `mr_rucker_jackknife_internal()` functions
 * Replaced `sapply()` with `vapply()` in several cases
 * Optimized the `simple_cap()` function
