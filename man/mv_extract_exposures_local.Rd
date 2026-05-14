@@ -37,7 +37,7 @@ mv_extract_exposures_local(
 
 \item{sep}{Specify delimiter in file. The default is space, i.e. \code{sep=" "}. If length is 1 it will use the same \code{sep} value for each exposure dataset. You can provide a vector of values, one for each exposure dataset, if the values are different across datasets. The same applies to all dataset-formatting options listed below.}
 
-\item{phenotype_col}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value \code{"Outcome"}. Default is \code{"Phenotype"}.}
+\item{phenotype_col}{Optional column name for the column with phenotype name corresponding to the SNP. If not present then will be created with the value \code{"Outcome"}. Default is \code{"Phenotype"}.}
 
 \item{snp_col}{Required name of column with SNP rs IDs. The default is \code{"SNP"}.}
 

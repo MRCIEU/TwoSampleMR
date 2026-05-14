@@ -35,7 +35,7 @@ read_outcome_data(
 
 \item{sep}{Specify delimiter in file. The default is space, i.e. \code{sep=" "}.}
 
-\item{phenotype_col}{Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value \code{"Outcome"}. Default is \code{"Phenotype"}.}
+\item{phenotype_col}{Optional column name for the column with phenotype name corresponding to the SNP. If not present then will be created with the value \code{"Outcome"}. Default is \code{"Phenotype"}.}
 
 \item{snp_col}{Required name of column with SNP rs IDs. The default is \code{"SNP"}.}
 
