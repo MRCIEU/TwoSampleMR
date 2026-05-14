@@ -406,7 +406,7 @@ TwoSampleMR v0.5.4
 
 * All datasets now re-instated
 * Added options for different populations in LD operations
-* When converting to MRInput format and supplying an LD matrix, it is possible that multi-allelic variants will be represented differently on in the GWAS and the LD reference panel. Ambiguous alignments were not being removed, now fixed. Credit goes to Mona Almramhi for spotting and fixing this issue.
+* When converting to MRInput format and supplying an LD matrix, it is possible that multi-allelic variants will be represented differently in the GWAS and the LD reference panel. Ambiguous alignments were not being removed, now fixed. Credit goes to Mona Almramhi for spotting and fixing this issue.
 
 TwoSampleMR v0.5.3
 ==============
