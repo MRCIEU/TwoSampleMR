@@ -6,7 +6,7 @@
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param snps SNPs to extract. If `NULL`, which the default, then doesn't extract any and keeps all.
 #' @param sep Specify delimiter in file. The default is space, i.e. `sep=" "`.
-#' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. Default is `"Phenotype"`.
+#' @param phenotype_col Optional column name for the column with phenotype name corresponding to the SNP. If not present then will be created with the value `"Outcome"`. Default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
 #' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.
 #' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
@@ -86,7 +86,7 @@ read_outcome_data <- function(
 #' @param filename Filename. Must have header with at least SNP column present.
 #' @param clump Whether to perform LD clumping with [clump_data()] on the exposure data. The default is `FALSE`.
 #' @param sep Specify delimiter in file. The default is a space, i.e. `" "`.
-#' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value "Outcome". The default is `"Phenotype"`.
+#' @param phenotype_col Optional column name for the column with phenotype name corresponding to the SNP. If not present then will be created with the value "Outcome". The default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
 #' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.
 #' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
@@ -184,7 +184,7 @@ read_exposure_data <- function(
 #' @param type Is this the exposure or the outcome data that is being read in? The default is `"exposure"`.
 #' @param snps SNPs to extract. If NULL then doesn't extract any and keeps all. The default is `NULL`.
 #' @param header The default is `TRUE`.
-#' @param phenotype_col Optional column name for the column with phenotype name corresponding the the SNP. If not present then will be created with the value `"Outcome"`. The default is `"Phenotype"`.
+#' @param phenotype_col Optional column name for the column with phenotype name corresponding to the SNP. If not present then will be created with the value `"Outcome"`. The default is `"Phenotype"`.
 #' @param snp_col Required name of column with SNP rs IDs. The default is `"SNP"`.
 #' @param beta_col Required for MR. Name of column with effect sizes. The default is `"beta"`.
 #' @param se_col Required for MR. Name of column with standard errors. The default is `"se"`.
