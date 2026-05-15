@@ -1,3 +1,9 @@
+# TwoSampleMR v0.7.6
+
+(Release date 2026-05-15)
+
+* Fix some typos
+
 # TwoSampleMR v0.7.5
 
 (Release date 2026-05-04)
