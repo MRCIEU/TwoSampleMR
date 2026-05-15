@@ -34,7 +34,7 @@ You can also provide the following extra information:
 - `ncontrol` - Number of controls
 - `pval` - The P-value for the SNP’s association with the exposure
 - `units` - The units in which the effects are presented
-- `gene` - The gene or other annotation for the the SNP
+- `gene` - The gene or other annotation for the SNP
 
 ## Reading in from a file
 

@@ -88,7 +88,7 @@ The workflow for performing MR is as follows:
 2.  Extract the instruments from the [IEU GWAS
     database](https://opengwas.io) for the outcomes of interest
 3.  Harmonise the effect sizes for the instruments on the exposures and
-    the outcomes to be each for the same reference allele
+    the outcomes to be aligned to the same reference allele
 4.  Perform MR analysis, sensitivity analyses, create plots, compile
     reports
 

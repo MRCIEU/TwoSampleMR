@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,14 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.5/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.6" id="twosamplemr-v076">TwoSampleMR v0.7.6<a class="anchor" aria-label="anchor" href="#twosamplemr-v076"></a></h2>
+<p>(Release date 2026-05-15)</p>
+<ul><li>Fix some typos</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.5" id="twosamplemr-v075">TwoSampleMR v0.7.5<a class="anchor" aria-label="anchor" href="#twosamplemr-v075"></a></h2>
 <p>(Release date 2026-05-04)</p>
@@ -118,7 +123,7 @@
 <li>Replaced <code>apply(..., any(is.na()))</code> with <code>complete.case()</code>
 </li>
 <li>Optimized the <code><a href="../reference/mr.html">mr()</a></code> function</li>
-<li>Optimized the <code>Optimize get_r_from_lor()</code> function</li>
+<li>Optimized the <code><a href="../reference/get_r_from_lor.html">get_r_from_lor()</a></code> function</li>
 <li>Optimized the <code><a href="../reference/mr_rucker_bootstrap.html">mr_rucker_bootstrap()</a></code> and <code>mr_rucker_jackknife_internal()</code> functions</li>
 <li>Replaced <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply()</a></code> with <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply()</a></code> in several cases</li>
 <li>Optimized the <code><a href="../reference/simple_cap.html">simple_cap()</a></code> function</li>
@@ -420,7 +425,7 @@
 <p>(Release date: 2020-05-10)</p>
 <ul><li>All datasets now re-instated</li>
 <li>Added options for different populations in LD operations</li>
-<li>When converting to MRInput format and supplying an LD matrix, it is possible that multi-allelic variants will be represented differently on in the GWAS and the LD reference panel. Ambiguous alignments were not being removed, now fixed. Credit goes to Mona Almramhi for spotting and fixing this issue.</li>
+<li>When converting to MRInput format and supplying an LD matrix, it is possible that multi-allelic variants will be represented differently in the GWAS and the LD reference panel. Ambiguous alignments were not being removed, now fixed. Credit goes to Mona Almramhi for spotting and fixing this issue.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3" id="twosamplemr-v053">TwoSampleMR v0.5.3<a class="anchor" aria-label="anchor" href="#twosamplemr-v053"></a></h2>

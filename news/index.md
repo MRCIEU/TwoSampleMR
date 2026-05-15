@@ -1,5 +1,11 @@
 # Changelog
 
+## TwoSampleMR v0.7.6
+
+(Release date 2026-05-15)
+
+- Fix some typos
+
 ## TwoSampleMR v0.7.5
 
 (Release date 2026-05-04)
@@ -105,7 +111,9 @@
 - Optimized the
   [`mr()`](https://mrcieu.github.io/TwoSampleMR/reference/mr.md)
   function
-- Optimized the `Optimize get_r_from_lor()` function
+- Optimized the
+  [`get_r_from_lor()`](https://mrcieu.github.io/TwoSampleMR/reference/get_r_from_lor.md)
+  function
 - Optimized the
   [`mr_rucker_bootstrap()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_rucker_bootstrap.md)
   and `mr_rucker_jackknife_internal()` functions
@@ -592,9 +600,9 @@
 - Added options for different populations in LD operations
 - When converting to MRInput format and supplying an LD matrix, it is
   possible that multi-allelic variants will be represented differently
-  on in the GWAS and the LD reference panel. Ambiguous alignments were
-  not being removed, now fixed. Credit goes to Mona Almramhi for
-  spotting and fixing this issue.
+  in the GWAS and the LD reference panel. Ambiguous alignments were not
+  being removed, now fixed. Credit goes to Mona Almramhi for spotting
+  and fixing this issue.
 
 ## TwoSampleMR v0.5.3
 

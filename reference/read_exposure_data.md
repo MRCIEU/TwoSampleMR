@@ -56,7 +56,7 @@ read_exposure_data(
 - phenotype_col:
 
   Optional column name for the column with phenotype name corresponding
-  the the SNP. If not present then will be created with the value
+  to the SNP. If not present then will be created with the value
   "Outcome". The default is `"Phenotype"`.
 
 - snp_col:

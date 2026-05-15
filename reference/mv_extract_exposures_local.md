@@ -54,7 +54,7 @@ mv_extract_exposures_local(
 - phenotype_col:
 
   Optional column name for the column with phenotype name corresponding
-  the the SNP. If not present then will be created with the value
+  to the SNP. If not present then will be created with the value
   `"Outcome"`. Default is `"Phenotype"`.
 
 - snp_col:
