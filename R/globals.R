@@ -57,7 +57,6 @@ utils::globalVariables(c(
   "model_name",
   "mr_keep",
   "mr_keep.outcome",
-  "mr_mode_internal",
   "n",
   "nsnp",
   "nsnp_removed",
