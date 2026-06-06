@@ -144,7 +144,7 @@ extract_outcome_data_internal <- function(
     n <- length(snps)
     splits <- data.frame(
       snps = snps,
-      chunk_id = rep(1:(ceiling(n / splitsize)), each = splitsize)[1:n]
+      chunk_id = rep(seq_len(ceiling(n / splitsize)), each = splitsize)[seq_len(n)]
     )
     d <- list()
     for (i in seq_along(outcomes)) {
@@ -180,7 +180,7 @@ extract_outcome_data_internal <- function(
     n <- length(outcomes)
     splits <- data.frame(
       outcomes = outcomes,
-      chunk_id = rep(1:(ceiling(n / splitsize)), each = splitsize)[1:n]
+      chunk_id = rep(seq_len(ceiling(n / splitsize)), each = splitsize)[seq_len(n)]
     )
     d <- list()
     for (i in seq_along(snps)) {
