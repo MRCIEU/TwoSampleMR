@@ -1,6 +1,9 @@
 utils::globalVariables(c(
+  "Estimate",
+  "Method",
   "MOE",
   "Q",
+  "Qdash",
   "Q_df",
   "Q_pval",
   "Qj",
@@ -51,6 +54,8 @@ utils::globalVariables(c(
   "melt",
   "method",
   "method2",
+  "model",
+  "model_name",
   "mr_keep",
   "mr_keep.outcome",
   "mr_mode_internal",
