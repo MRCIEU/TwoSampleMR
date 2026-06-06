@@ -417,8 +417,6 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness = 
   keepsnp <- names(tab)[tab == nexp]
   exposure_dat <- subset(exposure_dat, SNP %in% keepsnp)
 
-  exposure_mat <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var = "beta.exposure")
-
   # Get outcome data
   dat <- harmonise_data(
     subset(exposure_dat, id.exposure == exposure_dat$id.exposure[1]),
