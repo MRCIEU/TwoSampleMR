@@ -1,3 +1,20 @@
+# TwoSampleMR v0.7.7
+
+(Release date 2026-06-07)
+
+* Remove dead `exposure_mat` assignment
+* Replace `reshape2::dcast()` with `tidyr::pivot_wider()`
+* Replace deprecated `ggplot2::aes_string()` with `ggplot2::aes()`
+* Add new bare names to `globalVariables()`
+* Replace deprecated `size` with `linewidth` in `geom_vline()`, `geom_errorbarh()`, `geom_errorbar()`, and `element_rect()`
+* Fix constant-in-`aes`, redundant `sapply`, and `paste`/`paste0`
+* Qualify `predict()` and `desc()` calls; remove from `globalVariables()`
+* Remove broken and unreachable `mr_mode_broken()` function and its `globalVariables()` entry
+* Replace `sapply` with `invisible(lapply())` for side-effect iteration; use `paste0()` for single leading space
+* Replace `1:n` index patterns with `seq_len()` in chunking logic
+* Hoist `paste()` out of inner loop; replace nested loops with single vectorised assignment
+* Make startup message URLs clickable via `cli::style_hyperlink()`; add cli to Imports
+
 # TwoSampleMR v0.7.6
 
 (Release date 2026-05-15)
