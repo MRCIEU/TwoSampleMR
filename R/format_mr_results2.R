@@ -200,14 +200,11 @@ combine_all_mrresults <- function(
   res$nsnp[is.na(res$nsnp)] <- 1
 
   for (i in unique(res$id.outcome)) {
-    Methods <- unique(res$Method[res$id.outcome == i])
-    Methods <- Methods[Methods != "Wald ratio"]
-    for (j in unique(Methods)) {
-      res$SNP[res$id.outcome == i & res$Method == j] <- paste(
-        res$SNP[res$id.outcome == i & res$Method == "Wald ratio"],
-        collapse = "; "
-      )
-    }
+    wald_snps <- paste(
+      res$SNP[res$id.outcome == i & res$Method == "Wald ratio"],
+      collapse = "; "
+    )
+    res$SNP[res$id.outcome == i & res$Method != "Wald ratio"] <- wald_snps
   }
 
   if (Exp) {
