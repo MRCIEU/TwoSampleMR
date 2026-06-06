@@ -11,7 +11,7 @@
     if (length(b) > 0) {
       o <- lapply(b, function(x) {
         # packageStartupMessage(" Message date: ", x[["date"]])
-        sapply(x[["message"]], function(j) packageStartupMessage(paste(" ", j)))
+        invisible(lapply(x[["message"]], function(j) packageStartupMessage(paste0(" ", j))))
       })
     }
   }
