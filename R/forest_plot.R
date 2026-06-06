@@ -194,7 +194,7 @@ mr_forest_plot_grouped <-
         )
       ) +
         ggplot2::geom_segment() +
-        ggplot2::geom_point(ggplot2::aes(y = space_col, x = as.numeric(eff_col), size = 4)) +
+        ggplot2::geom_point(ggplot2::aes(y = space_col, x = as.numeric(eff_col)), size = 4) +
         ggplot2::theme_bw() +
         ggplot2::theme(
           axis.text.y = ggplot2::element_blank(),
@@ -223,7 +223,7 @@ mr_forest_plot_grouped <-
       data_Fm$text_col <- data_Fm[, text_col]
 
       # A hard rule to set the width of the annotation column, which sometimes truncates very wide columns (complex disease names, numbers with 16 digits, etc)
-      text_widths <- c(-1, max(10, 0.5 * max(sapply(as.character(data_Fm[, text_col]), nchar))))
+      text_widths <- c(-1, max(10, 0.5 * max(nchar(as.character(data_Fm[, text_col])))))
 
       # GGplot rendering of the annotation column
       lefttext <- ggplot2::ggplot(
@@ -296,7 +296,7 @@ mr_forest_plot_grouped <-
       left_Grobs$relative_widths <- NULL
 
       for (i in seq_along(left_Grobs)) {
-        grob_Bag[paste('l', names(left_Grobs)[i], sep = '')] <- left_Grobs[i]
+        grob_Bag[paste0('l', names(left_Grobs)[i])] <- left_Grobs[i]
       }
 
       grob_Bag$m_forest <- ggplotGrob(forst_Pt)
@@ -305,7 +305,7 @@ mr_forest_plot_grouped <-
       right_Grobs <- right_Hs
       right_Grobs$relative_widths <- NULL
       for (i in seq_along(right_Grobs)) {
-        grob_Bag[paste('r', names(right_Grobs)[i], sep = '')] <- right_Grobs[i]
+        grob_Bag[paste0('r', names(right_Grobs)[i])] <- right_Grobs[i]
       }
 
       width_vec <- c(left_RW, 0.34, right_RW)
