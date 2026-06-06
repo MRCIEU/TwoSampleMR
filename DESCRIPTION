@@ -47,8 +47,8 @@ Imports:
     pbapply,
     psych,
     RadialMR,
-    reshape2,
-    rmarkdown
+    rmarkdown,
+    tidyr
 Suggests:
     Cairo,
     car,
@@ -58,8 +58,7 @@ Suggests:
     mr.raps,
     MRInstruments,
     randomForest,
-    testthat,
-    tidyr
+    testthat
 VignetteBuilder:
     knitr
 Remotes:

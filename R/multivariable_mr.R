@@ -426,15 +426,15 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness = 
   dat <- subset(dat, mr_keep)
   dat$SNP <- as.character(dat$SNP)
 
-  exposure_beta <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var = "beta.exposure")
+  exposure_beta <- tidyr::pivot_wider(exposure_dat, id_cols = "SNP", names_from = "id.exposure", names_sort = TRUE, values_from = "beta.exposure")
   exposure_beta <- subset(exposure_beta, SNP %in% dat$SNP)
   exposure_beta$SNP <- as.character(exposure_beta$SNP)
 
-  exposure_pval <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var = "pval.exposure")
+  exposure_pval <- tidyr::pivot_wider(exposure_dat, id_cols = "SNP", names_from = "id.exposure", names_sort = TRUE, values_from = "pval.exposure")
   exposure_pval <- subset(exposure_pval, SNP %in% dat$SNP)
   exposure_pval$SNP <- as.character(exposure_pval$SNP)
 
-  exposure_se <- reshape2::dcast(exposure_dat, SNP ~ id.exposure, value.var = "se.exposure")
+  exposure_se <- tidyr::pivot_wider(exposure_dat, id_cols = "SNP", names_from = "id.exposure", names_sort = TRUE, values_from = "se.exposure")
   exposure_se <- subset(exposure_se, SNP %in% dat$SNP)
   exposure_se$SNP <- as.character(exposure_se$SNP)
 
