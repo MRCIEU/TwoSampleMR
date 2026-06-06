@@ -350,8 +350,8 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
   res <- rbind(rucker$rucker, rucker_point, rucker_mean, rucker_median)
   rownames(res) <- NULL
 
-  p1 <- ggplot2::ggplot(bootstrap, ggplot2::aes_string(x = "Q", y = "Qdash")) +
-    ggplot2::geom_point(ggplot2::aes_string(colour = "model")) +
+  p1 <- ggplot2::ggplot(bootstrap, ggplot2::aes(x = Q, y = Qdash)) +
+    ggplot2::geom_point(ggplot2::aes(colour = model)) +
     ggplot2::geom_point(data = subset(bootstrap, i == "Full")) +
     ggplot2::scale_colour_brewer(type = "qual") +
     ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
@@ -375,11 +375,11 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
   modsel$model_name <- "IVW"
   modsel$model_name[modsel$model %in% c("C", "D")] <- "Egger"
 
-  p2 <- ggplot2::ggplot(modsel, ggplot2::aes_string(x = "Estimate")) +
-    ggplot2::geom_density(ggplot2::aes_string(fill = "model_name"), alpha = 0.4) +
+  p2 <- ggplot2::ggplot(modsel, ggplot2::aes(x = Estimate)) +
+    ggplot2::geom_density(ggplot2::aes(fill = model_name), alpha = 0.4) +
     ggplot2::geom_vline(
       data = res,
-      ggplot2::aes_string(xintercept = "Estimate", colour = "Method")
+      ggplot2::aes(xintercept = Estimate, colour = Method)
     ) +
     ggplot2::scale_colour_brewer(type = "qual") +
     ggplot2::scale_fill_brewer(type = "qual") +
@@ -505,8 +505,8 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
     res <- rbind(rucker$rucker, rucker_point, rucker_mean, rucker_median)
     rownames(res) <- NULL
 
-    p1 <- ggplot2::ggplot(bootstrap, ggplot2::aes_string(x = "Q", y = "Qdash")) +
-      ggplot2::geom_point(ggplot2::aes_string(colour = "model")) +
+    p1 <- ggplot2::ggplot(bootstrap, ggplot2::aes(x = Q, y = Qdash)) +
+      ggplot2::geom_point(ggplot2::aes(colour = model)) +
       ggplot2::geom_point(data = bootstrap[bootstrap$i == "Full", ]) +
       ggplot2::scale_colour_brewer(type = "qual") +
       ggplot2::xlim(0, max(bootstrap$Q, bootstrap$Qdash)) +
@@ -530,11 +530,11 @@ mr_rucker_jackknife_internal <- function(dat, parameters = default_parameters())
     modsel$model_name <- "IVW"
     modsel$model_name[modsel$model %in% c("C", "D")] <- "Egger"
 
-    p2 <- ggplot2::ggplot(modsel, ggplot2::aes_string(x = "Estimate")) +
-      ggplot2::geom_density(ggplot2::aes_string(fill = "model_name"), alpha = 0.4) +
+    p2 <- ggplot2::ggplot(modsel, ggplot2::aes(x = Estimate)) +
+      ggplot2::geom_density(ggplot2::aes(fill = model_name), alpha = 0.4) +
       ggplot2::geom_vline(
         data = res,
-        ggplot2::aes_string(xintercept = "Estimate", colour = "Method")
+        ggplot2::aes(xintercept = Estimate, colour = Method)
       ) +
       ggplot2::scale_colour_brewer(type = "qual") +
       ggplot2::scale_fill_brewer(type = "qual") +
