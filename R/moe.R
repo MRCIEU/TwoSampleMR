@@ -206,12 +206,12 @@ mr_moe_single <- function(res, rf) {
   pred <- lapply(methodlist, function(m) {
     d <- dplyr::tibble(
       method = m,
-      MOE = predict(rf[[m]], metric, type = "prob")[, 2]
+      MOE = stats::predict(rf[[m]], metric, type = "prob")[, 2]
     )
     return(d)
   }) %>%
     dplyr::bind_rows() %>%
-    dplyr::arrange(desc(MOE))
+    dplyr::arrange(dplyr::desc(MOE))
   if ("MOE" %in% names(res$estimates)) {
     message("Overwriting previous MOE estimate")
     res$estimates <- subset(res$estimates, select = -c(MOE, method2))
