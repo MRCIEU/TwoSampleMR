@@ -550,7 +550,7 @@ can use the
 [`sort_1_to_many()`](https://mrcieu.github.io/TwoSampleMR/reference/sort_1_to_many.md)
 function.
 
-### Step 1: generate 1-to-many MR results
+### Step 1: Generate 1-to-many MR results
 
 ``` r
 
@@ -568,7 +568,7 @@ dat2 <- harmonise_data(
 res <- mr(dat2)
 ```
 
-### Step 2. Make the 1-to-many forest plot
+### Step 2: Make the 1-to-many forest plot
 
 #### Example 1. Effect of multiple risk factors on coronary heart disease
 

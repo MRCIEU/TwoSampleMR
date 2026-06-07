@@ -1,5 +1,43 @@
 # Changelog
 
+## TwoSampleMR v0.7.7
+
+(Release date 2026-06-07)
+
+- Remove dead `exposure_mat` assignment
+- Replace
+  [`reshape2::dcast()`](https://rdrr.io/pkg/reshape2/man/cast.html) with
+  [`tidyr::pivot_wider()`](https://tidyr.tidyverse.org/reference/pivot_wider.html)
+- Replace deprecated
+  [`ggplot2::aes_string()`](https://ggplot2.tidyverse.org/reference/aes_.html)
+  with
+  [`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html)
+- Add new bare names to
+  [`globalVariables()`](https://rdrr.io/r/utils/globalVariables.html)
+- Replace deprecated `size` with `linewidth` in
+  [`geom_vline()`](https://ggplot2.tidyverse.org/reference/geom_abline.html),
+  [`geom_errorbarh()`](https://ggplot2.tidyverse.org/reference/geom_linerange.html),
+  [`geom_errorbar()`](https://ggplot2.tidyverse.org/reference/geom_linerange.html),
+  and
+  [`element_rect()`](https://ggplot2.tidyverse.org/reference/element.html)
+- Fix constant-in-`aes`, redundant `sapply`, and `paste`/`paste0`
+- Qualify [`predict()`](https://rdrr.io/r/stats/predict.html) and
+  `desc()` calls; remove from
+  [`globalVariables()`](https://rdrr.io/r/utils/globalVariables.html)
+- Remove broken and unreachable `mr_mode_broken()` function and its
+  [`globalVariables()`](https://rdrr.io/r/utils/globalVariables.html)
+  entry
+- Replace `sapply` with `invisible(lapply())` for side-effect iteration;
+  use [`paste0()`](https://rdrr.io/r/base/paste.html) for single leading
+  space
+- Replace `1:n` index patterns with
+  [`seq_len()`](https://rdrr.io/r/base/seq.html) in chunking logic
+- Hoist [`paste()`](https://rdrr.io/r/base/paste.html) out of inner
+  loop; replace nested loops with single vectorised assignment
+- Make startup message URLs clickable via
+  [`cli::style_hyperlink()`](https://cli.r-lib.org/reference/style_hyperlink.html);
+  add cli to Imports
+
 ## TwoSampleMR v0.7.6
 
 (Release date 2026-05-15)
