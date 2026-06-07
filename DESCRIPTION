@@ -29,6 +29,7 @@ BugReports: https://github.com/MRCIEU/TwoSampleMR/issues/
 Depends:
     R (>= 4.1.0)
 Imports:
+    cli,
     cowplot,
     data.table,
     dplyr,

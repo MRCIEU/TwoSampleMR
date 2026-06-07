@@ -1,3 +1,18 @@
+# Turn any URLs in `text` into clickable terminal hyperlinks (OSC 8). cli only
+# emits the escape sequences where the console supports them and otherwise
+# returns the URL unchanged, so this degrades gracefully.
+linkify <- function(text) {
+  if (!requireNamespace("cli", quietly = TRUE)) {
+    return(text)
+  }
+  # Match URLs but stop before trailing sentence punctuation (e.g. a final ".").
+  m <- gregexpr("https?://[^[:space:]]*[^[:space:][:punct:]]", text, perl = TRUE)
+  regmatches(text, m) <- lapply(regmatches(text, m), function(urls) {
+    vapply(urls, function(u) cli::style_hyperlink(u, u), character(1))
+  })
+  text
+}
+
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste("TwoSampleMR version", utils::packageVersion("TwoSampleMR"), "\n"))
 
@@ -11,7 +26,7 @@
     if (length(b) > 0) {
       o <- lapply(b, function(x) {
         # packageStartupMessage(" Message date: ", x[["date"]])
-        invisible(lapply(x[["message"]], function(j) packageStartupMessage(paste0(" ", j))))
+        invisible(lapply(x[["message"]], function(j) packageStartupMessage(paste0(" ", linkify(j)))))
       })
     }
   }
