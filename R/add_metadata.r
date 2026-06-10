@@ -75,7 +75,7 @@ add_metadata <- function(dat, cols = c("sample_size", "ncase", "ncontrol", "unit
   names(dat)[names(dat) == "unit.exposure"] <- "units.exposure"
   names(dat)[names(dat) == "unit.outcome"] <- "units.outcome"
 
-  dat <- dat[dat[[order_col]], ]
+  dat <- dat[order(dat[[order_col]]), ]
   dat <- dat[, !names(dat) %in% order_col]
   # dat <- fix_ukb_d(dat)
   return(dat)
