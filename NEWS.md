@@ -1,3 +1,20 @@
+# TwoSampleMR v0.7.8
+
+(Release date 2026-06-10)
+
+* Fixed a copy-paste bug in `ldsc_rg()` which passed `d1$l2` instead of `d2$l2` as the weight vector to the trait-2 `ldsc_h2_internal()` call
+* Fixed `extract_split()` chunking which gave `nsplit = 0` for SNP lists smaller than half the `splitsize`; now uses `ceiling()` with contiguous chunk ids
+* Fixed the penalised mode in `mr_mode()` for vector-valued `phi`: each SNP is now penalised against the weighted-mode estimate for the same `phi` rather than recycling the mode vector across SNPs (results unchanged for the default scalar `phi = 1`)
+* Fixed row order restoration in `add_metadata()` to use `dat[order(dat[[order_col]]), ]`
+* Qualified a bare `aes()` call as `ggplot2::aes()` in `test_r_from_pn()`
+* Used `isTRUE(all.equal())` instead of `all.equal() == TRUE` inside `ifelse()` for null-line detection in the forest plot functions, which could otherwise return a multi-element vector
+* Simplified the group `Index` assignment in `forest_plot_1_to_many()` using `Letters[match()]`, which is also robust to non-contiguous group rows
+* Collapsed a duplicated `||` condition in `extract_outcome_data_internal()`
+* Removed dead `TAUsq` accumulation in `PM()` in `rucker.R`
+* Fixed an error message typo in `combine_data()` and switched its `sapply()` to `vapply()`
+* Replaced superseded `tidyr::gather()` with `tidyr::pivot_longer()` in `test_r_from_pn()` and dropped a redundant `requireNamespace("tidyr")` guard
+* Lint package with Jarl
+
 # TwoSampleMR v0.7.7
 
 (Release date 2026-06-07)
