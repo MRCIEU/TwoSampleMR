@@ -58,7 +58,7 @@ mr <- function(
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]
     x1 <- dat_dt[id.exposure == exp_id & id.outcome == out_id]
-    x <- x1[mr_keep]
+    x <- x1[x1$mr_keep]
 
     if (nrow(x) == 0) {
       message(
