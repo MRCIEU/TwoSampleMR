@@ -448,7 +448,7 @@ format_data <- function(
     dat$pval.outcome[index] <- min_pval
 
     dat$pval_origin.outcome <- "reported"
-    if (any(is.na(dat$pval.outcome))) {
+    if (anyNA(dat$pval.outcome)) {
       if ("beta.outcome" %in% names(dat) && "se.outcome" %in% names(dat)) {
         index <- is.na(dat$pval.outcome)
         dat$pval.outcome[index] <- 2 *
@@ -551,7 +551,7 @@ format_data <- function(
     mrcols_present <- mrcols[mrcols %in% names(dat)]
     dat$mr_keep.outcome <- dat$mr_keep.outcome &
       complete.cases(dat[, mrcols_present])
-    if (any(!dat$mr_keep.outcome)) {
+    if (!all(dat$mr_keep.outcome)) {
       missinginfosnps <- paste(subset(dat, !mr_keep.outcome)$SNP, collapse = " ")
       warning(
         "The following SNP(s) are missing required information for the MR tests and will be excluded: ",
@@ -559,7 +559,7 @@ format_data <- function(
       )
     }
   }
-  if (all(!dat$mr_keep.outcome)) {
+  if (!any(dat$mr_keep.outcome)) {
     warning(
       "None of the provided SNPs can be used for MR analysis, they are missing required information."
     )
@@ -748,7 +748,7 @@ random_string <- function(n = 1, len = 6) {
 
 create_ids <- function(x) {
   a <- as.factor(x)
-  levels(a) <- random_string(length(levels(a)))
+  levels(a) <- random_string(nlevels(a))
   a <- as.character(a)
   return(a)
 }

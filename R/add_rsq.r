@@ -73,7 +73,7 @@ add_rsq_one <- function(dat, what = "exposure") {
         message("Try adding metadata with add_metadata()")
       }
     } else if (
-      all(grepl("SD", dat[[paste0("units.", what)]])) && all(!is.na(dat[[paste0("eaf.", what)]]))
+      all(grepl("SD", dat[[paste0("units.", what)]])) && !anyNA(dat[[paste0("eaf.", what)]])
     ) {
       dat[[paste0("rsq.", what)]] <- NA
       dat[[paste0("rsq.", what)]] <- 2 *

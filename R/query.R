@@ -115,9 +115,9 @@ extract_outcome_data_internal <- function(
   )
   outcomes <- unique(outcomes)
 
-  if (proxies == FALSE) {
+  if (!proxies) {
     proxies <- 0
-  } else if (proxies == TRUE) {
+  } else if (proxies) {
     proxies <- 1
   } else {
     stop("'proxies' argument should be TRUE or FALSE")
@@ -315,14 +315,14 @@ format_d <- function(d) {
 
   mrcols <- c("beta.outcome", "se.outcome", "effect_allele.outcome")
   d$mr_keep.outcome <- complete.cases(d[, mrcols])
-  if (any(!d$mr_keep.outcome)) {
+  if (!all(d$mr_keep.outcome)) {
     missinginfosnps <- paste(subset(d, !mr_keep.outcome)$SNP, collapse = " ")
     warning(
       "The following SNP(s) are missing required information for the MR tests and will be excluded: ",
       missinginfosnps
     )
   }
-  if (all(!d$mr_keep.outcome)) {
+  if (!any(d$mr_keep.outcome)) {
     warning(
       "None of the provided SNPs can be used for MR analysis, they are missing required information."
     )

@@ -58,7 +58,7 @@ mr <- function(
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]
     x1 <- dat_dt[id.exposure == exp_id & id.outcome == out_id]
-    x <- x1[mr_keep == TRUE]
+    x <- x1[mr_keep]
 
     if (nrow(x) == 0) {
       message(
@@ -818,7 +818,7 @@ mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters = default_
 #' @export
 #' @return MR estimate
 weighted_median <- function(b_iv, weights) {
-  betaIV.order <- b_iv[order(b_iv)]
+  betaIV.order <- sort(b_iv)
   weights.order <- weights[order(b_iv)]
   weights.sum <- cumsum(weights.order) - 0.5 * weights.order
   weights.sum <- weights.sum / sum(weights.order)

@@ -323,7 +323,7 @@ mr_forest_plot_grouped <-
     }
 
     ## act on debug flag
-    if (debug == FALSE) {
+    if (!debug) {
       options(warn = -1)
     }
 
@@ -372,7 +372,7 @@ mr_forest_plot_grouped <-
     ## draw and export the annotated forest plot
     grid.newpage()
     grid.draw(group)
-    if (returnRobj == FALSE) {
+    if (!returnRobj) {
       grDevices::pdf(outfile_Name, width = 23.4, height = 16.5)
       grid.draw(group)
       grDevices::dev.off()

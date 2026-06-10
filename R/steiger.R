@@ -249,7 +249,7 @@ directionality_test <- function(dat) {
 #' \item{sensitivity_plot}{Plot of parameter space of causal directions and measurement error}
 #' }
 mr_steiger2 <- function(r_exp, r_out, n_exp, n_out, r_xxo = 1, r_yyo = 1, ...) {
-  index <- any(is.na(r_exp)) | any(is.na(r_out)) | any(is.na(n_exp)) | any(is.na(n_out))
+  index <- anyNA(r_exp) | anyNA(r_out) | anyNA(n_exp) | anyNA(n_out)
   n_exp <- n_exp[!index]
   n_out <- n_out[!index]
 

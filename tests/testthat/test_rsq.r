@@ -130,7 +130,7 @@ test_that("bbj-a-1", {
   if (inherits(d, "try-error")) {
     skip("Server issues")
   }
-  expect_true(all(!is.na(d$rsq.exposure)))
+  expect_true(!anyNA(d$rsq.exposure))
 })
 
 test_that("bsen vs pn", {

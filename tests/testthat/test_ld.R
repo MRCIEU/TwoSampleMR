@@ -7,11 +7,11 @@ skip_on_cran()
 
 # extract some data
 a <- try(extract_instruments("ieu-a-2", clump = 0))
-if (class(a) == "try-error") {
+if (inherits(a, "try-error")) {
   skip("Server issues")
 }
 out <- try(clump_data(a))
-if (class(out) == "try-error") {
+if (inherits(out, "try-error")) {
   skip("Server issues")
 }
 
@@ -38,7 +38,7 @@ test_that("matrix", {
 
 test_that("clump multiple", {
   a <- try(extract_instruments(c("ieu-a-2", "ieu-a-1001"), clump = 0))
-  if (class(a) == "try-error") {
+  if (inherits(a, "try-error")) {
     skip("Server issues")
   }
   out <- clump_data(a)

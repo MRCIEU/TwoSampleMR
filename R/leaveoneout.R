@@ -25,7 +25,7 @@ mr_leaveoneout <- function(dat, parameters = default_parameters(), method = mr_i
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]
     X <- dat_dt[id.exposure == exp_id & id.outcome == out_id]
-    x <- X[mr_keep == TRUE]
+    x <- X[mr_keep]
     nsnp <- nrow(x)
     if (nsnp == 0) {
       x <- X[1, ]
