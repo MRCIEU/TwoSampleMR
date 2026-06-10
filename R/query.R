@@ -123,10 +123,7 @@ extract_outcome_data_internal <- function(
     stop("'proxies' argument should be TRUE or FALSE")
   }
 
-  if (
-    (length(snps) < splitsize && length(outcomes) < splitsize) ||
-      (length(outcomes) < splitsize && length(snps) < splitsize)
-  ) {
+  if (length(snps) < splitsize && length(outcomes) < splitsize) {
     d <- ieugwasr::associations(
       variants = snps,
       id = outcomes,
