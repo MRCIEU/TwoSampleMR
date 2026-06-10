@@ -141,7 +141,7 @@ test_r_from_pn <- function() {
 
   p <- ggplot2::ggplot(param, ggplot2::aes(x = rsq_emp, value)) +
     ggplot2::geom_abline(slope = 1, linetype = "dotted") +
-    ggplot2::geom_line(aes(colour = out)) +
+    ggplot2::geom_line(ggplot2::aes(colour = out)) +
     ggplot2::facet_grid(. ~ n) +
     ggplot2::scale_x_log10() +
     ggplot2::scale_y_log10()
