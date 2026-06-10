@@ -775,12 +775,12 @@ combine_data <- function(x) {
     stop("Datasets must be generated from format_data")
   }
 
-  check <- all(sapply(x, function(i) {
+  check <- all(vapply(x, function(i) {
     type %in% names(i)
-  }))
+  }, logical(1)))
 
   if (!check) {
-    stop("Not all datasets or of type '", type, "'")
+    stop("Not all datasets are of type '", type, "'")
   }
 
   id_col <- paste0("id.", type)
