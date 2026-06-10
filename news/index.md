@@ -1,5 +1,55 @@
 # Changelog
 
+## TwoSampleMR v0.7.8
+
+(Release date 2026-06-10)
+
+- Fixed a copy-paste bug in
+  [`ldsc_rg()`](https://mrcieu.github.io/TwoSampleMR/reference/ldsc_rg.md)
+  which passed `d1$l2` instead of `d2$l2` as the weight vector to the
+  trait-2
+  [`ldsc_h2_internal()`](https://mrcieu.github.io/TwoSampleMR/reference/ldsc_h2_internal.md)
+  call
+- Fixed `extract_split()` chunking which gave `nsplit = 0` for SNP lists
+  smaller than half the `splitsize`; now uses
+  [`ceiling()`](https://rdrr.io/r/base/Round.html) with contiguous chunk
+  ids
+- Fixed the penalised mode in
+  [`mr_mode()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_mode.md)
+  for vector-valued `phi`: each SNP is now penalised against the
+  weighted-mode estimate for the same `phi` rather than recycling the
+  mode vector across SNPs (results unchanged for the default scalar
+  `phi = 1`)
+- Fixed row order restoration in
+  [`add_metadata()`](https://mrcieu.github.io/TwoSampleMR/reference/add_metadata.md)
+  to use `dat[order(dat[[order_col]]), ]`
+- Qualified a bare
+  [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) call as
+  [`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html)
+  in `test_r_from_pn()`
+- Used `isTRUE(all.equal())` instead of `all.equal() == TRUE` inside
+  [`ifelse()`](https://rdrr.io/r/base/ifelse.html) for null-line
+  detection in the forest plot functions, which could otherwise return a
+  multi-element vector
+- Simplified the group `Index` assignment in
+  [`forest_plot_1_to_many()`](https://mrcieu.github.io/TwoSampleMR/reference/forest_plot_1_to_many.md)
+  using `Letters[match()]`, which is also robust to non-contiguous group
+  rows
+- Collapsed a duplicated `||` condition in
+  `extract_outcome_data_internal()`
+- Removed dead `TAUsq` accumulation in `PM()` in `rucker.R`
+- Fixed an error message typo in
+  [`combine_data()`](https://mrcieu.github.io/TwoSampleMR/reference/combine_data.md)
+  and switched its [`sapply()`](https://rdrr.io/r/base/lapply.html) to
+  [`vapply()`](https://rdrr.io/r/base/lapply.html)
+- Replaced superseded
+  [`tidyr::gather()`](https://tidyr.tidyverse.org/reference/gather.html)
+  with
+  [`tidyr::pivot_longer()`](https://tidyr.tidyverse.org/reference/pivot_longer.html)
+  in `test_r_from_pn()` and dropped a redundant
+  [`requireNamespace("tidyr")`](https://tidyr.tidyverse.org) guard
+- Lint package with Jarl
+
 ## TwoSampleMR v0.7.7
 
 (Release date 2026-06-07)

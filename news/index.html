@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,30 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.7/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.8" id="twosamplemr-v078">TwoSampleMR v0.7.8<a class="anchor" aria-label="anchor" href="#twosamplemr-v078"></a></h2>
+<p>(Release date 2026-06-10)</p>
+<ul><li>Fixed a copy-paste bug in <code><a href="../reference/ldsc_rg.html">ldsc_rg()</a></code> which passed <code>d1$l2</code> instead of <code>d2$l2</code> as the weight vector to the trait-2 <code><a href="../reference/ldsc_h2_internal.html">ldsc_h2_internal()</a></code> call</li>
+<li>Fixed <code>extract_split()</code> chunking which gave <code>nsplit = 0</code> for SNP lists smaller than half the <code>splitsize</code>; now uses <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling()</a></code> with contiguous chunk ids</li>
+<li>Fixed the penalised mode in <code><a href="../reference/mr_mode.html">mr_mode()</a></code> for vector-valued <code>phi</code>: each SNP is now penalised against the weighted-mode estimate for the same <code>phi</code> rather than recycling the mode vector across SNPs (results unchanged for the default scalar <code>phi = 1</code>)</li>
+<li>Fixed row order restoration in <code><a href="../reference/add_metadata.html">add_metadata()</a></code> to use <code>dat[order(dat[[order_col]]), ]</code>
+</li>
+<li>Qualified a bare <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> call as <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">ggplot2::aes()</a></code> in <code>test_r_from_pn()</code>
+</li>
+<li>Used <code>isTRUE(all.equal())</code> instead of <code>all.equal() == TRUE</code> inside <code><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse()</a></code> for null-line detection in the forest plot functions, which could otherwise return a multi-element vector</li>
+<li>Simplified the group <code>Index</code> assignment in <code><a href="../reference/forest_plot_1_to_many.html">forest_plot_1_to_many()</a></code> using <code>Letters[match()]</code>, which is also robust to non-contiguous group rows</li>
+<li>Collapsed a duplicated <code>||</code> condition in <code>extract_outcome_data_internal()</code>
+</li>
+<li>Removed dead <code>TAUsq</code> accumulation in <code>PM()</code> in <code>rucker.R</code>
+</li>
+<li>Fixed an error message typo in <code><a href="../reference/combine_data.html">combine_data()</a></code> and switched its <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply()</a></code> to <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply()</a></code>
+</li>
+<li>Replaced superseded <code><a href="https://tidyr.tidyverse.org/reference/gather.html" class="external-link">tidyr::gather()</a></code> with <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">tidyr::pivot_longer()</a></code> in <code>test_r_from_pn()</code> and dropped a redundant <code><a href="https://tidyr.tidyverse.org" class="external-link">requireNamespace("tidyr")</a></code> guard</li>
+<li>Lint package with Jarl</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.7" id="twosamplemr-v077">TwoSampleMR v0.7.7<a class="anchor" aria-label="anchor" href="#twosamplemr-v077"></a></h2>
 <p>(Release date 2026-06-07)</p>

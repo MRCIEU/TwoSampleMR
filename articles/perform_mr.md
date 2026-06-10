@@ -1417,7 +1417,7 @@ dat2 <- try(dat_to_MRInput(dat, get_correlation = TRUE))
 #> Please look at vignettes for options on running this locally if you need to run many instances of this command.
 #> Warning in ieugwasr::ld_matrix(variants = snps, with_alleles = with_alleles, : The following variants are not present in the LD reference panel
 #> rs2033529
-if (class(dat2) != "try-error") MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
+if (!inherits(dat2, "try-error")) MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
 #> 
 #> Inverse-variance weighted method
 #> (variants correlated, random-effect model)
