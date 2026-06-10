@@ -213,9 +213,9 @@ sort_1_to_many <- function(
     )
     Letters <- sort(c(paste0("A", Letters), paste0("B", Letters), paste0("C", Letters)))
     groups <- unique(mr_res[, group])
-    mr_res$Index <- unlist(lapply(seq_along(unique(mr_res[, group])), FUN = function(x) {
-      rep(Letters[Letters == Letters[x]], length(which(mr_res[, group] == groups[x])))
-    }))
+    # Assign each row the letter code for its group; match() makes this robust
+    # to groups whose rows are not contiguous in mr_res.
+    mr_res$Index <- Letters[match(mr_res[, group], groups)]
     mr_res <- mr_res[order(mr_res[, b], decreasing = TRUE), ]
     mr_res$Index2 <- Letters[seq_len(nrow(mr_res))]
     mr_res$Index3 <- paste(mr_res$Index, mr_res$Index2, sep = "")
@@ -329,7 +329,7 @@ forest_plot_basic2 <- function(
   # OR or log(OR)?
   # If CI are symmetric then log(OR)
   # Use this to guess where to put the null line
-  null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
+  null_line <- if (isTRUE(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect))) 0 else 1
 
   # Change lab
   if (!is.null(xlim)) {
@@ -565,7 +565,7 @@ forest_plot_names2 <- function(
   # OR or log(OR)?
   # If CI are symmetric then log(OR)
   # Use this to guess where to put the null line
-  null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
+  null_line <- if (isTRUE(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect))) 0 else 1
 
   # up <- max(dat$up_ci, na.rm=TRUE)
   # lo <- min(dat$lo_ci, na.rm=TRUE)
@@ -683,7 +683,7 @@ forest_plot_addcol <- function(
   # OR or log(OR)?
   # If CI are symmetric then log(OR)
   # Use this to guess where to put the null line
-  null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
+  null_line <- if (isTRUE(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect))) 0 else 1
 
   lo <- 0
   up <- 1

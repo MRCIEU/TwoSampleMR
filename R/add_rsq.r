@@ -73,7 +73,7 @@ add_rsq_one <- function(dat, what = "exposure") {
         message("Try adding metadata with add_metadata()")
       }
     } else if (
-      all(grepl("SD", dat[[paste0("units.", what)]])) && all(!is.na(dat[[paste0("eaf.", what)]]))
+      all(grepl("SD", dat[[paste0("units.", what)]])) && !anyNA(dat[[paste0("eaf.", what)]])
     ) {
       dat[[paste0("rsq.", what)]] <- NA
       dat[[paste0("rsq.", what)]] <- 2 *
@@ -115,13 +115,6 @@ get_r_from_pn_less_accurate <- function(p, n) {
 }
 
 test_r_from_pn <- function() {
-  if (!requireNamespace("tidyr", quietly = TRUE)) {
-    stop(
-      "Package \"tidyr\" must be installed to use this function.",
-      call. = FALSE
-    )
-  }
-
   param <- expand.grid(
     n = c(10, 100, 1000, 10000, 100000),
     rsq = 10^seq(-4, -0.5, length.out = 30)
@@ -137,11 +130,16 @@ test_r_from_pn <- function() {
     param$rsq2[i] <- (get_r_from_pn(param$pval[i], param$n[i]))^2
   }
 
-  param <- tidyr::gather(param, key = out, value = value, rsq1, rsq2)
+  param <- tidyr::pivot_longer(
+    param,
+    cols = c("rsq1", "rsq2"),
+    names_to = "out",
+    values_to = "value"
+  )
 
   p <- ggplot2::ggplot(param, ggplot2::aes(x = rsq_emp, value)) +
     ggplot2::geom_abline(slope = 1, linetype = "dotted") +
-    ggplot2::geom_line(aes(colour = out)) +
+    ggplot2::geom_line(ggplot2::aes(colour = out)) +
     ggplot2::facet_grid(. ~ n) +
     ggplot2::scale_x_log10() +
     ggplot2::scale_y_log10()

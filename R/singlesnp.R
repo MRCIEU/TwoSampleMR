@@ -41,7 +41,7 @@ mr_singlesnp <- function(
     exp_id <- combos$id.exposure[i]
     out_id <- combos$id.outcome[i]
     X <- dat_dt[id.exposure == exp_id & id.outcome == out_id]
-    x <- X[mr_keep == TRUE]
+    x <- X[X$mr_keep]
     nsnp <- nrow(x)
     if (nsnp == 0) {
       x <- X[1, ]

@@ -11,7 +11,7 @@ mr_scatter_plot <- function(mr_results, dat) {
   combos <- unique(dat[, c("id.exposure", "id.outcome")])
   mrres <- lapply(seq_len(nrow(combos)), function(i) {
     d <- dat[dat$id.exposure == combos$id.exposure[i] & dat$id.outcome == combos$id.outcome[i], ]
-    if (nrow(d) < 2 | sum(d$mr_keep) == 0) {
+    if (nrow(d) < 2 || sum(d$mr_keep) == 0) {
       return(blank_plot("Insufficient number of SNPs"))
     }
     d <- subset(d, mr_keep)

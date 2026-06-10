@@ -306,7 +306,7 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
       if (is.null(ncase)) {
         ncase <- NA
       }
-      if (any(is.na(ncase))) {
+      if (anyNA(ncase)) {
         ncase <- dat1$samplesize.outcome
         if (dist.outcome == "binary") {
           warning(paste(
@@ -314,18 +314,22 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
           ))
         }
       }
-      if (any(is.na(ncase))) {
+      if (anyNA(ncase)) {
         stop("sample size missing for at least 1 summary set")
       }
-      dat1 <- dat1[order(ncase, decreasing = TRUE), ]
+      # Permute dat1 and ncase identically; sort() would drop NA values and
+      # misalign ncase from dat1's rows.
+      ncase_ord <- order(ncase, decreasing = TRUE)
+      dat1 <- dat1[ncase_ord, ]
       # id.expout<-paste(split_exposure(dat)$exposure,split_outcome(dat)$outcome)
-      ncase <- ncase[order(ncase, decreasing = TRUE)]
+      ncase <- ncase[ncase_ord]
       # dat1$power.prune.ncase<-"drop"
       # dat1$power.prune.ncase[ncase==ncase[1]]<-"keep"
       dat1 <- dat1[ncase == ncase[1], ]
       nexp <- dat1$samplesize.exposure
-      dat1 <- dat1[order(nexp, decreasing = TRUE), ]
-      nexp <- nexp[order(nexp, decreasing = TRUE)]
+      nexp_ord <- order(nexp, decreasing = TRUE)
+      dat1 <- dat1[nexp_ord, ]
+      nexp <- nexp[nexp_ord]
       # dat1$power.prune.nexp<-"drop"
       # dat1$power.prune.nexp[nexp==nexp[1]]<-"keep"
       # dat1$power.prune<-"drop"
@@ -365,14 +369,14 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
         z <- dat2$beta.exposure / dat2$se.exposure
         n <- dat2$samplesize.exposure
         b <- z / sqrt(2 * p * (1 - p) * (n + z^2))
-        if (any(is.na(dat2$ncase.outcome))) {
+        if (anyNA(dat2$ncase.outcome)) {
           stop(paste("number of cases missing for summary set: ", id.subset.unique[j], sep = ""))
         }
         n.cas <- dat2$ncase.outcome
         n.con <- dat2$ncontrol.outcome
         var <- 1 # variance of risk factor assumed to be 1
         r2 <- 2 * b^2 * p * (1 - p) / var
-        if (any(is.na(r2))) {
+        if (anyNA(r2)) {
           warning(
             "beta or allele frequency missing for some SNPs, which could affect accuracy of power pruning"
           )
@@ -386,7 +390,7 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
           iv.se <- 1 / sqrt(mean(dat2$samplesize.outcome, na.rm = TRUE) * r2sum) #standard error of the IV should be proportional to this
         }
         if (dist.outcome == "binary") {
-          if (any(is.na(n.cas)) || any(is.na(n.con))) {
+          if (anyNA(n.cas) || anyNA(n.con)) {
             warning(
               "dist.outcome set to binary but number of cases or controls is missing. Will try using total sample size instead but power pruning will be less accurate"
             )

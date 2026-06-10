@@ -95,17 +95,20 @@ mr_mode <- function(dat, parameters = default_parameters(), mode_method = "all")
         phi = phi
       )
       #Penalised mode, not assuming NOME
-      penalty <- stats::pchisq(
-        weights * (BetaIV.boot - beta.boot[i, (nphi + 1):(2 * nphi)])^2,
-        df = 1,
-        lower.tail = FALSE
-      )
-      pen.weights <- weights * pmin(1, penalty * parameters$penk)
-
-      beta.boot[i, (2 * nphi + 1):(3 * nphi)] <- beta(
-        BetaIV.in = BetaIV.boot,
-        seBetaIV.in = sqrt(1 / pen.weights),
-        phi = phi
+      #Penalise each SNP against the weighted-mode estimate for the same phi
+      #value, so the per-SNP penalty is not recycled across phi when nphi > 1.
+      beta.boot[i, (2 * nphi + 1):(3 * nphi)] <- vapply(
+        seq_len(nphi),
+        function(j) {
+          penalty <- stats::pchisq(
+            weights * (BetaIV.boot - beta.boot[i, nphi + j])^2,
+            df = 1,
+            lower.tail = FALSE
+          )
+          pen.weights <- weights * pmin(1, penalty * parameters$penk)
+          beta(BetaIV.in = BetaIV.boot, seBetaIV.in = sqrt(1 / pen.weights), phi = phi[j])
+        },
+        numeric(1)
       )
 
       #Simple mode, assuming NOME
@@ -144,10 +147,21 @@ mr_mode <- function(dat, parameters = default_parameters(), mode_method = "all")
   #Point causal effect estimate using the weighted mode (not asusming NOME)
   beta_WeightedMode <- beta(BetaIV.in = BetaIV, seBetaIV.in = seBetaIV[, 1], phi = phi)
   weights <- 1 / seBetaIV[, 1]^2
-  penalty <- stats::pchisq(weights * (BetaIV - beta_WeightedMode)^2, df = 1, lower.tail = FALSE)
-  pen.weights <- weights * pmin(1, penalty * parameters$penk) # penalized
-
-  beta_PenalisedMode <- beta(BetaIV.in = BetaIV, seBetaIV.in = sqrt(1 / pen.weights), phi = phi)
+  # Penalise each SNP against the weighted-mode estimate for the same phi value,
+  # so the per-SNP penalty is not recycled across phi when length(phi) > 1.
+  beta_PenalisedMode <- vapply(
+    seq_along(phi),
+    function(j) {
+      penalty <- stats::pchisq(
+        weights * (BetaIV - beta_WeightedMode[j])^2,
+        df = 1,
+        lower.tail = FALSE
+      )
+      pen.weights <- weights * pmin(1, penalty * parameters$penk) # penalized
+      beta(BetaIV.in = BetaIV, seBetaIV.in = sqrt(1 / pen.weights), phi = phi[j])
+    },
+    numeric(1)
+  )
 
   #Point causal effect estimate using the weighted mode (asusming NOME)
   beta_WeightedMode_NOME <- beta(BetaIV.in = BetaIV, seBetaIV.in = seBetaIV[, 2], phi = phi)
