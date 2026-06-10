@@ -242,7 +242,7 @@ forest_plot_basic <- function(
   # OR or log(OR)?
   # If CI are symmetric then log(OR)
   # Use this to guess where to put the null line
-  null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
+  null_line <- if (isTRUE(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect))) 0 else 1
 
   # Change lab
   if (!is.null(xlim)) {
@@ -435,7 +435,7 @@ forest_plot_names <- function(dat, section = NULL, bottom = TRUE) {
   # OR or log(OR)?
   # If CI are symmetric then log(OR)
   # Use this to guess where to put the null line
-  null_line <- ifelse(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect) == TRUE, 0, 1)
+  null_line <- if (isTRUE(all.equal(dat$effect - dat$lo_ci, dat$up_ci - dat$effect))) 0 else 1
 
   # up <- max(dat$up_ci, na.rm=TRUE)
   # lo <- min(dat$lo_ci, na.rm=TRUE)
