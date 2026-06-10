@@ -191,7 +191,7 @@ ldsc_rg <- function(id1, id2, ancestry = "infer", snpinfo = NULL, splitsize = 20
     dplyr::inner_join(., d2, by = "rsid")
 
   h1 <- ldsc_h2_internal(d1$z1, d1$l2, d1$n1, d1$l2)
-  h2 <- ldsc_h2_internal(d2$z2, d2$l2, d2$n2, d1$l2)
+  h2 <- ldsc_h2_internal(d2$z2, d2$l2, d2$n2, d2$l2)
 
   dat <- dplyr::inner_join(d1, d2, by = "rsid") %>%
     dplyr::mutate(
