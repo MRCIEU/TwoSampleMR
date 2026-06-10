@@ -868,7 +868,7 @@ Alternatively, convert to the `MRInput` format but also obtaining the LD matrix 
 
 ```{r eval=evalinr44}
 dat2 <- try(dat_to_MRInput(dat, get_correlation = TRUE))
-if (class(dat2) != "try-error") MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
+if (!inherits(dat2, "try-error")) MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
 ```
 
 ## MR-MoE: Using a mixture of experts machine learning approach
