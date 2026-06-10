@@ -213,9 +213,9 @@ sort_1_to_many <- function(
     )
     Letters <- sort(c(paste0("A", Letters), paste0("B", Letters), paste0("C", Letters)))
     groups <- unique(mr_res[, group])
-    mr_res$Index <- unlist(lapply(seq_along(unique(mr_res[, group])), FUN = function(x) {
-      rep(Letters[Letters == Letters[x]], length(which(mr_res[, group] == groups[x])))
-    }))
+    # Assign each row the letter code for its group; match() makes this robust
+    # to groups whose rows are not contiguous in mr_res.
+    mr_res$Index <- Letters[match(mr_res[, group], groups)]
     mr_res <- mr_res[order(mr_res[, b], decreasing = TRUE), ]
     mr_res$Index2 <- Letters[seq_len(nrow(mr_res))]
     mr_res$Index3 <- paste(mr_res$Index, mr_res$Index2, sep = "")
