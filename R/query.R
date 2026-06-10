@@ -115,9 +115,9 @@ extract_outcome_data_internal <- function(
   )
   outcomes <- unique(outcomes)
 
-  if (!proxies) {
+  if (proxies %in% c(FALSE, 0)) {
     proxies <- 0
-  } else if (proxies) {
+  } else if (proxies %in% c(TRUE, 1)) {
     proxies <- 1
   } else {
     stop("'proxies' argument should be TRUE or FALSE")
