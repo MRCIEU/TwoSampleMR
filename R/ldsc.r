@@ -222,8 +222,9 @@ ldsc_rg <- function(id1, id2, ancestry = "infer", snpinfo = NULL, splitsize = 20
 
 
 extract_split <- function(snplist, id, splitsize = 20000) {
-  nsplit <- round(length(snplist) / splitsize)
-  split(snplist, 1:nsplit) %>%
+  n <- length(snplist)
+  chunk_id <- rep(seq_len(ceiling(n / splitsize)), each = splitsize)[seq_len(n)]
+  split(snplist, chunk_id) %>%
     pbapply::pblapply(., function(x) {
       ieugwasr::associations(x, id, proxies = FALSE, x_api_source = x_api_source_header())
     }) %>%
