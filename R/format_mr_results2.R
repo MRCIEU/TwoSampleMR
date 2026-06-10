@@ -317,15 +317,19 @@ power_prune <- function(dat, method = 1, dist.outcome = "binary") {
       if (anyNA(ncase)) {
         stop("sample size missing for at least 1 summary set")
       }
-      dat1 <- dat1[order(ncase, decreasing = TRUE), ]
+      # Permute dat1 and ncase identically; sort() would drop NA values and
+      # misalign ncase from dat1's rows.
+      ncase_ord <- order(ncase, decreasing = TRUE)
+      dat1 <- dat1[ncase_ord, ]
       # id.expout<-paste(split_exposure(dat)$exposure,split_outcome(dat)$outcome)
-      ncase <- sort(ncase, decreasing = TRUE)
+      ncase <- ncase[ncase_ord]
       # dat1$power.prune.ncase<-"drop"
       # dat1$power.prune.ncase[ncase==ncase[1]]<-"keep"
       dat1 <- dat1[ncase == ncase[1], ]
       nexp <- dat1$samplesize.exposure
-      dat1 <- dat1[order(nexp, decreasing = TRUE), ]
-      nexp <- sort(nexp, decreasing = TRUE)
+      nexp_ord <- order(nexp, decreasing = TRUE)
+      dat1 <- dat1[nexp_ord, ]
+      nexp <- nexp[nexp_ord]
       # dat1$power.prune.nexp<-"drop"
       # dat1$power.prune.nexp[nexp==nexp[1]]<-"keep"
       # dat1$power.prune<-"drop"

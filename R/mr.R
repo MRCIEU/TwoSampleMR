@@ -818,8 +818,11 @@ mr_simple_median <- function(b_exp, b_out, se_exp, se_out, parameters = default_
 #' @export
 #' @return MR estimate
 weighted_median <- function(b_iv, weights) {
-  betaIV.order <- sort(b_iv)
-  weights.order <- weights[order(b_iv)]
+  # Order b_iv and weights by the same permutation so they stay aligned; sort()
+  # would drop NA b_iv values and misalign the two vectors.
+  ord <- order(b_iv)
+  betaIV.order <- b_iv[ord]
+  weights.order <- weights[ord]
   weights.sum <- cumsum(weights.order) - 0.5 * weights.order
   weights.sum <- weights.sum / sum(weights.order)
   below <- max(which(weights.sum < 0.5))
