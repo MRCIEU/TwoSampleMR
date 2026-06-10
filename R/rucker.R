@@ -40,9 +40,7 @@ PM <- function(y = y, s = s, Alpha = 0.1) {
   for (j in seq_len(L)) {
     tausq <- 0
     Fstat <- 1
-    TAUsq <- NULL
     while (Fstat > 0) {
-      TAUsq <- c(TAUsq, tausq)
       w <- 1 / (s^2 + tausq)
       sum.w <- sum(w)
       w2 <- w^2
