@@ -3,7 +3,8 @@
 (Release date 2026-06-24)
 
 * Fixed inflated bootstrap standard errors (and p-values) in `mr_mode()` and `mr_rucker_bootstrap()` introduced in v0.6.30. The pre-generated `rnorm()` matrix was filled column-by-column while the per-SNP means and standard errors recycled element-wise, so each bootstrap draw was taken from the wrong SNP's distribution; the means and SEs are now laid out with `rep(..., each = nboot)` so each column draws from its own SNP. Point estimates were unaffected. (thanks @peterk87 reported in #684)
-* Added regression tests for the `mr_mode()` bootstrap standard errors.
+* Fixed `mr_rucker_bootstrap()` which errored ("values must be length 1") because it accessed the per-combination result (`$rucker`, `$Q`, `$res`, `$selected`) directly while `mr_rucker()` returns a list with one element per exposure-outcome combination; it now unwraps the first element.
+* Added regression tests for the `mr_mode()` and `mr_rucker_bootstrap()` bootstrap standard errors.
 
 # TwoSampleMR v0.7.8
 
