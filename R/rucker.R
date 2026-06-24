@@ -283,8 +283,11 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
   nsnp <- nrow(dat)
   Qthresh <- parameters$Qthresh
 
-  # Main result
-  rucker <- mr_rucker(dat, parameters)
+  # Main result. mr_rucker() returns a list with one element per
+  # exposure-outcome combination; the bootstrap operates on a single combination
+  # (see nsnp/dat2 below), so unwrap the first (only) element here and below so
+  # the $rucker/$Q/$res/$selected accessors work directly.
+  rucker <- mr_rucker(dat, parameters)[[1]]
 
   # Pre-generate all random values as matrices (nboot x nsnp). The matrix is
   # filled column-by-column, so each column (SNP) must draw from that SNP's
@@ -316,7 +319,7 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
   for (i in seq_len(nboot)) {
     dat2$beta.exposure <- boot_exp[i, ]
     dat2$beta.outcome <- boot_out[i, ]
-    l[[i]] <- mr_rucker(dat2, parameters)
+    l[[i]] <- mr_rucker(dat2, parameters)[[1]]
   }
 
   modsel <- data.table::rbindlist(lapply(l, function(x) x$selected), fill = TRUE, use.names = TRUE)
