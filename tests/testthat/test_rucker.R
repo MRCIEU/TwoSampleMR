@@ -40,3 +40,16 @@ test_that("mr_rucker_bootstrap() SEs are not inflated when nsnp divides nboot (i
   expect_lt(mean_se, 0.25)
   expect_lt(median_se, 0.25)
 })
+
+test_that("mr_rucker_cooksdistance() runs and returns a well-formed result", {
+  # Like mr_rucker_bootstrap(), this accessed the per-combination result
+  # directly ($cooksdistance/$selected/$rucker) while mr_rucker() returns a
+  # combo list, so the Cook's distance loop silently never ran and a malformed
+  # object was returned. It must unwrap [[1]].
+  set.seed(1234)
+  cd <- suppressMessages(mr_rucker_cooksdistance(dat))
+
+  expect_true(is.data.frame(cd$selected))
+  expect_true(is.data.frame(cd$rucker))
+  expect_equal(cd$selected$Method, "Rucker (CD)")
+})

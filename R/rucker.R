@@ -581,7 +581,10 @@ mr_rucker_cooksdistance <- function(dat, parameters = default_parameters()) {
   }
 
   dat_orig <- dat
-  rucker_orig <- mr_rucker(dat_orig, parameters)
+  # mr_rucker() returns one element per exposure-outcome combination; this
+  # function operates on a single combination, so unwrap the first element here
+  # and below so the $cooksdistance/$selected/$rucker accessors work directly.
+  rucker_orig <- mr_rucker(dat_orig, parameters)[[1]]
   rucker <- rucker_orig
   cooks_threshold <- 4 / nrow(dat)
   index <- rucker_orig$cooksdistance > cooks_threshold
@@ -591,7 +594,7 @@ mr_rucker_cooksdistance <- function(dat, parameters = default_parameters()) {
   while (any(index) && sum(!index) > 3) {
     dat <- dat[!index, ]
     cooks_threshold <- 4 / nrow(dat)
-    rucker <- mr_rucker(dat, parameters)
+    rucker <- mr_rucker(dat, parameters)[[1]]
     l[[i]] <- rucker
     index <- rucker$cooksdistance > cooks_threshold
     i <- i + 1
