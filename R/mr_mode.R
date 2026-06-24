@@ -58,15 +58,27 @@ mr_mode <- function(dat, parameters = default_parameters(), mode_method = "all")
     n <- length(BetaIV.in)
     nphi <- length(phi)
 
-    #Pre-generate all random values as matrices (nboot x n)
-    #mean and sd recycle in lockstep (both length n), filling column-by-column
+    #Pre-generate all random values as matrices (nboot x n). The matrix is
+    #filled column-by-column, so each column j (SNP j) must draw from
+    #N(BetaIV.in[j], seBetaIV.in[j]); rep(..., each = nboot) lays the means and
+    #sds out so that the first nboot values use SNP 1, the next nboot use SNP 2,
+    #and so on. Passing the length-n vectors directly would recycle them and
+    #scramble which SNP each draw comes from.
     BetaIV.boot_mat <- matrix(
-      stats::rnorm(nboot * n, mean = BetaIV.in, sd = seBetaIV.in[, 1]),
+      stats::rnorm(
+        nboot * n,
+        mean = rep(BetaIV.in, each = nboot),
+        sd = rep(seBetaIV.in[, 1], each = nboot)
+      ),
       nrow = nboot,
       ncol = n
     )
     BetaIV.boot_NOME_mat <- matrix(
-      stats::rnorm(nboot * n, mean = BetaIV.in, sd = seBetaIV.in[, 2]),
+      stats::rnorm(
+        nboot * n,
+        mean = rep(BetaIV.in, each = nboot),
+        sd = rep(seBetaIV.in[, 2], each = nboot)
+      ),
       nrow = nboot,
       ncol = n
     )

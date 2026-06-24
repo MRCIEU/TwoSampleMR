@@ -283,17 +283,33 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
   nsnp <- nrow(dat)
   Qthresh <- parameters$Qthresh
 
-  # Main result
-  rucker <- mr_rucker(dat, parameters)
+  # Main result. mr_rucker() returns a list with one element per
+  # exposure-outcome combination; the bootstrap operates on a single combination
+  # (see nsnp/dat2 below), so unwrap the first (only) element here and below so
+  # the $rucker/$Q/$res/$selected accessors work directly.
+  rucker <- mr_rucker(dat, parameters)[[1]]
 
-  # Pre-generate all random values as matrices (nboot x nsnp)
+  # Pre-generate all random values as matrices (nboot x nsnp). The matrix is
+  # filled column-by-column, so each column (SNP) must draw from that SNP's
+  # N(beta, se); rep(..., each = nboot) lays the means and sds out so the first
+  # nboot values belong to SNP 1, the next nboot to SNP 2, etc. Passing the
+  # length-nsnp vectors directly would recycle them and scramble which SNP each
+  # draw comes from.
   boot_exp <- matrix(
-    stats::rnorm(nboot * nsnp, mean = dat$beta.exposure, sd = dat$se.exposure),
+    stats::rnorm(
+      nboot * nsnp,
+      mean = rep(dat$beta.exposure, each = nboot),
+      sd = rep(dat$se.exposure, each = nboot)
+    ),
     nrow = nboot,
     ncol = nsnp
   )
   boot_out <- matrix(
-    stats::rnorm(nboot * nsnp, mean = dat$beta.outcome, sd = dat$se.outcome),
+    stats::rnorm(
+      nboot * nsnp,
+      mean = rep(dat$beta.outcome, each = nboot),
+      sd = rep(dat$se.outcome, each = nboot)
+    ),
     nrow = nboot,
     ncol = nsnp
   )
@@ -303,7 +319,7 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
   for (i in seq_len(nboot)) {
     dat2$beta.exposure <- boot_exp[i, ]
     dat2$beta.outcome <- boot_out[i, ]
-    l[[i]] <- mr_rucker(dat2, parameters)
+    l[[i]] <- mr_rucker(dat2, parameters)[[1]]
   }
 
   modsel <- data.table::rbindlist(lapply(l, function(x) x$selected), fill = TRUE, use.names = TRUE)
@@ -565,7 +581,10 @@ mr_rucker_cooksdistance <- function(dat, parameters = default_parameters()) {
   }
 
   dat_orig <- dat
-  rucker_orig <- mr_rucker(dat_orig, parameters)
+  # mr_rucker() returns one element per exposure-outcome combination; this
+  # function operates on a single combination, so unwrap the first element here
+  # and below so the $cooksdistance/$selected/$rucker accessors work directly.
+  rucker_orig <- mr_rucker(dat_orig, parameters)[[1]]
   rucker <- rucker_orig
   cooks_threshold <- 4 / nrow(dat)
   index <- rucker_orig$cooksdistance > cooks_threshold
@@ -575,7 +594,7 @@ mr_rucker_cooksdistance <- function(dat, parameters = default_parameters()) {
   while (any(index) && sum(!index) > 3) {
     dat <- dat[!index, ]
     cooks_threshold <- 4 / nrow(dat)
-    rucker <- mr_rucker(dat, parameters)
+    rucker <- mr_rucker(dat, parameters)[[1]]
     l[[i]] <- rucker
     index <- rucker$cooksdistance > cooks_threshold
     i <- i + 1
