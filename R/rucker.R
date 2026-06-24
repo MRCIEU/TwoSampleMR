@@ -286,14 +286,27 @@ mr_rucker_bootstrap <- function(dat, parameters = default_parameters()) {
   # Main result
   rucker <- mr_rucker(dat, parameters)
 
-  # Pre-generate all random values as matrices (nboot x nsnp)
+  # Pre-generate all random values as matrices (nboot x nsnp). The matrix is
+  # filled column-by-column, so each column (SNP) must draw from that SNP's
+  # N(beta, se); rep(..., each = nboot) lays the means and sds out so the first
+  # nboot values belong to SNP 1, the next nboot to SNP 2, etc. Passing the
+  # length-nsnp vectors directly would recycle them and scramble which SNP each
+  # draw comes from.
   boot_exp <- matrix(
-    stats::rnorm(nboot * nsnp, mean = dat$beta.exposure, sd = dat$se.exposure),
+    stats::rnorm(
+      nboot * nsnp,
+      mean = rep(dat$beta.exposure, each = nboot),
+      sd = rep(dat$se.exposure, each = nboot)
+    ),
     nrow = nboot,
     ncol = nsnp
   )
   boot_out <- matrix(
-    stats::rnorm(nboot * nsnp, mean = dat$beta.outcome, sd = dat$se.outcome),
+    stats::rnorm(
+      nboot * nsnp,
+      mean = rep(dat$beta.outcome, each = nboot),
+      sd = rep(dat$se.outcome, each = nboot)
+    ),
     nrow = nboot,
     ncol = nsnp
   )
