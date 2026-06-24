@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,14 @@
       <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.9" id="twosamplemr-v079">TwoSampleMR v0.7.9<a class="anchor" aria-label="anchor" href="#twosamplemr-v079"></a></h2>
+<p>(Release date 2026-06-24)</p>
+<ul><li>Fixed inflated bootstrap standard errors (and p-values) in <code><a href="../reference/mr_mode.html">mr_mode()</a></code> and <code><a href="../reference/mr_rucker_bootstrap.html">mr_rucker_bootstrap()</a></code> introduced in v0.6.30. The pre-generated <code><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm()</a></code> matrix was filled column-by-column while the per-SNP means and standard errors recycled element-wise, so each bootstrap draw was taken from the wrong SNP’s distribution; the means and SEs are now laid out with <code>rep(..., each = nboot)</code> so each column draws from its own SNP. Point estimates were unaffected. (thanks <a href="https://github.com/peterk87" class="external-link">@peterk87</a> reported in <a href="https://github.com/MRCIEU/TwoSampleMR/issues/684" class="external-link">#684</a>)</li>
+<li>Fixed <code><a href="../reference/mr_rucker_bootstrap.html">mr_rucker_bootstrap()</a></code> which errored (“values must be length 1”) because it accessed the per-combination result (<code>$rucker</code>, <code>$Q</code>, <code>$res</code>, <code>$selected</code>) directly while <code><a href="../reference/mr_rucker.html">mr_rucker()</a></code> returns a list with one element per exposure-outcome combination; it now unwraps the first element.</li>
+<li>Fixed <code><a href="../reference/mr_rucker_cooksdistance.html">mr_rucker_cooksdistance()</a></code>, which had the same return-shape problem: <code>$cooksdistance</code> was <code>NULL</code> so the Cook’s distance filtering loop never ran and a malformed object was returned; it now unwraps the first element.</li>
+<li>Added regression tests for the <code><a href="../reference/mr_mode.html">mr_mode()</a></code> and <code><a href="../reference/mr_rucker_bootstrap.html">mr_rucker_bootstrap()</a></code> bootstrap standard errors and for <code><a href="../reference/mr_rucker_cooksdistance.html">mr_rucker_cooksdistance()</a></code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.8" id="twosamplemr-v078">TwoSampleMR v0.7.8<a class="anchor" aria-label="anchor" href="#twosamplemr-v078"></a></h2>
 <p>(Release date 2026-06-10)</p>

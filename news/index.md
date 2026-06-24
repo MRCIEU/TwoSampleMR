@@ -1,5 +1,42 @@
 # Changelog
 
+## TwoSampleMR v0.7.9
+
+(Release date 2026-06-24)
+
+- Fixed inflated bootstrap standard errors (and p-values) in
+  [`mr_mode()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_mode.md)
+  and
+  [`mr_rucker_bootstrap()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_rucker_bootstrap.md)
+  introduced in v0.6.30. The pre-generated
+  [`rnorm()`](https://rdrr.io/r/stats/Normal.html) matrix was filled
+  column-by-column while the per-SNP means and standard errors recycled
+  element-wise, so each bootstrap draw was taken from the wrong SNP’s
+  distribution; the means and SEs are now laid out with
+  `rep(..., each = nboot)` so each column draws from its own SNP. Point
+  estimates were unaffected. (thanks
+  [@peterk87](https://github.com/peterk87) reported in
+  [\#684](https://github.com/MRCIEU/TwoSampleMR/issues/684))
+- Fixed
+  [`mr_rucker_bootstrap()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_rucker_bootstrap.md)
+  which errored (“values must be length 1”) because it accessed the
+  per-combination result (`$rucker`, `$Q`, `$res`, `$selected`) directly
+  while
+  [`mr_rucker()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_rucker.md)
+  returns a list with one element per exposure-outcome combination; it
+  now unwraps the first element.
+- Fixed
+  [`mr_rucker_cooksdistance()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_rucker_cooksdistance.md),
+  which had the same return-shape problem: `$cooksdistance` was `NULL`
+  so the Cook’s distance filtering loop never ran and a malformed object
+  was returned; it now unwraps the first element.
+- Added regression tests for the
+  [`mr_mode()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_mode.md)
+  and
+  [`mr_rucker_bootstrap()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_rucker_bootstrap.md)
+  bootstrap standard errors and for
+  [`mr_rucker_cooksdistance()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_rucker_cooksdistance.md).
+
 ## TwoSampleMR v0.7.8
 
 (Release date 2026-06-10)
