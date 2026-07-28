@@ -6,7 +6,7 @@ output:
     toc: true
     toc_depth: 2
 bibliography: refs.bib
-vignette: >
+vignette: |
   %\VignetteIndexEntry{Exposure data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
