@@ -16,9 +16,8 @@ badge](https://mrcieu.r-universe.dev/badges/TwoSampleMR)](https://mrcieu.r-unive
 <!-- badges: end -->
 
 A package for performing Mendelian randomization using GWAS summary
-data. It uses the [IEU OpenGWAS database](https://opengwas.io) to
-obtain data automatically, and a wide range of methods to run the
-analysis.
+data. It uses the [IEU OpenGWAS database](https://opengwas.io) to obtain
+data automatically, and a wide range of methods to run the analysis.
 
 ## January 2020 major update
 
