@@ -8,7 +8,7 @@
 [![R-CMD-check](https://github.com/MRCIEU/TwoSampleMR/actions/workflows/check-full.yaml/badge.svg)](https://github.com/MRCIEU/TwoSampleMR/actions/workflows/check-full.yaml)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![DOI](https://zenodo.org/badge/49515156.svg)](https://zenodo.org/badge/latestdoi/49515156)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.3298000-blue.svg)](https://doi.org/10.5281/zenodo.3298000)
 [![Codecov test
 coverage](https://codecov.io/gh/MRCIEU/TwoSampleMR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MRCIEU/TwoSampleMR?branch=master)
 [![TwoSampleMR status
