@@ -92,8 +92,7 @@
 (Release date 2026-06-07)
 
 - Remove dead `exposure_mat` assignment
-- Replace
-  [`reshape2::dcast()`](https://rdrr.io/pkg/reshape2/man/cast.html) with
+- Replace `reshape2::dcast()` with
   [`tidyr::pivot_wider()`](https://tidyr.tidyverse.org/reference/pivot_wider.html)
 - Replace deprecated
   [`ggplot2::aes_string()`](https://ggplot2.tidyverse.org/reference/aes_.html)

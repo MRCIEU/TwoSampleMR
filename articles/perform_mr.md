@@ -438,7 +438,7 @@ radial_res <- RadialMR::ivw_radial(radial_dat[[1]], alpha = 0.05, weights = 3)
 #> Effect (Mod.2nd) 0.4457431 0.05900084  7.554860 4.193098e-14
 #> Iterative        0.4457432 0.05900083  7.554864 4.192978e-14
 #> Exact (FE)       0.4580587 0.04393667 10.425430 1.897987e-25
-#> Exact (RE)       0.4525728 0.06039039  7.494118 8.923018e-11
+#> Exact (RE)       0.4525728 0.06038932  7.494251 8.917755e-11
 #> 
 #> 
 #> Residual standard error: 1.344 on 78 degrees of freedom
