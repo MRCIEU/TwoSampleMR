@@ -69,5 +69,5 @@ Remotes:
     qingyuanzhao/mr.raps,
     WSpiller/RadialMR
 Config/roxygen2/markdown: TRUE
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
 Encoding: UTF-8
