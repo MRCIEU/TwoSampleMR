@@ -23,3 +23,4 @@ cache$
 ^vignettes/rf\.rdata$
 ^\.positai$
 ^\.claude$
+^justfile$
