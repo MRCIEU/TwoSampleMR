@@ -15,6 +15,7 @@ vignette: |
 ```{r, include=FALSE}
 evalinr44 <- (getRversion() >= '4.4.0') && requireNamespace("MendelianRandomization", quietly = TRUE)
 evalmrraps <- requireNamespace("mr.raps", quietly = TRUE)
+evalmeta <- requireNamespace("meta", quietly = TRUE)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -121,13 +122,13 @@ This returns a data.frame of results that is similar to the output from `mr()` e
 
 The method used to perform the single SNP MR is the Wald ratio by default, though this can be changed, e.g. to use the fixed effects meta analysis method instead:
 
-```{r eval=evalinr44}
+```{r eval=evalmeta}
 res_single <- mr_singlesnp(dat, single_method = "mr_meta_fixed")
 ```
 
 The `mr_singlesnp()` function calculates the full MR using all available SNPs as well, and by default it uses the IVW and MR Egger methods. This can be specified as so:
 
-```{r eval=evalinr44}
+```{r}
 res_single <- mr_singlesnp(dat, all_method = "mr_two_sample_ml")
 ```
 
