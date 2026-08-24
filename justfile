@@ -6,3 +6,5 @@ install: docs
     Rscript -e "devtools::install(build_vignettes = TRUE)"
 dev:
     Rscript -e "pak::local_install_dev_deps()"
+readme:
+    Rscript -e "rmarkdown::render('README.Rmd', output_options = list(html_preview = FALSE))"
