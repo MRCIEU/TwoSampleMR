@@ -286,7 +286,7 @@ format_d <- function(d) {
 
     # If two SNPs have the same proxy SNP then one has to be removed
     d <- data.table::as.data.table(d)
-    d <- d[!duplicated(proxy_snp.outcome), , by = outcome]
+    d <- d[!duplicated(d, by = c("outcome", "proxy_snp.outcome"))]
     data.table::setDF(d)
   } else {
     d <- d1
