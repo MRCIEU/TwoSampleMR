@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,11 @@
       <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.10" id="twosamplemr-v0710">TwoSampleMR v0.7.10<a class="anchor" aria-label="anchor" href="#twosamplemr-v0710"></a></h2>
+<p>(Release date 2026-09-24)</p>
+<ul><li>Fixed the removal of duplicated proxy SNPs in <code><a href="../reference/extract_outcome_data.html">extract_outcome_data()</a></code>, which since v0.6.30 ignored its intended grouping by outcome and emitted the warning “Ignoring by/keyby because ‘j’ is not supplied” whenever proxies were used. Results were unaffected because proxies are looked up one outcome at a time. (thanks <a href="https://github.com/amymariemason" class="external-link">@amymariemason</a> for the report)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.9" id="twosamplemr-v079">TwoSampleMR v0.7.9<a class="anchor" aria-label="anchor" href="#twosamplemr-v079"></a></h2>
 <p>(Release date 2026-06-24)</p>

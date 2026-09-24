@@ -1,5 +1,17 @@
 # Changelog
 
+## TwoSampleMR v0.7.10
+
+(Release date 2026-09-24)
+
+- Fixed the removal of duplicated proxy SNPs in
+  [`extract_outcome_data()`](https://mrcieu.github.io/TwoSampleMR/reference/extract_outcome_data.md),
+  which since v0.6.30 ignored its intended grouping by outcome and
+  emitted the warning “Ignoring by/keyby because ‘j’ is not supplied”
+  whenever proxies were used. Results were unaffected because proxies
+  are looked up one outcome at a time. (thanks
+  [@amymariemason](https://github.com/amymariemason) for the report)
+
 ## TwoSampleMR v0.7.9
 
 (Release date 2026-06-24)
