@@ -1,8 +1,16 @@
 docs:
-    R -e "devtools::document()"
+    Rscript -e "devtools::document()"
 check: docs
-    R -e "devtools::check()"
+    Rscript -e "devtools::check()"
+test:
+    Rscript -e "devtools::test()"
+test-server:
+    TWOSAMPLEMR_ENABLE_OPENGWAS_TESTS=TRUE Rscript -e "devtools::test()"
 install: docs
-    R -e "devtools::install(build_vignettes = TRUE)"
+    Rscript -e "devtools::install(build_vignettes = TRUE)"
+install-fast: docs
+    Rscript -e "pkg <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE); install.packages(pkg, repos = NULL, type = 'source')"
 dev:
-    R -e "pak::local_install_dev_deps()"
+    Rscript -e "pak::local_install_dev_deps()"
+readme:
+    Rscript -e "rmarkdown::render('README.Rmd', output_options = list(html_preview = FALSE))"
