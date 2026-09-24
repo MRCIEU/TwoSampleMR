@@ -2,6 +2,8 @@ docs:
     Rscript -e "devtools::document()"
 check: docs
     Rscript -e "devtools::check()"
+test:
+    Rscript -e "devtools::test()"
 install: docs
     Rscript -e "devtools::install(build_vignettes = TRUE)"
 dev:
