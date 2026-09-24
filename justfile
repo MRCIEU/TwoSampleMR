@@ -8,6 +8,8 @@ test-server:
     TWOSAMPLEMR_ENABLE_OPENGWAS_TESTS=TRUE Rscript -e "devtools::test()"
 install: docs
     Rscript -e "devtools::install(build_vignettes = TRUE)"
+install-fast: docs
+    Rscript -e "pkg <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE); install.packages(pkg, repos = NULL, type = 'source')"
 dev:
     Rscript -e "pak::local_install_dev_deps()"
 readme:
