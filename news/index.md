@@ -1,5 +1,12 @@
 # Changelog
 
+## TwoSampleMR v0.7.11
+
+(Release date 2026-09-25)
+
+- Bump the version of ieugwasr - using the GitHub version until a CRAN
+  release has been made
+
 ## TwoSampleMR v0.7.10
 
 (Release date 2026-09-24)
