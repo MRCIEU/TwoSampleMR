@@ -1415,25 +1415,25 @@ dat2 <- try(dat_to_MRInput(dat, get_correlation = TRUE))
 #>  - outcome: Coronary heart disease || id:ieu-a-7
 #>  - obtaining LD matrix
 #> Please look at vignettes for options on running this locally if you need to run many instances of this command.
-#> Warning in ieugwasr::ld_matrix(variants = snps, with_alleles = with_alleles, : The following variants are not present in the LD reference panel
-#> rs2033529
+#> Server code: 502; Server is possibly experiencing traffic, trying again...
+#> Server code: 502; Server is possibly experiencing traffic, trying again...
+#> Server code: 502; Server is possibly experiencing traffic, trying again...
+#> Server code: 502; Server is possibly experiencing traffic, trying again...
+#> Server code: 502; Server is possibly experiencing traffic, trying again...
+#> Server code: 502; Server is possibly experiencing traffic, trying again...
+#> Server error: 502
+#> Failed to retrieve results from server. See error status message in the returned object and contact the developers if the problem persists.
+#> Error in get_query_content(.) : 
+#> Status code from OpenGWAS API: 502
+#> 
+#> Message: <html>
+#> <head><title>502 Bad Gateway</title></head>
+#> <body>
+#> <center><h1>502 Bad Gateway</h1></center>
+#> <hr><center>openresty</center>
+#> </body>
+#> </html>
 if (!inherits(dat2, "try-error")) MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
-#> 
-#> Inverse-variance weighted method
-#> (variants correlated, random-effect model)
-#> 
-#> Number of Variants : 78 
-#> 
-#> ------------------------------------------------------------------
-#>  Method Estimate Std Error 95% CI       p-value
-#>     IVW    0.441     0.056 0.331, 0.551   0.000
-#> ------------------------------------------------------------------
-#> Residual standard error =  1.414 
-#> Heterogeneity test statistic (Cochran's Q) = 153.8519 on 77 degrees of freedom, (p-value = 0.0000). I^2 = 50.0%. 
-#> F statistic = 80.3. 
-#> 
-#> (Estimates with correlated variants are sensitive to the signs in the correlation matrix
-#>  - please ensure that your correlations are expressed with respect to the same effect alleles as your summarized association estimates.)
 ```
 
 ## MR-MoE: Using a mixture of experts machine learning approach
