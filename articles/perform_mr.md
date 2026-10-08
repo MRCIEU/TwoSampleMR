@@ -435,10 +435,10 @@ radial_res <- RadialMR::ivw_radial(radial_dat[[1]], alpha = 0.05, weights = 3)
 #> Radial IVW
 #> 
 #>                   Estimate  Std.Error   t value     Pr(>|t|)
-#> Effect (Mod.2nd) 0.4457431 0.05900084  7.554860 4.193098e-14
-#> Iterative        0.4457432 0.05900083  7.554864 4.192978e-14
-#> Exact (FE)       0.4580587 0.04393667 10.425430 1.897987e-25
-#> Exact (RE)       0.4525728 0.06038932  7.494251 8.917755e-11
+#> Effect (Mod.2nd) 0.4457431 0.05900084  7.554860 6.816804e-11
+#> Iterative        0.4457432 0.05900083  7.554864 6.816692e-11
+#> Exact (FE)       0.4580671 0.04393669 10.425616 2.220446e-16
+#> Exact (RE)       0.4525714 0.06039062  7.494069 8.924994e-11
 #> 
 #> 
 #> Residual standard error: 1.344 on 78 degrees of freedom
@@ -1415,25 +1415,25 @@ dat2 <- try(dat_to_MRInput(dat, get_correlation = TRUE))
 #>  - outcome: Coronary heart disease || id:ieu-a-7
 #>  - obtaining LD matrix
 #> Please look at vignettes for options on running this locally if you need to run many instances of this command.
-#> Server code: 502; Server is possibly experiencing traffic, trying again...
-#> Server code: 502; Server is possibly experiencing traffic, trying again...
-#> Server code: 502; Server is possibly experiencing traffic, trying again...
-#> Server code: 502; Server is possibly experiencing traffic, trying again...
-#> Server code: 502; Server is possibly experiencing traffic, trying again...
-#> Server code: 502; Server is possibly experiencing traffic, trying again...
-#> Server error: 502
-#> Failed to retrieve results from server. See error status message in the returned object and contact the developers if the problem persists.
-#> Error in get_query_content(.) : 
-#> Status code from OpenGWAS API: 502
-#> 
-#> Message: <html>
-#> <head><title>502 Bad Gateway</title></head>
-#> <body>
-#> <center><h1>502 Bad Gateway</h1></center>
-#> <hr><center>openresty</center>
-#> </body>
-#> </html>
+#> Warning in ieugwasr::ld_matrix(variants = snps, with_alleles = with_alleles, : The following variants are not present in the LD reference panel
+#> rs2033529
 if (!inherits(dat2, "try-error")) MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
+#> 
+#> Inverse-variance weighted method
+#> (variants correlated, random-effect model)
+#> 
+#> Number of Variants : 78 
+#> 
+#> ------------------------------------------------------------------
+#>  Method Estimate Std Error 95% CI       p-value
+#>     IVW    0.441     0.056 0.331, 0.551   0.000
+#> ------------------------------------------------------------------
+#> Residual standard error =  1.414 
+#> Heterogeneity test statistic (Cochran's Q) = 153.8519 on 77 degrees of freedom, (p-value = 0.0000). I^2 = 50.0%. 
+#> F statistic = 80.3. 
+#> 
+#> (Estimates with correlated variants are sensitive to the signs in the correlation matrix
+#>  - please ensure that your correlations are expressed with respect to the same effect alleles as your summarized association estimates.)
 ```
 
 ## MR-MoE: Using a mixture of experts machine learning approach
