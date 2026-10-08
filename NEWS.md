@@ -1,3 +1,9 @@
+# TwoSampleMR v0.7.12
+
+(Release date 2026-10-08)
+
+* Go back to CRAN version of ieugwasr
+
 # TwoSampleMR v0.7.11
 
 (Release date 2026-09-25)
