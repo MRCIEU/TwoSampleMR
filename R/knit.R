@@ -150,6 +150,7 @@ mr_report <- function(
         }
       }
     )
+    tablist <- lapply(tablist, format_report_pvals)
 
     plotlist <- lapply(p, function(x) {
       d <- attributes(x)$split_labels
@@ -170,6 +171,19 @@ mr_report <- function(
     output_file[i] <- knit_report(file.path(path, "mr_report.Rmd"), output_file[i], ...)
   }
   return(output_file)
+}
+
+# Format p-value columns as character so that kable() does not round small
+# p-values to 0
+format_report_pvals <- function(x) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+  i <- grepl("pval", names(x)) & vapply(x, is.numeric, logical(1))
+  x[i] <- lapply(x[i], function(p) {
+    ifelse(is.na(p), NA_character_, trimws(formatC(p, format = "g", digits = 3)))
+  })
+  x
 }
 
 sanitise_string <- function(x) {
