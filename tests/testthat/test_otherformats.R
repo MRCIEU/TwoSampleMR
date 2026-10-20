@@ -29,6 +29,37 @@ test_that("MRInput with cor", {
 })
 
 
+test_that("harmonise_ld_dat handles LD matrix in a different SNP order", {
+  x <- data.frame(
+    SNP = c("rs1", "rs2", "rs3"),
+    effect_allele.exposure = c("A", "C", "G"),
+    other_allele.exposure = c("G", "T", "A"),
+    beta.exposure = c(0.1, 0.2, 0.3),
+    beta.outcome = c(0.01, 0.02, 0.03)
+  )
+  # LD matrix in a different order to x, with rs1 on the opposite effect allele
+  ldnames <- c("rs3_G_A", "rs1_G_A", "rs2_C_T")
+  ld <- matrix(
+    c(1, 0.13, 0.23,
+      0.13, 1, 0.12,
+      0.23, 0.12, 1),
+    nrow = 3,
+    dimnames = list(ldnames, ldnames)
+  )
+  out <- harmonise_ld_dat(x, ld)
+  expect_equal(out$x$SNP, c("rs1", "rs2", "rs3"))
+  expect_equal(rownames(out$ld), c("rs1", "rs2", "rs3"))
+  expect_equal(colnames(out$ld), c("rs1", "rs2", "rs3"))
+  expect_equal(out$ld["rs1", "rs2"], 0.12)
+  expect_equal(out$ld["rs1", "rs3"], 0.13)
+  expect_equal(out$ld["rs2", "rs3"], 0.23)
+  expect_equal(out$x$beta.exposure, c(-0.1, 0.2, 0.3))
+  expect_equal(out$x$beta.outcome, c(-0.01, 0.02, 0.03))
+  expect_equal(out$x$effect_allele.exposure, c("G", "C", "G"))
+  expect_equal(out$x$other_allele.exposure, c("A", "T", "A"))
+})
+
+
 test_that("mrpresso", {
   w <- expect_warning(run_mr_presso(dat))
   expect_true(length(w) == 1)

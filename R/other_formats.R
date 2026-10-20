@@ -78,10 +78,14 @@ dat_to_MRInput <- function(dat, get_correlations = FALSE, pop = "EUR") {
 harmonise_ld_dat <- function(x, ld) {
   snpnames <- do.call(rbind, strsplit(rownames(ld), split = "_"))
   i1 <- snpnames[, 1] %in% x$SNP
-  ld <- ld[i1, i1]
-  snpnames <- snpnames[i1, ]
+  ld <- ld[i1, i1, drop = FALSE]
+  snpnames <- snpnames[i1, , drop = FALSE]
   i2 <- x$SNP %in% snpnames[, 1]
   x <- x[i2, ]
+  # Put the LD matrix in the same SNP order as x
+  i3 <- match(x$SNP, snpnames[, 1])
+  ld <- ld[i3, i3, drop = FALSE]
+  snpnames <- snpnames[i3, , drop = FALSE]
   stopifnot(all(snpnames[, 1] == x$SNP))
   x$effect_allele.exposure <- as.character(x$effect_allele.exposure)
   x$other_allele.exposure <- as.character(x$other_allele.exposure)
@@ -125,7 +129,7 @@ harmonise_ld_dat <- function(x, ld) {
 
   if (!all(snpnames$keep)) {
     message("Removing ", sum(!snpnames$keep), " variants due to harmonisation issues")
-    ld <- ld[snpnames$keep, snpnames$keep]
+    ld <- ld[snpnames$keep, snpnames$keep, drop = FALSE]
     x <- x[snpnames$keep, ]
   }
   return(list(x = x, ld = ld))
