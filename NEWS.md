@@ -1,6 +1,6 @@
 # TwoSampleMR v0.7.13
 
-(Release date 2026-10-##)
+(Release date 2026-10-20)
 
 * Fixed URL in gwas2020 vignette
 * Clarified the steps in the Multivariable MR section of the Perform MR vignette and fixed the object passed to `extract_outcome_data()` in its example (thanks @hdraisma, #340)
