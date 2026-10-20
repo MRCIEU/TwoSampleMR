@@ -82,7 +82,7 @@
 
 (Release date 2026-05-04)
 
-* Amend <https://gwas.mrcieu.ac.uk> URLs to <https://opengwas.io/>
+* Amend `https://gwas.mrcieu.ac.uk` URLs to <https://opengwas.io/>
 * Bump version of roxygen2 to 8.0.0 and regenerate documentation
 * Replace `array(1:nexp)` placeholder allocations with `numeric(nexp)`/`integer(nexp)` in multivariable MR functions
 * Replace `1:n` with `seq_len(n)` in loop indices across `singlesnp`, `leaveoneout`, `rucker`, `mr_mode`, and `multivariable_mr` for empty-vector safety
