@@ -4,6 +4,7 @@
 
 * Fixed URL in gwas2020 vignette
 * Clarified the steps in the Multivariable MR section of the Perform MR vignette and fixed the object passed to `extract_outcome_data()` in its example (thanks @hdraisma, #340)
+* Fixed `harmonise_ld_dat()`, and hence `dat_to_MRInput(get_correlations = TRUE)`, failing when the LD matrix SNPs were in a different order to the summary data; the LD matrix is now reordered to match (thanks @marwaalarab, #348)
 
 # TwoSampleMR v0.7.12
 
