@@ -41,3 +41,37 @@ test_that("mr_mode() simple-mode SE is not inflated when nsnp divides nboot (iss
   # Correct simple-mode SE is ~0.17; the bug inflated it to ~0.57.
   expect_lt(m$se[m$method == "Simple mode"], 0.35)
 })
+
+test_that("mr_mode() removes SNPs with beta.exposure of 0 (issue #570)", {
+  d <- dat
+  d$beta.exposure[1:2] <- 0
+  set.seed(1234)
+  expect_warning(m <- mr_mode(d), "Removing 2 SNP\\(s\\) with beta.exposure of 0")
+  set.seed(1234)
+  m0 <- mr_mode(dat[-(1:2), ])
+  expect_equal(m, m0)
+  expect_true(all(m$nsnp == 77))
+
+  expect_warning(
+    w <- mr_weighted_mode(d$beta.exposure, d$beta.outcome, d$se.exposure, d$se.outcome),
+    "Removing 2 SNP\\(s\\)"
+  )
+  expect_true(is.finite(w$b))
+  expect_equal(w$nsnp, 77)
+})
+
+test_that("mr_mode() returns NA when fewer than 3 SNPs have non-zero beta.exposure (issue #570)", {
+  d <- dat[1:4, ]
+  d$beta.exposure[1:2] <- 0
+  warnings <- character()
+  w <- withCallingHandlers(
+    mr_simple_mode(d$beta.exposure, d$beta.outcome, d$se.exposure, d$se.outcome),
+    warning = function(cnd) {
+      warnings <<- c(warnings, conditionMessage(cnd))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_equal(w, list(b = NA, se = NA, pval = NA, nsnp = NA))
+  expect_match(warnings[1], "Removing 2 SNP\\(s\\)")
+  expect_match(warnings[2], "Need at least 3 SNPs")
+})
