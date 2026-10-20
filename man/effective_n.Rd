@@ -15,5 +15,16 @@ effective_n(ncase, ncontrol)
 Vector of effective sample size
 }
 \description{
-Taken from \url{https://www.nature.com/articles/nprot.2014.071}
+Computes the effective sample size as the harmonic mean of the number of cases and controls,
+\deqn{N_{eff} = \frac{2}{1/N_{cases} + 1/N_{controls}},}{N_eff = 2 / (1/N_cases + 1/N_controls),}
+as given by Winkler et al. (2014) \url{https://www.nature.com/articles/nprot.2014.071}.
+}
+\details{
+Note that other software, such as METAL (Willer et al., 2010, \doi{10.1093/bioinformatics/btq340}),
+uses \eqn{4/(1/N_{cases} + 1/N_{controls})}{4 / (1/N_cases + 1/N_controls)}, which is twice this value.
+With that definition a balanced study (equal numbers of cases and controls) has an effective sample size equal to its total sample size,
+whereas with this function it is equal to half the total sample size, i.e., the number of cases.
+If you require the METAL definition multiply the result of this function by 2.
+
+This function is used by \code{\link[=add_rsq]{add_rsq()}} to obtain the sample sizes for binary traits (those with units of \code{"log odds"}) which are then used by \code{\link[=directionality_test]{directionality_test()}} and \code{\link[=steiger_filtering]{steiger_filtering()}}.
 }
