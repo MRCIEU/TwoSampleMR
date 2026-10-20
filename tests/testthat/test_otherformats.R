@@ -60,6 +60,39 @@ test_that("harmonise_ld_dat handles LD matrix in a different SNP order", {
 })
 
 
+test_that("run_mrmix removes SNPs with eaf.exposure of 0 or 1", {
+  skip_if_not_installed("MRMix")
+  d <- dat
+  d$eaf.exposure[1] <- 1
+  d$eaf.exposure[2] <- 0
+  expect_warning(
+    expect_message(w <- run_mrmix(d)),
+    "Removing 2 SNP\\(s\\)"
+  )
+  expect_message(w0 <- run_mrmix(dat[-(1:2), ]))
+  expect_equal(w, w0)
+})
+
+test_that("run_mrmix returns NULL when no SNPs have a valid eaf.exposure", {
+  skip_if_not_installed("MRMix")
+  d <- dat
+  d$eaf.exposure <- 1
+  warnings <- character()
+  expect_message(
+    w <- withCallingHandlers(
+      run_mrmix(d),
+      warning = function(cnd) {
+        warnings <<- c(warnings, conditionMessage(cnd))
+        invokeRestart("muffleWarning")
+      }
+    )
+  )
+  expect_match(warnings[1], "Removing 79 SNP\\(s\\)")
+  expect_match(warnings[2], "No SNPs remaining")
+  expect_null(w[[1]])
+})
+
+
 test_that("mrpresso", {
   w <- expect_warning(run_mr_presso(dat))
   expect_true(length(w) == 1)

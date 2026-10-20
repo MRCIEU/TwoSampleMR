@@ -255,6 +255,7 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters = default_par
 #' See <https://github.com/gqi/MRMix> for more details.
 #'
 #' @param dat Output from [harmonise_data()]. Ensures that no eaf.exposure values are missing.
+#' Missing eaf.exposure values are replaced by eaf.outcome values, and SNPs with an eaf.exposure that is still missing or is not strictly between 0 and 1 are removed with a warning.
 #'
 #' @export
 #' @return List of results, with one list item for every exposure/outcome pair in dat object
@@ -286,6 +287,24 @@ run_mrmix <- function(dat) {
         " - Some eaf.exposure values are missing, using eaf.outcome in their place"
       ))
       x$eaf.exposure[index] <- x$eaf.outcome[index]
+    }
+    # standardize() scales by sqrt(2 * eaf * (1 - eaf)), so SNPs with an eaf of
+    # 0 or 1 would give standard errors of 0
+    index <- is.na(x$eaf.exposure) | x$eaf.exposure <= 0 | x$eaf.exposure >= 1
+    if (any(index)) {
+      warning(paste0(
+        x$id.exposure[1],
+        ".",
+        x$id.outcome[1],
+        " - Removing ",
+        sum(index),
+        " SNP(s) with eaf.exposure missing or not strictly between 0 and 1"
+      ))
+      x <- x[!index, ]
+    }
+    if (nrow(x) == 0) {
+      warning(paste0(combos$id.exposure[i], ".", combos$id.outcome[i], " - No SNPs remaining"))
+      return(NULL)
     }
     l <- MRMix::standardize(
       x$beta.exposure,
