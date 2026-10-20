@@ -6,6 +6,7 @@
 * Clarified the steps in the Multivariable MR section of the Perform MR vignette and fixed the object passed to `extract_outcome_data()` in its example (thanks @hdraisma, #340)
 * Fixed `harmonise_ld_dat()`, and hence `dat_to_MRInput(get_correlations = TRUE)`, failing when the LD matrix SNPs were in a different order to the summary data; the LD matrix is now reordered to match (thanks @marwaalarab, #348)
 * Fixed small p-values being shown as 0 in the tables in `mr_report()` reports; p-values are now shown to 3 significant figures (thanks @sonia-shah, #42)
+* `run_mrmix()` now removes SNPs with an `eaf.exposure` that is missing or not strictly between 0 and 1, with a warning, instead of erroring in `MRMix::standardize()` (#169)
 
 # TwoSampleMR v0.7.12
 
