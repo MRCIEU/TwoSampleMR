@@ -8,6 +8,7 @@
 * Fixed small p-values being shown as 0 in the tables in `mr_report()` reports; p-values are now shown to 3 significant figures (thanks @sonia-shah, #42)
 * `run_mrmix()` now removes SNPs with an `eaf.exposure` that is missing or not strictly between 0 and 1, with a warning, instead of erroring in `MRMix::standardize()` (#169)
 * The mode based estimators (`mr_mode()`, `mr_simple_mode()`, `mr_weighted_mode()`, `mr_simple_mode_nome()`, and `mr_weighted_mode_nome()`) now remove SNPs with a `beta.exposure` of 0, with a warning, instead of erroring with "non-finite 'bw'" in `density()` (thanks @Julie1130, #570)
+* In `mv_multiple()` and `mv_residual()` with `instrument_specific = FALSE` (the default), the `nsnp` column now reports the number of SNPs used in the analysis, which is all the SNPs, rather than the number passing `pval_threshold` for each exposure. In `mv_residual()` this also fixes estimates being set to `NA` when few SNPs passed `pval_threshold` for an exposure, even though all SNPs were used (thanks @MaVdb and @mvab, #78)
 
 # TwoSampleMR v0.7.12
 
