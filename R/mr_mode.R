@@ -13,9 +13,24 @@ mr_mode <- function(dat, parameters = default_parameters(), mode_method = "all")
     dat <- subset(dat, mr_keep)
   }
 
+  # The ratio estimate is infinite for SNPs with a beta.exposure of 0
+  index <- dat$beta.exposure == 0
+  if (any(index)) {
+    warning(
+      "Removing ",
+      sum(index),
+      " SNP(s) with beta.exposure of 0 from the mode based estimates"
+    )
+    dat <- dat[!index, ]
+  }
+
   if (nrow(dat) < 3) {
     warning("Need at least 3 SNPs")
-    return(NULL)
+    if (mode_method == "all") {
+      return(NULL)
+    } else {
+      return(list(b = NA, se = NA, pval = NA, nsnp = NA))
+    }
   }
 
   b_exp <- dat$beta.exposure

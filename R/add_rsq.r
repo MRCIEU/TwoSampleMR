@@ -379,7 +379,17 @@ get_population_allele_frequency <- function(af, prop, odds_ratio, prevalence) {
 
 #' Estimate the effective sample size in a case control study
 #'
-#' Taken from <https://www.nature.com/articles/nprot.2014.071>
+#' Computes the effective sample size as the harmonic mean of the number of cases and controls,
+#' \deqn{N_{eff} = \frac{2}{1/N_{cases} + 1/N_{controls}},}{N_eff = 2 / (1/N_cases + 1/N_controls),}
+#' as given by Winkler et al. (2014) <https://www.nature.com/articles/nprot.2014.071>.
+#'
+#' Note that other software, such as METAL (Willer et al., 2010, \doi{10.1093/bioinformatics/btq340}),
+#' uses \eqn{4/(1/N_{cases} + 1/N_{controls})}{4 / (1/N_cases + 1/N_controls)}, which is twice this value.
+#' With that definition a balanced study (equal numbers of cases and controls) has an effective sample size equal to its total sample size,
+#' whereas with this function it is equal to half the total sample size, i.e., the number of cases.
+#' If you require the METAL definition multiply the result of this function by 2.
+#'
+#' This function is used by [add_rsq()] to obtain the sample sizes for binary traits (those with units of `"log odds"`) which are then used by [directionality_test()] and [steiger_filtering()].
 #'
 #' @param ncase Vector of number of cases
 #' @param ncontrol Vector of number of controls

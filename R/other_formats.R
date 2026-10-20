@@ -78,10 +78,14 @@ dat_to_MRInput <- function(dat, get_correlations = FALSE, pop = "EUR") {
 harmonise_ld_dat <- function(x, ld) {
   snpnames <- do.call(rbind, strsplit(rownames(ld), split = "_"))
   i1 <- snpnames[, 1] %in% x$SNP
-  ld <- ld[i1, i1]
-  snpnames <- snpnames[i1, ]
+  ld <- ld[i1, i1, drop = FALSE]
+  snpnames <- snpnames[i1, , drop = FALSE]
   i2 <- x$SNP %in% snpnames[, 1]
   x <- x[i2, ]
+  # Put the LD matrix in the same SNP order as x
+  i3 <- match(x$SNP, snpnames[, 1])
+  ld <- ld[i3, i3, drop = FALSE]
+  snpnames <- snpnames[i3, , drop = FALSE]
   stopifnot(all(snpnames[, 1] == x$SNP))
   x$effect_allele.exposure <- as.character(x$effect_allele.exposure)
   x$other_allele.exposure <- as.character(x$other_allele.exposure)
@@ -125,7 +129,7 @@ harmonise_ld_dat <- function(x, ld) {
 
   if (!all(snpnames$keep)) {
     message("Removing ", sum(!snpnames$keep), " variants due to harmonisation issues")
-    ld <- ld[snpnames$keep, snpnames$keep]
+    ld <- ld[snpnames$keep, snpnames$keep, drop = FALSE]
     x <- x[snpnames$keep, ]
   }
   return(list(x = x, ld = ld))
@@ -251,6 +255,7 @@ mr_ivw_radial <- function(b_exp, b_out, se_exp, se_out, parameters = default_par
 #' See <https://github.com/gqi/MRMix> for more details.
 #'
 #' @param dat Output from [harmonise_data()]. Ensures that no eaf.exposure values are missing.
+#' Missing eaf.exposure values are replaced by eaf.outcome values, and SNPs with an eaf.exposure that is still missing or is not strictly between 0 and 1 are removed with a warning.
 #'
 #' @export
 #' @return List of results, with one list item for every exposure/outcome pair in dat object
@@ -282,6 +287,24 @@ run_mrmix <- function(dat) {
         " - Some eaf.exposure values are missing, using eaf.outcome in their place"
       ))
       x$eaf.exposure[index] <- x$eaf.outcome[index]
+    }
+    # standardize() scales by sqrt(2 * eaf * (1 - eaf)), so SNPs with an eaf of
+    # 0 or 1 would give standard errors of 0
+    index <- is.na(x$eaf.exposure) | x$eaf.exposure <= 0 | x$eaf.exposure >= 1
+    if (any(index)) {
+      warning(paste0(
+        x$id.exposure[1],
+        ".",
+        x$id.outcome[1],
+        " - Removing ",
+        sum(index),
+        " SNP(s) with eaf.exposure missing or not strictly between 0 and 1"
+      ))
+      x <- x[!index, ]
+    }
+    if (nrow(x) == 0) {
+      warning(paste0(combos$id.exposure[i], ".", combos$id.outcome[i], " - No SNPs remaining"))
+      return(NULL)
     }
     l <- MRMix::standardize(
       x$beta.exposure,

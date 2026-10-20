@@ -478,7 +478,7 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness = 
 #' @param mvdat Output from [mv_harmonise_data()].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
-#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
+#' @param pval_threshold P-value threshold to include instruments. Only used when `instrument_specific = TRUE`. The default is `5e-8`.
 #' @param plots Create plots? The default is `FALSE`.
 #'
 #' @export
@@ -505,8 +505,13 @@ mv_residual <- function(
   nom <- colnames(beta.exposure)
   nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
   for (i in seq_len(nexp)) {
-    # For this exposure, only keep SNPs that meet some p-value threshold
-    index <- pval.exposure[, i] < pval_threshold
+    # For this exposure, only keep SNPs that meet some p-value threshold if the
+    # estimate is instrument specific, otherwise all SNPs are used
+    if (instrument_specific) {
+      index <- pval.exposure[, i] < pval_threshold
+    } else {
+      index <- rep(TRUE, nrow(beta.exposure))
+    }
 
     # Get outcome effects adjusted for all effects on all other exposures
     if (intercept) {
@@ -586,7 +591,7 @@ mv_residual <- function(
 #' @param mvdat Output from [mv_harmonise_data()].
 #' @param intercept Should the intercept by estimated (`TRUE`) or force line through the origin (`FALSE`, default).
 #' @param instrument_specific Should the estimate for each exposure be obtained by using all instruments from all exposures (`FALSE`, default) or by using only the instruments specific to each exposure (`TRUE`).
-#' @param pval_threshold P-value threshold to include instruments. The default is `5e-8`.
+#' @param pval_threshold P-value threshold to include instruments. Only used when `instrument_specific = TRUE`. The default is `5e-8`.
 #' @param plots Create plots? The default is `FALSE`.
 #'
 #' @export
@@ -614,8 +619,13 @@ mv_multiple <- function(
   nom <- colnames(beta.exposure)
   nom2 <- mvdat$expname$exposure[match(nom, mvdat$expname$id.exposure)]
   for (i in seq_len(nexp)) {
-    # For this exposure, only keep SNPs that meet some p-value threshold
-    index <- pval.exposure[, i] < pval_threshold
+    # For this exposure, only keep SNPs that meet some p-value threshold if the
+    # estimate is instrument specific, otherwise all SNPs are used
+    if (instrument_specific) {
+      index <- pval.exposure[, i] < pval_threshold
+    } else {
+      index <- rep(TRUE, nrow(beta.exposure))
+    }
 
     # # Get outcome effects adjusted for all effects on all other exposures
     # marginal_outcome[,i] <- lm(beta.outcome ~ beta.exposure[, -c(i)])$res

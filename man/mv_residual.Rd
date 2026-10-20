@@ -19,7 +19,7 @@ mv_residual(
 
 \item{instrument_specific}{Should the estimate for each exposure be obtained by using all instruments from all exposures (\code{FALSE}, default) or by using only the instruments specific to each exposure (\code{TRUE}).}
 
-\item{pval_threshold}{P-value threshold to include instruments. The default is \code{5e-8}.}
+\item{pval_threshold}{P-value threshold to include instruments. Only used when \code{instrument_specific = TRUE}. The default is \code{5e-8}.}
 
 \item{plots}{Create plots? The default is \code{FALSE}.}
 }

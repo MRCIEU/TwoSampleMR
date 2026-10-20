@@ -648,8 +648,11 @@ When SNPs instrument multiple potential exposures, for example in the case of di
 2. Combine these into a set of all instruments
 3. Clump these to avoid the possibility that e.g. a variant for exposure 1 is in LD with a variant for exposure 2
 4. Re-extract all the final clumped SNPs from (3) from all of the exposures
-5. Harmonise them all to be on the same effect allele
-6. Use the multivariable MR method against these harmonised data
+5. Extract the final clumped SNPs from (3) from the outcome
+6. Harmonise them all to be on the same effect allele
+7. Use the multivariable MR method against these harmonised data
+
+Steps 1 to 4 are performed by `mv_extract_exposures()` (or `mv_extract_exposures_local()` for your own summary data), step 5 by `extract_outcome_data()`, step 6 by `mv_harmonise_data()`, and step 7 by `mv_multiple()` or `mv_residual()`.
 
 Example - The GWAS IDs for HDL, LDL and total cholesterol are `ieu-a-299`, `ieu-a-300`, and `ieu-a-302`. The GWAS ID for coronary heart disease (CHD) is `ieu-a-7`. In this example we will estimate the multivariable effects of HDL, LDL and total cholesterol on CHD.
 
@@ -667,7 +670,7 @@ mv_exposure_dat <- mv_extract_exposures(id_exposure)
 Next, also extract those SNPs from the outcome.
 
 ```{r eval=FALSE}
-mv_outcome_dat <- extract_outcome_data(exposure_dat$SNP, id_outcome)
+mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, id_outcome)
 ```
 
 Once the data has been obtained, harmonise so that all are on the same reference allele.

@@ -7,7 +7,8 @@
 run_mrmix(dat)
 }
 \arguments{
-\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}. Ensures that no eaf.exposure values are missing.}
+\item{dat}{Output from \code{\link[=harmonise_data]{harmonise_data()}}. Ensures that no eaf.exposure values are missing.
+Missing eaf.exposure values are replaced by eaf.outcome values, and SNPs with an eaf.exposure that is still missing or is not strictly between 0 and 1 are removed with a warning.}
 }
 \value{
 List of results, with one list item for every exposure/outcome pair in dat object

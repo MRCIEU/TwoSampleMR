@@ -1,3 +1,16 @@
+# TwoSampleMR v0.7.13
+
+(Release date 2026-10-20)
+
+* Fixed URL in gwas2020 vignette
+* Clarified the steps in the Multivariable MR section of the Perform MR vignette and fixed the object passed to `extract_outcome_data()` in its example (thanks @hdraisma, #340)
+* Fixed `harmonise_ld_dat()`, and hence `dat_to_MRInput(get_correlations = TRUE)`, failing when the LD matrix SNPs were in a different order to the summary data; the LD matrix is now reordered to match (thanks @marwaalarab, #348)
+* Fixed small p-values being shown as 0 in the tables in `mr_report()` reports; p-values are now shown to 3 significant figures (thanks @sonia-shah, #42)
+* `run_mrmix()` now removes SNPs with an `eaf.exposure` that is missing or not strictly between 0 and 1, with a warning, instead of erroring in `MRMix::standardize()` (#169)
+* The mode based estimators (`mr_mode()`, `mr_simple_mode()`, `mr_weighted_mode()`, `mr_simple_mode_nome()`, and `mr_weighted_mode_nome()`) now remove SNPs with a `beta.exposure` of 0, with a warning, instead of erroring with "non-finite 'bw'" in `density()` (thanks @Julie1130, #570)
+* In `mv_multiple()` and `mv_residual()` with `instrument_specific = FALSE` (the default), the `nsnp` column now reports the number of SNPs used in the analysis, which is all the SNPs, rather than the number passing `pval_threshold` for each exposure. In `mv_residual()` this also fixes estimates being set to `NA` when few SNPs passed `pval_threshold` for an exposure, even though all SNPs were used (thanks @MaVdb and @mvab, #78)
+* Expanded the documentation of `effective_n()` to give its formula, explain that it is half the effective sample size used by METAL, and where it is used in the package (thanks @carbocation, #433)
+
 # TwoSampleMR v0.7.12
 
 (Release date 2026-10-08)
@@ -69,7 +82,7 @@
 
 (Release date 2026-05-04)
 
-* Amend <https://gwas.mrcieu.ac.uk> URLs to <https://opengwas.io/>
+* Amend `https://gwas.mrcieu.ac.uk` URLs to <https://opengwas.io/>
 * Bump version of roxygen2 to 8.0.0 and regenerate documentation
 * Replace `array(1:nexp)` placeholder allocations with `numeric(nexp)`/`integer(nexp)` in multivariable MR functions
 * Replace `1:n` with `seq_len(n)` in loop indices across `singlesnp`, `leaveoneout`, `rucker`, `mr_mode`, and `multivariable_mr` for empty-vector safety
