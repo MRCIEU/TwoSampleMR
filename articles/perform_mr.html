@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 and Philip Haycock</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.12/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/perform_mr.Rmd" class="external-link"><code>vignettes/perform_mr.Rmd</code></a></small>
       <div class="d-none name"><code>perform_mr.Rmd</code></div>
     </div>
 
@@ -1010,9 +1010,15 @@ data in the correct format:</p>
 exposure 1 is in LD with a variant for exposure 2</li>
 <li>Re-extract all the final clumped SNPs from (3) from all of the
 exposures</li>
+<li>Extract the final clumped SNPs from (3) from the outcome</li>
 <li>Harmonise them all to be on the same effect allele</li>
 <li>Use the multivariable MR method against these harmonised data</li>
 </ol>
+<p>Steps 1 to 4 are performed by <code><a href="../reference/mv_extract_exposures.html">mv_extract_exposures()</a></code> (or
+<code><a href="../reference/mv_extract_exposures_local.html">mv_extract_exposures_local()</a></code> for your own summary data),
+step 5 by <code><a href="../reference/extract_outcome_data.html">extract_outcome_data()</a></code>, step 6 by
+<code><a href="../reference/mv_harmonise_data.html">mv_harmonise_data()</a></code>, and step 7 by
+<code><a href="../reference/mv_multiple.html">mv_multiple()</a></code> or <code><a href="../reference/mv_residual.html">mv_residual()</a></code>.</p>
 <p>Example - The GWAS IDs for HDL, LDL and total cholesterol are
 <code>ieu-a-299</code>, <code>ieu-a-300</code>, and
 <code>ieu-a-302</code>. The GWAS ID for coronary heart disease (CHD) is
@@ -1031,7 +1037,7 @@ fraction (exposure).</p>
 <code class="sourceCode R"><span><span class="va">mv_exposure_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mv_extract_exposures.html">mv_extract_exposures</a></span><span class="op">(</span><span class="va">id_exposure</span><span class="op">)</span></span></code></pre></div>
 <p>Next, also extract those SNPs from the outcome.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mv_outcome_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span><span class="va">exposure_dat</span><span class="op">$</span><span class="va">SNP</span>, <span class="va">id_outcome</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mv_outcome_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract_outcome_data.html">extract_outcome_data</a></span><span class="op">(</span><span class="va">mv_exposure_dat</span><span class="op">$</span><span class="va">SNP</span>, <span class="va">id_outcome</span><span class="op">)</span></span></code></pre></div>
 <p>Once the data has been obtained, harmonise so that all are on the
 same reference allele.</p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
@@ -1048,9 +1054,9 @@ table of results.</p>
 <span><span class="co">#&gt; 2   ieu-a-300 LDL cholesterol || id:ieu-a-300    ieu-a-7</span></span>
 <span><span class="co">#&gt; 3   ieu-a-302   Triglycerides || id:ieu-a-302    ieu-a-7</span></span>
 <span><span class="co">#&gt;                                outcome nsnp           b         se         pval</span></span>
-<span><span class="co">#&gt; 1 Coronary heart disease || id:ieu-a-7   79 -0.08919724 0.05970552 1.351879e-01</span></span>
-<span><span class="co">#&gt; 2 Coronary heart disease || id:ieu-a-7   68  0.37853543 0.04976846 2.828614e-14</span></span>
-<span><span class="co">#&gt; 3 Coronary heart disease || id:ieu-a-7   42  0.13584165 0.06738291 4.380354e-02</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Coronary heart disease || id:ieu-a-7  143 -0.08919724 0.05970552 1.351879e-01</span></span>
+<span><span class="co">#&gt; 2 Coronary heart disease || id:ieu-a-7  143  0.37853543 0.04976846 2.828614e-14</span></span>
+<span><span class="co">#&gt; 3 Coronary heart disease || id:ieu-a-7  143  0.13584165 0.06738291 4.380354e-02</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="note-about-multivariable-methods">Note about multivariable methods<a class="anchor" aria-label="anchor" href="#note-about-multivariable-methods"></a>
 </h3>
@@ -1411,9 +1417,9 @@ original outcome name with the outcome trait ID.</p>
 <span><span class="co">#&gt; 2   ieu-a-300 LDL cholesterol || id:ieu-a-300    ieu-a-7</span></span>
 <span><span class="co">#&gt; 3   ieu-a-302   Triglycerides || id:ieu-a-302    ieu-a-7</span></span>
 <span><span class="co">#&gt;                                outcome nsnp           b         se         pval</span></span>
-<span><span class="co">#&gt; 1 Coronary heart disease || id:ieu-a-7   79 -0.08919724 0.05970552 1.351879e-01</span></span>
-<span><span class="co">#&gt; 2 Coronary heart disease || id:ieu-a-7   68  0.37853543 0.04976846 2.828614e-14</span></span>
-<span><span class="co">#&gt; 3 Coronary heart disease || id:ieu-a-7   42  0.13584165 0.06738291 4.380354e-02</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Coronary heart disease || id:ieu-a-7  143 -0.08919724 0.05970552 1.351879e-01</span></span>
+<span><span class="co">#&gt; 2 Coronary heart disease || id:ieu-a-7  143  0.37853543 0.04976846 2.828614e-14</span></span>
+<span><span class="co">#&gt; 3 Coronary heart disease || id:ieu-a-7  143  0.13584165 0.06738291 4.380354e-02</span></span></code></pre></div>
 <p>The outcome column can be split into separate columns for the id and
 outcome name using the split_outcome function:</p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">

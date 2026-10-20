@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
       <h1>Major changes to the IEU GWAS resources for 2020</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.12/vignettes/gwas2020.Rmd" class="external-link"><code>vignettes/gwas2020.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/vignettes/gwas2020.Rmd" class="external-link"><code>vignettes/gwas2020.Rmd</code></a></small>
       <div class="d-none name"><code>gwas2020.Rmd</code></div>
     </div>
 
@@ -120,17 +120,17 @@ full information on how to deal with this, see here: <a href="https://mrcieu.git
 <h3 id="ukbiobank-data-has-been-curated">UKBiobank data has been curated<a class="anchor" aria-label="anchor" href="#ukbiobank-data-has-been-curated"></a>
 </h3>
 <p>We conducted a large GWAS analysis using a pipeline that
-systematically analysed every <a href="https://pubmed.ncbi.nlm.nih.gov/29040602/" class="external-link">PHESANT</a> phenotype
-in UK Biobank. There were previously ~20k traits with complete GWAS
-data, but a majority of these were binary traits based on very few
-numbers of cases. We have now filtered out unreliable datasets, there
-are 2514 traits remaining, with any binary traits removed that had fewer
-than 1000 cases. Another issue is the combination of small numbers of
-cases and allele frequency - here minor allele count (MAC) for a
-particular association could be very small which would lead to high
-false positives when using Bolt-LMM. The remaining traits have been
-filtered to only retain associations where the MAC &gt; 90.</p>
-<p>Document detailing this investigation here: <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/MRCIEU/ukbb-gwas-analysis/master/docs/ldsc_clumped_analysis.html?token=AAOV6TBQXEXEPT7SUXXLWMC6DWP3O" class="external-link uri">https://htmlpreview.github.io/?https://raw.githubusercontent.com/MRCIEU/ukbb-gwas-analysis/master/docs/ldsc_clumped_analysis.html?token=AAOV6TBQXEXEPT7SUXXLWMC6DWP3O</a></p>
+systematically analysed every <a href="https://doi.org/10.1093/ije/dyx204" class="external-link">PHESANT</a> phenotype in UK
+Biobank. There were previously ~20k traits with complete GWAS data, but
+a majority of these were binary traits based on very few numbers of
+cases. We have now filtered out unreliable datasets, there are 2514
+traits remaining, with any binary traits removed that had fewer than
+1000 cases. Another issue is the combination of small numbers of cases
+and allele frequency - here minor allele count (MAC) for a particular
+association could be very small which would lead to high false positives
+when using Bolt-LMM. The remaining traits have been filtered to only
+retain associations where the MAC &gt; 90.</p>
+<p>Document detailing this investigation here: <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/MRCIEU/ukbb-gwas-analysis/master/docs/ldsc_clumped_analysis.html" class="external-link uri">https://htmlpreview.github.io/?https://raw.githubusercontent.com/MRCIEU/ukbb-gwas-analysis/master/docs/ldsc_clumped_analysis.html</a></p>
 </div>
 <div class="section level3">
 <h3 id="all-data-is-now-harmonised">All data is now harmonised<a class="anchor" aria-label="anchor" href="#all-data-is-now-harmonised"></a>

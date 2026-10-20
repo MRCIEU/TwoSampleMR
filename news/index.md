@@ -1,5 +1,65 @@
 # Changelog
 
+## TwoSampleMR v0.7.13
+
+(Release date 2026-10-20)
+
+- Fixed URL in gwas2020 vignette
+- Clarified the steps in the Multivariable MR section of the Perform MR
+  vignette and fixed the object passed to
+  [`extract_outcome_data()`](https://mrcieu.github.io/TwoSampleMR/reference/extract_outcome_data.md)
+  in its example (thanks [@hdraisma](https://github.com/hdraisma),
+  [\#340](https://github.com/MRCIEU/TwoSampleMR/issues/340))
+- Fixed
+  [`harmonise_ld_dat()`](https://mrcieu.github.io/TwoSampleMR/reference/harmonise_ld_dat.md),
+  and hence `dat_to_MRInput(get_correlations = TRUE)`, failing when the
+  LD matrix SNPs were in a different order to the summary data; the LD
+  matrix is now reordered to match (thanks
+  [@marwaalarab](https://github.com/marwaalarab),
+  [\#348](https://github.com/MRCIEU/TwoSampleMR/issues/348))
+- Fixed small p-values being shown as 0 in the tables in
+  [`mr_report()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_report.md)
+  reports; p-values are now shown to 3 significant figures (thanks
+  [@sonia-shah](https://github.com/sonia-shah),
+  [\#42](https://github.com/MRCIEU/TwoSampleMR/issues/42))
+- [`run_mrmix()`](https://mrcieu.github.io/TwoSampleMR/reference/run_mrmix.md)
+  now removes SNPs with an `eaf.exposure` that is missing or not
+  strictly between 0 and 1, with a warning, instead of erroring in
+  [`MRMix::standardize()`](https://rdrr.io/pkg/MRMix/man/standardize.html)
+  ([\#169](https://github.com/MRCIEU/TwoSampleMR/issues/169))
+- The mode based estimators
+  ([`mr_mode()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_mode.md),
+  [`mr_simple_mode()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_simple_mode.md),
+  [`mr_weighted_mode()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_weighted_mode.md),
+  [`mr_simple_mode_nome()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_simple_mode_nome.md),
+  and
+  [`mr_weighted_mode_nome()`](https://mrcieu.github.io/TwoSampleMR/reference/mr_weighted_mode_nome.md))
+  now remove SNPs with a `beta.exposure` of 0, with a warning, instead
+  of erroring with “non-finite ‘bw’” in
+  [`density()`](https://rdrr.io/r/stats/density.html) (thanks
+  [@Julie1130](https://github.com/Julie1130),
+  [\#570](https://github.com/MRCIEU/TwoSampleMR/issues/570))
+- In
+  [`mv_multiple()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_multiple.md)
+  and
+  [`mv_residual()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_residual.md)
+  with `instrument_specific = FALSE` (the default), the `nsnp` column
+  now reports the number of SNPs used in the analysis, which is all the
+  SNPs, rather than the number passing `pval_threshold` for each
+  exposure. In
+  [`mv_residual()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_residual.md)
+  this also fixes estimates being set to `NA` when few SNPs passed
+  `pval_threshold` for an exposure, even though all SNPs were used
+  (thanks [@MaVdb](https://github.com/MaVdb) and
+  [@mvab](https://github.com/mvab),
+  [\#78](https://github.com/MRCIEU/TwoSampleMR/issues/78))
+- Expanded the documentation of
+  [`effective_n()`](https://mrcieu.github.io/TwoSampleMR/reference/effective_n.md)
+  to give its formula, explain that it is half the effective sample size
+  used by METAL, and where it is used in the package (thanks
+  [@carbocation](https://github.com/carbocation),
+  [\#433](https://github.com/MRCIEU/TwoSampleMR/issues/433))
+
 ## TwoSampleMR v0.7.12
 
 (Release date 2026-10-08)
@@ -159,7 +219,7 @@
 
 (Release date 2026-05-04)
 
-- Amend <https://gwas.mrcieu.ac.uk> URLs to <https://opengwas.io/>
+- Amend `https://gwas.mrcieu.ac.uk` URLs to <https://opengwas.io/>
 - Bump version of roxygen2 to 8.0.0 and regenerate documentation
 - Replace `array(1:nexp)` placeholder allocations with
   `numeric(nexp)`/`integer(nexp)` in multivariable MR functions

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">TwoSampleMR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,22 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.12/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.13" id="twosamplemr-v0713">TwoSampleMR v0.7.13<a class="anchor" aria-label="anchor" href="#twosamplemr-v0713"></a></h2>
+<p>(Release date 2026-10-20)</p>
+<ul><li>Fixed URL in gwas2020 vignette</li>
+<li>Clarified the steps in the Multivariable MR section of the Perform MR vignette and fixed the object passed to <code><a href="../reference/extract_outcome_data.html">extract_outcome_data()</a></code> in its example (thanks <a href="https://github.com/hdraisma" class="external-link">@hdraisma</a>, <a href="https://github.com/MRCIEU/TwoSampleMR/issues/340" class="external-link">#340</a>)</li>
+<li>Fixed <code><a href="../reference/harmonise_ld_dat.html">harmonise_ld_dat()</a></code>, and hence <code>dat_to_MRInput(get_correlations = TRUE)</code>, failing when the LD matrix SNPs were in a different order to the summary data; the LD matrix is now reordered to match (thanks <a href="https://github.com/marwaalarab" class="external-link">@marwaalarab</a>, <a href="https://github.com/MRCIEU/TwoSampleMR/issues/348" class="external-link">#348</a>)</li>
+<li>Fixed small p-values being shown as 0 in the tables in <code><a href="../reference/mr_report.html">mr_report()</a></code> reports; p-values are now shown to 3 significant figures (thanks <a href="https://github.com/sonia-shah" class="external-link">@sonia-shah</a>, <a href="https://github.com/MRCIEU/TwoSampleMR/issues/42" class="external-link">#42</a>)</li>
+<li>
+<code><a href="../reference/run_mrmix.html">run_mrmix()</a></code> now removes SNPs with an <code>eaf.exposure</code> that is missing or not strictly between 0 and 1, with a warning, instead of erroring in <code><a href="https://rdrr.io/pkg/MRMix/man/standardize.html" class="external-link">MRMix::standardize()</a></code> (<a href="https://github.com/MRCIEU/TwoSampleMR/issues/169" class="external-link">#169</a>)</li>
+<li>The mode based estimators (<code><a href="../reference/mr_mode.html">mr_mode()</a></code>, <code><a href="../reference/mr_simple_mode.html">mr_simple_mode()</a></code>, <code><a href="../reference/mr_weighted_mode.html">mr_weighted_mode()</a></code>, <code><a href="../reference/mr_simple_mode_nome.html">mr_simple_mode_nome()</a></code>, and <code><a href="../reference/mr_weighted_mode_nome.html">mr_weighted_mode_nome()</a></code>) now remove SNPs with a <code>beta.exposure</code> of 0, with a warning, instead of erroring with “non-finite ‘bw’” in <code><a href="https://rdrr.io/r/stats/density.html" class="external-link">density()</a></code> (thanks <a href="https://github.com/Julie1130" class="external-link">@Julie1130</a>, <a href="https://github.com/MRCIEU/TwoSampleMR/issues/570" class="external-link">#570</a>)</li>
+<li>In <code><a href="../reference/mv_multiple.html">mv_multiple()</a></code> and <code><a href="../reference/mv_residual.html">mv_residual()</a></code> with <code>instrument_specific = FALSE</code> (the default), the <code>nsnp</code> column now reports the number of SNPs used in the analysis, which is all the SNPs, rather than the number passing <code>pval_threshold</code> for each exposure. In <code><a href="../reference/mv_residual.html">mv_residual()</a></code> this also fixes estimates being set to <code>NA</code> when few SNPs passed <code>pval_threshold</code> for an exposure, even though all SNPs were used (thanks <a href="https://github.com/MaVdb" class="external-link">@MaVdb</a> and <a href="https://github.com/mvab" class="external-link">@mvab</a>, <a href="https://github.com/MRCIEU/TwoSampleMR/issues/78" class="external-link">#78</a>)</li>
+<li>Expanded the documentation of <code><a href="../reference/effective_n.html">effective_n()</a></code> to give its formula, explain that it is half the effective sample size used by METAL, and where it is used in the package (thanks <a href="https://github.com/carbocation" class="external-link">@carbocation</a>, <a href="https://github.com/MRCIEU/TwoSampleMR/issues/433" class="external-link">#433</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.12" id="twosamplemr-v0712">TwoSampleMR v0.7.12<a class="anchor" aria-label="anchor" href="#twosamplemr-v0712"></a></h2>
 <p>(Release date 2026-10-08)</p>
@@ -122,7 +135,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.5" id="twosamplemr-v075">TwoSampleMR v0.7.5<a class="anchor" aria-label="anchor" href="#twosamplemr-v075"></a></h2>
 <p>(Release date 2026-05-04)</p>
-<ul><li>Amend <a href="https://gwas.mrcieu.ac.uk" class="external-link uri">https://gwas.mrcieu.ac.uk</a> URLs to <a href="https://opengwas.io/" class="external-link uri">https://opengwas.io/</a>
+<ul><li>Amend <code>https://gwas.mrcieu.ac.uk</code> URLs to <a href="https://opengwas.io/" class="external-link uri">https://opengwas.io/</a>
 </li>
 <li>Bump version of roxygen2 to 8.0.0 and regenerate documentation</li>
 <li>Replace <code>array(1:nexp)</code> placeholder allocations with <code>numeric(nexp)</code>/<code>integer(nexp)</code> in multivariable MR functions</li>

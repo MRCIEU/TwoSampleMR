@@ -1077,8 +1077,22 @@ data in the correct format:
     exposure 1 is in LD with a variant for exposure 2
 4.  Re-extract all the final clumped SNPs from (3) from all of the
     exposures
-5.  Harmonise them all to be on the same effect allele
-6.  Use the multivariable MR method against these harmonised data
+5.  Extract the final clumped SNPs from (3) from the outcome
+6.  Harmonise them all to be on the same effect allele
+7.  Use the multivariable MR method against these harmonised data
+
+Steps 1 to 4 are performed by
+[`mv_extract_exposures()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures.md)
+(or
+[`mv_extract_exposures_local()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_extract_exposures_local.md)
+for your own summary data), step 5 by
+[`extract_outcome_data()`](https://mrcieu.github.io/TwoSampleMR/reference/extract_outcome_data.md),
+step 6 by
+[`mv_harmonise_data()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_harmonise_data.md),
+and step 7 by
+[`mv_multiple()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_multiple.md)
+or
+[`mv_residual()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_residual.md).
 
 Example - The GWAS IDs for HDL, LDL and total cholesterol are
 `ieu-a-299`, `ieu-a-300`, and `ieu-a-302`. The GWAS ID for coronary
@@ -1107,7 +1121,7 @@ Next, also extract those SNPs from the outcome.
 
 ``` r
 
-mv_outcome_dat <- extract_outcome_data(exposure_dat$SNP, id_outcome)
+mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, id_outcome)
 ```
 
 Once the data has been obtained, harmonise so that all are on the same
@@ -1132,9 +1146,9 @@ res
 #> 2   ieu-a-300 LDL cholesterol || id:ieu-a-300    ieu-a-7
 #> 3   ieu-a-302   Triglycerides || id:ieu-a-302    ieu-a-7
 #>                                outcome nsnp           b         se         pval
-#> 1 Coronary heart disease || id:ieu-a-7   79 -0.08919724 0.05970552 1.351879e-01
-#> 2 Coronary heart disease || id:ieu-a-7   68  0.37853543 0.04976846 2.828614e-14
-#> 3 Coronary heart disease || id:ieu-a-7   42  0.13584165 0.06738291 4.380354e-02
+#> 1 Coronary heart disease || id:ieu-a-7  143 -0.08919724 0.05970552 1.351879e-01
+#> 2 Coronary heart disease || id:ieu-a-7  143  0.37853543 0.04976846 2.828614e-14
+#> 3 Coronary heart disease || id:ieu-a-7  143  0.13584165 0.06738291 4.380354e-02
 ```
 
 ### Note about multivariable methods
@@ -1540,9 +1554,9 @@ head(res)
 #> 2   ieu-a-300 LDL cholesterol || id:ieu-a-300    ieu-a-7
 #> 3   ieu-a-302   Triglycerides || id:ieu-a-302    ieu-a-7
 #>                                outcome nsnp           b         se         pval
-#> 1 Coronary heart disease || id:ieu-a-7   79 -0.08919724 0.05970552 1.351879e-01
-#> 2 Coronary heart disease || id:ieu-a-7   68  0.37853543 0.04976846 2.828614e-14
-#> 3 Coronary heart disease || id:ieu-a-7   42  0.13584165 0.06738291 4.380354e-02
+#> 1 Coronary heart disease || id:ieu-a-7  143 -0.08919724 0.05970552 1.351879e-01
+#> 2 Coronary heart disease || id:ieu-a-7  143  0.37853543 0.04976846 2.828614e-14
+#> 3 Coronary heart disease || id:ieu-a-7  143  0.13584165 0.06738291 4.380354e-02
 ```
 
 The outcome column can be split into separate columns for the id and

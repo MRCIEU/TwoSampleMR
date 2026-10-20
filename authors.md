@@ -21,7 +21,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.12/inst/CITATION)
+[`inst/CITATION`](https://github.com/MRCIEU/TwoSampleMR/blob/master/inst/CITATION)
 
 Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C,
 Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA,
@@ -37,7 +37,7 @@ systematic causal inference across the human phenome. eLife
       volume = {7},
       journal = {eLife},
       pages = {e34408},
-      url = {https://elifesciences.org/articles/34408},
+      url = {https://doi.org/10.7554/eLife.34408},
       doi = {10.7554/eLife.34408},
     }
 

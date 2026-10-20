@@ -36,7 +36,8 @@ mv_residual(
 
 - pval_threshold:
 
-  P-value threshold to include instruments. The default is `5e-8`.
+  P-value threshold to include instruments. Only used when
+  `instrument_specific = TRUE`. The default is `5e-8`.
 
 - plots:
 
