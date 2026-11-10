@@ -411,6 +411,14 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness = 
     ) %in%
       names(exposure_dat)
   ))
+  dup <- duplicated(exposure_dat[, c("SNP", "id.exposure")])
+  if (any(dup)) {
+    warning(
+      sum(dup),
+      " duplicated SNP-exposure rows found in exposure_dat; keeping the first occurrence of each."
+    )
+    exposure_dat <- exposure_dat[!dup, ]
+  }
   nexp <- length(unique(exposure_dat$id.exposure))
   stopifnot(nexp > 1)
   tab <- table(exposure_dat$SNP)

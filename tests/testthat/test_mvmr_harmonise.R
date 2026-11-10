@@ -108,3 +108,22 @@ test_that("mv_harmonise_data() errors when no SNPs remain after harmonising (iss
     fixed = TRUE
   )
 })
+
+test_that("mv_harmonise_data() handles duplicated SNPs within an exposure", {
+  # rs1 is duplicated in e1 and missing from e3, so a naive count of rows per
+  # SNP (3) would wrongly treat it as present for all 3 exposures
+  exposure_dat <- rbind(
+    make_mv_exposure(c("rs1", "rs1", "rs2"), "e1"),
+    make_mv_exposure(c("rs1", "rs2"), "e2"),
+    make_mv_exposure("rs2", "e3")
+  )
+  outcome_dat <- make_mv_outcome(c("rs1", "rs2"))
+  expect_warning(
+    mvdat <- suppressMessages(mv_harmonise_data(exposure_dat, outcome_dat)),
+    "1 duplicated SNP-exposure rows found in exposure_dat",
+    fixed = TRUE
+  )
+  expect_equal(rownames(mvdat$exposure_beta), "rs2")
+  expect_equal(colnames(mvdat$exposure_beta), c("e1", "e2", "e3"))
+  expect_false(is.list(mvdat$exposure_beta))
+})

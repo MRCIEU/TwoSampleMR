@@ -1,6 +1,7 @@
 # TwoSampleMR v0.7.14
 
 * `mv_harmonise_data()` now gives an informative error when no SNP in `exposure_dat` is present for all of the exposures (e.g. when `exposure_dat` was made by combining the output of `extract_instruments()` for each exposure instead of using `mv_extract_exposures()`), when none of these SNPs are in `outcome_dat`, or when none of them remain after harmonising. Previously it failed with "dims [product 1] do not match the length of object [0]" (before v0.7.6) or "object 'mr_keep' not found", or, in the last case, returned empty matrices without an error (#316)
+* `mv_harmonise_data()` now removes duplicated SNP-exposure rows in `exposure_dat` (keeping the first occurrence of each) with a warning. Previously duplicated rows could cause a SNP missing for some exposures to be kept, or a SNP present for all exposures to be dropped, and could give list-columns in the exposure matrices.
 
 # TwoSampleMR v0.7.13
 
