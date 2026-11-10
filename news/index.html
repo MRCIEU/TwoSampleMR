@@ -45,11 +45,12 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/MRCIEU/TwoSampleMR/blob/v0.7.14/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.14" id="twosamplemr-v0714">TwoSampleMR v0.7.14<a class="anchor" aria-label="anchor" href="#twosamplemr-v0714"></a></h2>
+<p>(Release date 2026-11-10)</p>
 <ul><li>
 <code><a href="../reference/mv_harmonise_data.html">mv_harmonise_data()</a></code> now gives an informative error when no SNP in <code>exposure_dat</code> is present for all of the exposures (e.g. when <code>exposure_dat</code> was made by combining the output of <code><a href="../reference/extract_instruments.html">extract_instruments()</a></code> for each exposure instead of using <code><a href="../reference/mv_extract_exposures.html">mv_extract_exposures()</a></code>), when none of these SNPs are in <code>outcome_dat</code>, or when none of them remain after harmonising. Previously it failed with “dims [product 1] do not match the length of object [0]” (before v0.7.6) or “object ‘mr_keep’ not found”, or, in the last case, returned empty matrices without an error (thanks <a href="https://github.com/chenyangsu" class="external-link">@chenyangsu</a>, <a href="https://github.com/MRCIEU/TwoSampleMR/issues/316" class="external-link">#316</a>)</li>
 <li>

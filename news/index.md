@@ -2,6 +2,8 @@
 
 ## TwoSampleMR v0.7.14
 
+(Release date 2026-11-10)
+
 - [`mv_harmonise_data()`](https://mrcieu.github.io/TwoSampleMR/reference/mv_harmonise_data.md)
   now gives an informative error when no SNP in `exposure_dat` is
   present for all of the exposures (e.g. when `exposure_dat` was made by
