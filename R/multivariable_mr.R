@@ -411,10 +411,28 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness = 
     ) %in%
       names(exposure_dat)
   ))
+  dup <- duplicated(exposure_dat[, c("SNP", "id.exposure")])
+  if (any(dup)) {
+    warning(
+      sum(dup),
+      " duplicated SNP-exposure rows found in exposure_dat; keeping the first occurrence of each."
+    )
+    exposure_dat <- exposure_dat[!dup, ]
+  }
   nexp <- length(unique(exposure_dat$id.exposure))
   stopifnot(nexp > 1)
   tab <- table(exposure_dat$SNP)
   keepsnp <- names(tab)[tab == nexp]
+  if (length(keepsnp) == 0) {
+    stop(
+      "None of the SNPs in exposure_dat are present for all ",
+      nexp,
+      " exposures. mv_harmonise_data() only uses SNPs that have an effect for every exposure. ",
+      "Obtain exposure_dat with mv_extract_exposures() or mv_extract_exposures_local(), ",
+      "rather than by combining the output of extract_instruments() for each exposure, ",
+      "or check the overlap of SNPs between the exposures."
+    )
+  }
   exposure_dat <- subset(exposure_dat, SNP %in% keepsnp)
 
   # Get outcome data
@@ -423,6 +441,24 @@ mv_harmonise_data <- function(exposure_dat, outcome_dat, harmonise_strictness = 
     outcome_dat,
     action = harmonise_strictness
   )
+  if (nrow(dat) == 0) {
+    stop(
+      "None of the ",
+      length(keepsnp),
+      " SNPs present for all exposures were found in outcome_dat. Check that outcome_dat was ",
+      "extracted for these SNPs, e.g. with extract_outcome_data(exposure_dat$SNP, ...)."
+    )
+  }
+  if (!any(dat$mr_keep, na.rm = TRUE)) {
+    stop(
+      "None of the ",
+      length(unique(dat$SNP)),
+      " SNPs present for all exposures and in outcome_dat were kept after harmonising the ",
+      "alleles (e.g. palindromic SNPs or SNPs with incompatible alleles can be removed). ",
+      "Check the alleles in exposure_dat and outcome_dat, and see the harmonise_strictness ",
+      "argument."
+    )
+  }
   dat <- subset(dat, mr_keep)
   dat$SNP <- as.character(dat$SNP)
 
