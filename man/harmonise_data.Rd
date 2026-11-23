@@ -56,4 +56,9 @@ The function tries to harmonise INDELs. If they are coded as sequence strings th
 If they are coded as D/I in one dataset it will try to convert them to sequences if the other dataset has adequate information.
 If coded as D/I in one dataset and as a variant with equal length INDEL alleles in the other, the variant is dropped.
 If one or both the datasets only has one allele (i.e. the effect allele) then harmonisation is naturally going to be more ambiguous and more variants will be dropped.
+
+If \code{outcome_dat} has an \code{association_status.outcome} column, as data from \code{\link[=extract_outcome_data]{extract_outcome_data()}}
+do, the column is kept, and for each exposure and outcome a message gives how many of the outcome
+Associations used for MR were Imputed (by Reference Completion) rather than observed in the study.
+\code{\link[=mr]{mr()}} reports the same count as \code{nsnp_imputed}.
 }

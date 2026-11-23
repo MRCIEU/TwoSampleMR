@@ -1,5 +1,9 @@
 #' Perform all Mendelian randomization tests
 #'
+#' Where `dat` has an `association_status.outcome` column, as data from [extract_outcome_data()] do,
+#' the table has one more column after `pval`, `nsnp_imputed`: how many of the `nsnp` SNPs
+#' used for that exposure and outcome had an Imputed outcome Association.
+#'
 #' @param dat Harmonised exposure and outcome data. Output from [harmonise_data()].
 #' @param parameters Parameters to be used for various MR methods. Default is output from [default_parameters()].
 #' @param method_list List of methods to use in analysis. See [mr_method_list()] for details.
@@ -94,6 +98,10 @@ mr <- function(
       stringsAsFactors = FALSE
     )
     mr_tab <- mr_tab[!(is.na(mr_tab$b) & is.na(mr_tab$se) & is.na(mr_tab$pval)), ]
+    if ("association_status.outcome" %in% names(x)) {
+      # Data from opengwasr: how many of the SNPs used had an Imputed outcome Association.
+      mr_tab$nsnp_imputed <- rep(sum(x$association_status.outcome %in% "imputed"), nrow(mr_tab))
+    }
     return(mr_tab)
   })
 

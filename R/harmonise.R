@@ -33,6 +33,11 @@
 #' If coded as D/I in one dataset and as a variant with equal length INDEL alleles in the other, the variant is dropped.
 #' If one or both the datasets only has one allele (i.e. the effect allele) then harmonisation is naturally going to be more ambiguous and more variants will be dropped.
 #'
+#' If `outcome_dat` has an `association_status.outcome` column, as data from [extract_outcome_data()]
+#' do, the column is kept, and for each exposure and outcome a message gives how many of the outcome
+#' Associations used for MR were Imputed (by Reference Completion) rather than observed in the study.
+#' [mr()] reports the same count as `nsnp_imputed`.
+#'
 #' @param exposure_dat Output from [read_exposure_data()].
 #' @param outcome_dat Output from [extract_outcome_data()].
 #' @param action Level of strictness in dealing with SNPs.
@@ -97,6 +102,16 @@ harmonise_data <- function(exposure_dat, outcome_dat, action = 2) {
       nrow(x)
 
     x$mr_keep[!complete.cases(x[, mr_cols])] <- FALSE
+    if ("association_status.outcome" %in% names(x)) {
+      message(
+        sum(x$mr_keep & x$association_status.outcome %in% "imputed"),
+        " of ",
+        sum(x$mr_keep),
+        " outcome Associations used for MR (",
+        x$outcome[1],
+        ") were Imputed: Reference Completion estimated them, the study did not report them."
+      )
+    }
     attr(x, "log")[["total_variants"]] <- nrow(x)
     attr(x, "log")[["total_variants_for_mr"]] <- sum(x$mr_keep)
     attr(x, "log")[["proxy_variants"]] <- ifelse(

@@ -25,5 +25,7 @@ List with the following elements:
 }
 }
 \description{
-Perform all Mendelian randomization tests
+Where \code{dat} has an \code{association_status.outcome} column, as data from \code{\link[=extract_outcome_data]{extract_outcome_data()}} do,
+the table has one more column after \code{pval}, \code{nsnp_imputed}: how many of the \code{nsnp} SNPs
+used for that exposure and outcome had an Imputed outcome Association.
 }
