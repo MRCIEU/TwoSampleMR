@@ -5,3 +5,70 @@ skip_if_opengwas_tests_disabled <- function() {
     invisible()
   }
 }
+
+# opengwasr answers TwoSampleMR's data calls. Its fake Data API is internal to opengwasr's own tests,
+# so these tests replace opengwasr's functions at the boundary TwoSampleMR calls, with small data
+# frames recorded from real opengwasr output (see fixtures/record-fixtures.R).
+fixture <- function(name) readRDS(test_path("fixtures", paste0(name, ".rds")))
+
+bmi_id <- "OGS-00009:ukb-b-19953"
+cad_id <- "OGS-00011:GCST003116"
+
+# The calls opengwasr received, most recent last, are in `$calls`.
+local_fake_opengwasr <- function(env = parent.frame()) {
+  analyses <- fixture("analyses")
+  tophits <- fixture("tophits-bmi")
+  associations <- fixture("associations-cad")
+  state <- new.env()
+  state$calls <- list()
+  note <- function(fn, args) state$calls[[length(state$calls) + 1]] <- list(fn = fn, args = args)
+
+  testthat::local_mocked_bindings(
+    og_api = function(...) structure(list(), class = "fake_source"),
+    og_tophits = function(src, analyses, threshold = 5e-8, limit = 1000, observed_only = FALSE,
+                          clump = TRUE, ld = NULL, r2 = NULL, kb = NULL, original_units = FALSE,
+                          releases = NULL) {
+      note("og_tophits", list(src = src, analyses = analyses, threshold = threshold, limit = limit,
+                              clump = clump, ld = ld, r2 = r2, kb = kb))
+      if (!identical(analyses, "ukb-b-19953")) return(tophits[0, ])
+      out <- tophits
+      if (!clump) out <- out[, !grepl("^clump_", names(out))]
+      out
+    },
+    og_associations = function(src, variants, analyses, observed_only = FALSE,
+                               original_units = FALSE, releases = NULL) {
+      note("og_associations", list(src = src, variants = variants, analyses = analyses))
+      # BMI's Associations of its own instruments are its recorded top hits.
+      bmi <- tophits[, setdiff(names(tophits), c("clump_ld", "clump_ld_choice", "clump_r2", "clump_kb", "clump_size"))]
+      served <- list(
+        "ebi-a-GCST003116" = associations, "OGS-00011:GCST003116" = associations,
+        "ukb-b-19953" = bmi, "OGS-00009:ukb-b-19953" = bmi
+      )
+      rows <- lapply(analyses, function(a) {
+        x <- served[[a]]
+        if (is.null(x)) return(associations[0, ])
+        x[x$rsid %in% variants | x$alid %in% variants, ]
+      })
+      do.call(rbind, rows)
+    },
+    og_analyses = function(src, ids = NULL, releases = NULL) {
+      note("og_analyses", list(src = src, ids = ids))
+      if (is.null(ids)) return(analyses)
+      row <- match(ids, analyses$requested_id)
+      row[is.na(row)] <- match(ids, analyses$id)[is.na(row)]
+      unknown <- ids[is.na(row)]
+      found <- analyses[row[!is.na(row)], ]
+      found$requested_id <- ids[!is.na(row)]
+      if (length(unknown) > 0) {
+        stop(structure(class = c("opengwasr_analysis_not_found", "error", "condition"),
+                       list(message = "Identifiers that name no Analysis", call = NULL, ids = unknown)))
+      }
+      found
+    },
+    .package = "opengwasr",
+    .env = env
+  )
+  state
+}
+
+calls_to <- function(state, fn) Filter(function(x) x$fn == fn, state$calls)

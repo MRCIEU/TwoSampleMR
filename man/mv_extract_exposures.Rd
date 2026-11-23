@@ -9,29 +9,30 @@ mv_extract_exposures(
   clump_r2 = 0.001,
   clump_kb = 10000,
   harmonise_strictness = 2,
-  opengwas_jwt = ieugwasr::get_opengwas_jwt(),
+  opengwas_jwt = NULL,
   find_proxies = TRUE,
   force_server = FALSE,
   pval_threshold = 5e-08,
   pop = "EUR",
   plink_bin = NULL,
-  bfile = NULL
+  bfile = NULL,
+  src = opengwasr::og_api()
 )
 }
 \arguments{
-\item{id_exposure}{Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)}
+\item{id_exposure}{Array of IDs (e.g. \code{c("ukb-b-19953", "ebi-a-GCST003116")})}
 
-\item{clump_r2}{The default is \code{0.01}.}
+\item{clump_r2}{The default is \code{0.001} for \code{\link[=clump_data]{clump_data()}}. Instruments are clumped in each Analysis's LD Store at its own threshold unless you set this.}
 
-\item{clump_kb}{The default is \code{10000}.}
+\item{clump_kb}{The default is \code{10000} for \code{\link[=clump_data]{clump_data()}}. Instruments are clumped in each Analysis's LD Store at its own window unless you set this.}
 
 \item{harmonise_strictness}{See the \code{action} option of \code{\link[=harmonise_data]{harmonise_data()}}. The default is \code{2}.}
 
-\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to \url{https://api.opengwas.io} to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
+\item{opengwas_jwt}{Deprecated and ignored. Credentials come from \code{src}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}} reads \code{OPENGWAS_JWT}.}
 
-\item{find_proxies}{Look for proxies? This slows everything down but is more accurate. The default is \code{TRUE}.}
+\item{find_proxies}{Deprecated and ignored: Imputed Associations replace proxies (see \code{\link[=extract_outcome_data]{extract_outcome_data()}}).}
 
-\item{force_server}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is \code{FALSE}.}
+\item{force_server}{Deprecated and ignored. Clumping always runs on the server.}
 
 \item{pval_threshold}{Instrument detection p-value threshold. Default = \code{5e-8}}
 
@@ -40,10 +41,19 @@ mv_extract_exposures(
 \item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 
 \item{bfile}{If this is provided then will use the API. Default = \code{NULL}}
+
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
 }
 \value{
 data frame in \code{exposure_dat} format
 }
 \description{
 Requires a list of IDs from available_outcomes. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.
+}
+\details{
+The data come from opengwasr, as for \code{\link[=extract_instruments]{extract_instruments()}} and \code{\link[=extract_outcome_data]{extract_outcome_data()}}: IDs
+are Analyses (\verb{<store_id>:<analysis_id>}, or a legacy id that names one), effects of continuous
+traits are per SD, instruments are clumped on the server in the LD Store matching each
+Analysis's ancestry (at its own thresholds unless you set \code{clump_r2} and \code{clump_kb}), and
+Imputed Associations replace proxies. The final clumping across exposures is still \code{\link[=clump_data]{clump_data()}}.
 }

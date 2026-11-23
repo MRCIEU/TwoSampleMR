@@ -4,12 +4,18 @@
 \alias{add_metadata}
 \title{Add meta data to extracted data}
 \usage{
-add_metadata(dat, cols = c("sample_size", "ncase", "ncontrol", "unit", "sd"))
+add_metadata(
+  dat,
+  cols = c("sample_size", "ncase", "ncontrol", "effect_scale", "sd"),
+  src = opengwasr::og_api()
+)
 }
 \arguments{
 \item{dat}{Either exposure data, outcome data or harmonised data}
 
-\item{cols}{Which metadata fields to add. Default = \code{c("sample_size", "ncase", "ncontrol", "unit", "sd")}}
+\item{cols}{Which metadata fields to add. Default = \code{c("sample_size", "ncase", "ncontrol", "effect_scale", "sd")}}
+
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
 }
 \value{
 Data frame
@@ -19,4 +25,22 @@ Previously the meta data was returned alongside association information.
 This is mostly unnecessary as it is needlessly repeating information.
 This is a convenience function that reinstates that information.
 Can be applied to either exposure data, outcome data, or harmonised data
+}
+\details{
+The meta data come from opengwasr (see \code{\link[opengwasr:og_analyses]{opengwasr::og_analyses()}}). A field is added as
+\verb{<field>.exposure} or \verb{<field>.outcome}, only where the data hold no value for it already.
+The fields are named as they always were, and each one is read from the Analysis metadata
+column that now holds it:
+\itemize{
+\item \code{sample_size} is \code{sample_size}, added as \code{samplesize};
+\item \code{ncase} and \code{ncontrol} are \code{n_cases} and \code{n_controls};
+\item \code{effect_scale} is \code{stored_effect_scale}: \code{"sd"} for effects per SD of the trait, \code{"log_or"}
+for log odds ratios;
+\item \code{sd} is \code{original_sd}, the SD of the trait in its original units where OpenGWAS recorded one;
+\item \code{unit} no longer exists, because effects are per SD, not in a study's own units. Asking for it
+gives a message, and \code{effect_scale} instead.
+}
+
+Any other column of the Analysis metadata, such as \code{assigned_ancestry}, can be named too.
+An id that names no Analysis is left without meta data, with a message.
 }

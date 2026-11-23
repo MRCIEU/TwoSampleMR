@@ -1,3 +1,4 @@
+# Still used by clump_data(), ld_matrix() and the LDSC functions, which call ieugwasr until they move over.
 x_api_source_header <- function() {
   paste0(
     "ieugwasr/",
@@ -10,13 +11,24 @@ x_api_source_header <- function() {
 
 #' Get list of studies with available GWAS summary statistics through API
 #'
-#' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
+#' Lists every Analysis (study) that the OpenGWAS Source `src` holds, as
+#' [opengwasr::og_analyses()] returns them: `id` is the Analysis's name in the form
+#' `<store_id>:<analysis_id>`, which the other functions accept, `analysis_label` is its trait, and
+#' `assigned_ancestry`, `sample_size`, `n_cases`, `n_controls`, `stored_effect_scale`,
+#' `original_sd` and the rest of the Analysis's metadata follow. For scripts that read the old
+#' column, `trait` repeats `analysis_label`.
+#'
+#' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
+#' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
 #'
 #' @export
 #' @return Dataframe of details for all available studies
-available_outcomes <- function(opengwas_jwt = ieugwasr::get_opengwas_jwt()) {
-  # .Deprecated("ieugwasr::gwasinfo()")
-  a <- ieugwasr::gwasinfo(opengwas_jwt = opengwas_jwt, x_api_source = x_api_source_header())
+available_outcomes <- function(opengwas_jwt = NULL, src = opengwasr::og_api()) {
+  if (!missing(opengwas_jwt)) {
+    deprecate_opengwas_jwt("available_outcomes")
+  }
+  a <- opengwasr::og_analyses(src)
+  a$trait <- a$analysis_label
   return(a)
 }
 
@@ -25,16 +37,33 @@ available_outcomes <- function(opengwas_jwt = ieugwasr::get_opengwas_jwt()) {
 #'
 #' Supply the output from [read_exposure_data()] and all the SNPs therein will be queried against the requested outcomes in remote database using API.
 #'
+#' The data come from opengwasr (see [opengwasr::og_associations()]).
+#'
+#' * `snps` are rsIDs, or ALIDs (`chromosome:position:effect allele:other allele`, on GRCh38; see
+#'   [opengwasr::og_alid()]). `SNP` in the result is the rsID, or the ALID for a variant you asked
+#'   for by ALID or that has no rsID.
+#' * LD proxies are no longer looked up. The Store Releases opengwasr reads are Reference-Completed:
+#'   they hold an Imputed Association for most variants a study did not report. Those come back
+#'   as the variant itself, and `association_status.outcome` says `"imputed"` for them (and
+#'   `"observed"` for the others). [harmonise_data()] reports how many were Imputed. Passing
+#'   `proxies`, `rsq`, `align_alleles`, `palindromes`, `maf_threshold` or `proxy_splitsize` prints a message and
+#'   changes nothing.
+#' * Outcomes are Analyses, named `<store_id>:<analysis_id>`, such as `OGS-00011:GCST003116`. Legacy
+#'   OpenGWAS ids such as `ebi-a-GCST003116` are accepted where they name one Analysis. An id that
+#'   names no Analysis is an error.
+#' * Effects of continuous traits are per SD of the trait, and `effect_scale.outcome` says so.
+#'
 #' @param snps Array of SNP rs IDs.
 #' @param outcomes Array of IDs (see \code{id} column in output from [available_outcomes()]).
-#' @param proxies Look for LD tags? Default is `TRUE`.
-#' @param rsq Minimum LD rsq value (if proxies = 1). Default = `0.8`.
-#' @param align_alleles Try to align tag alleles to target alleles (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
-#' @param palindromes Allow palindromic SNPs (if proxies = 1). `1` = yes, `0` = no. The default is `1`.
-#' @param maf_threshold MAF threshold to try to infer palindromic SNPs. The default is `0.3`.
-#' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
-#' @param splitsize The default is `10000`.
-#' @param proxy_splitsize The default is `500`.
+#' @param proxies Deprecated and ignored: Imputed Associations replace proxies.
+#' @param rsq Deprecated and ignored.
+#' @param align_alleles Deprecated and ignored.
+#' @param palindromes Deprecated and ignored.
+#' @param maf_threshold Deprecated and ignored.
+#' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
+#' @param splitsize Not needed any more: opengwasr splits large queries itself.
+#' @param proxy_splitsize Deprecated and ignored.
+#' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
@@ -46,176 +75,41 @@ extract_outcome_data <- function(
   align_alleles = 1,
   palindromes = 1,
   maf_threshold = 0.3,
-  opengwas_jwt = ieugwasr::get_opengwas_jwt(),
+  opengwas_jwt = NULL,
   splitsize = 10000,
-  proxy_splitsize = 500
+  proxy_splitsize = 500,
+  src = opengwasr::og_api()
 ) {
-  # .Deprecated("ieugwasr::associations()")
-  outcomes <- ieugwasr::legacy_ids(unique(outcomes))
-
-  snps <- unique(snps)
-  firstpass <- extract_outcome_data_internal(
-    snps,
-    outcomes,
-    proxies = FALSE,
-    opengwas_jwt = opengwas_jwt,
-    splitsize = splitsize
+  passed <- c(
+    proxies = !missing(proxies),
+    rsq = !missing(rsq),
+    align_alleles = !missing(align_alleles),
+    palindromes = !missing(palindromes),
+    maf_threshold = !missing(maf_threshold),
+    proxy_splitsize = !missing(proxy_splitsize)
   )
-
-  if (proxies) {
-    for (i in seq_along(outcomes)) {
-      if (is.null(firstpass)) {
-        missedsnps <- snps
-      } else {
-        missedsnps <- snps[!snps %in% subset(firstpass, id.outcome == outcomes[i])$SNP]
-      }
-      if (length(missedsnps) > 0) {
-        message("Finding proxies for ", length(missedsnps), " SNPs in outcome ", outcomes[i])
-        temp <- extract_outcome_data_internal(
-          missedsnps,
-          outcomes[i],
-          proxies = TRUE,
-          rsq,
-          align_alleles,
-          palindromes,
-          maf_threshold,
-          opengwas_jwt = opengwas_jwt,
-          splitsize = proxy_splitsize
-        )
-        if (!is.null(temp)) {
-          firstpass <- data.table::rbindlist(list(firstpass, temp), fill = TRUE, use.names = TRUE)
-          data.table::setDF(firstpass)
-        }
-      }
-    }
+  if (any(passed)) {
+    deprecate_proxy_arguments(names(passed)[passed])
+  }
+  if (!missing(opengwas_jwt)) {
+    deprecate_opengwas_jwt("extract_outcome_data")
   }
 
-  return(firstpass)
-}
-
-
-extract_outcome_data_internal <- function(
-  snps,
-  outcomes,
-  proxies = TRUE,
-  rsq = 0.8,
-  align_alleles = 1,
-  palindromes = 1,
-  maf_threshold = 0.3,
-  opengwas_jwt = ieugwasr::get_opengwas_jwt(),
-  splitsize = 10000
-) {
   snps <- unique(snps)
+  outcomes <- as.character(unique(outcomes))
   message(
     "Extracting data for ",
     length(snps),
     " SNP(s) from ",
-    length(unique(outcomes)),
+    length(outcomes),
     " GWAS(s)"
   )
-  outcomes <- unique(outcomes)
-
-  if (proxies %in% c(FALSE, 0)) {
-    proxies <- 0
-  } else if (proxies %in% c(TRUE, 1)) {
-    proxies <- 1
-  } else {
-    stop("'proxies' argument should be TRUE or FALSE")
-  }
-
-  if (length(snps) < splitsize && length(outcomes) < splitsize) {
-    d <- ieugwasr::associations(
-      variants = snps,
-      id = outcomes,
-      proxies = proxies,
-      r2 = rsq,
-      align_alleles = align_alleles,
-      palindromes = palindromes,
-      maf_threshold = maf_threshold,
-      opengwas_jwt = opengwas_jwt,
-      x_api_source = x_api_source_header()
-    )
-    if (!is.data.frame(d)) d <- data.frame()
-  } else if (length(snps) > length(outcomes)) {
-    # Split snps
-    n <- length(snps)
-    splits <- data.frame(
-      snps = snps,
-      chunk_id = rep(seq_len(ceiling(n / splitsize)), each = splitsize)[seq_len(n)]
-    )
-    d <- list()
-    for (i in seq_along(outcomes)) {
-      message(i, " of ", length(outcomes), " outcomes")
-
-      chunk_ids <- unique(splits$chunk_id)
-      d[[i]] <- lapply(chunk_ids, function(cid) {
-        x <- splits[splits$chunk_id == cid, , drop = FALSE]
-        message(" [>] ", cid, " of ", max(splits$chunk_id), " chunks")
-        out <- ieugwasr::associations(
-          variants = x$snps,
-          id = outcomes[i],
-          proxies = proxies,
-          r2 = rsq,
-          align_alleles = align_alleles,
-          palindromes = palindromes,
-          maf_threshold = maf_threshold,
-          opengwas_jwt = opengwas_jwt,
-          x_api_source = x_api_source_header()
-        )
-        if (!is.data.frame(out)) {
-          out <- data.frame()
-        }
-        return(out)
-      })
-      d[[i]] <- data.table::rbindlist(d[[i]], fill = TRUE, use.names = TRUE)
-    }
-
-    d <- data.table::rbindlist(d, fill = TRUE, use.names = TRUE)
-    data.table::setDF(d)
-  } else {
-    # Split outcomes
-    n <- length(outcomes)
-    splits <- data.frame(
-      outcomes = outcomes,
-      chunk_id = rep(seq_len(ceiling(n / splitsize)), each = splitsize)[seq_len(n)]
-    )
-    d <- list()
-    for (i in seq_along(snps)) {
-      message(i, " of ", length(snps), " snps")
-
-      chunk_ids <- unique(splits$chunk_id)
-      d[[i]] <- lapply(chunk_ids, function(cid) {
-        x <- splits[splits$chunk_id == cid, , drop = FALSE]
-        message(" [>] ", cid, " of ", max(splits$chunk_id), " chunks")
-
-        out <- ieugwasr::associations(
-          variants = snps[i],
-          id = x$outcomes,
-          proxies = proxies,
-          r2 = rsq,
-          align_alleles = align_alleles,
-          palindromes = palindromes,
-          maf_threshold = maf_threshold,
-          opengwas_jwt = opengwas_jwt,
-          x_api_source = x_api_source_header()
-        )
-
-        if (!is.data.frame(out)) {
-          out <- data.frame()
-        }
-        return(out)
-      })
-      d[[i]] <- data.table::rbindlist(d[[i]], fill = TRUE, use.names = TRUE)
-    }
-
-    d <- data.table::rbindlist(d, fill = TRUE, use.names = TRUE)
-    data.table::setDF(d)
-  }
+  d <- opengwasr::og_associations(src, snps, outcomes)
   if (is.null(nrow(d)) || nrow(d) == 0) {
     # message("None of the requested SNPs were available in the specified GWASs.")
     return(NULL)
   }
-  d <- format_d(d)
+  d <- format_d(d, snps)
   if (nrow(d) > 0) {
     d$data_source.outcome <- "igd"
     return(d)
@@ -249,48 +143,32 @@ get_se <- function(eff, pval) {
 }
 
 
-#' Format the returned table from the MySQL database
+#' Format the table that opengwasr returns
 #'
-#' @param d Data frame
+#' @param d Data frame from [opengwasr::og_associations()]
+#' @param snps The SNPs that were asked for, so that a variant asked for by ALID keeps its ALID.
 #' @return Data frame
 #' @keywords internal
-format_d <- function(d) {
+format_d <- function(d, snps = NULL) {
   d1 <- data.frame(
-    SNP = as.character(d$rsid),
-    chr = as.character(d$chr),
+    SNP = variant_name(d, snps),
+    chr = as.character(d$chromosome),
     pos = as.character(d$position),
     beta.outcome = as.numeric(d$beta),
     se.outcome = as.numeric(d$se),
     samplesize.outcome = as.numeric(d$n),
-    pval.outcome = as.numeric(d$p),
+    pval.outcome = as.numeric(d$pval),
     eaf.outcome = as.numeric(d$eaf),
-    effect_allele.outcome = as.character(d$ea),
-    other_allele.outcome = as.character(d$nea),
-    outcome = as.character(d$trait),
+    effect_allele.outcome = as.character(d$effect_allele),
+    other_allele.outcome = as.character(d$other_allele),
+    outcome = as.character(d$analysis_label),
     id.outcome = as.character(d$id),
     stringsAsFactors = FALSE
   )
-
-  if ("proxy" %in% names(d)) {
-    p <- data.frame(
-      proxy.outcome = d$proxy,
-      target_snp.outcome = d$target_snp,
-      proxy_snp.outcome = d$proxy_snp,
-      target_a1.outcome = d$target_a1,
-      target_a2.outcome = d$target_a2,
-      proxy_a1.outcome = d$proxy_a1,
-      proxy_a2.outcome = d$proxy_a2,
-      stringsAsFactors = FALSE
-    )
-    d <- cbind(d1, p)
-
-    # If two SNPs have the same proxy SNP then one has to be removed
-    d <- data.table::as.data.table(d)
-    d <- d[!duplicated(d, by = c("outcome", "proxy_snp.outcome"))]
-    data.table::setDF(d)
-  } else {
-    d <- d1
-  }
+  d1$ncase.outcome <- as.numeric(d$ncase)
+  d1$ncontrol.outcome <- as.numeric(d$ncontrol)
+  d1 <- carry_columns(d1, d, seq_len(nrow(d)), c("effect_scale", "association_status"), "outcome")
+  d <- d1
 
   if (nrow(d) == 0) {
     message("No matches")

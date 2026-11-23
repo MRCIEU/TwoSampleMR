@@ -2,17 +2,19 @@
 % Please edit documentation in R/query.R
 \name{format_d}
 \alias{format_d}
-\title{Format the returned table from the MySQL database}
+\title{Format the table that opengwasr returns}
 \usage{
-format_d(d)
+format_d(d, snps = NULL)
 }
 \arguments{
-\item{d}{Data frame}
+\item{d}{Data frame from \code{\link[opengwasr:og_associations]{opengwasr::og_associations()}}}
+
+\item{snps}{The SNPs that were asked for, so that a variant asked for by ALID keeps its ALID.}
 }
 \value{
 Data frame
 }
 \description{
-Format the returned table from the MySQL database
+Format the table that opengwasr returns
 }
 \keyword{internal}
