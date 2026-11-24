@@ -8,26 +8,29 @@ extract_instruments(
   outcomes,
   p1 = 5e-08,
   clump = 1,
-  r2 = 0.001,
-  kb = 10000,
-  opengwas_jwt = ieugwasr::get_opengwas_jwt(),
-  force_server = FALSE
+  r2 = NULL,
+  kb = NULL,
+  opengwas_jwt = NULL,
+  force_server = FALSE,
+  src = opengwasr::og_api()
 )
 }
 \arguments{
 \item{outcomes}{Array of outcome IDs (see \code{\link[=available_outcomes]{available_outcomes()}}).}
 
-\item{p1}{Significance threshold. The default is \code{5e-8}.}
+\item{p1}{Significance threshold. The default is \code{5e-8}. OpenGWAS indexes \code{5e-8}, \code{5e-6} and \code{5e-4}.}
 
-\item{clump}{Whether to clump results (\code{1}) or not (\code{0}). Default is \code{1}. (\code{TRUE} and \code{FALSE} are also allowed for backwards compatibility.)}
+\item{clump}{Whether to clump results (\code{1}) or not (\code{0}). Default is \code{1}. (\code{TRUE} and \code{FALSE} are also allowed for backwards compatibility.) Unclumped, or clumped, you get at most 10,000 variants per Analysis (opengwasr warns if there were more).}
 
-\item{r2}{Clumping r2 cut off. The default is \code{0.001}.}
+\item{r2}{Clumping r2 cut off. The default, \code{NULL}, is the LD Store's own threshold (about \code{0.03}).}
 
-\item{kb}{Clumping distance cutoff. The default is \code{10000}.}
+\item{kb}{Clumping distance cutoff. The default, \code{NULL}, is the LD Store's own window (\code{10000}).}
 
-\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to \url{https://api.opengwas.io} to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
+\item{opengwas_jwt}{Deprecated and ignored. Credentials come from \code{src}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}} reads \code{OPENGWAS_JWT}.}
 
-\item{force_server}{Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is \code{FALSE}.}
+\item{force_server}{Deprecated and ignored. Clumping always runs on the server.}
+
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
 }
 \value{
 data frame
@@ -35,4 +38,23 @@ data frame
 \description{
 This function searches for GWAS significant SNPs (for a given p-value) for a specified set of outcomes.
 It then performs LD based clumping to return only independent significant associations.
+}
+\details{
+The data come from opengwasr (see \code{\link[opengwasr:og_tophits]{opengwasr::og_tophits()}}).
+\itemize{
+\item Analyses are named \verb{<store_id>:<analysis_id>}, such as \code{OGS-00009:ukb-b-19953}, and that is
+what \code{id.exposure} holds. Legacy OpenGWAS ids such as \code{ukb-b-19953} are accepted where they name
+one Analysis, and an id that names no Analysis is an error.
+\item Effects of continuous traits are per SD of the trait, and \code{effect_scale.exposure} says so
+(\code{"sd"} or \code{"log_or"}). Estimates from \code{\link[=mr]{mr()}} then are per SD of the exposure.
+\item \code{SNP} is the rsID, or the ALID (\verb{chromosome:position:effect allele:other allele}, on GRCh38) of a
+variant that has no rsID.
+\item Clumping runs on the OpenGWAS server, in the LD Store matching each Analysis's assigned
+ancestry, and at that LD Store's own thresholds unless you set \code{r2} and \code{kb}. The LD Store used
+and the thresholds applied are in \code{clump_ld.exposure}, \code{clump_ld_choice.exposure},
+\code{clump_r2.exposure} and \code{clump_kb.exposure}. TwoSampleMR's old thresholds, \code{r2 = 0.001} within
+\code{kb = 10000}, are refused by the LD Stores, so they are not the default.
+\item \code{association_status.exposure} says whether each Association was observed in the study or
+Imputed by Reference Completion.
+}
 }

@@ -15,7 +15,7 @@ make_dat(
 
 \item{outcomes}{The default is \code{c("ieu-a-7", "ieu-a-1001")} (CHD and EDU).}
 
-\item{proxies}{Look for proxies? Default = \code{TRUE}}
+\item{proxies}{Deprecated and ignored: Imputed Associations replace proxies (see \code{\link[=extract_outcome_data]{extract_outcome_data()}}).}
 }
 \value{
 Harmonised data frame

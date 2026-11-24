@@ -1,5 +1,11 @@
 #' Perform all Mendelian randomization tests
 #'
+#' Where `dat` has an `association_status.outcome` column, as data from [extract_outcome_data()] do,
+#' the table has one more column after `pval`, `nsnp_imputed`: how many of the `nsnp` SNPs
+#' used for that exposure and outcome had an Imputed outcome Association. Where `dat` has the
+#' clumping columns that [extract_instruments()] adds (`clump_ld.exposure`, `clump_ld_choice.exposure`,
+#' `clump_r2.exposure` and `clump_kb.exposure`), the table repeats them for each exposure.
+#'
 #' @param dat Harmonised exposure and outcome data. Output from [harmonise_data()].
 #' @param parameters Parameters to be used for various MR methods. Default is output from [default_parameters()].
 #' @param method_list List of methods to use in analysis. See [mr_method_list()] for details.
@@ -94,6 +100,13 @@ mr <- function(
       stringsAsFactors = FALSE
     )
     mr_tab <- mr_tab[!(is.na(mr_tab$b) & is.na(mr_tab$se) & is.na(mr_tab$pval)), ]
+    if ("association_status.outcome" %in% names(x)) {
+      # Data from opengwasr: how many of the SNPs used had an Imputed outcome Association.
+      mr_tab$nsnp_imputed <- rep(sum(x$association_status.outcome %in% "imputed"), nrow(mr_tab))
+    }
+    for (column in grep("^clump_(ld|ld_choice|r2|kb)\\.exposure$", names(x), value = TRUE)) {
+      mr_tab[[column]] <- rep(x[[column]][1], nrow(mr_tab))
+    }
     return(mr_tab)
   })
 

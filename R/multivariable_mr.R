@@ -2,17 +2,24 @@
 #'
 #' Requires a list of IDs from available_outcomes. For each ID, it extracts instruments. Then, it gets the full list of all instruments and extracts those SNPs for every exposure. Finally, it keeps only the SNPs that are a) independent and b) present in all exposures, and harmonises them to be all on the same strand.
 #'
-#' @param id_exposure Array of IDs (e.g. c(299, 300, 302) for HDL, LDL, trigs)
-#' @param clump_r2 The default is `0.01`.
-#' @param clump_kb The default is `10000`.
+#' The data come from opengwasr, as for [extract_instruments()] and [extract_outcome_data()]: IDs
+#' are Analyses (`<store_id>:<analysis_id>`, or a legacy id that names one), effects of continuous
+#' traits are per SD, instruments are clumped on the server in the LD Store matching each
+#' Analysis's ancestry (at its own thresholds unless you set `clump_r2` and `clump_kb`), and
+#' Imputed Associations replace proxies. The final clumping across exposures is still [clump_data()].
+#'
+#' @param id_exposure Array of IDs (e.g. `c("ukb-b-19953", "ebi-a-GCST003116")`)
+#' @param clump_r2 The default is `0.001` for [clump_data()]. Instruments are clumped in each Analysis's LD Store at its own threshold unless you set this.
+#' @param clump_kb The default is `10000` for [clump_data()]. Instruments are clumped in each Analysis's LD Store at its own window unless you set this.
 #' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
-#' @param opengwas_jwt Used to authenticate protected endpoints. Login to <https://api.opengwas.io> to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.
-#' @param find_proxies Look for proxies? This slows everything down but is more accurate. The default is `TRUE`.
-#' @param force_server Whether to search through pre-clumped dataset or to re-extract and clump directly from the server. The default is `FALSE`.
+#' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
+#' @param find_proxies Deprecated and ignored: Imputed Associations replace proxies (see [extract_outcome_data()]).
+#' @param force_server Deprecated and ignored. Clumping always runs on the server.
 #' @param pval_threshold Instrument detection p-value threshold. Default = `5e-8`
 #' @param pop Which 1000 genomes super population to use for clumping when using the server
 #' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
 #' @param bfile If this is provided then will use the API. Default = `NULL`
+#' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
 #'
 #' @export
 #' @return data frame in `exposure_dat` format
@@ -21,25 +28,38 @@ mv_extract_exposures <- function(
   clump_r2 = 0.001,
   clump_kb = 10000,
   harmonise_strictness = 2,
-  opengwas_jwt = ieugwasr::get_opengwas_jwt(),
+  opengwas_jwt = NULL,
   find_proxies = TRUE,
   force_server = FALSE,
   pval_threshold = 5e-8,
   pop = "EUR",
   plink_bin = NULL,
-  bfile = NULL
+  bfile = NULL,
+  src = opengwasr::og_api()
 ) {
   stopifnot(length(id_exposure) > 1)
-  id_exposure <- ieugwasr::legacy_ids(id_exposure)
+  if (!missing(opengwas_jwt)) {
+    deprecate_opengwas_jwt("mv_extract_exposures")
+  }
+  if (!missing(force_server)) {
+    deprecated_argument_message(paste0(
+      "`force_server` is no longer used by `mv_extract_exposures()` and is ignored. ",
+      "Clumping always runs on the OpenGWAS server."
+    ))
+  }
+  if (!missing(find_proxies)) {
+    deprecate_proxy_arguments("find_proxies", "mv_extract_exposures")
+  }
+  id_exposure <- resolve_analyses(src, id_exposure)
 
   # Get best instruments for each exposure
-  exposure_dat <- extract_instruments(
+  exposure_dat <- opengwasr_instruments(
+    src,
     id_exposure,
     p1 = pval_threshold,
-    r2 = clump_r2,
-    kb = clump_kb,
-    opengwas_jwt = opengwas_jwt,
-    force_server = force_server
+    clump = TRUE,
+    r2 = if (missing(clump_r2)) NULL else clump_r2,
+    kb = if (missing(clump_kb)) NULL else clump_kb
   )
   temp <- exposure_dat
   temp$id.exposure <- 1
@@ -57,12 +77,7 @@ mv_extract_exposures <- function(
   exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
   # Get effects of each instrument from each exposure
-  d1 <- extract_outcome_data(
-    exposure_dat$SNP,
-    id_exposure,
-    opengwas_jwt = opengwas_jwt,
-    proxies = find_proxies
-  )
+  d1 <- opengwasr_outcomes(src, unique(exposure_dat$SNP), id_exposure)
   stopifnot(length(unique(d1$id)) == length(unique(id_exposure)))
   d1 <- subset(d1, mr_keep.outcome)
   d2 <- subset(d1, id.outcome != id_exposure[1])

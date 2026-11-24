@@ -12,9 +12,10 @@ extract_outcome_data(
   align_alleles = 1,
   palindromes = 1,
   maf_threshold = 0.3,
-  opengwas_jwt = ieugwasr::get_opengwas_jwt(),
+  opengwas_jwt = NULL,
   splitsize = 10000,
-  proxy_splitsize = 500
+  proxy_splitsize = 500,
+  src = opengwasr::og_api()
 )
 }
 \arguments{
@@ -22,25 +23,44 @@ extract_outcome_data(
 
 \item{outcomes}{Array of IDs (see \code{id} column in output from \code{\link[=available_outcomes]{available_outcomes()}}).}
 
-\item{proxies}{Look for LD tags? Default is \code{TRUE}.}
+\item{proxies}{Deprecated and ignored: Imputed Associations replace proxies.}
 
-\item{rsq}{Minimum LD rsq value (if proxies = 1). Default = \code{0.8}.}
+\item{rsq}{Deprecated and ignored.}
 
-\item{align_alleles}{Try to align tag alleles to target alleles (if proxies = 1). \code{1} = yes, \code{0} = no. The default is \code{1}.}
+\item{align_alleles}{Deprecated and ignored.}
 
-\item{palindromes}{Allow palindromic SNPs (if proxies = 1). \code{1} = yes, \code{0} = no. The default is \code{1}.}
+\item{palindromes}{Deprecated and ignored.}
 
-\item{maf_threshold}{MAF threshold to try to infer palindromic SNPs. The default is \code{0.3}.}
+\item{maf_threshold}{Deprecated and ignored.}
 
-\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to \url{https://api.opengwas.io} to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
+\item{opengwas_jwt}{Deprecated and ignored. Credentials come from \code{src}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}} reads \code{OPENGWAS_JWT}.}
 
-\item{splitsize}{The default is \code{10000}.}
+\item{splitsize}{Deprecated and ignored: opengwasr splits large queries itself.}
 
-\item{proxy_splitsize}{The default is \code{500}.}
+\item{proxy_splitsize}{Deprecated and ignored.}
+
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
 }
 \value{
 Dataframe of summary statistics for all available outcomes
 }
 \description{
-Supply the output from \code{\link[=read_exposure_data]{read_exposure_data()}} and all the SNPs therein will be queried against the requested outcomes in remote database using API.
+The data come from opengwasr (see \code{\link[opengwasr:og_associations]{opengwasr::og_associations()}}).
+}
+\details{
+\itemize{
+\item \code{snps} are rsIDs, or ALIDs (\verb{chromosome:position:effect allele:other allele}, on GRCh38; see
+\code{\link[opengwasr:og_alid]{opengwasr::og_alid()}}). \code{SNP} in the result is the rsID, or the ALID for a variant you asked
+for by ALID or that has no rsID.
+\item LD proxies are no longer looked up. The Store Releases opengwasr reads are Reference-Completed:
+they hold an Imputed Association for most variants a study did not report. Those come back
+as the variant itself, and \code{association_status.outcome} says \code{"imputed"} for them (and
+\code{"observed"} for the others). \code{\link[=harmonise_data]{harmonise_data()}} reports how many were Imputed. Passing
+\code{proxies}, \code{rsq}, \code{align_alleles}, \code{palindromes}, \code{maf_threshold} or \code{proxy_splitsize} prints a message and
+changes nothing.
+\item Outcomes are Analyses, named \verb{<store_id>:<analysis_id>}, such as \code{OGS-00011:GCST003116}. Legacy
+OpenGWAS ids such as \code{ebi-a-GCST003116} are accepted where they name one Analysis. An id that
+names no Analysis is an error.
+\item Effects of continuous traits are per SD of the trait, and \code{effect_scale.outcome} says so.
+}
 }

@@ -25,5 +25,9 @@ List with the following elements:
 }
 }
 \description{
-Perform all Mendelian randomization tests
+Where \code{dat} has an \code{association_status.outcome} column, as data from \code{\link[=extract_outcome_data]{extract_outcome_data()}} do,
+the table has one more column after \code{pval}, \code{nsnp_imputed}: how many of the \code{nsnp} SNPs
+used for that exposure and outcome had an Imputed outcome Association. Where \code{dat} has the
+clumping columns that \code{\link[=extract_instruments]{extract_instruments()}} adds (\code{clump_ld.exposure}, \code{clump_ld_choice.exposure},
+\code{clump_r2.exposure} and \code{clump_kb.exposure}), the table repeats them for each exposure.
 }

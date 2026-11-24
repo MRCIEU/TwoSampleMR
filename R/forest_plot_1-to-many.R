@@ -66,9 +66,9 @@ format_1_to_many <- function(
 
   # Get extra info on outcomes
   if (ao_slc) {
-    ao <- available_outcomes()
-    ao$subcategory[ao$subcategory == "Cardiovascular"] <- "Cardiometabolic"
-    ao$subcategory[ao$trait == "Type 2 diabetes"] <- "Cardiometabolic"
+    ao <- catalogue_for_results()
+    # `mr_res` has its own `subcategory` (set above), which a second one would hide.
+    ao$subcategory <- NULL
     names(ao)[names(ao) == "nsnp"] <- "nsnp.array"
   }
 

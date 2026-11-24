@@ -45,6 +45,7 @@ Imports:
     MASS,
     MRMix,
     MRPRESSO,
+    opengwasr,
     pbapply,
     psych,
     RadialMR,
@@ -64,6 +65,7 @@ VignetteBuilder:
     knitr
 Remotes:
     gqi/MRMix,
+    opengwas/opengwasr@orch/1-api-source,
     mrcieu/MRInstruments,
     MRPRESSO=rondolab/MR-PRESSO,
     qingyuanzhao/mr.raps,

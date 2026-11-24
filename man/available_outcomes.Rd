@@ -4,14 +4,21 @@
 \alias{available_outcomes}
 \title{Get list of studies with available GWAS summary statistics through API}
 \usage{
-available_outcomes(opengwas_jwt = ieugwasr::get_opengwas_jwt())
+available_outcomes(opengwas_jwt = NULL, src = opengwasr::og_api())
 }
 \arguments{
-\item{opengwas_jwt}{Used to authenticate protected endpoints. Login to \url{https://api.opengwas.io} to obtain a jwt. Provide the jwt string here, or store in .Renviron under the keyname OPENGWAS_JWT.}
+\item{opengwas_jwt}{Deprecated and ignored. Credentials come from \code{src}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}} reads \code{OPENGWAS_JWT}.}
+
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
 }
 \value{
 Dataframe of details for all available studies
 }
 \description{
-Get list of studies with available GWAS summary statistics through API
+Lists every Analysis (study) that the OpenGWAS Source \code{src} holds, as
+\code{\link[opengwasr:og_analyses]{opengwasr::og_analyses()}} returns them: \code{id} is the Analysis's name in the form
+\verb{<store_id>:<analysis_id>}, which the other functions accept, \code{analysis_label} is its trait, and
+\code{assigned_ancestry}, \code{sample_size}, \code{n_cases}, \code{n_controls}, \code{stored_effect_scale},
+\code{original_sd} and the rest of the Analysis's metadata follow. For scripts that read the old
+column, \code{trait} repeats \code{analysis_label}.
 }
