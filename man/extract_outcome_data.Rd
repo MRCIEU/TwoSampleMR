@@ -15,7 +15,7 @@ extract_outcome_data(
   opengwas_jwt = NULL,
   splitsize = 10000,
   proxy_splitsize = 500,
-  src = opengwasr::og_api()
+  src = twosamplemr_source()
 )
 }
 \arguments{
@@ -39,7 +39,7 @@ extract_outcome_data(
 
 \item{proxy_splitsize}{Deprecated and ignored.}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 Dataframe of summary statistics for all available outcomes

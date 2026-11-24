@@ -1,7 +1,7 @@
 Package: TwoSampleMR
 Title: Two Sample MR Functions and Interface to MRC Integrative
     Epidemiology Unit OpenGWAS Database
-Version: 0.7.14
+Version: 0.8.0
 Authors@R: c(
     person("Gibran", "Hemani", , "g.hemani@bristol.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0920-1055")),
@@ -37,7 +37,6 @@ Imports:
     glmnet,
     gridExtra,
     gtable,
-    ieugwasr (>= 1.2.0),
     jsonlite,
     knitr,
     lattice,
@@ -46,7 +45,6 @@ Imports:
     MRMix,
     MRPRESSO,
     opengwasr,
-    pbapply,
     psych,
     RadialMR,
     rmarkdown,
@@ -60,7 +58,8 @@ Suggests:
     mr.raps,
     MRInstruments,
     randomForest,
-    testthat
+    testthat,
+    withr
 VignetteBuilder:
     knitr
 Remotes:

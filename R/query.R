@@ -1,14 +1,3 @@
-# Still used by clump_data(), ld_matrix() and the LDSC functions, which call ieugwasr until they move over.
-x_api_source_header <- function() {
-  paste0(
-    "ieugwasr/",
-    utils::packageVersion("ieugwasr"),
-    ";TwoSampleMR/",
-    utils::packageVersion("TwoSampleMR")
-  )
-}
-
-
 #' Get list of studies with available GWAS summary statistics through API
 #'
 #' Lists every Analysis (study) that the OpenGWAS Source `src` holds, as
@@ -19,11 +8,11 @@ x_api_source_header <- function() {
 #' column, `trait` repeats `analysis_label`.
 #'
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
+#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return Dataframe of details for all available studies
-available_outcomes <- function(opengwas_jwt = NULL, src = opengwasr::og_api()) {
+available_outcomes <- function(opengwas_jwt = NULL, src = twosamplemr_source()) {
   if (!missing(opengwas_jwt)) {
     deprecate_opengwas_jwt("available_outcomes")
   }
@@ -61,7 +50,7 @@ available_outcomes <- function(opengwas_jwt = NULL, src = opengwasr::og_api()) {
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
 #' @param splitsize Deprecated and ignored: opengwasr splits large queries itself.
 #' @param proxy_splitsize Deprecated and ignored.
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
+#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes
@@ -76,7 +65,7 @@ extract_outcome_data <- function(
   opengwas_jwt = NULL,
   splitsize = 10000,
   proxy_splitsize = 500,
-  src = opengwasr::og_api()
+  src = twosamplemr_source()
 ) {
   passed <- c(
     proxies = !missing(proxies),

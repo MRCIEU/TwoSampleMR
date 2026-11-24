@@ -4,12 +4,14 @@
 \alias{harmonise_ld_dat}
 \title{Harmonise LD matrix against summary data}
 \usage{
-harmonise_ld_dat(x, ld)
+harmonise_ld_dat(x, ld, src = twosamplemr_source())
 }
 \arguments{
 \item{x}{Exposure dataset or harmonised dataset}
 
-\item{ld}{Output from \code{\link[=ld_matrix]{ld_matrix()}}}
+\item{ld}{Output from \code{\link[=ld_matrix]{ld_matrix()}}. A matrix named by ALID is renamed \verb{<SNP>_<allele1>_<allele2>}, with \code{SNP} as in \code{x}.}
+
+\item{src}{A Source from opengwasr, used only to find the ALIDs of rsIDs in \code{x} that have no position.}
 }
 \value{
 List of exposure dataset and harmonised LD matrix

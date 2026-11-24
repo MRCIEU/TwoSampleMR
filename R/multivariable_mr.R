@@ -6,36 +6,36 @@
 #' are Analyses (`<store_id>:<analysis_id>`, or a legacy id that names one), effects of continuous
 #' traits are per SD, instruments are clumped on the server in the LD Store matching each
 #' Analysis's ancestry (at its own thresholds unless you set `clump_r2` and `clump_kb`), and
-#' Imputed Associations replace proxies. The final clumping across exposures is still [clump_data()].
+#' Imputed Associations replace proxies. The final clumping across exposures is [clump_data()].
 #'
 #' @param id_exposure Array of IDs (e.g. `c("ukb-b-19953", "ebi-a-GCST003116")`)
-#' @param clump_r2 The default is `0.001` for [clump_data()]. Instruments are clumped in each Analysis's LD Store at its own threshold unless you set this.
-#' @param clump_kb The default is `10000` for [clump_data()]. Instruments are clumped in each Analysis's LD Store at its own window unless you set this.
+#' @param clump_r2 Clumping r2 cutoff, for each Analysis's instruments and for the final [clump_data()]. The default, `NULL`, is the LD Store's own threshold.
+#' @param clump_kb Clumping window in kb, as `clump_r2`. The default, `NULL`, is the LD Store's own window.
 #' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
 #' @param find_proxies Deprecated and ignored: Imputed Associations replace proxies (see [extract_outcome_data()]).
 #' @param force_server Deprecated and ignored. Clumping always runs on the server.
 #' @param pval_threshold Instrument detection p-value threshold. Default = `5e-8`
-#' @param pop Which 1000 genomes super population to use for clumping when using the server
+#' @param pop Ancestry (`"EUR"`, `"SAS"`, `"EAS"`, `"AFR"`, `"AMR"`) or LD Store id to clump in. The default, `NULL`, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need `pop` or `bfile`)
 #' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
-#' @param bfile If this is provided then will use the API. Default = `NULL`
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
+#' @param bfile Prefix of a PLINK fileset to use for the final clumping across exposures, in place of an LD Store (the instruments of each Analysis are always clumped on the server). Default = `NULL`
+#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return data frame in `exposure_dat` format
 mv_extract_exposures <- function(
   id_exposure,
-  clump_r2 = 0.001,
-  clump_kb = 10000,
+  clump_r2 = NULL,
+  clump_kb = NULL,
   harmonise_strictness = 2,
   opengwas_jwt = NULL,
   find_proxies = TRUE,
   force_server = FALSE,
   pval_threshold = 5e-8,
-  pop = "EUR",
+  pop = NULL,
   plink_bin = NULL,
   bfile = NULL,
-  src = opengwasr::og_api()
+  src = twosamplemr_source()
 ) {
   stopifnot(length(id_exposure) > 1)
   if (!missing(opengwas_jwt)) {
@@ -58,21 +58,22 @@ mv_extract_exposures <- function(
     id_exposure,
     p1 = pval_threshold,
     clump = TRUE,
-    r2 = if (missing(clump_r2)) NULL else clump_r2,
-    kb = if (missing(clump_kb)) NULL else clump_kb
+    r2 = clump_r2,
+    kb = clump_kb
   )
   temp <- exposure_dat
-  temp$id.exposure <- 1
   temp <- temp[order(temp$pval.exposure, decreasing = FALSE), ]
   temp <- subset(temp, !duplicated(SNP))
-  temp <- clump_data(
+  temp <- clump_data_impl(
     temp,
-    clump_p1 = pval_threshold,
-    clump_r2 = clump_r2,
     clump_kb = clump_kb,
+    clump_r2 = clump_r2,
+    clump_p1 = pval_threshold,
     pop = pop,
+    bfile = bfile,
     plink_bin = plink_bin,
-    bfile = bfile
+    src = src,
+    joint = TRUE
   )
   exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
@@ -156,10 +157,11 @@ mv_extract_exposures <- function(
 #' @param log_pval The pval is -log10(P). The default is `FALSE`.
 #' @param pval_threshold Default=`5e-8` for clumping
 #' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
-#' @param bfile If this is provided then will use the API. Default = `NULL`
-#' @param clump_r2 Default=`0.001` for clumping
-#' @param clump_kb Default=`10000` for clumping
-#' @param pop Which 1000 genomes super population to use for clumping when using the server
+#' @param bfile Prefix of a PLINK fileset to clump with, in place of an LD Store, matching variants by rsID. Default = `NULL`
+#' @param clump_r2 Clumping r2 cutoff. The default, `NULL`, is the LD Store's own (or `0.001` with `bfile`).
+#' @param clump_kb Clumping window in kb. The default, `NULL`, is the LD Store's own (or `10000` with `bfile`).
+#' @param pop Ancestry (`"EUR"`, `"SAS"`, `"EAS"`, `"AFR"`, `"AMR"`) or LD Store id to clump in. The default, `NULL`, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need `pop` or `bfile`)
+#' @param src A Source from opengwasr, used to find the LD Store of Analyses; own data need `pop` or `bfile`. The default, [opengwasr::og_api()], is made only when it is needed.
 #' @param harmonise_strictness See action argument in [harmonise_data()]. Default=`2`
 #'
 #' @export
@@ -186,10 +188,11 @@ mv_extract_exposures_local <- function(
   pval_threshold = 5e-8,
   plink_bin = NULL,
   bfile = NULL,
-  clump_r2 = 0.001,
-  clump_kb = 10000,
-  pop = "EUR",
-  harmonise_strictness = 2
+  clump_r2 = NULL,
+  clump_kb = NULL,
+  pop = NULL,
+  harmonise_strictness = 2,
+  src = twosamplemr_source()
 ) {
   stopifnot(inherits(filenames_exposure, "character") | inherits(filenames_exposure, "list"))
   if (inherits(filenames_exposure, "list")) {
@@ -313,7 +316,8 @@ mv_extract_exposures_local <- function(
       clump_kb = clump_kb,
       bfile = bfile,
       plink_bin = plink_bin,
-      pop = pop
+      pop = pop,
+      src = src
     )
     message("Identified ", nrow(l_inst[[i]]), " hits for trait ", l_inst[[i]]$exposure[1])
   }
@@ -321,17 +325,18 @@ mv_extract_exposures_local <- function(
   exposure_dat <- dplyr::bind_rows(l_inst)
   id_exposure <- unique(exposure_dat$id.exposure)
   temp <- exposure_dat
-  temp$id.exposure <- 1
   temp <- temp[order(temp$pval.exposure, decreasing = FALSE), ]
   temp <- subset(temp, !duplicated(SNP))
-  temp <- clump_data(
+  temp <- clump_data_impl(
     temp,
-    clump_p1 = pval_threshold,
-    clump_r2 = clump_r2,
     clump_kb = clump_kb,
+    clump_r2 = clump_r2,
+    clump_p1 = pval_threshold,
+    pop = pop,
     bfile = bfile,
     plink_bin = plink_bin,
-    pop = pop
+    src = src,
+    joint = TRUE
   )
   exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 

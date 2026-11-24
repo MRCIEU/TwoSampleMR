@@ -27,7 +27,7 @@
 #' @param kb Clumping distance cutoff. The default, `NULL`, is the LD Store's own window (`10000`).
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
 #' @param force_server Deprecated and ignored. Clumping always runs on the server.
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
+#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return data frame
@@ -39,7 +39,7 @@ extract_instruments <- function(
   kb = NULL,
   opengwas_jwt = NULL,
   force_server = FALSE,
-  src = opengwasr::og_api()
+  src = twosamplemr_source()
 ) {
   if (!(clump %in% c(0, 1, FALSE, TRUE))) {
     stop("The clump argument should be 0 or 1.")

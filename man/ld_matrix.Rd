@@ -4,33 +4,51 @@
 \alias{ld_matrix}
 \title{Get LD matrix for list of SNPs}
 \usage{
-ld_matrix(snps, with_alleles = TRUE, pop = "EUR")
+ld_matrix(
+  snps,
+  with_alleles = TRUE,
+  pop = "EUR",
+  bfile = NULL,
+  plink_bin = NULL,
+  fill_below_t_far = FALSE,
+  src = twosamplemr_source()
+)
 }
 \arguments{
-\item{snps}{List of SNPs.}
+\item{snps}{List of SNPs: rsIDs or ALIDs.}
 
-\item{with_alleles}{Whether to append the allele names to the SNP names. The default is \code{TRUE}.}
+\item{with_alleles}{Deprecated and ignored: the names carry the alleles.}
 
-\item{pop}{Super-population to use as reference panel. Default = \code{"EUR"}. Options are \code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}. \code{'legacy'} also available - which is a previously used version of the EUR panel with a slightly different set of markers.}
+\item{pop}{Ancestry (\code{"EUR"} (default), \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
+
+\item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to use instead of an LD Store. Default = \code{NULL}}
+
+\item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
+
+\item{fill_below_t_far}{Set pairs below the LD Store's Far Threshold to 0 (default \code{FALSE}).}
+
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 Matrix of LD r values
 }
 \description{
-This function takes a list of SNPs and searches for them in a specified super-population in the 1000 Genomes phase 3 reference panel.
-It then creates an LD matrix of r values (signed, and not squared).
-All LD values are with respect to the major alleles in the 1000G dataset.
-You can specify whether the allele names are displayed.
+This function takes a list of SNPs and returns the matrix of LD r values (signed, and not
+squared) between every pair, read from an OpenGWAS LD Store (\code{\link[opengwasr:og_ld_matrix]{opengwasr::og_ld_matrix()}}), or
+computed by PLINK from your own reference with \code{bfile}.
 }
 \details{
-The data used for generating the LD matrix includes only bi-allelic SNPs with MAF > 0.01,
-so it's quite possible that a variant you want to include will be absent.
-If it is absent, it will be automatically excluded from the results.
+The matrix is named by ALID (\code{chromosome:position:allele:allele}, GRCh38) from an LD Store, and
+the sign of r refers to the first allele in each name. From a PLINK reference it is named
+\verb{<rsid>_<allele1>_<allele2>} with the reference's alleles, as the old OpenGWAS client named a matrix made locally,
+and the sign of r refers to the first allele. Either way the names carry the alleles, so
+\code{with_alleles} has no effect.
 
-You can check if your variants are present in the LD reference panel using \code{\link[ieugwasr:ld_reflookup]{ieugwasr::ld_reflookup()}}.
+To check which variants an LD Store holds first, use \code{\link[opengwasr:og_ld_reflookup]{opengwasr::og_ld_reflookup()}}.
 
-This function does put load on the OpenGWAS servers, which makes life more difficult for other users,
-and has been limited to analyse only up to 500 variants at a time.
-We have implemented a method and made available the LD reference panels to perform the operation locally,
-see \code{\link[ieugwasr:ld_matrix]{ieugwasr::ld_matrix()}} and related vignettes for details.
+A variant the LD Store (or the reference) does not hold is left out of the matrix, with a warning
+(a message for a reference). An LD Store does not hold every pair: a pair it does not hold is \code{NA}
+(never 0), unless \code{fill_below_t_far = TRUE}, which sets to 0 the pairs it holds only as being
+below its Far Threshold (see \code{\link[opengwasr:og_ld_matrix]{opengwasr::og_ld_matrix()}}). Pairs further apart than its far window,
+or on different chromosomes, remain \code{NA}.
 }

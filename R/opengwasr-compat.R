@@ -4,6 +4,30 @@
 # is here: the public functions (extract_instruments(), extract_outcome_data(), available_outcomes(),
 # add_metadata(), mv_extract_exposures()) check their arguments and call these.
 
+# --- Functions that have not moved yet -------------------------------------------------------------
+
+# The old OpenGWAS client is gone, and these functions have no opengwasr equivalent yet. They stop, with an error of
+# class `twosamplemr_not_yet_available` that names the opengwasr ticket that will bring them back.
+not_yet_available <- function(fn, needs, ticket) {
+  stop(structure(
+    class = c("twosamplemr_not_yet_available", "error", "condition"),
+    list(
+      message = paste0(
+        "`",
+        fn,
+        "()` is not available yet: it needs ",
+        needs,
+        ", which opengwasr does not have. See ",
+        ticket,
+        "."
+      ),
+      call = NULL,
+      fn = fn,
+      ticket = ticket
+    )
+  ))
+}
+
 # --- Messages -------------------------------------------------------------------------------------
 
 # A message of class `twosamplemr_deprecated_argument`, so that a script (or a test) can tell it from
@@ -54,7 +78,7 @@ deprecate_splitsize <- function() {
 
 # --- Analyses -------------------------------------------------------------------------------------
 
-# Identifiers as ieugwasr::legacy_ids() wrote them: a bare number is an `ieu-a-` id (or `met-a-`,
+# Identifiers as the old OpenGWAS client wrote them: a bare number is an `ieu-a-` id (or `met-a-`,
 # `met-b-`, `met-c-` in the ranges those batches took over), and `UKB-a:` style prefixes are
 # `ukb-a-`. Anything else is passed to opengwasr as it is.
 legacy_analysis_ids <- function(x) {
@@ -322,6 +346,167 @@ opengwasr_metadata <- function(src, id, what, cols) {
   names(info) <- paste0(names(info), ".", what)
   names(info)[names(info) == paste0("sample_size.", what)] <- paste0("samplesize.", what)
   info
+}
+
+# `||` for NULL, which base R has only from 4.4.
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
+# A Source that names TwoSampleMR as its caller in the user agent.
+twosamplemr_source <- function() {
+  opengwasr::og_api(caller = paste0("TwoSampleMR/", utils::packageVersion("TwoSampleMR")))
+}
+
+alid_pattern <- "^[0-9XYMT]+:[0-9]+:[ACGT]+:[ACGT]+$"
+rsid_pattern <- "^rs[0-9]+$"
+
+# --- LD -------------------------------------------------------------------------------------------
+
+# The `ld` that opengwasr is given: a PLINK Reference if `bfile` is, else the ancestry named by `pop`,
+# else NULL, which makes opengwasr match the Assigned Ancestry of the Analyses in the data. Data
+# whose ids name no Analysis (from a file, say) have none to match, so they are refused.
+ld_choice <- function(src, pop, bfile, plink_bin, ids) {
+  if (!is.null(bfile)) {
+    return(opengwasr::og_plink_reference(bfile, plink_bin))
+  }
+  if (identical(pop, "legacy")) {
+    deprecated_argument_message(paste0(
+      "`pop = \"legacy\"` is not available: the old EUR panel with a different set of markers is ",
+      "gone. The European LD Store is used."
+    ))
+    return("EUR")
+  }
+  if (!is.null(pop) || is.null(ids)) {
+    return(pop %||% "EUR")
+  }
+  unknown <- tryCatch(
+    {
+      opengwasr::og_analyses(src, unique(as.character(ids)))
+      character()
+    },
+    opengwasr_analysis_not_found = function(e) e$ids
+  )
+  if (length(unknown) == 0) {
+    return(NULL)
+  }
+  stop(structure(
+    class = c("twosamplemr_ld_needs_pop", "error", "condition"),
+    list(
+      message = paste0(
+        "These ids name no OpenGWAS Analysis, so there is no Assigned Ancestry to choose an LD Store ",
+        "by: ", paste(utils::head(unknown, 5), collapse = ", "), if (length(unknown) > 5) ", ...", ". Give `pop`: an ancestry (\"EUR\", \"AFR\", \"EAS\", \"SAS\", \"AMR\") or an LD ",
+        "Store id from `opengwasr::og_ld_stores()`; or `bfile`, the path of your own PLINK reference."
+      ),
+      call = NULL
+    )
+  ))
+}
+
+# The ALID of each row of `dat`: its `SNP` if that is one, else made from its position and alleles
+# (GRCh38), else looked up from its rsID; NA where none of these names the variant.
+dat_alids <- function(dat, src, type = "exposure") {
+  snp <- as.character(dat$SNP)
+  alid <- ifelse(grepl(alid_pattern, snp), snp, NA_character_)
+  column <- function(name) dat[[paste0(name, ".", type)]]
+  ea <- toupper(as.character(column("effect_allele")))
+  oa <- toupper(as.character(column("other_allele")))
+  chr <- column("chr")
+  pos <- column("pos")
+  need <- is.na(alid)
+  if (any(need) && !is.null(chr) && !is.null(pos) && length(ea) > 0 && length(oa) > 0) {
+    made <- data.frame(
+      chromosome = as.character(chr[need]),
+      position = suppressWarnings(as.numeric(pos[need])),
+      effect_allele = ea[need],
+      other_allele = oa[need],
+      stringsAsFactors = FALSE
+    )
+    made <- withCallingHandlers(
+      opengwasr::og_alid(made, eaf = NULL, beta = NULL, z = NULL),
+      message = function(m) {
+        if (inherits(m, "opengwasr_alid_swapped") || inherits(m, "opengwasr_alid_unnamed") ||
+              inherits(m, "opengwasr_alid_undeclared_reference")) {
+          invokeRestart("muffleMessage")
+        }
+      }
+    )
+    alid[need] <- made$alid
+  }
+  need <- is.na(alid) & grepl(rsid_pattern, snp, ignore.case = TRUE)
+  if (any(need)) {
+    found <- opengwasr::og_variants_rsid(src, unique(tolower(snp[need])))
+    found <- found[!duplicated(paste(found$alid, found$rsid)), , drop = FALSE]
+    for (i in which(need)) {
+      candidates <- found[found$rsid == tolower(snp[i]), , drop = FALSE]
+      if (!is.na(ea[i]) && !is.na(oa[i])) {
+        same <- (candidates$effect_allele == ea[i] & candidates$other_allele == oa[i]) |
+          (candidates$effect_allele == oa[i] & candidates$other_allele == ea[i])
+        candidates <- candidates[same, , drop = FALSE]
+      }
+      if (nrow(candidates) == 1) alid[i] <- candidates$alid
+    }
+  }
+  alid
+}
+
+# `dat` clumped by opengwasr: the rows of its index variants, with the clumping provenance columns.
+# With a PLINK Reference variants are matched by rsID, so no ALID is needed and nothing is asked of
+# the API (`src = NULL`): each row gets a placeholder ALID, which only keys the row, and its `SNP` is
+# its rsID. Variants the reference lacks are dropped by opengwasr, with its count message.
+opengwasr_clump <- function(src, dat, pval_column, p1, ld, r2, kb) {
+  plink <- inherits(ld, "og_plink_reference")
+  if (plink) {
+    # A PLINK Reference has no thresholds of its own to take.
+    r2 <- r2 %||% 0.001
+    kb <- kb %||% 10000
+  }
+  p <- as.numeric(dat[[pval_column]])
+  p[is.na(p)] <- 1
+  if (plink) {
+    alid <- paste0("1:", seq_len(nrow(dat)), ":A:C")
+  } else {
+    alid <- dat_alids(dat, src)
+  }
+  usable <- !is.na(alid) & p <= p1
+  if (!plink && any(is.na(alid))) {
+    message(
+      sum(is.na(alid)),
+      " variant(s) could not be given an ALID (they need a `SNP` that is an rsID or an ALID, ",
+      "and GRCh38 `chr` and `pos`), so they are left out of the clumping: ",
+      paste(utils::head(dat$SNP[is.na(alid)], 5), collapse = ", "),
+      if (sum(is.na(alid)) > 5) ", ..."
+    )
+  }
+  d <- data.frame(
+    alid = alid[usable],
+    z = abs(stats::qnorm(pmax(p[usable], 1e-300) / 2)),
+    id = as.character(dat$id.exposure[usable]),
+    row = which(usable),
+    stringsAsFactors = FALSE
+  )
+  if (plink) {
+    rsid <- as.character(dat$SNP[usable])
+    d$rsid <- ifelse(grepl(rsid_pattern, rsid, ignore.case = TRUE), rsid, NA_character_)
+    src <- NULL
+  }
+  out <- opengwasr::og_clump(src, d, ld = ld, r2 = r2, kb = kb)
+  index <- unique(out$row)
+  clumped <- dat[index, , drop = FALSE]
+  for (column in c("clump_ld", "clump_ld_choice", "clump_r2", "clump_kb")) {
+    clumped[[paste0(column, ".exposure")]] <- out[[column]][match(index, out$row)]
+  }
+  clumped
+}
+
+# The LD matrix of `snps`, from an LD Store or, with a PLINK Reference, with no Source.
+opengwasr_ld_matrix <- function(src, snps, ld, fill_below_t_far) {
+  if (inherits(ld, "og_plink_reference")) {
+    src <- NULL
+  }
+  m <- opengwasr::og_ld_matrix(src, snps, ld = ld, fill_below_t_far = fill_below_t_far)
+  # A plain matrix, as before: opengwasr's provenance and class are left behind.
+  m <- unclass(m)
+  attr(m, "og_provenance") <- NULL
+  m
 }
 
 # --- Helpers --------------------------------------------------------------------------------------

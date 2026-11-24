@@ -1,58 +1,47 @@
 context("ld")
 
+# Opt-in: against a real OpenGWAS Data API (see test_opengwasr_live.R).
 skip_if_opengwas_tests_disabled()
-skip_if_offline()
-skip_if_offline(host = "api.opengwas.io")
 skip_on_cran()
+skip_if_not_installed("opengwasr")
+skip_if(
+  Sys.getenv("OPENGWAS_URL") == "" || Sys.getenv("OPENGWAS_DEV_KEY") == "",
+  "No OpenGWAS credentials (OPENGWAS_URL, OPENGWAS_DEV_KEY)."
+)
 
-# extract some data
-a <- try(extract_instruments("ieu-a-2", clump = 0))
-if (inherits(a, "try-error")) {
-  skip("Server issues")
-}
-out <- try(clump_data(a))
-if (inherits(out, "try-error")) {
-  skip("Server issues")
-}
-
-
-test_that("clump", {
-  skip_if_not(exists('a'), "a not created in test above")
-  skip_if_not(exists('out'), "out not created in test above")
-  expect_equal(ncol(a), ncol(out))
-  expect_true(nrow(a) > nrow(out))
+test_that("clump_data() and ld_matrix() against the LD Stores", {
+  src <- opengwasr::og_api()
+  a <- suppressWarnings(extract_instruments("ukb-b-19953", clump = FALSE, src = src))
+  a <- a[order(a$pval.exposure), ]
+  a <- a[seq(1, nrow(a), length.out = 300), ]
+  out <- suppressWarnings(clump_data(a, src = src))
   expect_true(nrow(out) > 0)
+  expect_true(nrow(a) > nrow(out))
+  expect_equal(unique(out$clump_ld_choice.exposure), "matched")
+  expect_equal(unique(out$clump_ld.exposure), "hgdp1kgp-v2-EUR-k10")
+
+  b <- suppressWarnings(ld_matrix(head(out$SNP, 5), src = src))
+  expect_equal(nrow(b), ncol(b))
+  expect_true(all(grepl("^[0-9XYMT]+:[0-9]+:[ACGT]+:[ACGT]+$", rownames(b))))
+  expect_equal(unname(diag(b)), rep(1, nrow(b)))
 })
 
-
-test_that("matrix", {
-  skip_if_not(exists('out'), "out not created in test above")
-  b <- try(ld_matrix(out$SNP))
-  if (inherits(b, "try-error")) {
-    skip("Server issues")
-  }
-  expect_equal(nrow(b), nrow(out))
-  expect_equal(ncol(b), nrow(out))
-})
-
-
-test_that("clump multiple", {
-  a <- try(extract_instruments(c("ieu-a-2", "ieu-a-1001"), clump = 0))
-  if (inherits(a, "try-error")) {
-    skip("Server issues")
-  }
-  out <- clump_data(a)
+test_that("clump_data() of several Analyses of one ancestry", {
+  src <- opengwasr::og_api()
+  a <- suppressWarnings(
+    extract_instruments(c("ukb-b-19953", "ebi-a-GCST003116"), clump = FALSE, src = src)
+  )
+  a <- a[order(a$pval.exposure), ]
+  a <- a[ave(seq_len(nrow(a)), a$id.exposure, FUN = seq_along) <= 100, ]
+  out <- suppressWarnings(clump_data(a, src = src))
   expect_equal(length(unique(a$id.exposure)), length(unique(out$id.exposure)))
 })
 
-test_that("clump local", {
-  skip_if_not(exists('a'), "a not created in test above")
-  skip_if_not(file.exists(
-    "/Users/gh13047/repo/opengwas-api-internal/opengwas-api/app/ld_files/EUR.bim"
-  ))
-  aclump <- clump_data(
-    a,
-    bfile = "/Users/gh13047/repo/opengwas-api-internal/opengwas-api/app/ld_files/EUR",
-    plink_bin = "plink"
+test_that("a refused clumping says so", {
+  src <- opengwasr::og_api()
+  a <- suppressWarnings(extract_instruments("ukb-b-19953", clump = FALSE, src = src))[1:50, ]
+  expect_error(
+    clump_data(a, clump_r2 = 0.001, clump_kb = 10000, src = src),
+    class = "opengwasr_ld_refusal"
   )
 })

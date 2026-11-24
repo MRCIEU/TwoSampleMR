@@ -25,16 +25,16 @@ library(TwoSampleMR)
 ```
 
 ```{r, eval=FALSE, echo=FALSE}
-# Get data for the vignette
+# Get data for the vignette (`ao` is cut down to the studies the vignette names)
 ao <- available_outcomes()
-bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
+bmi_exp_dat <- extract_instruments(outcomes = "ukb-b-19953")
 chd_out_dat1 <- extract_outcome_data(
   snps = bmi_exp_dat$SNP,
-  outcomes = 'ieu-a-7'
+  outcomes = "ebi-a-GCST003116"
 )
 chd_out_dat2 <- extract_outcome_data(
-  snps = c("rs234", "rs17097147"),
-  outcomes = c('ieu-a-2', 'ieu-a-7')
+  snps = bmi_exp_dat$SNP,
+  outcomes = c("ukb-b-19953", "ebi-a-GCST003116")
 )
 save(ao, bmi_exp_dat, chd_out_dat1, chd_out_dat2, file = file.path("inst", "extdata", "vig_outcome.RData"), compress = "xz")
 ```
@@ -45,83 +45,78 @@ load(system.file("extdata", "vig_outcome.RData", package = "TwoSampleMR"))
 
 Once instruments for the exposure trait have been specified, those variants need to be extracted from the outcome trait.
 
-## Available studies in IEU GWAS database
+## Available studies in the OpenGWAS database
 
-The IEU GWAS database (IGD) contains complete GWAS summary statistics from a large number of studies. You can browse them here:
+The OpenGWAS database contains complete GWAS summary statistics from a large number of studies. You can browse them here:
 
 https://opengwas.io
 
-To obtain details about the available GWASs programmatically do the following:
+TwoSampleMR reads it through the [opengwasr](https://github.com/opengwas/opengwasr) package, which needs an OpenGWAS token (see `vignette("opengwasr", package = "opengwasr")`). To obtain details about the available GWASs programmatically do the following:
 
 ```{r, eval=FALSE}
 ao <- available_outcomes()
 ```
 
-```{r}
-head(ao)
-```
-
-For information about authentication see <https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication>.
-
-The `available_outcomes` function returns a table of all the available studies in the database. Each study has a unique ID. e.g.
+(Here `ao` is cut down to a few studies, so that this vignette builds without the network.)
 
 ```{r}
-head(subset(ao, select = c(trait, id)))
+head(ao[, c("id", "analysis_label", "assigned_ancestry", "sample_size")])
 ```
+
+The `available_outcomes()` function returns a table of all the available studies (Analyses) in the database. Each study has a unique ID of the form `<store_id>:<analysis_id>`, and `analysis_label` is its trait. The old IDs, such as `ukb-b-19953`, are accepted wherever they name one study.
 
 ## Extracting particular SNPs from particular studies
 
-If we want to perform MR of BMI against coronary heart disease, we need to identify the SNPs that influence the BMI, and then extract those SNPs from a GWAS on coronary heart disease.
+If we want to perform MR of BMI against coronary artery disease, we need to identify the SNPs that influence the BMI, and then extract those SNPs from a GWAS on coronary artery disease.
 
-Let's get the Locke et al 2014 instruments for BMI as an example:
+Let's get the instruments for BMI from the UK Biobank study as an example:
 
 ```{r, eval=FALSE}
-bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
+bmi_exp_dat <- extract_instruments(outcomes = "ukb-b-19953")
 ```
 
 ```{r}
-head(bmi_exp_dat)
+head(bmi_exp_dat[, 1:12])
 ```
 
-We now need to find a suitable GWAS for coronary heart disease. We can search the available studies:
+We now need to find a suitable GWAS for coronary artery disease. We can search the available studies:
 
 ```{r}
-ao[grepl("heart disease", ao$trait), ]
+ao[grepl("coronary", ao$analysis_label, ignore.case = TRUE), c("id", "analysis_label", "sample_size", "n_cases")]
 ```
 
-The most recent CARDIOGRAM GWAS is ID number `ieu-a-7`. We can extract the BMI SNPs from this GWAS as follows:
+The CARDIoGRAMplusC4D 2015 GWAS is `ebi-a-GCST003116` (its full ID is `OGS-00011:GCST003116`). We can extract the BMI SNPs from this GWAS as follows:
 
 ```{r, eval=FALSE}
 chd_out_dat1 <- extract_outcome_data(
   snps = bmi_exp_dat$SNP,
-  outcomes = 'ieu-a-7'
+  outcomes = "ebi-a-GCST003116"
 )
 ```
 
-The `extract_outcome_data()` function is flexible. The `snps` argument only requires an array of rsIDs, and the `outcomes` argument can be a vector of outcomes, e.g.
+The `extract_outcome_data()` function is flexible. The `snps` argument only requires an array of rsIDs (or ALIDs, `chromosome:position:effect allele:other allele` on GRCh38), and the `outcomes` argument can be a vector of outcomes, e.g.
 ```{r eval=FALSE}
 chd_out_dat2 <- extract_outcome_data(
-  snps = c("rs234", "rs17097147"),
-  outcomes = c('ieu-a-2', 'ieu-a-7')
+  snps = bmi_exp_dat$SNP,
+  outcomes = c("ukb-b-19953", "ebi-a-GCST003116")
 )
 ```
 
-will extract the two SNPs from each of the outcomes `ieu-a-2` and `ieu-a-7`.
+will extract the SNPs from each of the outcomes `ukb-b-19953` and `ebi-a-GCST003116`. A study that does not exist is an error.
 
-## LD proxies
+## Imputed Associations, not LD proxies
 
-By default if a particular requested SNP is not present in the outcome GWAS then a SNP (proxy) that is in LD with the requested SNP (target) will be searched for instead. LD proxies are defined using 1000 genomes European sample data. The effect of the proxy SNP on the outcome is returned, along with the proxy SNP, the effect allele of the proxy SNP, and the corresponding allele (in phase) for the target SNP.
+Earlier versions of TwoSampleMR searched for an LD proxy (a SNP in LD with the requested SNP) whenever a requested SNP was not in the outcome GWAS. That no longer happens. The OpenGWAS data are now Reference-Completed: for most variants that a study did not report, OpenGWAS holds an *Imputed Association*, estimated from the study's reported variants. `extract_outcome_data()` returns it as the requested variant itself, not as a proxy, and `association_status.outcome` says whether each Association is `"observed"` or `"imputed"`.
 
-The parameters for handling LD proxies are as follows:
+```{r}
+table(chd_out_dat1$association_status.outcome)
+```
 
-- `proxies` = TRUE or FALSE (TRUE by default)
-- `rsq` = numeric value of minimum rsq to find a proxy. Default is 0.8, minimum is 0.6
-- `palindromes` = Allow palindromic SNPs? Default is 1 (yes)
-- `maf_threshold` = If palindromes allowed then what is the maximum minor allele frequency of palindromes allowed? Default is 0.3.
+`harmonise_data()` reports how many of the outcome Associations used for MR were Imputed, and `mr()` gives their number in `nsnp_imputed`. The arguments that controlled proxies (`proxies`, `rsq`, `palindromes`, `maf_threshold`, `align_alleles` and `proxy_splitsize`) are still accepted, but print a message and change nothing.
 
 ## Using local GWAS summary data
 
-If you have GWAS summary data that is not present in IEU GWAS database, this can still be used to perform analysis.
+If you have GWAS summary data that is not present in the OpenGWAS database, this can still be used to perform analysis.
 
 Supposing there is a GWAS summary file called "gwas_summary.csv" with e.g. 2 million rows and it looks like this:
 
@@ -169,28 +164,19 @@ The `extract_outcome_data` function returns a table of SNP effects for the reque
 - `ncontrol.outcome`
 - `pval.outcome`
 - `eaf.outcome`
-- `effect_allele.outcom`
+- `effect_allele.outcome`
 - `other_allele.outcome`
-- `units.outcome`
 - `outcome`
-- `consortium.outcome`
-- `year.outcome`
-- `pmid.outcome`
 - `id.outcome`
 - `originalname.outcome`
-- `proxy.outcome`
-- `target_snp.outcome`
-- `proxy_snp.outcome`
-- `target_a1.outcome`
-- `target_a2.outcome`
-- `proxy_a1.outcome`
-- `proxy_a2.outcome`
+- `effect_scale.outcome` - `"sd"` (per SD of the trait) or `"log_or"` (log odds ratio)
+- `association_status.outcome` - `"observed"` or `"imputed"`
 - `mr_keep.outcome`
 - `data_source.outcome`
 
 ## More advanced use of local data
 
-We have developed a summary data format called "GWAS VCF", which is designed to store GWAS results in a strict and performant way. It is possible to use this format with the TwoSampleMR package. Going down this avenue also allows you to use LD proxy functionality using your own LD reference files (or ones that we provide). For more details, see this package that explains the format and how to query it in R:
+We have developed a summary data format called "GWAS VCF", which is designed to store GWAS results in a strict and performant way. It is possible to use this format with the TwoSampleMR package. For more details, see this package that explains the format and how to query it in R:
 
 https://github.com/mrcieu/gwasvcf
 

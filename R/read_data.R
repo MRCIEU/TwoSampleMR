@@ -129,10 +129,10 @@ read_exposure_data <- function(
   log_pval = FALSE,
   chr_col = "chr",
   pos_col = "pos",
-  clump_kb = 10000,
-  clump_r2 = 0.001,
+  clump_kb = NULL,
+  clump_r2 = NULL,
   clump_p1 = 1,
-  pop = "EUR",
+  pop = NULL,
   bfile = NULL,
   plink_bin = NULL
 ) {

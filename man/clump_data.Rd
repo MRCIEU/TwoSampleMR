@@ -6,42 +6,62 @@
 \usage{
 clump_data(
   dat,
-  clump_kb = 10000,
-  clump_r2 = 0.001,
+  clump_kb = NULL,
+  clump_r2 = NULL,
   clump_p1 = 1,
-  pop = "EUR",
+  pop = NULL,
   bfile = NULL,
-  plink_bin = NULL
+  plink_bin = NULL,
+  src = twosamplemr_source()
 )
 }
 \arguments{
-\item{dat}{Output from \code{\link[=format_data]{format_data()}}. Must have a SNP name column (\code{SNP}), SNP chromosome column (\code{chr_name}), SNP position column (\code{chrom_start}). If \code{id.exposure} or \code{pval.exposure} not present they will be generated.}
+\item{dat}{Output from \code{\link[=format_data]{format_data()}}. Must have a SNP name column (\code{SNP}), which is an rsID or an ALID. If \code{id.exposure} or \code{pval.exposure} not present they will be generated.}
 
-\item{clump_kb}{Clumping window, default is \code{10000}.}
+\item{clump_kb}{Clumping window in kb. The default, \code{NULL}, is the LD Store's own (10,000).}
 
-\item{clump_r2}{Clumping r2 cutoff. Note that this default value has recently changed from \code{0.01} to \code{0.001}.}
+\item{clump_r2}{Clumping r2 cutoff. The default, \code{NULL}, is the LD Store's own.}
 
-\item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}.}
+\item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}: variants with a larger p-value are left out.}
 
-\item{pop}{Super-population to use as reference panel. Default = \code{"EUR"}. Options are \code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}. \code{'legacy'} also available - which is a previously used version of the EUR panel with a slightly different set of markers}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
 
-\item{bfile}{If this is provided then will use the API. Default = \code{NULL}}
+\item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to clump with locally instead of an LD Store. Default = \code{NULL}}
 
 \item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
+
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 Data frame
 }
 \description{
-Uses PLINK clumping method, where SNPs in LD within a particular window will be pruned. The SNP with the lowest p-value is retained.
+Clumps \code{dat} so that one variant is kept for each independent signal: the strongest variant, and
+every weaker variant within a window whose LD with it is above a threshold is dropped. The work
+is done by \code{\link[opengwasr:og_clump]{opengwasr::og_clump()}}.
 }
 \details{
-This function interacts with the OpenGWAS API, which houses LD reference panels for the 5 super-populations in the 1000 genomes reference panel.
-It includes only bi-allelic SNPs with MAF > 0.01, so it's quite possible that a variant you want to include in the clumping process will be absent.
-If it is absent, it will be automatically excluded from the results.
+By default the LD Store that matches the Assigned Ancestry of the Analyses in \code{dat} (its
+\code{id.exposure}) is used, and \code{clump_r2} and \code{clump_kb} are the LD Store's own thresholds (r2 about
+0.03 within 10,000 kb). They are sent only when you set them: LD Stores refuse r2 = 0.001
+within 10,000 kb, so scripts that pass those old defaults now get opengwasr's refusal. If the Analyses
+differ in ancestry, or one is Unassigned, opengwasr refuses unless you choose the LD with \code{pop}.
+Data that do not come from OpenGWAS (whose \code{id.exposure} names no Analysis) have no Assigned Ancestry, so they are refused (error class \code{twosamplemr_ld_needs_pop}) unless you give \code{pop} or \code{bfile}: add \code{pop = "EUR"} to an old script.
 
-You can check if your variants are present in the LD reference panel using \code{\link[ieugwasr:ld_reflookup]{ieugwasr::ld_reflookup()}}.
+Variants are ranked by their p-value (as a |z| score). Each variant is given an ALID
+(\code{chromosome:position:allele:allele}, GRCh38, see \code{\link[opengwasr:og_alid]{opengwasr::og_alid()}}): its \code{SNP}, if that is
+one; else made from the \code{chr.exposure} and \code{pos.exposure} columns (GRCh38 positions) and the
+alleles; else looked up from its rsID (see \code{\link[opengwasr:og_variants_rsid]{opengwasr::og_variants_rsid()}}). Variants with no ALID,
+or that the LD Store does not hold, cannot be clumped and are left out of the result
+(opengwasr warns about the latter).
 
-This function does put load on the OpenGWAS servers, which makes life more difficult for other users.
-We have implemented a method and made available the LD reference panels to perform clumping locally, see \code{\link[ieugwasr:ld_clump]{ieugwasr::ld_clump()}} and related vignettes for details.
+With \code{bfile}, PLINK clumps on your machine using your own reference (\code{\link[opengwasr:og_plink_reference]{opengwasr::og_plink_reference()}}),
+matching variants by rsID. There the thresholds have no defaults to take, so \code{clump_r2 = 0.001} and
+\code{clump_kb = 10000} (TwoSampleMR's old defaults) are used unless you set them.
+
+Each \code{id.exposure} is clumped on its own, in the LD Store of its own ancestry, as the old OpenGWAS client did.
+To check which of your variants an LD Store holds first, use \code{\link[opengwasr:og_ld_reflookup]{opengwasr::og_ld_reflookup()}}.
+
+The result has \code{clump_ld.exposure}, \code{clump_ld_choice.exposure}, \code{clump_r2.exposure} and
+\code{clump_kb.exposure} columns recording the LD used (the path of the reference with \code{bfile}).
 }

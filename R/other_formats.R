@@ -5,12 +5,22 @@
 #' function converts from the TwoSampleMR format to the MRInput class.
 #'
 #' @param dat Output from the [harmonise_data()] function.
-#' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from the European 1000 genomes data on OpenGWAS.
-#' @param pop If `get_correlations` is `TRUE` then use the following
+#' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from an OpenGWAS LD Store with [ld_matrix()]. From an LD Store, pairs below its Far Threshold are 0, and pairs it cannot measure (other chromosomes, beyond its far window) are set to 0 too, treated as independent, with a message giving how many.
+#' @param pop If `get_correlations` is `TRUE` then the ancestry (or LD Store id) of the LD Store to use. The default is `"EUR"`.
+#' @param bfile If `get_correlations` is `TRUE`, the prefix of a PLINK fileset to use as the LD reference instead of an LD Store. Default = `NULL`
+#' @param plink_bin Path to the plink binary for `bfile`. Default = `NULL`
+#' @param src A Source from opengwasr, used with `get_correlations`. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return List of MRInput objects for each exposure/outcome combination
-dat_to_MRInput <- function(dat, get_correlations = FALSE, pop = "EUR") {
+dat_to_MRInput <- function(
+  dat,
+  get_correlations = FALSE,
+  pop = "EUR",
+  bfile = NULL,
+  plink_bin = NULL,
+  src = twosamplemr_source()
+) {
   if (!requireNamespace("MendelianRandomization", quietly = TRUE)) {
     stop(
       "Package \"MendelianRandomization\" must be installed to use this function.",
@@ -24,9 +34,7 @@ dat_to_MRInput <- function(dat, get_correlations = FALSE, pop = "EUR") {
     message(" - exposure: ", x$exposure[1])
     message(" - outcome: ", x$outcome[1])
     if (get_correlations) {
-      message(" - obtaining LD matrix")
-      ld <- ld_matrix(unique(x$SNP), pop = pop)
-      out <- harmonise_ld_dat(x, ld)
+      out <- ld_for_mr_input(x, pop, bfile, plink_bin, src)
       if (is.null(out)) {
         return(NULL)
       }
@@ -71,11 +79,13 @@ dat_to_MRInput <- function(dat, get_correlations = FALSE, pop = "EUR") {
 #' LD matrix returns with rsid_ea_oa identifiers. Make sure that they are oriented to the same effect allele as the summary dataset. Summary dataset can be exposure dataset or harmonised dataset.
 #'
 #' @param x Exposure dataset or harmonised dataset
-#' @param ld Output from [ld_matrix()]
+#' @param ld Output from [ld_matrix()]. A matrix named by ALID is renamed `<SNP>_<allele1>_<allele2>`, with `SNP` as in `x`.
+#' @param src A Source from opengwasr, used only to find the ALIDs of rsIDs in `x` that have no position.
 #'
 #' @export
 #' @return List of exposure dataset and harmonised LD matrix
-harmonise_ld_dat <- function(x, ld) {
+harmonise_ld_dat <- function(x, ld, src = twosamplemr_source()) {
+  ld <- name_ld_by_snp(x, ld, src)
   snpnames <- do.call(rbind, strsplit(rownames(ld), split = "_"))
   i1 <- snpnames[, 1] %in% x$SNP
   ld <- ld[i1, i1, drop = FALSE]
@@ -325,4 +335,62 @@ run_mrmix <- function(dat) {
   })
   names(out) <- paste(combos$id.exposure, combos$id.outcome, sep = ".")
   out
+}
+
+
+# An LD Store names its matrix by ALID. This renames it `<SNP>_<allele1>_<allele2>`, with `SNP` as
+# `x` names it, which is how a matrix made from a PLINK reference is named; variants of `x` that are
+# not in the matrix are not renamed, and those of the matrix that are not in `x` are dropped.
+name_ld_by_snp <- function(x, ld, src) {
+  alid <- grepl(alid_pattern, rownames(ld))
+  if (!all(alid)) {
+    return(ld)
+  }
+  at <- match(rownames(ld), dat_alids(x, src))
+  parts <- do.call(rbind, strsplit(rownames(ld), ":", fixed = TRUE))
+  name <- paste(x$SNP[at], parts[, 3], parts[, 4], sep = "_")
+  ld <- ld[!is.na(at), !is.na(at), drop = FALSE]
+  rownames(ld) <- colnames(ld) <- name[!is.na(at)]
+  ld
+}
+
+
+# The LD matrix of the variants of `x` for MendelianRandomization, harmonised to `x`, or NULL if none
+# can be. From an LD Store the pairs below its Far Threshold are 0 (`fill_below_t_far`), and the
+# remaining unmeasured pairs are set to 0 too; a PLINK Reference's matrix is complete already.
+ld_for_mr_input <- function(x, pop, bfile, plink_bin, src) {
+  message(" - obtaining LD matrix")
+  ld <- ld_matrix(
+    unique(x$SNP),
+    pop = pop,
+    bfile = bfile,
+    plink_bin = plink_bin,
+    fill_below_t_far = is.null(bfile),
+    src = src
+  )
+  out <- harmonise_ld_dat(x, ld, src)
+  if (is.null(out)) {
+    return(NULL)
+  }
+  out$ld <- complete_ld(out$ld, plink = !is.null(bfile))
+  out
+}
+
+# Pairs of variants that an LD Store does not hold (other chromosomes, or beyond its far window) are
+# unmeasured: they are treated as independent, so they are set to 0, and the user is told how many.
+complete_ld <- function(ld, plink = FALSE) {
+  missing <- is.na(ld)
+  if (plink || !any(missing)) {
+    return(ld)
+  }
+  pairs <- sum(missing[upper.tri(missing)])
+  message(
+    " - ",
+    pairs,
+    " pair(s) of variants were set to 0 in the LD matrix: the LD Store does not hold them ",
+    "because the variants are on different chromosomes or further apart than its far window, so ",
+    "they are treated as independent."
+  )
+  ld[missing] <- 0
+  ld
 }

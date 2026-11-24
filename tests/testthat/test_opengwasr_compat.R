@@ -94,7 +94,7 @@ test_that("combine_all_mrresults() and the forest plots work at ao_slc = TRUE", 
 
 # Numeric legacy ids --------------------------------------------------------------------------------
 
-test_that("numeric ids are mapped as ieugwasr::legacy_ids() mapped them, before opengwasr sees them", {
+test_that("numeric ids are mapped as the old OpenGWAS client mapped them, before opengwasr sees them", {
   state <- local_fake_opengwasr()
   suppressWarnings(try(extract_instruments(c(2, 300, 303, "UKB-b:19953")), silent = TRUE))
   asked <- calls_to(state, "og_analyses")[[1]]$args$ids

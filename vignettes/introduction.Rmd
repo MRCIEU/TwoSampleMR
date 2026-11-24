@@ -30,7 +30,7 @@ Two sample Mendelian randomisation is a method to estimate the causal effect of 
 
 The general principles [@DaveySmith2003; @DaveySmithHemani2014], and statistical methods [@Pierce2013; @Bowden2015] can be found elsewhere, here we will just outline how to use the R package.
 
-This package uses the [ieugwasr](https://github.com/mrcieu/ieugwasr) package to connect to the IEU OpenGWAS database of thousands of complete GWAS summary data.
+This package uses the [opengwasr](https://github.com/opengwas/opengwasr) package to connect to the OpenGWAS database of thousands of complete GWAS summary data.
 
 ## Installation
 
@@ -82,7 +82,7 @@ install.packages('TwoSampleMR',
 The workflow for performing MR is as follows:
 
 1. Select instruments for the exposure (perform LD clumping if necessary)
-2. Extract the instruments from the [IEU GWAS database](https://opengwas.io) for the outcomes of interest
+2. Extract the instruments from the [OpenGWAS database](https://opengwas.io) for the outcomes of interest
 3. Harmonise the effect sizes for the instruments on the exposures and the outcomes to be aligned to the same reference allele
 4. Perform MR analysis, sensitivity analyses, create plots, compile reports
 
@@ -92,7 +92,7 @@ A diagrammatic overview is shown here:
 knitr::include_graphics("img/twosamplemr_schematic_long-01.png")
 ```
 
-A basic analysis, e.g. the causal effect of body mass index on coronary heart disease, looks like this:
+A basic analysis, e.g. the causal effect of body mass index on coronary artery disease, looks like this:
 
 ```{r eval=FALSE}
 library(TwoSampleMR)
@@ -101,10 +101,10 @@ library(TwoSampleMR)
 ao <- available_outcomes()
 
 # Get instruments
-exposure_dat <- extract_instruments("ieu-a-2")
+exposure_dat <- extract_instruments("ukb-b-19953")
 
 # Get effects of instruments on outcome
-outcome_dat <- extract_outcome_data(snps = exposure_dat$SNP, outcomes = "ieu-a-7")
+outcome_dat <- extract_outcome_data(snps = exposure_dat$SNP, outcomes = "ebi-a-GCST003116")
 
 # Harmonise the exposure and outcome data
 dat <- harmonise_data(exposure_dat, outcome_dat)
@@ -119,11 +119,16 @@ Each step is documented on other pages in the documentation.
 
 The statistical methods in TwoSampleMR can be used on any data, but there are a number of functions that connect to the OpenGWAS database for data extraction. These OpenGWAS data access functions require authentication.
 
-**Authentication is changing** The main differences are that:
+TwoSampleMR reads OpenGWAS through the [opengwasr](https://github.com/opengwas/opengwasr) package, which finds your token in the `OPENGWAS_JWT` environment variable. See `vignette("opengwasr", package = "opengwasr")` for how to get a token and set it, and for checking that it works. The data functions take a `src` argument, an opengwasr Source, if you need more control than the default `opengwasr::og_api()` gives.
 
-1. Authentication is required for most queries to OpenGWAS for everyone (i.e. no more anonymous usage)
-2. We are no longer using Google Oauth2. This has been replaced by a simple API key system.
+## What has changed in version 0.8.0
 
-Detailed information is given here: <https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication>. 
+- The effects of continuous traits are per SD of the trait, so the MR estimate of a continuous exposure is per SD of the exposure.
+- Analyses are named `<store_id>:<analysis_id>`, and variants without an rsID are named by their ALID, on GRCh38.
+- Instruments are clumped in an LD reference whose ancestry matches the study's, at its own thresholds (the old 0.001 within 10,000 kb is refused).
+- Imputed Associations replace LD proxies.
+- The old OpenGWAS R client is no longer used. `ldsc_h2()` and `ldsc_rg()` are not available until opengwasr can serve them.
+
+See the NEWS for details.
 
 ## References

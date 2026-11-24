@@ -94,11 +94,13 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc = 0, W = NULL) {
 
 #' Univariate LDSC
 #'
-#' Imported here to help estimate sample overlap between studies
+#' Imported here to help estimate sample overlap between studies.
+#'
+#' **Not available yet.** This function stops with an error of class `twosamplemr_not_yet_available`: it needs HapMap3 variants with their LD scores and allele frequencies, to infer ancestry, which opengwasr does not provide yet (opengwas/opengwasr#26).
 #'
 #' @param id ID to analyse
 #' @param ancestry ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies
-#' @param snpinfo Output from `ieugwasr::afl2_list("hapmap3")`, or `NULL` for it to be done automatically
+#' @param snpinfo Not used until the function is available again
 #' @param splitsize How many SNPs to extract at one time. Default=`20000`
 #'
 #' @export
@@ -112,121 +114,31 @@ ldsc_rg_internal <- function(Zs, r2, h1, h2, N1, N2, Nc = 0, W = NULL) {
 #'
 #' <https://github.com/baolinwu/MTAR>
 ldsc_h2 <- function(id, ancestry = "infer", snpinfo = NULL, splitsize = 20000) {
-  if (is.null(snpinfo)) {
-    snpinfo <- ieugwasr::afl2_list("hapmap3", x_api_source = x_api_source_header())
-  }
-
-  snpinfo <- snpinfo %>%
-    dplyr::filter(complete.cases(.))
-
-  d <- extract_split(snpinfo$rsid, id, splitsize) %>%
-    ieugwasr::fill_n(x_api_source = x_api_source_header()) %>%
-    dplyr::mutate(z = beta / se) %>%
-    dplyr::select(rsid, z = z, n = n, eaf) %>%
-    dplyr::filter(complete.cases(.))
-
-  stopifnot(nrow(d) > 0)
-
-  if (ancestry == "infer") {
-    ancestry <- ieugwasr::infer_ancestry(d, snpinfo)$pop[1]
-  }
-
-  d <- snpinfo %>%
-    dplyr::select(rsid, l2 = paste0("L2.", ancestry)) %>%
-    dplyr::inner_join(., d, by = "rsid") %>%
-    dplyr::filter(complete.cases(.))
-
-  return(ldsc_h2_internal(d$z, d$l2, d$n))
+  ldsc_not_yet_available("ldsc_h2")
 }
 
 #' Bivariate LDSC
 #'
-#' Imported here to help estimate sample overlap between studies
+#' Imported here to help estimate sample overlap between studies.
+#'
+#' **Not available yet.** This function stops with an error of class `twosamplemr_not_yet_available`: it needs HapMap3 variants with their LD scores and allele frequencies, to infer ancestry, which opengwasr does not provide yet (opengwas/opengwasr#26).
 #'
 #' @param id1 ID 1 to analyse
 #' @param id2 ID 2 to analyse
 #' @param ancestry ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies
-#' @param snpinfo Output from `ieugwasr::afl2_list("hapmap3")`, or `NULL` for it to be done automatically
+#' @param snpinfo Not used until the function is available again
 #' @param splitsize How many SNPs to extract at one time. Default=`20000`
 #'
 #' @export
 #' @return model fit
 ldsc_rg <- function(id1, id2, ancestry = "infer", snpinfo = NULL, splitsize = 20000) {
-  if (is.null(snpinfo)) {
-    snpinfo <- ieugwasr::afl2_list("hapmap3", x_api_source = x_api_source_header())
-  }
-
-  x <- extract_split(snpinfo$rsid, c(id1, id2), splitsize)
-  d1 <- subset(x, id == id1) %>%
-    ieugwasr::fill_n(x_api_source = x_api_source_header()) %>%
-    dplyr::mutate(z = beta / se) %>%
-    dplyr::select(rsid, z1 = z, n1 = n, eaf) %>%
-    dplyr::filter(complete.cases(.))
-
-  stopifnot(nrow(d1) > 0)
-
-  d2 <- subset(x, id == id2) %>%
-    ieugwasr::fill_n(x_api_source = x_api_source_header()) %>%
-    dplyr::mutate(z = beta / se) %>%
-    dplyr::select(rsid, z2 = z, n2 = n, eaf) %>%
-    dplyr::filter(complete.cases(.))
-
-  stopifnot(nrow(d2) > 0)
-
-  if (ancestry == "infer") {
-    ancestry1 <- ieugwasr::infer_ancestry(d1, snpinfo)
-    ancestry2 <- ieugwasr::infer_ancestry(d2, snpinfo)
-    if (ancestry1$pop[1] != ancestry2$pop[1]) {
-      stop("d1 ancestry is ", ancestry1$pop[1], " and d2 ancestry is ", ancestry2$pop[1])
-    }
-    ancestry <- ancestry1$pop[1]
-  }
-
-  d1 <- snpinfo %>%
-    dplyr::select(rsid, l2 = paste0("L2.", ancestry)) %>%
-    dplyr::inner_join(., d1, by = "rsid")
-
-  d2 <- snpinfo %>%
-    dplyr::select(rsid, l2 = paste0("L2.", ancestry)) %>%
-    dplyr::inner_join(., d2, by = "rsid")
-
-  h1 <- ldsc_h2_internal(d1$z1, d1$l2, d1$n1, d1$l2)
-  h2 <- ldsc_h2_internal(d2$z2, d2$l2, d2$n2, d2$l2)
-
-  dat <- dplyr::inner_join(d1, d2, by = "rsid") %>%
-    dplyr::mutate(
-      l2 = l2.x,
-      n1 = as.numeric(n1),
-      n2 = as.numeric(n2),
-      rhs = l2 * sqrt(n1 * n2)
-    )
-
-  gcov <- dat %>%
-    ldsc_rg_internal(
-      Zs = cbind(.$z1, .$z2),
-      r2 = .$l2,
-      h1 = h1$coefficients[2, 1] * nrow(d1),
-      h2 = h2$coefficients[2, 1] * nrow(d2),
-      N1 = .$n1,
-      N2 = .$n2,
-      W = .$l2
-    )
-  return(list(
-    gcov = gcov,
-    h1 = h1,
-    h2 = h2,
-    rg = (gcov$coefficients[1, 1] * nrow(dat)) /
-      sqrt(h1$coefficients[2, 1] * nrow(d1) * h2$coefficients[2, 1] * nrow(d2))
-  ))
+  ldsc_not_yet_available("ldsc_rg")
 }
 
-
-extract_split <- function(snplist, id, splitsize = 20000) {
-  n <- length(snplist)
-  chunk_id <- rep(seq_len(ceiling(n / splitsize)), each = splitsize)[seq_len(n)]
-  split(snplist, chunk_id) %>%
-    pbapply::pblapply(., function(x) {
-      ieugwasr::associations(x, id, proxies = FALSE, x_api_source = x_api_source_header())
-    }) %>%
-    dplyr::bind_rows()
+ldsc_not_yet_available <- function(fn) {
+  not_yet_available(
+    fn,
+    "HapMap3 variants with their LD scores and allele frequencies",
+    "opengwas/opengwasr#26"
+  )
 }

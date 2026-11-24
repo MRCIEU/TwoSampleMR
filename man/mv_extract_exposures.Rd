@@ -6,25 +6,25 @@
 \usage{
 mv_extract_exposures(
   id_exposure,
-  clump_r2 = 0.001,
-  clump_kb = 10000,
+  clump_r2 = NULL,
+  clump_kb = NULL,
   harmonise_strictness = 2,
   opengwas_jwt = NULL,
   find_proxies = TRUE,
   force_server = FALSE,
   pval_threshold = 5e-08,
-  pop = "EUR",
+  pop = NULL,
   plink_bin = NULL,
   bfile = NULL,
-  src = opengwasr::og_api()
+  src = twosamplemr_source()
 )
 }
 \arguments{
 \item{id_exposure}{Array of IDs (e.g. \code{c("ukb-b-19953", "ebi-a-GCST003116")})}
 
-\item{clump_r2}{The default is \code{0.001} for \code{\link[=clump_data]{clump_data()}}. Instruments are clumped in each Analysis's LD Store at its own threshold unless you set this.}
+\item{clump_r2}{Clumping r2 cutoff, for each Analysis's instruments and for the final \code{\link[=clump_data]{clump_data()}}. The default, \code{NULL}, is the LD Store's own threshold.}
 
-\item{clump_kb}{The default is \code{10000} for \code{\link[=clump_data]{clump_data()}}. Instruments are clumped in each Analysis's LD Store at its own window unless you set this.}
+\item{clump_kb}{Clumping window in kb, as \code{clump_r2}. The default, \code{NULL}, is the LD Store's own window.}
 
 \item{harmonise_strictness}{See the \code{action} option of \code{\link[=harmonise_data]{harmonise_data()}}. The default is \code{2}.}
 
@@ -36,13 +36,13 @@ mv_extract_exposures(
 
 \item{pval_threshold}{Instrument detection p-value threshold. Default = \code{5e-8}}
 
-\item{pop}{Which 1000 genomes super population to use for clumping when using the server}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}) or LD Store id to clump in. The default, \code{NULL}, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need \code{pop} or \code{bfile})}
 
 \item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 
-\item{bfile}{If this is provided then will use the API. Default = \code{NULL}}
+\item{bfile}{Prefix of a PLINK fileset to use for the final clumping across exposures, in place of an LD Store (the instruments of each Analysis are always clumped on the server). Default = \code{NULL}}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 data frame in \code{exposure_dat} format
@@ -55,5 +55,5 @@ The data come from opengwasr, as for \code{\link[=extract_instruments]{extract_i
 are Analyses (\verb{<store_id>:<analysis_id>}, or a legacy id that names one), effects of continuous
 traits are per SD, instruments are clumped on the server in the LD Store matching each
 Analysis's ancestry (at its own thresholds unless you set \code{clump_r2} and \code{clump_kb}), and
-Imputed Associations replace proxies. The final clumping across exposures is still \code{\link[=clump_data]{clump_data()}}.
+Imputed Associations replace proxies. The final clumping across exposures is \code{\link[=clump_data]{clump_data()}}.
 }

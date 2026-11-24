@@ -31,14 +31,15 @@ library(ggplot2)
 
 ```{r, eval=FALSE, echo=FALSE}
 ao <- available_outcomes()
-bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
-chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
-id_exposure <- c("ieu-a-299", "ieu-a-300", "ieu-a-302")
-id_outcome <- "ieu-a-7"
+bmi_exp_dat <- extract_instruments(outcomes = "ukb-b-19953")
+chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = "ebi-a-GCST003116")
+id_exposure <- c("OGS-00011:GCST90025956", "OGS-00011:GCST90025954", "OGS-00011:GCST90025953")
+id_outcome <- "ebi-a-GCST003116"
 mv_exposure_dat <- mv_extract_exposures(id_exposure)
 mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, id_outcome)
-snplist <- c("rs234", "rs1205")
-ld_mat <- ld_matrix(snplist)
+snplist <- c("rs72634826", "rs2295363", "rs4648450", "rs2076363")
+ld_mat <- ld_matrix(snplist, fill_below_t_far = TRUE)
+# `ao` is cut down to the studies the vignette names
 save(ao, bmi_exp_dat, chd_out_dat, mv_exposure_dat, mv_outcome_dat, ld_mat, file = file.path("inst", "extdata", "vig_perform_mr.RData"), compress = "xz")
 ```
 
@@ -48,11 +49,11 @@ load(system.file("extdata", "vig_perform_mr.RData", package = "TwoSampleMR"))
 
 ## Introduction
 
-Let's continue with the example of body mass index (BMI) on coronary heart disease (CHD):
+Let's continue with the example of body mass index (BMI) on coronary artery disease (CAD). The effect of BMI is per SD of BMI, as OpenGWAS now gives the effects of continuous traits per SD:
 
 ```{r, eval=FALSE}
-bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
-chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
+bmi_exp_dat <- extract_instruments(outcomes = "ukb-b-19953")
+chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = "ebi-a-GCST003116")
 ```
 
 ```{r}
@@ -290,11 +291,19 @@ A 1-to-many MR analysis interrogates the effect of a single exposure on multiple
 ### Step 1: Generate 1-to-many MR results
 
 ```{r cache=FALSE, warning=FALSE, eval=FALSE}
-exp_dat <- extract_instruments(outcomes = c("ieu-a-2", "ieu-a-100", "ieu-a-1032", "ieu-a-104", "ieu-a-1", "ieu-a-72", "ieu-a-999"))
+exp_dat <- extract_instruments(outcomes = c(
+  "ukb-b-19953", # body mass index
+  "OGS-00011:GCST90025956", # HDL cholesterol
+  "OGS-00011:GCST90025954", # LDL cholesterol
+  "OGS-00011:GCST90025953", # total cholesterol
+  "OGS-00011:GCST90025957", # triglycerides
+  "OGS-00011:GCST90025968", # systolic blood pressure
+  "OGS-00011:GCST90025965" # urate
+))
 table(exp_dat$exposure)
 chd_out_dat <- extract_outcome_data(
   snps = exp_dat$SNP,
-  outcomes = "ieu-a-7"
+  outcomes = "ebi-a-GCST003116"
 )
 
 dat2 <- harmonise_data(
@@ -482,11 +491,10 @@ rm(list = ls()[ls() %in% "evalinr"])
 
 ```{r echo=TRUE, warning=FALSE, message=FALSE, eval=FALSE}
 # extract instruments for BMI
-exp_dat <- extract_instruments(outcomes = "ieu-a-2")
+exp_dat <- extract_instruments(outcomes = "ukb-b-19953")
 ao <- available_outcomes()
-# identify diseases
-ao <- ao[ao$category == "Disease", ]
-ao <- ao[which(ao$ncase > 100), ]
+# identify European-ancestry studies of diseases (binary traits) with more than 100 cases
+ao <- ao[which(ao$outcome_type == "binary" & ao$assigned_ancestry == "EUR" & ao$n_cases > 100), ]
 
 dis_dat <- extract_outcome_data(
   snps = exp_dat$SNP,
@@ -654,12 +662,14 @@ When SNPs instrument multiple potential exposures, for example in the case of di
 
 Steps 1 to 4 are performed by `mv_extract_exposures()` (or `mv_extract_exposures_local()` for your own summary data), step 5 by `extract_outcome_data()`, step 6 by `mv_harmonise_data()`, and step 7 by `mv_multiple()` or `mv_residual()`.
 
-Example - The GWAS IDs for HDL, LDL and total cholesterol are `ieu-a-299`, `ieu-a-300`, and `ieu-a-302`. The GWAS ID for coronary heart disease (CHD) is `ieu-a-7`. In this example we will estimate the multivariable effects of HDL, LDL and total cholesterol on CHD.
+Example - The GWAS IDs for HDL, LDL and total cholesterol are `OGS-00011:GCST90025956`, `OGS-00011:GCST90025954`, and `OGS-00011:GCST90025953`. The GWAS ID for coronary artery disease (CAD) is `ebi-a-GCST003116`. In this example we will estimate the multivariable effects of HDL, LDL and total cholesterol on CAD.
 
 ```{r eval=FALSE}
-id_exposure <- c("ieu-a-299", "ieu-a-300", "ieu-a-302")
-id_outcome <- "ieu-a-7"
+id_exposure <- c("OGS-00011:GCST90025956", "OGS-00011:GCST90025954", "OGS-00011:GCST90025953")
+id_outcome <- "ebi-a-GCST003116"
 ```
+
+All the exposures are European-ancestry studies, so the final clumping across them is done in the European LD Store. `mv_extract_exposures()` refuses exposures whose assigned ancestries differ unless you choose the LD with `pop`.
 
 First obtain the instruments for each lipid fraction. This entails obtaining a combined set of SNPs including all instruments, and getting those SNPs for each lipid fraction. Therefore, if there are e.g. 20 instruments for each of 3 lipid fractions, but combined there are 30 unique SNPs, then we need to extract each of the 30 SNPs from each lipid fraction (exposure).
 
@@ -750,7 +760,7 @@ From this point, the workflow is the same as the OpenGWAS example above:
 
 ```r
 # The outcome can be from OpenGWAS or local data
-mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, "ieu-a-7")
+mv_outcome_dat <- extract_outcome_data(mv_exposure_dat$SNP, "ebi-a-GCST003116")
 mvdat <- mv_harmonise_data(mv_exposure_dat, mv_outcome_dat)
 res <- mv_multiple(mvdat)
 ```
@@ -759,7 +769,7 @@ res <- mv_multiple(mvdat)
 
 Sometimes one exposure is available locally while another is in OpenGWAS. The approach is to format each source into the same structure and combine them. The key is that `mv_extract_exposures_local()` expects full GWAS summary statistics (not just top hits), because it needs to look up the effects of *all* instruments across *all* exposures, including instruments that were identified for a different exposure.
 
-If you have one local exposure (e.g., local GWAS for early-life BMI) and one OpenGWAS exposure (e.g., age at menarche, `ieu-a-1095`):
+If you have one local exposure (e.g., local GWAS for early-life BMI) and one OpenGWAS exposure (e.g., age at menarche, `ukb-b-3768`):
 
 ```r
 # Step 1: Format local data as "outcome" (the internal format used for full GWAS)
@@ -779,13 +789,13 @@ local_tophits <- local_gwas %>%
   clump_data()
 
 # Step 3: Get instruments for the OpenGWAS trait
-menarche_tophits <- extract_instruments("ieu-a-1095")
+menarche_tophits <- extract_instruments("ukb-b-3768")
 
 # Step 4: Combine all instrument SNPs and get them from all exposures
 all_snps <- unique(c(local_tophits$SNP, menarche_tophits$SNP))
 
 # Get all SNPs from OpenGWAS trait (in outcome format)
-menarche_gwas <- extract_outcome_data(snps = all_snps, outcomes = "ieu-a-1095")
+menarche_gwas <- extract_outcome_data(snps = all_snps, outcomes = "ukb-b-3768")
 
 # Step 5: Use mv_extract_exposures_local() with both full GWAS as data frames
 mv_exposure_dat <- mv_extract_exposures_local(
@@ -836,18 +846,18 @@ pleiotropy_mvmr(r_input = mvmr_input, gencov = 0)
 
 In the examples shown so far it is assumed that instruments are independent (i.e. they are not in linkage disequilibrium, LD). This is to avoid 'double counting' effects. An alternative approach is to estimate the MR effects accounting for the correlation between variants.
 
-The TwoSampleMR package has not implemented this yet, but the [MendelianRandomization](https://CRAN.R-project.org/package=MendelianRandomization) R package by Yavorska and Burgess does have this functionality. We can use the TwoSampleMR package to extract, format and harmonise data, and then convert to the format required by the MendelianRandomization package. The IEU GWAS database server has the individual level genetic data for ~500 Europeans in 1000 genomes data, and can obtain the LD matrix for a set of SNPs using these data. For example:
+The TwoSampleMR package has not implemented this yet, but the [MendelianRandomization](https://CRAN.R-project.org/package=MendelianRandomization) R package by Yavorska and Burgess does have this functionality. We can use the TwoSampleMR package to extract, format and harmonise data, and then convert to the format required by the MendelianRandomization package. OpenGWAS can obtain the LD matrix for a set of SNPs from its LD reference (an "LD Store" for each ancestry, by default the European one; you can use your own PLINK reference with `bfile`). For example:
 
 ```{r eval=FALSE}
-snplist <- c("rs234", "rs1205")
-ld_mat <- ld_matrix(snplist)
+snplist <- c("rs72634826", "rs2295363", "rs4648450", "rs2076363")
+ld_mat <- ld_matrix(snplist, fill_below_t_far = TRUE)
 ```
 
 ```{r}
 ld_mat
 ```
 
-Here `ld_matrix()` returns the LD correlation values (not R^2^) for each pair of variants present in the 1000 genomes data set.
+Here `ld_matrix()` returns the LD correlation values (not R^2^) for each pair of variants present in the LD reference. The matrix is named by ALID (`chromosome:position:allele:allele`, GRCh38), and the sign of each value refers to the first allele in the names. A matrix made from your own PLINK reference (`bfile`) is named `<rsid>_<allele1>_<allele2>` instead. The LD Stores do not hold every pair: a pair they do not hold is `NA`, unless you set `fill_below_t_far = TRUE`, which sets to 0 the pairs that they know are only weakly linked (below their Far Threshold, within 10,000 kb). Pairs further apart, or on different chromosomes, stay `NA`.
 
 ```{r}
 dat <- harmonise_data(
@@ -870,7 +880,9 @@ MendelianRandomization::mr_ivw(dat2[[1]])
 
 Alternatively, convert to the `MRInput` format but also obtaining the LD matrix for the instruments
 
-```{r eval=evalinr44}
+This needs OpenGWAS, so it is not run when this vignette is built. Pairs the LD Store does not hold are `NA` in the matrix, which the MendelianRandomization functions do not accept, so you may need to set them to 0 yourself if you know the variants are unlinked.
+
+```{r eval=FALSE}
 dat2 <- try(dat_to_MRInput(dat, get_correlation = TRUE))
 if (!inherits(dat2, "try-error")) MendelianRandomization::mr_ivw(dat2[[1]], correl = TRUE)
 ```
@@ -887,14 +899,14 @@ In order to run the analysis you must download an RData object that contains the
 
 **Caution: this is a large file (approx 167Mb)**
 
-Once downloaded, read in the object and use the `mr_moe()` function to perform the analysis. An example is shown here, estimating the causal effect of BMI on coronary heart disease:
+Once downloaded, read in the object and use the `mr_moe()` function to perform the analysis. An example is shown here, estimating the causal effect of BMI on coronary artery disease:
 
 ```{r eval=FALSE}
 # Extract instruments for BMI
-exposure_dat <- extract_instruments("ieu-a-2")
+exposure_dat <- extract_instruments("ukb-b-19953")
 
-# Get corresponding effects for CHD
-outcome_dat <- extract_outcome_data(exposure_dat$SNP, "ieu-a-7")
+# Get corresponding effects for CAD
+outcome_dat <- extract_outcome_data(exposure_dat$SNP, "ebi-a-GCST003116")
 
 # Harmonise
 dat <- harmonise_data(exposure_dat, outcome_dat)
