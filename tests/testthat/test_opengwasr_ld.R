@@ -157,11 +157,17 @@ test_that("a refusal from opengwasr reaches the user", {
   local_fake_opengwasr()
   testthat::local_mocked_bindings(
     og_clump = function(...) {
-      stop(structure(class = c("opengwasr_ld_refusal", "error", "condition"), list(message = "refused", call = NULL)))
+      stop(structure(
+        class = c("opengwasr_ld_refusal", "error", "condition"),
+        list(message = "refused", call = NULL)
+      ))
     },
     .package = "opengwasr"
   )
-  expect_error(clump_data(bmi_dat(), clump_r2 = 0.001, clump_kb = 10000), class = "opengwasr_ld_refusal")
+  expect_error(
+    clump_data(bmi_dat(), clump_r2 = 0.001, clump_kb = 10000),
+    class = "opengwasr_ld_refusal"
+  )
 })
 
 test_that("ld_matrix() reads an LD Store, in the European one by default, and names the matrix by ALID", {
@@ -182,8 +188,14 @@ test_that("ld_matrix() reads an LD Store, in the European one by default, and na
 
 test_that("ld_matrix() says with_alleles and 'legacy' no longer apply", {
   ld <- local_fake_ld()
-  expect_message(ld_matrix("16:53767042:C:T", with_alleles = FALSE), class = "twosamplemr_deprecated_argument")
-  expect_message(ld_matrix("16:53767042:C:T", pop = "legacy"), class = "twosamplemr_deprecated_argument")
+  expect_message(
+    ld_matrix("16:53767042:C:T", with_alleles = FALSE),
+    class = "twosamplemr_deprecated_argument"
+  )
+  expect_message(
+    ld_matrix("16:53767042:C:T", pop = "legacy"),
+    class = "twosamplemr_deprecated_argument"
+  )
   expect_equal(ld$calls[[2]]$ld, "EUR")
 })
 
@@ -202,7 +214,11 @@ test_that("harmonise_ld_dat() works on a matrix named by ALID, which it names as
 
 test_that("ldsc_h2() and ldsc_rg() stop with a placeholder error naming their opengwasr ticket", {
   expect_error(ldsc_h2("ukb-b-19953"), class = "twosamplemr_not_yet_available")
-  expect_error(ldsc_rg("ukb-b-19953", "ebi-a-GCST003116"), "opengwas/opengwasr#26", class = "twosamplemr_not_yet_available")
+  expect_error(
+    ldsc_rg("ukb-b-19953", "ebi-a-GCST003116"),
+    "opengwas/opengwasr#26",
+    class = "twosamplemr_not_yet_available"
+  )
 })
 
 # --- PLINK, on the synthetic reference --------------------------------------------------------------
@@ -310,7 +326,13 @@ test_that("the PLINK path through dat_to_MRInput() is not filled, the LD Store p
   x$se.outcome <- 0.01
   x$exposure <- "e"
   x$outcome <- "o"
-  out <- suppressMessages(ld_for_mr_input(x, pop = "EUR", bfile = plink_ref_path(), plink_bin = NULL, src = NULL))
+  out <- suppressMessages(ld_for_mr_input(
+    x,
+    pop = "EUR",
+    bfile = plink_ref_path(),
+    plink_bin = NULL,
+    src = NULL
+  ))
   expect_false(anyNA(out$ld))
   expect_equal(rownames(out$ld), x$SNP)
 })
@@ -330,7 +352,10 @@ test_that("the LD Store path through dat_to_MRInput() asks for fill_below_t_far 
     },
     .package = "opengwasr"
   )
-  expect_message(out <- ld_for_mr_input(dat, pop = "EUR", bfile = NULL, plink_bin = NULL, src = NULL), "set to 0")
+  expect_message(
+    out <- ld_for_mr_input(dat, pop = "EUR", bfile = NULL, plink_bin = NULL, src = NULL),
+    "set to 0"
+  )
   expect_true(seen)
   expect_false(anyNA(out$ld))
 })

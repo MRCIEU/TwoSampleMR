@@ -127,8 +127,21 @@ local_fake_ld <- function(keep = NULL, env = parent.frame()) {
   state$calls <- list()
   testthat::local_mocked_bindings(
     og_clump = function(src, data, ld = NULL, r2 = NULL, kb = NULL) {
-      state$calls[[length(state$calls) + 1]] <- list(fn = "og_clump", src = src, data = data, ld = ld, r2 = r2, kb = kb)
-      rows <- if (identical(keep, "all")) seq_len(nrow(data)) else if (is.null(keep)) seq(1, nrow(data), by = 2) else keep
+      state$calls[[length(state$calls) + 1]] <- list(
+        fn = "og_clump",
+        src = src,
+        data = data,
+        ld = ld,
+        r2 = r2,
+        kb = kb
+      )
+      rows <- if (identical(keep, "all")) {
+        seq_len(nrow(data))
+      } else if (is.null(keep)) {
+        seq(1, nrow(data), by = 2)
+      } else {
+        keep
+      }
       out <- data[rows, , drop = FALSE]
       out$clump_ld <- "hgdp1kgp-v2-EUR-k10"
       out$clump_ld_choice <- "matched"
@@ -138,10 +151,19 @@ local_fake_ld <- function(keep = NULL, env = parent.frame()) {
       out
     },
     og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
-      state$calls[[length(state$calls) + 1]] <- list(fn = "og_ld_matrix", variants = variants, ld = ld, fill = fill_below_t_far)
+      state$calls[[length(state$calls) + 1]] <- list(
+        fn = "og_ld_matrix",
+        variants = variants,
+        ld = ld,
+        fill = fill_below_t_far
+      )
       m <- diag(length(variants))
       dimnames(m) <- list(variants, variants)
-      structure(m, class = c("og_ld_matrix", "matrix", "array"), og_provenance = list(ld = "hgdp1kgp-v2-EUR-k10"))
+      structure(
+        m,
+        class = c("og_ld_matrix", "matrix", "array"),
+        og_provenance = list(ld = "hgdp1kgp-v2-EUR-k10")
+      )
     },
     .package = "opengwasr",
     .env = env

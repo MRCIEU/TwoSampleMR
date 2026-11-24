@@ -397,7 +397,10 @@ ld_choice <- function(src, pop, bfile, plink_bin, ids) {
     list(
       message = paste0(
         "These ids name no OpenGWAS Analysis, so there is no Assigned Ancestry to choose an LD Store ",
-        "by: ", paste(utils::head(unknown, 5), collapse = ", "), if (length(unknown) > 5) ", ...", ". Give `pop`: an ancestry (\"EUR\", \"AFR\", \"EAS\", \"SAS\", \"AMR\") or an LD ",
+        "by: ",
+        paste(utils::head(unknown, 5), collapse = ", "),
+        if (length(unknown) > 5) ", ...",
+        ". Give `pop`: an ancestry (\"EUR\", \"AFR\", \"EAS\", \"SAS\", \"AMR\") or an LD ",
         "Store id from `opengwasr::og_ld_stores()`; or `bfile`, the path of your own PLINK reference."
       ),
       call = NULL
@@ -427,8 +430,11 @@ dat_alids <- function(dat, src, type = "exposure") {
     made <- withCallingHandlers(
       opengwasr::og_alid(made, eaf = NULL, beta = NULL, z = NULL),
       message = function(m) {
-        if (inherits(m, "opengwasr_alid_swapped") || inherits(m, "opengwasr_alid_unnamed") ||
-              inherits(m, "opengwasr_alid_undeclared_reference")) {
+        if (
+          inherits(m, "opengwasr_alid_swapped") ||
+            inherits(m, "opengwasr_alid_unnamed") ||
+            inherits(m, "opengwasr_alid_undeclared_reference")
+        ) {
           invokeRestart("muffleMessage")
         }
       }
