@@ -35,7 +35,7 @@ extract_outcome_data(
 
 \item{opengwas_jwt}{Deprecated and ignored. Credentials come from \code{src}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}} reads \code{OPENGWAS_JWT}.}
 
-\item{splitsize}{Not needed any more: opengwasr splits large queries itself.}
+\item{splitsize}{Deprecated and ignored: opengwasr splits large queries itself.}
 
 \item{proxy_splitsize}{Deprecated and ignored.}
 

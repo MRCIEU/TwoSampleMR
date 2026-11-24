@@ -41,6 +41,10 @@ for log odds ratios;
 gives a message, and \code{effect_scale} instead.
 }
 
+When \code{effect_scale} is added, \code{units.exposure} and \code{units.outcome} are added too, derived from it
+(\code{"sd"} is \code{"SD"}, \code{"log_or"} is \code{"log odds"}; any other scale gives \code{NA}, with a message), as the
+functions that read them, such as \code{\link[=add_rsq]{add_rsq()}} and \code{\link[=standardise_units]{standardise_units()}}, expect.
+
 Any other column of the Analysis metadata, such as \code{assigned_ancestry}, can be named too.
 An id that names no Analysis is left without meta data, with a message.
 }

@@ -2,17 +2,28 @@
 # serves BMI's recorded top hits, and for coronary artery disease the first five Associations
 # recorded for it, given the clumping columns an opengwasr top hit has.
 local_fake_two_exposures <- function(env = parent.frame()) {
-  state <- local_fake_opengwasr(env)
+  state <- local_fake_opengwasr(env = env)
   bmi <- fixture("tophits-bmi")
   cad <- fixture("associations-cad")[1:5, ]
-  cad[, c("clump_ld", "clump_ld_choice", "clump_r2", "clump_kb", "clump_size")] <-
-    bmi[1:5, c("clump_ld", "clump_ld_choice", "clump_r2", "clump_kb", "clump_size")]
+  clump_cols <- c("clump_ld", "clump_ld_choice", "clump_r2", "clump_kb", "clump_size")
+  cad[, clump_cols] <- bmi[1:5, clump_cols]
   testthat::local_mocked_bindings(
-    og_tophits = function(src, analyses, threshold = 5e-8, limit = 1000, observed_only = FALSE,
-                          clump = TRUE, ld = NULL, r2 = NULL, kb = NULL, original_units = FALSE,
-                          releases = NULL) {
+    og_tophits = function(
+      src,
+      analyses,
+      threshold = 5e-8,
+      limit = 1000,
+      observed_only = FALSE,
+      clump = TRUE,
+      ld = NULL,
+      r2 = NULL,
+      kb = NULL,
+      original_units = FALSE,
+      releases = NULL
+    ) {
       state$calls[[length(state$calls) + 1]] <- list(
-        fn = "og_tophits", args = list(analyses = analyses, r2 = r2, kb = kb)
+        fn = "og_tophits",
+        args = list(analyses = analyses, r2 = r2, kb = kb)
       )
       rbind(
         if (bmi_id %in% analyses || "ukb-b-19953" %in% analyses) bmi,
@@ -47,7 +58,11 @@ test_that("mv_extract_exposures() extracts instruments and their effects on ever
 
 test_that("mv_extract_exposures() sends clump_r2 and clump_kb to the LD Store only when they are set", {
   state <- local_fake_two_exposures()
-  suppressMessages(mv_extract_exposures(c("ukb-b-19953", "ebi-a-GCST003116"), clump_r2 = 0.01, clump_kb = 3000))
+  suppressMessages(mv_extract_exposures(
+    c("ukb-b-19953", "ebi-a-GCST003116"),
+    clump_r2 = 0.01,
+    clump_kb = 3000
+  ))
   asked <- calls_to(state, "og_tophits")[[1]]$args
   expect_equal(asked$r2, 0.01)
   expect_equal(asked$kb, 3000)

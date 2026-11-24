@@ -35,7 +35,7 @@ format_mr_results <- function(
 ) {
   # Get extra info on outcomes
   if (ao_slc) {
-    ao <- available_outcomes()
+    ao <- catalogue_for_results()
     ao$subcategory[ao$subcategory == "Cardiovascular"] <- "Cardiometabolic"
     ao$subcategory[ao$trait == "Type 2 diabetes"] <- "Cardiometabolic"
     names(ao)[names(ao) == "nsnp"] <- "nsnp.array"

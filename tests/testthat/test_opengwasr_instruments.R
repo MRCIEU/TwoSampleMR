@@ -4,11 +4,24 @@ test_that("extract_instruments() returns exposure data in TwoSampleMR's format",
 
   expect_s3_class(exp_dat, "data.frame")
   expect_equal(nrow(exp_dat), 17)
-  expect_true(all(c(
-    "SNP", "beta.exposure", "se.exposure", "pval.exposure", "eaf.exposure", "effect_allele.exposure",
-    "other_allele.exposure", "chr.exposure", "pos.exposure", "samplesize.exposure", "exposure",
-    "id.exposure", "mr_keep.exposure"
-  ) %in% names(exp_dat)))
+  expect_true(all(
+    c(
+      "SNP",
+      "beta.exposure",
+      "se.exposure",
+      "pval.exposure",
+      "eaf.exposure",
+      "effect_allele.exposure",
+      "other_allele.exposure",
+      "chr.exposure",
+      "pos.exposure",
+      "samplesize.exposure",
+      "exposure",
+      "id.exposure",
+      "mr_keep.exposure"
+    ) %in%
+      names(exp_dat)
+  ))
   expect_equal(unique(exp_dat$id.exposure), bmi_id)
   expect_equal(unique(exp_dat$exposure), paste0("Body mass index (BMI) || id:", bmi_id))
   expect_equal(unique(exp_dat$samplesize.exposure), 461460)
@@ -70,7 +83,7 @@ test_that("extract_instruments() passes the Source it is given to opengwasr", {
 })
 
 test_that("extract_instruments() returns NULL when no Analysis has instruments", {
-  local_fake_opengwasr()
+  local_fake_opengwasr(empty = cad_id)
   expect_null(extract_instruments("ebi-a-GCST003116"))
 })
 

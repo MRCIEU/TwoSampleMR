@@ -22,7 +22,7 @@
 #'
 #' @param outcomes Array of outcome IDs (see [available_outcomes()]).
 #' @param p1 Significance threshold. The default is `5e-8`. OpenGWAS indexes `5e-8`, `5e-6` and `5e-4`.
-#' @param clump Whether to clump results (`1`) or not (`0`). Default is `1`. (`TRUE` and `FALSE` are also allowed for backwards compatibility.)
+#' @param clump Whether to clump results (`1`) or not (`0`). Default is `1`. (`TRUE` and `FALSE` are also allowed for backwards compatibility.) Unclumped, or clumped, you get at most 10,000 variants per Analysis (opengwasr warns if there were more).
 #' @param r2 Clumping r2 cut off. The default, `NULL`, is the LD Store's own threshold (about `0.03`).
 #' @param kb Clumping distance cutoff. The default, `NULL`, is the LD Store's own window (`10000`).
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
@@ -54,53 +54,12 @@ extract_instruments <- function(
     ))
   }
 
-  d <- opengwasr::og_tophits(
+  opengwasr_instruments(
     src,
-    as.character(unique(outcomes)),
-    threshold = p1,
-    limit = 10000,
-    clump = as.logical(clump),
+    resolve_analyses(src, outcomes),
+    p1 = p1,
+    clump = clump,
     r2 = r2,
     kb = kb
   )
-
-  if (nrow(d) == 0) {
-    return(NULL)
-  }
-  d$SNP <- variant_name(d)
-  d$phenotype <- paste0(d$analysis_label, " || id:", d$id)
-  key <- paste(d$id, tolower(d$SNP))
-  res <- format_data(
-    d,
-    type = "exposure",
-    snps = NULL,
-    phenotype_col = "phenotype",
-    snp_col = "SNP",
-    chr_col = "chromosome",
-    pos_col = "position",
-    beta_col = "beta",
-    se_col = "se",
-    eaf_col = "eaf",
-    effect_allele_col = "effect_allele",
-    other_allele_col = "other_allele",
-    pval_col = "pval",
-    samplesize_col = "n",
-    ncase_col = "ncase",
-    ncontrol_col = "ncontrol",
-    min_pval = 1e-200,
-    id_col = "id"
-  )
-  index <- match(paste(res$id.exposure, res$SNP), key)
-  # format_data() lower-cases SNP, which would break an ALID.
-  alid <- is.na(d$rsid[index])
-  res$SNP[alid] <- d$alid[index][alid]
-  res <- carry_columns(
-    res,
-    d,
-    index,
-    c("effect_scale", "association_status", "clump_ld", "clump_ld_choice", "clump_r2", "clump_kb"),
-    "exposure"
-  )
-  res$data_source.exposure <- "igd"
-  return(res)
 }

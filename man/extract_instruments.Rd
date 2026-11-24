@@ -20,7 +20,7 @@ extract_instruments(
 
 \item{p1}{Significance threshold. The default is \code{5e-8}. OpenGWAS indexes \code{5e-8}, \code{5e-6} and \code{5e-4}.}
 
-\item{clump}{Whether to clump results (\code{1}) or not (\code{0}). Default is \code{1}. (\code{TRUE} and \code{FALSE} are also allowed for backwards compatibility.)}
+\item{clump}{Whether to clump results (\code{1}) or not (\code{0}). Default is \code{1}. (\code{TRUE} and \code{FALSE} are also allowed for backwards compatibility.) Unclumped, or clumped, you get at most 10,000 variants per Analysis (opengwasr warns if there were more).}
 
 \item{r2}{Clumping r2 cut off. The default, \code{NULL}, is the LD Store's own threshold (about \code{0.03}).}
 

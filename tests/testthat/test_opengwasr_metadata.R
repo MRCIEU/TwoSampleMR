@@ -30,7 +30,7 @@ test_that("add_metadata() adds sample sizes, case counts and the effect scale to
   expect_equal(unique(out$effect_scale.exposure), "sd")
   expect_true(all(is.na(out$ncase.exposure)))
   expect_true(all(is.na(out$sd.exposure)))
-  expect_false("units.exposure" %in% names(out))
+  expect_equal(unique(out$units.exposure), "SD")
   expect_equal(out$SNP, exp_dat$SNP)
 })
 
@@ -57,7 +57,7 @@ test_that("add_metadata() accepts the retired `unit` field and reports effect_sc
     class = "twosamplemr_deprecated_argument"
   )
   expect_equal(unique(out$effect_scale.exposure), "sd")
-  expect_false("units.exposure" %in% names(out))
+  expect_equal(unique(out$units.exposure), "SD")
 })
 
 test_that("add_metadata() copes with ids that name no Analysis", {

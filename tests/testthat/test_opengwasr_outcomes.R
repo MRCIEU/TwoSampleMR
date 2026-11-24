@@ -33,10 +33,13 @@ test_that("extract_outcome_data() labels the effect scale and which Associations
 
 test_that("extract_outcome_data() asks for each SNP once, in the Analyses it names", {
   state <- local_fake_opengwasr()
-  extract_outcome_data(c("rs539515", "rs539515", "rs6265"), c("ebi-a-GCST003116", "ebi-a-GCST003116"))
+  extract_outcome_data(
+    c("rs539515", "rs539515", "rs6265"),
+    c("ebi-a-GCST003116", "ebi-a-GCST003116")
+  )
   sent <- calls_to(state, "og_associations")[[1]]$args
   expect_equal(sent$variants, c("rs539515", "rs6265"))
-  expect_equal(sent$analyses, "ebi-a-GCST003116")
+  expect_equal(sent$analyses, cad_id)
 })
 
 test_that("extract_outcome_data() returns NULL when nothing is found", {

@@ -1,7 +1,7 @@
 # BMI (per SD) instruments and their coronary artery disease (log odds) Associations, 4 of them
 # Imputed, put through harmonise_data() and mr().
 bmi_cad <- function() {
-  local_fake_opengwasr(parent.frame())
+  local_fake_opengwasr(env = parent.frame())
   exp_dat <- extract_instruments("ukb-b-19953")
   out_dat <- suppressMessages(extract_outcome_data(exp_dat$SNP, "ebi-a-GCST003116"))
   list(exp = exp_dat, out = out_dat)

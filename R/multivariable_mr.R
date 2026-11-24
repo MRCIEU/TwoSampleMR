@@ -50,15 +50,16 @@ mv_extract_exposures <- function(
   if (!missing(find_proxies)) {
     deprecate_proxy_arguments("find_proxies", "mv_extract_exposures")
   }
-  id_exposure <- opengwasr::og_analyses(src, as.character(unique(id_exposure)))$id
+  id_exposure <- resolve_analyses(src, id_exposure)
 
   # Get best instruments for each exposure
-  exposure_dat <- extract_instruments(
+  exposure_dat <- opengwasr_instruments(
+    src,
     id_exposure,
     p1 = pval_threshold,
+    clump = TRUE,
     r2 = if (missing(clump_r2)) NULL else clump_r2,
-    kb = if (missing(clump_kb)) NULL else clump_kb,
-    src = src
+    kb = if (missing(clump_kb)) NULL else clump_kb
   )
   temp <- exposure_dat
   temp$id.exposure <- 1
@@ -76,7 +77,7 @@ mv_extract_exposures <- function(
   exposure_dat <- subset(exposure_dat, SNP %in% temp$SNP)
 
   # Get effects of each instrument from each exposure
-  d1 <- extract_outcome_data(exposure_dat$SNP, id_exposure, src = src)
+  d1 <- opengwasr_outcomes(src, unique(exposure_dat$SNP), id_exposure)
   stopifnot(length(unique(d1$id)) == length(unique(id_exposure)))
   d1 <- subset(d1, mr_keep.outcome)
   d2 <- subset(d1, id.outcome != id_exposure[1])

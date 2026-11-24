@@ -27,9 +27,7 @@ available_outcomes <- function(opengwas_jwt = NULL, src = opengwasr::og_api()) {
   if (!missing(opengwas_jwt)) {
     deprecate_opengwas_jwt("available_outcomes")
   }
-  a <- opengwasr::og_analyses(src)
-  a$trait <- a$analysis_label
-  return(a)
+  catalogue(src)
 }
 
 
@@ -61,7 +59,7 @@ available_outcomes <- function(opengwas_jwt = NULL, src = opengwasr::og_api()) {
 #' @param palindromes Deprecated and ignored.
 #' @param maf_threshold Deprecated and ignored.
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
-#' @param splitsize Not needed any more: opengwasr splits large queries itself.
+#' @param splitsize Deprecated and ignored: opengwasr splits large queries itself.
 #' @param proxy_splitsize Deprecated and ignored.
 #' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
 #'
@@ -91,12 +89,15 @@ extract_outcome_data <- function(
   if (any(passed)) {
     deprecate_proxy_arguments(names(passed)[passed])
   }
+  if (!missing(splitsize)) {
+    deprecate_splitsize()
+  }
   if (!missing(opengwas_jwt)) {
     deprecate_opengwas_jwt("extract_outcome_data")
   }
 
   snps <- unique(snps)
-  outcomes <- as.character(unique(outcomes))
+  outcomes <- resolve_analyses(src, outcomes)
   message(
     "Extracting data for ",
     length(snps),
@@ -104,18 +105,7 @@ extract_outcome_data <- function(
     length(outcomes),
     " GWAS(s)"
   )
-  d <- opengwasr::og_associations(src, snps, outcomes)
-  if (is.null(nrow(d)) || nrow(d) == 0) {
-    # message("None of the requested SNPs were available in the specified GWASs.")
-    return(NULL)
-  }
-  d <- format_d(d, snps)
-  if (nrow(d) > 0) {
-    d$data_source.outcome <- "igd"
-    return(d)
-  } else {
-    return(NULL)
-  }
+  opengwasr_outcomes(src, snps, outcomes)
 }
 
 
@@ -140,71 +130,4 @@ cleanup_outcome_data <- function(d) {
 #' @export
 get_se <- function(eff, pval) {
   abs(eff) / abs(stats::qnorm(pval / 2))
-}
-
-
-#' Format the table that opengwasr returns
-#'
-#' @param d Data frame from [opengwasr::og_associations()]
-#' @param snps The SNPs that were asked for, so that a variant asked for by ALID keeps its ALID.
-#' @return Data frame
-#' @keywords internal
-format_d <- function(d, snps = NULL) {
-  d1 <- data.frame(
-    SNP = variant_name(d, snps),
-    chr = as.character(d$chromosome),
-    pos = as.character(d$position),
-    beta.outcome = as.numeric(d$beta),
-    se.outcome = as.numeric(d$se),
-    samplesize.outcome = as.numeric(d$n),
-    pval.outcome = as.numeric(d$pval),
-    eaf.outcome = as.numeric(d$eaf),
-    effect_allele.outcome = as.character(d$effect_allele),
-    other_allele.outcome = as.character(d$other_allele),
-    outcome = as.character(d$analysis_label),
-    id.outcome = as.character(d$id),
-    stringsAsFactors = FALSE
-  )
-  d1$ncase.outcome <- as.numeric(d$ncase)
-  d1$ncontrol.outcome <- as.numeric(d$ncontrol)
-  d1 <- carry_columns(d1, d, seq_len(nrow(d)), c("effect_scale", "association_status"), "outcome")
-  d <- d1
-
-  if (nrow(d) == 0) {
-    message("No matches")
-    return(d)
-  }
-
-  d$originalname.outcome <- d$outcome
-  d$outcome.deprecated <- paste0(d$outcome, " || ", d$consortium.outcome, " || ", d$year.outcome)
-  d$outcome <- paste0(d$outcome, " || id:", d$id.outcome)
-
-  rem <- is.na(d$beta.outcome) & is.na(d$pval.outcome)
-  d <- subset(d, !rem)
-
-  # For any that have missing SE but available beta and pval, infer SE
-  index <- (is.na(d$se.outcome) | d$se.outcome == 0) &
-    (!is.na(d$beta.outcome) & !is.na(d$pval.outcome))
-  if (any(index)) {
-    d$se.outcome[index] <- get_se(d$beta.outcome[index], d$pval.outcome[index])
-  }
-
-  d <- cleanup_outcome_data(d)
-
-  mrcols <- c("beta.outcome", "se.outcome", "effect_allele.outcome")
-  d$mr_keep.outcome <- complete.cases(d[, mrcols])
-  if (!all(d$mr_keep.outcome)) {
-    missinginfosnps <- paste(subset(d, !mr_keep.outcome)$SNP, collapse = " ")
-    warning(
-      "The following SNP(s) are missing required information for the MR tests and will be excluded: ",
-      missinginfosnps
-    )
-  }
-  if (!any(d$mr_keep.outcome)) {
-    warning(
-      "None of the provided SNPs can be used for MR analysis, they are missing required information."
-    )
-  }
-
-  return(d)
 }

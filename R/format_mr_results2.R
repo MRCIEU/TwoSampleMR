@@ -187,7 +187,7 @@ combine_all_mrresults <- function(
   data.table::setDF(res)
 
   if (ao_slc) {
-    ao <- available_outcomes()
+    ao <- catalogue_for_results()
     names(ao)[names(ao) == "nsnp"] <- "nsnps.outcome.array"
     res <- merge(
       res,

@@ -18,6 +18,10 @@
 #' * `unit` no longer exists, because effects are per SD, not in a study's own units. Asking for it
 #'   gives a message, and `effect_scale` instead.
 #'
+#' When `effect_scale` is added, `units.exposure` and `units.outcome` are added too, derived from it
+#' (`"sd"` is `"SD"`, `"log_or"` is `"log odds"`; any other scale gives `NA`, with a message), as the
+#' functions that read them, such as [add_rsq()] and [standardise_units()], expect.
+#'
 #' Any other column of the Analysis metadata, such as `assigned_ancestry`, can be named too.
 #' An id that names no Analysis is left without meta data, with a message.
 #'
@@ -41,37 +45,7 @@ add_metadata <- function(
     ))
     cols <- unique(ifelse(cols == "unit", "effect_scale", cols))
   }
-  # What each field is called in `opengwasr::og_analyses()`.
-  analyses_names <- c(
-    sample_size = "sample_size",
-    ncase = "n_cases",
-    ncontrol = "n_controls",
-    effect_scale = "stored_effect_scale",
-    sd = "original_sd"
-  )
-  get_info <- function(id, what = "exposure", cols) {
-    info <- tryCatch(
-      opengwasr::og_analyses(src, id),
-      opengwasr_analysis_not_found = function(e) {
-        known <- setdiff(id, e$ids)
-        if (length(known) == 0) data.frame() else opengwasr::og_analyses(src, known)
-      }
-    )
-    if (nrow(info) == 0) {
-      message(what, ": none of the IDs found in database")
-      return(NULL)
-    }
-    # Match on the id the data carry, which may be a legacy id.
-    info$id <- info$requested_id
-    for (col in cols) {
-      from <- if (col %in% names(analyses_names)) analyses_names[[col]] else col
-      info[[col]] <- if (from %in% names(info)) info[[from]] else NA
-    }
-    info <- subset(info, select = c("id", cols))
-    names(info) <- paste0(names(info), ".", what)
-    names(info)[names(info) == paste0("sample_size.", what)] <- paste0("samplesize.", what)
-    return(info)
-  }
+  get_info <- function(id, what, cols) opengwasr_metadata(src, id, what, cols)
 
   order_col <- random_string()
   dat[[order_col]] <- seq_len(nrow(dat))

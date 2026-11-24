@@ -20,3 +20,11 @@ saveRDS(exposure, file.path(dir, "tophits-bmi.rds"))
 outcome <- og_associations(src, ifelse(is.na(exposure$rsid), exposure$alid, exposure$rsid),
                            "ebi-a-GCST003116")
 saveRDS(outcome, file.path(dir, "associations-cad.rds"))
+
+# Coronary artery disease instruments, a binary exposure (the 10 strongest index variants).
+tophits_cad <- suppressWarnings(og_tophits(src, "ebi-a-GCST003116", limit = 10))
+attr(tophits_cad, "og_provenance") <- NULL
+saveRDS(tophits_cad, file.path(dir, "tophits-cad.rds"))
+
+# Note: on 24 Nov 2026 the dev release of coronary artery disease no longer returned Imputed
+# Associations, so associations-cad.rds is the recording of 23 Nov, which has four.
