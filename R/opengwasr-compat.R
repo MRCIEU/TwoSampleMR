@@ -247,8 +247,12 @@ format_d <- function(d, snps = NULL) {
     id.outcome = as.character(d$id),
     stringsAsFactors = FALSE
   )
-  if (!all(is.na(d$ncase))) d1$ncase.outcome <- as.numeric(d$ncase)
-  if (!all(is.na(d$ncontrol))) d1$ncontrol.outcome <- as.numeric(d$ncontrol)
+  if (!all(is.na(d$ncase))) {
+    d1$ncase.outcome <- as.numeric(d$ncase)
+  }
+  if (!all(is.na(d$ncontrol))) {
+    d1$ncontrol.outcome <- as.numeric(d$ncontrol)
+  }
   d1 <- carry_columns(d1, d, seq_len(nrow(d)), c("effect_scale", "association_status"), "outcome")
   d <- d1
 

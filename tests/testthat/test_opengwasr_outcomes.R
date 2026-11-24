@@ -8,11 +8,26 @@ test_that("extract_outcome_data() returns outcome data in TwoSampleMR's format",
   out_dat <- extract_outcome_data(bmi_snps(), "ebi-a-GCST003116")
 
   expect_equal(nrow(out_dat), 17)
-  expect_true(all(c(
-    "SNP", "chr", "pos", "beta.outcome", "se.outcome", "samplesize.outcome", "pval.outcome",
-    "eaf.outcome", "effect_allele.outcome", "other_allele.outcome", "outcome", "id.outcome",
-    "mr_keep.outcome", "ncase.outcome", "ncontrol.outcome"
-  ) %in% names(out_dat)))
+  expect_true(all(
+    c(
+      "SNP",
+      "chr",
+      "pos",
+      "beta.outcome",
+      "se.outcome",
+      "samplesize.outcome",
+      "pval.outcome",
+      "eaf.outcome",
+      "effect_allele.outcome",
+      "other_allele.outcome",
+      "outcome",
+      "id.outcome",
+      "mr_keep.outcome",
+      "ncase.outcome",
+      "ncontrol.outcome"
+    ) %in%
+      names(out_dat)
+  ))
   expect_equal(unique(out_dat$id.outcome), cad_id)
   expect_equal(unique(out_dat$outcome), paste0("Coronary artery disease || id:", cad_id))
   expect_equal(unique(out_dat$samplesize.outcome), 187599)

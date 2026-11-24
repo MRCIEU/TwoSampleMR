@@ -34,9 +34,20 @@ test_that("mr() carries the number of Imputed outcome Associations per exposure-
   d <- bmi_cad()
   h <- suppressMessages(harmonise_data(d$exp, d$out))
   res <- suppressMessages(mr(h, method_list = c("mr_ivw", "mr_egger_regression")))
-  expect_equal(names(res)[1:9], c(
-    "id.exposure", "id.outcome", "outcome", "exposure", "method", "nsnp", "b", "se", "pval"
-  ))
+  expect_equal(
+    names(res)[1:9],
+    c(
+      "id.exposure",
+      "id.outcome",
+      "outcome",
+      "exposure",
+      "method",
+      "nsnp",
+      "b",
+      "se",
+      "pval"
+    )
+  )
   expect_equal(names(res)[10], "nsnp_imputed")
   expect_equal(res$nsnp_imputed, c(4, 4))
 

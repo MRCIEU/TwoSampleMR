@@ -17,8 +17,11 @@ attr(exposure, "og_provenance") <- NULL # describes the 100 rows, not these 17
 saveRDS(exposure, file.path(dir, "tophits-bmi.rds"))
 
 # The same variants in coronary artery disease.
-outcome <- og_associations(src, ifelse(is.na(exposure$rsid), exposure$alid, exposure$rsid),
-                           "ebi-a-GCST003116")
+outcome <- og_associations(
+  src,
+  ifelse(is.na(exposure$rsid), exposure$alid, exposure$rsid),
+  "ebi-a-GCST003116"
+)
 saveRDS(outcome, file.path(dir, "associations-cad.rds"))
 
 # Coronary artery disease instruments, a binary exposure (the 10 strongest index variants).

@@ -65,7 +65,9 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
           return(NULL)
         }
         out <- tophits[[id]]
-        if (!clump) out <- out[, !grepl("^clump_", names(out))]
+        if (!clump) {
+          out <- out[, !grepl("^clump_", names(out))]
+        }
         out
       })
       out <- do.call(rbind, rows)
