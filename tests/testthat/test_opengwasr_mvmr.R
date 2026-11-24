@@ -33,8 +33,8 @@ local_fake_two_exposures <- function(env = parent.frame()) {
     .package = "opengwasr",
     .env = env
   )
-  # The final clumping is clump_data(), which is still ieugwasr's until it moves to opengwasr.
-  testthat::local_mocked_bindings(clump_data = function(dat, ...) dat, .env = env)
+  # The final clumping, through opengwasr, keeps every variant.
+  state$ld <- local_fake_ld(keep = "all", env = env)
   state
 }
 
@@ -87,4 +87,25 @@ test_that("mv_extract_exposures() says which arguments are retired, only when th
     "force_server",
     class = "twosamplemr_deprecated_argument"
   )
+})
+
+test_that("mv_extract_exposures() clumps across the exposures through og_clump(), with the Analyses' own ids", {
+  state <- local_fake_two_exposures()
+  ld <- state$ld
+  mv <- mv_extract_exposures(c("ukb-b-19953", "ebi-a-GCST003116"))
+  asked <- ld$calls[[1]]
+  expect_equal(asked$fn, "og_clump")
+  expect_true(all(asked$data$id %in% c(bmi_id, cad_id)))
+  expect_false("1" %in% asked$data$id)
+  expect_null(asked$r2)
+  expect_null(asked$kb)
+  expect_length(ld$calls, 1)
+  expect_gt(nrow(mv), 0)
+})
+
+test_that("mv_extract_exposures() passes its Source to the final clump", {
+  state <- local_fake_two_exposures()
+  src <- structure(list(), class = "fake_source")
+  mv_extract_exposures(c("ukb-b-19953", "ebi-a-GCST003116"), src = src)
+  expect_identical(state$ld$calls[[1]]$src, src)
 })

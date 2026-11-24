@@ -29,8 +29,9 @@ library(TwoSampleMR)
 ```{r, echo=FALSE, eval=FALSE, warning=FALSE}
 # Get all required data
 ao <- available_outcomes()
-bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
-chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
+bmi_exp_dat <- extract_instruments(outcomes = "ukb-b-19953")
+chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = "ebi-a-GCST003116")
+# `ao` is cut down to the studies the vignette names
 save(ao, bmi_exp_dat, chd_out_dat, file = file.path("inst", "extdata", "vig_harmonise.RData"), compress = "xz")
 ```
 
@@ -41,13 +42,13 @@ load(system.file("extdata", "vig_harmonise.RData", package = "TwoSampleMR"))
 The exposure data and outcome data are now obtained, e.g.:
 
 ```{r, eval=FALSE}
-bmi_exp_dat <- extract_instruments(outcomes = 'ieu-a-2')
-chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = 'ieu-a-7')
+bmi_exp_dat <- extract_instruments(outcomes = "ukb-b-19953")
+chd_out_dat <- extract_outcome_data(snps = bmi_exp_dat$SNP, outcomes = "ebi-a-GCST003116")
 ```
 
 but it is important to harmonise the effects. This means that the effect of a SNP on the exposure and the effect of that SNP on the outcome must each correspond to the same allele.
 
-**Note:** The IEU GWAS database contains data that is already harmonised, meaning that the non-effect allele is aligned to the human genome reference sequence (build 37). It's still recommended to harmonise, but in principle everything should be on the forward strand and effect alleles always relating to the same allele. Some discrepancies could arise if there are multi-allelic variants that are represented as different bi-allelic variants in different studies.
+**Note:** The OpenGWAS database contains data that is already harmonised, meaning that the alleles of each variant are in a fixed order and positions are on the human genome reference sequence (build GRCh38). It's still recommended to harmonise, but in principle everything should be on the forward strand and effect alleles always relating to the same allele. Some discrepancies could arise if there are multi-allelic variants that are represented as different bi-allelic variants in different studies.
 
 To harmonise the exposure and outcome data, do the following:
 
@@ -154,18 +155,18 @@ By default, the `harmonise_data` function uses option 2, but this can be modifie
 
 ## Drop duplicate exposure-outcome summary sets
 
-After data harmonisation, users may find that their dataset contains duplicate exposure-outcome summary sets. This can arise, for example, when a GWAS consortium has released multiple results from separate GWAS analyses for the same trait. For example, there are multiple GWAS summary datasets for body mass index and coronary heart disease:
+After data harmonisation, users may find that their dataset contains duplicate exposure-outcome summary sets. This can arise, for example, when a GWAS consortium has released multiple results from separate GWAS analyses for the same trait. For example, there are multiple GWAS summary datasets for body mass index and coronary artery disease:
 
 ```{r, eval=FALSE}
 ao <- available_outcomes()
 ```
 
 ```{r}
-ao[ao$trait == "Body mass index", c("trait", "id", "pmid", "author", "sample_size", "nsnp")]
-ao[ao$trait == "Coronary heart disease", c("trait", "id", "pmid", "author", "ncase", "ncontrol", "nsnp")]
+ao[ao$analysis_label == "Body mass index", c("analysis_label", "id", "publication_pmid", "first_author", "sample_size")]
+ao[ao$analysis_label == "Coronary artery disease", c("analysis_label", "id", "publication_pmid", "first_author", "n_cases", "n_controls")]
 ```
 
-There are therefore multiple potential combinations of body mass index and coronary heart disease, which would likely lead to duplicate MR analyses. We recommend that users prune their datasets so that only the exposure-outcome combination with the highest expected power is retained. This can be done by selecting the exposure-outcome summary set with the largest sample size for the outcome, using the power_prune function:
+There are therefore multiple potential combinations of body mass index and coronary artery disease, which would likely lead to duplicate MR analyses. We recommend that users prune their datasets so that only the exposure-outcome combination with the highest expected power is retained. This can be done by selecting the exposure-outcome summary set with the largest sample size for the outcome, using the power_prune function:
 
 ```{r eval=FALSE}
 dat <- power_prune(dat, method = 1, dist.outcome = "binary")

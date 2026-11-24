@@ -26,10 +26,11 @@ mv_extract_exposures_local(
   pval_threshold = 5e-08,
   plink_bin = NULL,
   bfile = NULL,
-  clump_r2 = 0.001,
-  clump_kb = 10000,
-  pop = "EUR",
-  harmonise_strictness = 2
+  clump_r2 = NULL,
+  clump_kb = NULL,
+  pop = NULL,
+  harmonise_strictness = 2,
+  src = twosamplemr_source()
 )
 }
 \arguments{
@@ -73,15 +74,17 @@ mv_extract_exposures_local(
 
 \item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 
-\item{bfile}{If this is provided then will use the API. Default = \code{NULL}}
+\item{bfile}{Prefix of a PLINK fileset to clump with, in place of an LD Store, matching variants by rsID. Default = \code{NULL}}
 
-\item{clump_r2}{Default=\code{0.001} for clumping}
+\item{clump_r2}{Clumping r2 cutoff. The default, \code{NULL}, is the LD Store's own (or \code{0.001} with \code{bfile}).}
 
-\item{clump_kb}{Default=\code{10000} for clumping}
+\item{clump_kb}{Clumping window in kb. The default, \code{NULL}, is the LD Store's own (or \code{10000} with \code{bfile}).}
 
-\item{pop}{Which 1000 genomes super population to use for clumping when using the server}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}) or LD Store id to clump in. The default, \code{NULL}, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need \code{pop} or \code{bfile})}
 
 \item{harmonise_strictness}{See action argument in \code{\link[=harmonise_data]{harmonise_data()}}. Default=\code{2}}
+
+\item{src}{A Source from opengwasr, used to find the LD Store of Analyses; own data need \code{pop} or \code{bfile}. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
 }
 \value{
 List

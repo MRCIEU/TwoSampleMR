@@ -118,3 +118,73 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
 }
 
 calls_to <- function(state, fn) Filter(function(x) x$fn == fn, state$calls)
+
+# What og_clump() answers: the rows of `data` named in `keep` (by row of the data it is given, so
+# the default keeps the first row of every window of 1 Mb), with its clumping columns; and what
+# og_ld_matrix() answers: an og_ld_matrix named by ALID.
+local_fake_ld <- function(keep = NULL, env = parent.frame()) {
+  state <- new.env()
+  state$calls <- list()
+  testthat::local_mocked_bindings(
+    og_clump = function(src, data, ld = NULL, r2 = NULL, kb = NULL) {
+      state$calls[[length(state$calls) + 1]] <- list(
+        fn = "og_clump",
+        src = src,
+        data = data,
+        ld = ld,
+        r2 = r2,
+        kb = kb
+      )
+      rows <- if (identical(keep, "all")) {
+        seq_len(nrow(data))
+      } else if (is.null(keep)) {
+        seq(1, nrow(data), by = 2)
+      } else {
+        keep
+      }
+      out <- data[rows, , drop = FALSE]
+      out$clump_ld <- "hgdp1kgp-v2-EUR-k10"
+      out$clump_ld_choice <- "matched"
+      out$clump_r2 <- r2 %||% 0.0319
+      out$clump_kb <- kb %||% 10000
+      out$clump_size <- 2L
+      out
+    },
+    og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
+      state$calls[[length(state$calls) + 1]] <- list(
+        fn = "og_ld_matrix",
+        variants = variants,
+        ld = ld,
+        fill = fill_below_t_far
+      )
+      m <- diag(length(variants))
+      dimnames(m) <- list(variants, variants)
+      structure(
+        m,
+        class = c("og_ld_matrix", "matrix", "array"),
+        og_provenance = list(ld = "hgdp1kgp-v2-EUR-k10")
+      )
+    },
+    .package = "opengwasr",
+    .env = env
+  )
+  state
+}
+
+# The ALID of each instrument, from the recorded top hits (an ALID is its own).
+alid_of <- function(snp) {
+  hits <- fixture("tophits-bmi")
+  ifelse(snp %in% hits$rsid, hits$alid[match(snp, hits$rsid)], snp)
+}
+
+# #28: nothing in the PLINK path calls the API, so it works with no credentials and no Source.
+local_no_credentials <- function(env = parent.frame()) {
+  withr::local_envvar(
+    OPENGWAS_URL = NA,
+    OPENGWAS_DEV_KEY = NA,
+    OPENGWAS_DEV_USER = NA,
+    OPENGWAS_JWT = NA,
+    .local_envir = env
+  )
+  withr::local_options(opengwasr.url = NULL, .local_envir = env)
+}

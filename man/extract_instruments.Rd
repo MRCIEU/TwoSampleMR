@@ -12,7 +12,7 @@ extract_instruments(
   kb = NULL,
   opengwas_jwt = NULL,
   force_server = FALSE,
-  src = opengwasr::og_api()
+  src = twosamplemr_source()
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ extract_instruments(
 
 \item{force_server}{Deprecated and ignored. Clumping always runs on the server.}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 data frame

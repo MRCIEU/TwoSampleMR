@@ -7,13 +7,13 @@ vignette: |
   %\VignetteEncoding{UTF-8}
 ---
 
-This document details changes and new features specifically relating to the TwoSampleMR R package and the IEU OpenGWAS database behind it.
+This document details changes and new features specifically relating to the TwoSampleMR R package and the OpenGWAS database behind it, as they were in 2020. It is kept for its history: TwoSampleMR now reads OpenGWAS through the [opengwasr](https://github.com/opengwas/opengwasr) package, which has replaced the R package described below, and Analyses are now named `<store_id>:<analysis_id>`, such as `OGS-00009:ukb-b-19953` (see `vignette("exposure")`).
 
 ## What has changed
 
 ### Dataset IDs
 
-We have made a new system for naming datasets, and all datasets are organised into data batches. Either new datasets are uploaded one at a time in which case they are added to the `ieu-a` data batch, or there is a bulk upload in which case a new batch is created. For example, `ukb-a` is a bulk upload of the first round of the Neale lab UKBiobank GWAS, and `ukb-b` is the IEU GWAS analysis of the UKBiobank data. In most cases, a dataset is then numbered arbitrarily within the batch. For example, the Locke et al 2014 BMI analysis was previously known as `2`, and it is now known as `ieu-a-2`.
+We have made a new system for naming datasets, and all datasets are organised into data batches. Either new datasets are uploaded one at a time in which case they are added to the `ieu-a` data batch, or there is a bulk upload in which case a new batch is created. For example, `ukb-a` is a bulk upload of the first round of the Neale lab UKBiobank GWAS, and `ukb-b` is the IEU GWAS analysis of the UKBiobank data. In most cases, a dataset is then numbered arbitrarily within the batch. For example, the UK Biobank BMI analysis of the IEU is known as `ukb-b-19953`.
 
 There is backward compatibility built into the R packages that access the data, so if you use an 'old' ID, it will automatically translate that to the new one. But it will give you a warning, and we urge you to update your scripts to reflect this change.
 
@@ -21,7 +21,7 @@ There is backward compatibility built into the R packages that access the data, 
 
 Previously you would automatically be asked to authenticate any query to the database, through Google. Now, we are making authentication voluntary - something that you do at the start of a session only if you need access to specific private datasets on the database. For the vast majority of use cases this is not required.
 
-Another change is that the R package that managed the authentication has updated, and the file tokens generated are slightly different. For full information on how to deal with this, see here: https://mrcieu.github.io/ieugwasr/articles/guide.html#authentication
+Authentication has changed again since: see `vignette("opengwasr", package = "opengwasr")`.
 
 ### UKBiobank data has been curated
 
@@ -79,13 +79,12 @@ Previously if a query to the database failed it didn't give a reason, hopefully 
 
 We are trying to make it as flexible as possible to access the data. The TwoSampleMR R package was previously the only programmatic way to access the data, now we have the following options:
 
-- [ieugwasr R package](https://mrcieu.github.io/ieugwasr/): All the TwoSampleMR functions that access the data are done by calling this package now. It is a simple wrapper around the API that controls access to the database.
-- [ieugwaspy python package](https://github.com/MRCIEU/ieugwaspy/): Similar functionality to ieugwasr (Under construction).
+- [opengwasr R package](https://github.com/opengwas/opengwasr): All the TwoSampleMR functions that access the data are done by calling this package now. It is a wrapper around the API that controls access to the database.
 - [API](https://api.opengwas.io/api/): You can use the API directly, e.g. for building your own services or applications.
 
 ### Local LD operations
 
-It is now possible to perform clumping, or create LD matrices, using your own local LD reference dataset. You can download the one that we have been using here: https://github.com/mrcieu/gwasglue#reference-datasets, or create your own plink format dataset e.g. with larger samples or for different ancestries. See the LD clumping functions in the [ieugwasr](https://mrcieu.github.io/ieugwasr/) package for more details.
+It is now possible to perform clumping, or create LD matrices, using your own local LD reference dataset. You can download the one that we have been using here: https://github.com/mrcieu/gwasglue#reference-datasets, or create your own plink format dataset e.g. with larger samples or for different ancestries. Both `clump_data()` and `ld_matrix()` take a `bfile` argument for this, and opengwasr's `vignette("ld")` has more details.
 
 ### Access the data directly
 
@@ -99,8 +98,7 @@ Either the data in the database, or the GWAS VCF files, can be queried and the r
 
 - The IEU OpenGWAS database: https://opengwas.io
 - API to the IEU OpenGWAS database: https://api.opengwas.io/api/
-- ieugwasr package, for R access to the API: https://mrcieu.github.io/ieugwasr/
-- ieugwaspy package, for python access to the API: https://github.com/MRCIEU/ieugwaspy/
+- opengwasr package, for R access to the API: https://github.com/opengwas/opengwasr
 - gwasvcf package, R interface to GWAS VCF files: https://mrcieu.github.io/gwasvcf/
 - pygwasvcf package, python interface to GWAS VCF files: https://github.com/mrcieu/pygwasvcf
 - gwasglue package, linking GWAS data to various analytical methods: https://mrcieu.github.io/gwasglue/

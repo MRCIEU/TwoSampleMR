@@ -1,10 +1,10 @@
 context("mvmr local")
 
-# a <- ieugwasr::tophits("ieu-a-2")
-# b <- ieugwasr::tophits("ieu-a-1001")
+# a <- opengwasr::og_tophits("ieu-a-2")
+# b <- opengwasr::og_tophits("ieu-a-1001")
 # rsid <- unique(c(a$rsid, b$rsid))
-# a1 <- ieugwasr::associations(rsid, "ieu-a-2")
-# a2 <- ieugwasr::associations(rsid, "ieu-a-1001")
+# a1 <- opengwasr::og_associations(rsid, "ieu-a-2")
+# a2 <- opengwasr::og_associations(rsid, "ieu-a-1001")
 # save(a, b, rsid, a1, a2, file="inst/extdata/test_add_mvmr_local.RData", compress = "xz")
 
 load(system.file("extdata", "test_add_mvmr_local.RData", package = "TwoSampleMR"))

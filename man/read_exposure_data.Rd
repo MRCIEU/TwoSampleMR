@@ -26,10 +26,10 @@ read_exposure_data(
   log_pval = FALSE,
   chr_col = "chr",
   pos_col = "pos",
-  clump_kb = 10000,
-  clump_r2 = 0.001,
+  clump_kb = NULL,
+  clump_r2 = NULL,
   clump_p1 = 1,
-  pop = "EUR",
+  pop = NULL,
   bfile = NULL,
   plink_bin = NULL
 )
@@ -77,15 +77,15 @@ read_exposure_data(
 
 \item{pos_col}{Optional column name for genetic position Default is \code{"pos"}.}
 
-\item{clump_kb}{Clumping window, default is \code{10000}.}
+\item{clump_kb}{Clumping window in kb. The default, \code{NULL}, is the LD Store's own (10,000).}
 
-\item{clump_r2}{Clumping r2 cutoff. Note that this default value has recently changed from \code{0.01} to \code{0.001}.}
+\item{clump_r2}{Clumping r2 cutoff. The default, \code{NULL}, is the LD Store's own.}
 
-\item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}.}
+\item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}: variants with a larger p-value are left out.}
 
-\item{pop}{Super-population to use as reference panel. Default = \code{"EUR"}. Options are \code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}. \code{'legacy'} also available - which is a previously used version of the EUR panel with a slightly different set of markers}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
 
-\item{bfile}{If this is provided then will use the API. Default = \code{NULL}}
+\item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to clump with locally instead of an LD Store. Default = \code{NULL}}
 
 \item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 }

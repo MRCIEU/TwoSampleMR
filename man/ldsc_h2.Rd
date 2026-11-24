@@ -11,7 +11,7 @@ ldsc_h2(id, ancestry = "infer", snpinfo = NULL, splitsize = 20000)
 
 \item{ancestry}{ancestry of traits 1 and 2 (AFR, AMR, EAS, EUR, SAS) or 'infer' (default) in which case it will try to guess based on allele frequencies}
 
-\item{snpinfo}{Output from \code{ieugwasr::afl2_list("hapmap3")}, or \code{NULL} for it to be done automatically}
+\item{snpinfo}{Not used until the function is available again}
 
 \item{splitsize}{How many SNPs to extract at one time. Default=\code{20000}}
 }
@@ -19,7 +19,10 @@ ldsc_h2(id, ancestry = "infer", snpinfo = NULL, splitsize = 20000)
 model fit
 }
 \description{
-Imported here to help estimate sample overlap between studies
+Imported here to help estimate sample overlap between studies.
+}
+\details{
+\strong{Not available yet.} This function stops with an error of class \code{twosamplemr_not_yet_available}: it needs HapMap3 variants with their LD scores and allele frequencies, to infer ancestry, which opengwasr does not provide yet (opengwas/opengwasr#26).
 }
 \references{
 Bulik-Sullivan,B.K. et al. (2015) An atlas of genetic correlations across human diseases and traits. Nat. Genet. 47, 1236–1241.

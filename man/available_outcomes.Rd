@@ -4,12 +4,12 @@
 \alias{available_outcomes}
 \title{Get list of studies with available GWAS summary statistics through API}
 \usage{
-available_outcomes(opengwas_jwt = NULL, src = opengwasr::og_api())
+available_outcomes(opengwas_jwt = NULL, src = twosamplemr_source())
 }
 \arguments{
 \item{opengwas_jwt}{Deprecated and ignored. Credentials come from \code{src}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}} reads \code{OPENGWAS_JWT}.}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
+\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 Dataframe of details for all available studies
