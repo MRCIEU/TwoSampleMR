@@ -8,6 +8,9 @@
 #' Analysis's ancestry (at its own thresholds unless you set `clump_r2` and `clump_kb`), and
 #' Imputed Associations replace proxies. The final clumping across exposures is [clump_data()].
 #'
+#' On a Local Source ([opengwasr::og_local()]) both clumpings use the Source's own LD resource, as
+#' in [extract_instruments()]: with a PLINK Reference, `clump_r2` and `clump_kb` must be set.
+#'
 #' @param id_exposure Array of IDs (e.g. `c("ukb-b-19953", "ebi-a-GCST003116")`)
 #' @param clump_r2 Clumping r2 cutoff, for each Analysis's instruments and for the final [clump_data()]. The default, `NULL`, is the LD Store's own threshold.
 #' @param clump_kb Clumping window in kb, as `clump_r2`. The default, `NULL`, is the LD Store's own window.
@@ -19,7 +22,7 @@
 #' @param pop Ancestry (`"EUR"`, `"SAS"`, `"EAS"`, `"AFR"`, `"AMR"`) or LD Store id to clump in. The default, `NULL`, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need `pop` or `bfile`)
 #' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
 #' @param bfile Prefix of a PLINK fileset to use for the final clumping across exposures, in place of an LD Store (the instruments of each Analysis are always clumped on the server). Default = `NULL`
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
+#' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], which reads Store Releases you have downloaded. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return data frame in `exposure_dat` format
@@ -161,7 +164,7 @@ mv_extract_exposures <- function(
 #' @param clump_r2 Clumping r2 cutoff. The default, `NULL`, is the LD Store's own (or `0.001` with `bfile`).
 #' @param clump_kb Clumping window in kb. The default, `NULL`, is the LD Store's own (or `10000` with `bfile`).
 #' @param pop Ancestry (`"EUR"`, `"SAS"`, `"EAS"`, `"AFR"`, `"AMR"`) or LD Store id to clump in. The default, `NULL`, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need `pop` or `bfile`)
-#' @param src A Source from opengwasr, used to find the LD Store of Analyses; own data need `pop` or `bfile`. The default, [opengwasr::og_api()], is made only when it is needed.
+#' @param src A Source from opengwasr, used to find the LD Store of Analyses; own data need `pop` or `bfile`. A Local Source, [opengwasr::og_local()], clumps with its own LD resource instead (see [clump_data()]). The default, [opengwasr::og_api()], is made only when it is needed.
 #' @param harmonise_strictness See action argument in [harmonise_data()]. Default=`2`
 #'
 #' @export

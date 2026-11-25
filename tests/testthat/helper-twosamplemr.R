@@ -188,3 +188,59 @@ local_no_credentials <- function(env = parent.frame()) {
   )
   withr::local_options(opengwasr.url = NULL, .local_envir = env)
 }
+
+# --- Local Source ---------------------------------------------------------------------------------
+
+# opengwasr's example Store Releases (one per GWAS Store: `hyb` holds two, so its `v1` is named) and
+# its synthetic PLINK Reference, whose rsIDs include some of their top hits.
+example_releases <- function() {
+  stores <- system.file("stores", package = "opengwasr")
+  c(file.path(stores, c("dense", "ragged")), file.path(stores, "hyb", "v1"))
+}
+example_bfile <- function() file.path(system.file("plink", package = "opengwasr"), "ref")
+
+# As opengwasr's own: the local tests need a Python with ogquery named by RETICULATE_PYTHON, and
+# never set Python up themselves.
+skip_if_no_local <- function() {
+  skip_on_cran()
+  skip_if_not_installed("reticulate")
+  has_local <- "og_local" %in% getNamespaceExports("opengwasr")
+  if (!has_local || !nzchar(system.file("stores", package = "opengwasr"))) {
+    skip("This opengwasr has no Local Source, or no example Store Releases.")
+  }
+  if (!nzchar(Sys.getenv("RETICULATE_PYTHON"))) {
+    skip("RETICULATE_PYTHON isn't set; local tests never set Python up themselves.")
+  }
+  if (is.null(example_local())) skip("The Python in RETICULATE_PYTHON has no ogquery.")
+  invisible()
+}
+
+skip_if_no_local_plink <- function() {
+  skip_if_no_local()
+  if (is.null(example_local(plink = TRUE))) {
+    skip("No PLINK binary found (genetics.binaRies, or plink on the PATH).")
+  }
+  invisible()
+}
+
+# A Local Source over the example Store Releases, with the example PLINK Reference as its LD resource
+# (`plink = TRUE`) or with none, opened once per test process; NULL where it can't be opened (no
+# ogquery, or no PLINK binary).
+example_local <- local({
+  opened <- list()
+  function(plink = FALSE) {
+    key <- if (plink) "plink" else "none"
+    if (!key %in% names(opened)) {
+      opened[key] <<- list(tryCatch(
+        if (plink) {
+          opengwasr::og_local(example_releases(), bfile = example_bfile())
+        } else {
+          opengwasr::og_local(example_releases())
+        },
+        opengwasr_local_unavailable = function(e) NULL,
+        opengwasr_plink_not_found = function(e) NULL
+      ))
+    }
+    opened[[key]]
+  }
+})

@@ -64,7 +64,7 @@ VignetteBuilder:
     knitr
 Remotes:
     gqi/MRMix,
-    opengwas/opengwasr@orch/1-api-source,
+    opengwas/opengwasr@orch/2-local-source,
     mrcieu/MRInstruments,
     MRPRESSO=rondolab/MR-PRESSO,
     qingyuanzhao/mr.raps,

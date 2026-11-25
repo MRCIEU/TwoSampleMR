@@ -30,7 +30,7 @@ clump_data(
 
 \item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
+\item{src}{A Source from opengwasr: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, which reads Store Releases you have downloaded. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 Data frame
@@ -58,6 +58,13 @@ or that the LD Store does not hold, cannot be clumped and are left out of the re
 With \code{bfile}, PLINK clumps on your machine using your own reference (\code{\link[opengwasr:og_plink_reference]{opengwasr::og_plink_reference()}}),
 matching variants by rsID. There the thresholds have no defaults to take, so \code{clump_r2 = 0.001} and
 \code{clump_kb = 10000} (TwoSampleMR's old defaults) are used unless you set them.
+
+On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) the default is the Source's own LD resource: PLINK
+clumps with the PLINK Reference it was given as \code{bfile}, matching variants by rsID. It has no
+thresholds of its own, so \code{clump_r2} and \code{clump_kb} must be set (opengwasr refuses otherwise, with
+error class \code{opengwasr_plink_settings_required}). A Local Source with no LD resource is refused
+(\code{opengwasr_ld_resource_required}), and so is a \code{pop}, as a Local Source never reads the API's LD
+Stores; \code{bfile} here works as on the API Source.
 
 Each \code{id.exposure} is clumped on its own, in the LD Store of its own ancestry, as the old OpenGWAS client did.
 To check which of your variants an LD Store holds first, use \code{\link[opengwasr:og_ld_reflookup]{opengwasr::og_ld_reflookup()}}.

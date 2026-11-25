@@ -169,7 +169,8 @@ test_that("instrument data written to a file read back as exposure and outcome d
   exp_dat <- extract_instruments("ukb-b-19953")
   names(exp_dat) <- gsub(".exposure", "", names(exp_dat))
   fn <- tempfile()
-  on.exit(unlink(fn))
+  # `add = TRUE`: a bare on.exit() replaced testthat's cleanup, and this test's mocks outlived it.
+  on.exit(unlink(fn), add = TRUE)
   utils::write.table(
     exp_dat,
     file = fn,

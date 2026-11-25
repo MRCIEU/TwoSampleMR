@@ -23,6 +23,13 @@
 #' matching variants by rsID. There the thresholds have no defaults to take, so `clump_r2 = 0.001` and
 #' `clump_kb = 10000` (TwoSampleMR's old defaults) are used unless you set them.
 #'
+#' On a Local Source ([opengwasr::og_local()]) the default is the Source's own LD resource: PLINK
+#' clumps with the PLINK Reference it was given as `bfile`, matching variants by rsID. It has no
+#' thresholds of its own, so `clump_r2` and `clump_kb` must be set (opengwasr refuses otherwise, with
+#' error class `opengwasr_plink_settings_required`). A Local Source with no LD resource is refused
+#' (`opengwasr_ld_resource_required`), and so is a `pop`, as a Local Source never reads the API's LD
+#' Stores; `bfile` here works as on the API Source.
+#'
 #' Each `id.exposure` is clumped on its own, in the LD Store of its own ancestry, as the old OpenGWAS client did.
 #' To check which of your variants an LD Store holds first, use [opengwasr::og_ld_reflookup()].
 #'
@@ -36,7 +43,7 @@
 #' @param pop Ancestry (`"EUR"`, `"SAS"`, `"EAS"`, `"AFR"` or `"AMR"`) or LD Store id (see `opengwasr::og_ld_stores()`) of the LD Store to use. The default, `NULL`, matches the Assigned Ancestry of the Analyses in `dat`. `"legacy"` is deprecated and means `"EUR"`.
 #' @param bfile Prefix of a PLINK fileset (`.bed`, `.bim`, `.fam`) to clump with locally instead of an LD Store. Default = `NULL`
 #' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
+#' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], which reads Store Releases you have downloaded. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return Data frame
@@ -119,6 +126,12 @@ clump_data_impl <- function(dat, clump_kb, clump_r2, clump_p1, pop, bfile, plink
 #'
 #' To check which variants an LD Store holds first, use [opengwasr::og_ld_reflookup()].
 #'
+#' On a Local Source ([opengwasr::og_local()]) the matrix comes from the Source's own LD resource, the
+#' PLINK Reference it was given as `bfile` (named `<rsid>_<allele1>_<allele2>`, the rsIDs of ALIDs
+#' looked up in its Store Releases). A Local Source with no LD resource is refused by opengwasr (error
+#' class `opengwasr_ld_resource_required`), and so is a `pop`, as a Local Source never reads the API's
+#' LD Stores.
+#'
 #' A variant the LD Store (or the reference) does not hold is left out of the matrix, with a warning
 #' (a message for a reference). An LD Store does not hold every pair: a pair it does not hold is `NA`
 #' (never 0), unless `fill_below_t_far = TRUE`, which sets to 0 the pairs it holds only as being
@@ -127,18 +140,18 @@ clump_data_impl <- function(dat, clump_kb, clump_r2, clump_p1, pop, bfile, plink
 #'
 #' @param snps List of SNPs: rsIDs or ALIDs.
 #' @param with_alleles Deprecated and ignored: the names carry the alleles.
-#' @param pop Ancestry (`"EUR"` (default), `"SAS"`, `"EAS"`, `"AFR"` or `"AMR"`) or LD Store id (see `opengwasr::og_ld_stores()`) of the LD Store to use. `"legacy"` is deprecated and means `"EUR"`. Ignored with `bfile`.
+#' @param pop Ancestry (`"EUR"`, `"SAS"`, `"EAS"`, `"AFR"` or `"AMR"`) or LD Store id (see `opengwasr::og_ld_stores()`) of the LD Store to use. The default, `NULL`, is the European LD Store on the API Source, and the Source's own LD resource on a Local Source (see Details). `"legacy"` is deprecated and means `"EUR"`. Ignored with `bfile`.
 #' @param bfile Prefix of a PLINK fileset (`.bed`, `.bim`, `.fam`) to use instead of an LD Store. Default = `NULL`
 #' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
 #' @param fill_below_t_far Set pairs below the LD Store's Far Threshold to 0 (default `FALSE`).
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
+#' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], which reads Store Releases you have downloaded. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return Matrix of LD r values
 ld_matrix <- function(
   snps,
   with_alleles = TRUE,
-  pop = "EUR",
+  pop = NULL,
   bfile = NULL,
   plink_bin = NULL,
   fill_below_t_far = FALSE,
@@ -150,6 +163,8 @@ ld_matrix <- function(
       "the names of the matrix always carry the alleles."
     ))
   }
-  ld <- ld_choice(src, pop, bfile, plink_bin, ids = NULL)
+  # The default Source is the API's, so it is made only when the LD Store is asked.
+  local <- !missing(src) && is_local_source(src)
+  ld <- ld_choice(src, pop, bfile, plink_bin, ids = NULL, local = local)
   opengwasr_ld_matrix(src, snps, ld, fill_below_t_far)
 }

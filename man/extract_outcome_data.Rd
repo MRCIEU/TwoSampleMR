@@ -39,7 +39,7 @@ extract_outcome_data(
 
 \item{proxy_splitsize}{Deprecated and ignored.}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
+\item{src}{A Source from opengwasr: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, which reads Store Releases you have downloaded. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 Dataframe of summary statistics for all available outcomes
@@ -62,5 +62,7 @@ changes nothing.
 OpenGWAS ids such as \code{ebi-a-GCST003116} are accepted where they name one Analysis. An id that
 names no Analysis is an error.
 \item Effects of continuous traits are per SD of the trait, and \code{effect_scale.outcome} says so.
+\item On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) the Associations are read from Store Releases you
+have downloaded. A legacy id is refused there (error class \code{opengwasr_legacy_id_local}).
 }
 }

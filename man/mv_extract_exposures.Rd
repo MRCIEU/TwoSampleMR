@@ -42,7 +42,7 @@ mv_extract_exposures(
 
 \item{bfile}{Prefix of a PLINK fileset to use for the final clumping across exposures, in place of an LD Store (the instruments of each Analysis are always clumped on the server). Default = \code{NULL}}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
+\item{src}{A Source from opengwasr: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, which reads Store Releases you have downloaded. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 data frame in \code{exposure_dat} format
@@ -56,4 +56,7 @@ are Analyses (\verb{<store_id>:<analysis_id>}, or a legacy id that names one), e
 traits are per SD, instruments are clumped on the server in the LD Store matching each
 Analysis's ancestry (at its own thresholds unless you set \code{clump_r2} and \code{clump_kb}), and
 Imputed Associations replace proxies. The final clumping across exposures is \code{\link[=clump_data]{clump_data()}}.
+
+On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) both clumpings use the Source's own LD resource, as
+in \code{\link[=extract_instruments]{extract_instruments()}}: with a PLINK Reference, \code{clump_r2} and \code{clump_kb} must be set.
 }

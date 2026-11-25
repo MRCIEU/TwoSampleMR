@@ -19,15 +19,24 @@
 #'   `kb = 10000`, are refused by the LD Stores, so they are not the default.
 #' * `association_status.exposure` says whether each Association was observed in the study or
 #'   Imputed by Reference Completion.
+#' * On a Local Source ([opengwasr::og_local()]), the data are read from Store Releases you have
+#'   downloaded, and nothing calls the API. Clumping uses the Source's own LD resource: PLINK, with
+#'   the PLINK Reference given to `og_local()` as `bfile`, matching variants by rsID. A PLINK
+#'   Reference has no thresholds of its own, so `r2` and `kb` must be set (`r2 = 0.001, kb = 10000`
+#'   are TwoSampleMR's old ones); without them opengwasr refuses, with error class
+#'   `opengwasr_plink_settings_required`. A Local Source with no LD resource can't clump (error class
+#'   `opengwasr_ld_resource_required`): give it one, or use `clump = 0`. Store Releases hold canonical
+#'   ids only, so a legacy id is refused (error class `opengwasr_legacy_id_local`): translate it once
+#'   with `opengwasr::og_analyses(opengwasr::og_api(), ids)`.
 #'
 #' @param outcomes Array of outcome IDs (see [available_outcomes()]).
 #' @param p1 Significance threshold. The default is `5e-8`. OpenGWAS indexes `5e-8`, `5e-6` and `5e-4`.
 #' @param clump Whether to clump results (`1`) or not (`0`). Default is `1`. (`TRUE` and `FALSE` are also allowed for backwards compatibility.) Unclumped, or clumped, you get at most 10,000 variants per Analysis (opengwasr warns if there were more).
-#' @param r2 Clumping r2 cut off. The default, `NULL`, is the LD Store's own threshold (about `0.03`).
-#' @param kb Clumping distance cutoff. The default, `NULL`, is the LD Store's own window (`10000`).
+#' @param r2 Clumping r2 cut off. The default, `NULL`, is the LD Store's own threshold (about `0.03`). Required with a PLINK Reference (a Local Source's `bfile`).
+#' @param kb Clumping distance cutoff. The default, `NULL`, is the LD Store's own window (`10000`). Required with a PLINK Reference (a Local Source's `bfile`).
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
 #' @param force_server Deprecated and ignored. Clumping always runs on the server.
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
+#' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], which reads Store Releases you have downloaded. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return data frame
@@ -54,9 +63,12 @@ extract_instruments <- function(
     ))
   }
 
+  # Resolved first, so that an id opengwasr refuses (a legacy id on a Local Source) is the error
+  # the user sees, before anything about clumping is checked.
+  analyses <- resolve_analyses(src, outcomes)
   opengwasr_instruments(
     src,
-    resolve_analyses(src, outcomes),
+    analyses,
     p1 = p1,
     clump = clump,
     r2 = r2,

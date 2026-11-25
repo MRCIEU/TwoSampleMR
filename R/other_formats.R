@@ -6,17 +6,17 @@
 #'
 #' @param dat Output from the [harmonise_data()] function.
 #' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from an OpenGWAS LD Store with [ld_matrix()]. From an LD Store, pairs below its Far Threshold are 0, and pairs it cannot measure (other chromosomes, beyond its far window) are set to 0 too, treated as independent, with a message giving how many.
-#' @param pop If `get_correlations` is `TRUE` then the ancestry (or LD Store id) of the LD Store to use. The default is `"EUR"`.
+#' @param pop If `get_correlations` is `TRUE` then the ancestry (or LD Store id) of the LD Store to use. The default, `NULL`, is the European LD Store on the API Source, and the Source's own LD resource on a Local Source (see [ld_matrix()]).
 #' @param bfile If `get_correlations` is `TRUE`, the prefix of a PLINK fileset to use as the LD reference instead of an LD Store. Default = `NULL`
 #' @param plink_bin Path to the plink binary for `bfile`. Default = `NULL`
-#' @param src A Source from opengwasr, used with `get_correlations`. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
+#' @param src A Source from opengwasr, used with `get_correlations`: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], whose own LD resource is then used. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return List of MRInput objects for each exposure/outcome combination
 dat_to_MRInput <- function(
   dat,
   get_correlations = FALSE,
-  pop = "EUR",
+  pop = NULL,
   bfile = NULL,
   plink_bin = NULL,
   src = twosamplemr_source()

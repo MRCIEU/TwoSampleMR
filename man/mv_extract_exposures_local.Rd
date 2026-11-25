@@ -84,7 +84,7 @@ mv_extract_exposures_local(
 
 \item{harmonise_strictness}{See action argument in \code{\link[=harmonise_data]{harmonise_data()}}. Default=\code{2}}
 
-\item{src}{A Source from opengwasr, used to find the LD Store of Analyses; own data need \code{pop} or \code{bfile}. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
+\item{src}{A Source from opengwasr, used to find the LD Store of Analyses; own data need \code{pop} or \code{bfile}. A Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, clumps with its own LD resource instead (see \code{\link[=clump_data]{clump_data()}}). The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
 }
 \value{
 List

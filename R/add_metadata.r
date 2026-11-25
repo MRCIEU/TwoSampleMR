@@ -27,7 +27,7 @@
 #'
 #' @param dat Either exposure data, outcome data or harmonised data
 #' @param cols Which metadata fields to add. Default = `c("sample_size", "ncase", "ncontrol", "effect_scale", "sd")`
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()], is made only when it is needed.
+#' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()]. The default, [opengwasr::og_api()], is made only when it is needed.
 #'
 #' @export
 #' @return Data frame

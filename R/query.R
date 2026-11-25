@@ -8,7 +8,7 @@
 #' column, `trait` repeats `analysis_label`.
 #'
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
+#' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], which reads Store Releases you have downloaded. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return Dataframe of details for all available studies
@@ -39,6 +39,8 @@ available_outcomes <- function(opengwas_jwt = NULL, src = twosamplemr_source()) 
 #'   OpenGWAS ids such as `ebi-a-GCST003116` are accepted where they name one Analysis. An id that
 #'   names no Analysis is an error.
 #' * Effects of continuous traits are per SD of the trait, and `effect_scale.outcome` says so.
+#' * On a Local Source ([opengwasr::og_local()]) the Associations are read from Store Releases you
+#'   have downloaded. A legacy id is refused there (error class `opengwasr_legacy_id_local`).
 #'
 #' @param snps Array of SNP rs IDs.
 #' @param outcomes Array of IDs (see \code{id} column in output from [available_outcomes()]).
@@ -50,7 +52,7 @@ available_outcomes <- function(opengwas_jwt = NULL, src = twosamplemr_source()) 
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
 #' @param splitsize Deprecated and ignored: opengwasr splits large queries itself.
 #' @param proxy_splitsize Deprecated and ignored.
-#' @param src A Source from opengwasr. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
+#' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], which reads Store Releases you have downloaded. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return Dataframe of summary statistics for all available outcomes

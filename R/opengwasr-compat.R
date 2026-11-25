@@ -355,6 +355,10 @@ opengwasr_metadata <- function(src, id, what, cols) {
 # `||` for NULL, which base R has only from 4.4.
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
+# A Local Source (`opengwasr::og_local()`): Store Releases on this machine, with the LD resource it
+# was given, if any.
+is_local_source <- function(src) inherits(src, "og_local_source")
+
 # A Source that names TwoSampleMR as its caller in the user agent.
 twosamplemr_source <- function() {
   opengwasr::og_api(caller = paste0("TwoSampleMR/", utils::packageVersion("TwoSampleMR")))
@@ -368,9 +372,17 @@ rsid_pattern <- "^rs[0-9]+$"
 # The `ld` that opengwasr is given: a PLINK Reference if `bfile` is, else the ancestry named by `pop`,
 # else NULL, which makes opengwasr match the Assigned Ancestry of the Analyses in the data. Data
 # whose ids name no Analysis (from a file, say) have none to match, so they are refused.
-ld_choice <- function(src, pop, bfile, plink_bin, ids) {
+#
+# On a Local Source, NULL is its own LD resource (ADR 0006): opengwasr clumps or reads the matrix
+# with it, or refuses (`opengwasr_ld_resource_required`) when it has none. A `pop` there names an LD
+# Store, which a Local Source never reads, and opengwasr refuses that too. `local` is given by a caller
+# that knows the default Source is not one, so that the default is made only when it is needed.
+ld_choice <- function(src, pop, bfile, plink_bin, ids, local = is_local_source(src)) {
   if (!is.null(bfile)) {
     return(opengwasr::og_plink_reference(bfile, plink_bin))
+  }
+  if (is.null(pop) && local) {
+    return(NULL)
   }
   if (identical(pop, "legacy")) {
     deprecated_argument_message(paste0(
