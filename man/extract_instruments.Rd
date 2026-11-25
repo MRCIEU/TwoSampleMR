@@ -28,7 +28,7 @@ extract_instruments(
 
 \item{opengwas_jwt}{Deprecated and ignored. Credentials come from \code{src}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}} reads \code{OPENGWAS_JWT}.}
 
-\item{force_server}{Deprecated and ignored. Clumping always runs on the server.}
+\item{force_server}{Deprecated and ignored. Clumping uses the Source's LD resource, or on a plain \code{\link[opengwasr:og_api]{opengwasr::og_api()}} the LD Store matching each Analysis's Assigned Ancestry.}
 
 \item{src}{A Source from opengwasr: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, which reads Store Releases you have downloaded. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
@@ -49,9 +49,10 @@ one Analysis, and an id that names no Analysis is an error.
 (\code{"sd"} or \code{"log_or"}). Estimates from \code{\link[=mr]{mr()}} then are per SD of the exposure.
 \item \code{SNP} is the rsID, or the ALID (\verb{chromosome:position:effect allele:other allele}, on GRCh38) of a
 variant that has no rsID.
-\item Clumping runs on the OpenGWAS server, in the LD Store matching each Analysis's assigned
-ancestry, and at that LD Store's own thresholds unless you set \code{r2} and \code{kb}. The LD Store used
-and the thresholds applied are in \code{clump_ld.exposure}, \code{clump_ld_choice.exposure},
+\item Clumping uses the Source's LD resource (\code{opengwasr::og_api(ld_store = )}, or a Local Source's
+PLINK Reference; see below), or, on a plain \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, the LD Store matching each
+Analysis's Assigned Ancestry. An LD Store clumps at its own thresholds unless you set \code{r2} and
+\code{kb}. The LD used and the thresholds applied are in \code{clump_ld.exposure}, \code{clump_ld_choice.exposure},
 \code{clump_r2.exposure} and \code{clump_kb.exposure}. TwoSampleMR's old thresholds, \code{r2 = 0.001} within
 \code{kb = 10000}, are refused by the LD Stores, so they are not the default.
 \item \code{association_status.exposure} says whether each Association was observed in the study or

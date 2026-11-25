@@ -357,22 +357,24 @@ name_ld_by_snp <- function(x, ld, src) {
 
 # The LD matrix of the variants of `x` for MendelianRandomization, harmonised to `x`, or NULL if none
 # can be. From an LD Store the pairs below its Far Threshold are 0 (`fill_below_t_far`), and the
-# remaining unmeasured pairs are set to 0 too; a PLINK Reference's matrix is complete already.
+# remaining unmeasured pairs are set to 0 too; a PLINK Reference's matrix (`bfile`, or the Source's
+# own) is complete already, and is left as it is.
 ld_for_mr_input <- function(x, pop, bfile, plink_bin, src) {
   message(" - obtaining LD matrix")
+  plink <- ld_is_plink(src, pop, bfile)
   ld <- ld_matrix(
     unique(x$SNP),
     pop = pop,
     bfile = bfile,
     plink_bin = plink_bin,
-    fill_below_t_far = is.null(bfile),
+    fill_below_t_far = !plink,
     src = src
   )
   out <- harmonise_ld_dat(x, ld, src)
   if (is.null(out)) {
     return(NULL)
   }
-  out$ld <- complete_ld(out$ld, plink = !is.null(bfile))
+  out$ld <- complete_ld(out$ld, plink = plink)
   out
 }
 

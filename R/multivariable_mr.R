@@ -4,8 +4,9 @@
 #'
 #' The data come from opengwasr, as for [extract_instruments()] and [extract_outcome_data()]: IDs
 #' are Analyses (`<store_id>:<analysis_id>`, or a legacy id that names one), effects of continuous
-#' traits are per SD, instruments are clumped on the server in the LD Store matching each
-#' Analysis's ancestry (at its own thresholds unless you set `clump_r2` and `clump_kb`), and
+#' traits are per SD, instruments are clumped with the Source's LD resource, or on a plain
+#' [opengwasr::og_api()] in the LD Store matching each Analysis's Assigned Ancestry (at an LD Store's
+#' own thresholds unless you set `clump_r2` and `clump_kb`), and
 #' Imputed Associations replace proxies. The final clumping across exposures is [clump_data()].
 #'
 #' On a Local Source ([opengwasr::og_local()]) both clumpings use the Source's own LD resource, as
@@ -17,11 +18,11 @@
 #' @param harmonise_strictness See the `action` option of [harmonise_data()]. The default is `2`.
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
 #' @param find_proxies Deprecated and ignored: Imputed Associations replace proxies (see [extract_outcome_data()]).
-#' @param force_server Deprecated and ignored. Clumping always runs on the server.
+#' @param force_server Deprecated and ignored. Clumping uses the Source's LD resource, or on a plain [opengwasr::og_api()] the LD Store matching each Analysis's Assigned Ancestry.
 #' @param pval_threshold Instrument detection p-value threshold. Default = `5e-8`
 #' @param pop Ancestry (`"EUR"`, `"SAS"`, `"EAS"`, `"AFR"`, `"AMR"`) or LD Store id to clump in. The default, `NULL`, is the Source's own LD resource if it carries one (`opengwasr::og_api(ld_store = )`, `opengwasr::og_local(bfile = )`), else matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need `pop` or `bfile`)
 #' @param plink_bin If `NULL` and `bfile` is not `NULL` then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = `NULL`
-#' @param bfile Prefix of a PLINK fileset to use for the final clumping across exposures, in place of an LD Store (the instruments of each Analysis are always clumped on the server). Default = `NULL`
+#' @param bfile Prefix of a PLINK fileset to use for the final clumping across exposures, in place of the Source's LD resource (the instruments of each Analysis are clumped with the Source's LD resource, or on a plain [opengwasr::og_api()] in the LD Store matching its Assigned Ancestry). Default = `NULL`
 #' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], which reads Store Releases you have downloaded. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
@@ -47,7 +48,8 @@ mv_extract_exposures <- function(
   if (!missing(force_server)) {
     deprecated_argument_message(paste0(
       "`force_server` is no longer used by `mv_extract_exposures()` and is ignored. ",
-      "Clumping always runs on the OpenGWAS server."
+      "Clumping uses the Source's LD resource, or on a plain `og_api()` the LD Store matching ",
+      "each Analysis's Assigned Ancestry."
     ))
   }
   if (!missing(find_proxies)) {

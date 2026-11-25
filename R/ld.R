@@ -164,8 +164,15 @@ ld_matrix <- function(
     ))
   }
   # The default Source is the API's, with no LD resource of its own, so it is made only when the LD
-  # Store is asked.
-  own_ld <- !missing(src) && defers_to_source_ld(src)
-  ld <- ld_choice(src, pop, bfile, plink_bin, ids = NULL, own_ld = own_ld)
+  # Store is asked; `own_ld` is a promise, which `bfile` and `pop` leave unread.
+  src_given <- !missing(src)
+  ld <- ld_choice(
+    src,
+    pop,
+    bfile,
+    plink_bin,
+    ids = NULL,
+    own_ld = src_given && defers_to_source_ld(src)
+  )
   opengwasr_ld_matrix(src, snps, ld, fill_below_t_far)
 }

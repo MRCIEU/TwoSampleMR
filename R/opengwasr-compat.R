@@ -359,17 +359,20 @@ opengwasr_metadata <- function(src, id, what, cols) {
 # was given, if any.
 is_local_source <- function(src) inherits(src, "og_local_source")
 
-# The LD resource a Source carries (ADR 0006): an LD Store name or ancestry code from
-# `og_api(ld_store = )`, a PLINK Reference from `og_local(bfile = )`, or NULL. opengwasr exports no
-# way to ask this, so it is read from the `ld` field of the Source, the one its own internal
-# ld_resource() reads; this is the only place TwoSampleMR reads it.
-source_ld_resource <- function(src) {
-  if (inherits(src, c("og_api_source", "og_local_source"))) src[["ld"]] else NULL
+# Whether `ld = NULL` means the Source's own LD resource (ADR 0006): it carries one
+# (`opengwasr::og_ld_resource()`), or it is a Local Source, which opengwasr then refuses for want of
+# one (`opengwasr_ld_resource_required`). The class check stays because `og_ld_resource()` is NULL
+# both for a plain `og_api()`, which keeps TwoSampleMR's defaults, and for a Local Source with none.
+defers_to_source_ld <- function(src) {
+  is_local_source(src) || !is.null(opengwasr::og_ld_resource(src))
 }
 
-# Whether `ld = NULL` means the Source's own LD resource: it carries one, or it is a Local Source,
-# where opengwasr then refuses for want of one.
-defers_to_source_ld <- function(src) is_local_source(src) || !is.null(source_ld_resource(src))
+# Whether the LD that answers is a PLINK Reference: `bfile`, else (without `pop`) the Source's own.
+# `src` is read only when neither is given, so `bfile` never makes the default Source.
+ld_is_plink <- function(src, pop, bfile) {
+  !is.null(bfile) ||
+    (is.null(pop) && inherits(opengwasr::og_ld_resource(src), "og_plink_reference"))
+}
 
 # A Source that names TwoSampleMR as its caller in the user agent.
 twosamplemr_source <- function() {
@@ -389,8 +392,9 @@ rsid_pattern <- "^rs[0-9]+$"
 # one (`og_api(ld_store = )`, `og_local(bfile = )`) is given NULL, and opengwasr uses its resource.
 # A Local Source is given NULL even with none, so that opengwasr refuses it
 # (`opengwasr_ld_resource_required`). A `pop` still wins; on a Local Source it names an LD Store,
-# which a Local Source never reads, and opengwasr refuses that too. `own_ld` is given by a caller
-# that knows the default Source carries none, so that the default is made only when it is needed.
+# which a Local Source never reads, and opengwasr refuses that too. `own_ld` is read only after
+# `bfile` and `pop`, so a call with either never makes the default Source; a caller that knows the
+# default Source carries no LD resource says so lazily.
 ld_choice <- function(src, pop, bfile, plink_bin, ids, own_ld = defers_to_source_ld(src)) {
   if (!is.null(bfile)) {
     return(opengwasr::og_plink_reference(bfile, plink_bin))

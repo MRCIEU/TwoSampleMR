@@ -132,20 +132,48 @@ test_that("extract_outcome_data() on a Local Source returns its Associations in 
   expect_true(all(got$data_source.outcome == "igd"))
 })
 
-test_that("a Local Source runs the two-sample MR pipeline", {
+test_that("a Local Source runs the two-sample MR pipeline, on opengwasr's instruments and Associations", {
   skip_if_no_local_plink()
   src <- example_local(plink = TRUE)
+  outcome_id <- "hyb:trait_b"
   exposure <- suppressWarnings(suppressMessages(
     extract_instruments(bmi_local, src = src, r2 = 0.001, kb = 10000)
   ))
   outcome <- suppressWarnings(suppressMessages(
-    extract_outcome_data(exposure$SNP, "hyb:trait_b", src = src)
+    extract_outcome_data(exposure$SNP, outcome_id, src = src)
   ))
   dat <- suppressMessages(harmonise_data(exposure, outcome))
   res <- suppressMessages(mr(dat, method_list = "mr_ivw"))
+
+  # The instruments are opengwasr's clumped top hits (an rsID kept once, its strongest variant).
+  hits <- suppressMessages(opengwasr::og_tophits(
+    src,
+    bmi_local,
+    threshold = 5e-8,
+    limit = 10000,
+    r2 = 0.001,
+    kb = 10000
+  ))
+  hits <- hits[!duplicated(hits$rsid), ]
+  expect_setequal(exposure$SNP, hits$rsid)
+  # IVW by hand, from opengwasr's Associations of those instruments in the outcome, aligned to the
+  # exposure's effect allele. The synthetic example Store Releases reuse rsIDs for unrelated
+  # variants (rs1005 is C/T in `s`, A/G in `hyb`), so an allele may match only on the other strand,
+  # as harmonise_data() aligns it.
+  assoc <- suppressWarnings(opengwasr::og_associations(src, hits$rsid, outcome_id))
+  assoc <- assoc[assoc$rsid %in% dat$SNP[dat$mr_keep], ]
+  at <- match(assoc$rsid, hits$rsid)
+  strand <- c(A = "T", C = "G", G = "C", T = "A")
+  ea <- hits$effect_allele[at]
+  same <- assoc$effect_allele == ea | strand[assoc$effect_allele] == ea
+  expect_true(all(same | assoc$other_allele == ea | strand[assoc$other_allele] == ea))
+  bx <- hits$beta[at]
+  by <- ifelse(same, assoc$beta, -assoc$beta)
+  w <- 1 / assoc$se^2
   expect_equal(res$id.exposure, bmi_local)
-  expect_equal(res$id.outcome, "hyb:trait_b")
-  expect_equal(res$nsnp, sum(dat$mr_keep))
+  expect_equal(res$id.outcome, outcome_id)
+  expect_equal(res$nsnp, nrow(assoc))
+  expect_equal(res$b, sum(w * bx * by) / sum(w * bx^2), tolerance = 1e-8)
 })
 
 # --- Seam 3: clumping needs the Source's LD resource, and its settings ---------------------------
@@ -209,7 +237,7 @@ test_that("ld_matrix() on a Local Source reads its PLINK Reference by default; a
   expect_error(ld_matrix(snps, pop = "EUR", src = src), class = "opengwasr_local_unsupported")
 })
 
-test_that("mv_extract_exposures() on a Local Source clumps with its PLINK Reference", {
+test_that("mv_extract_exposures() on a Local Source clumps with its PLINK Reference, as opengwasr does", {
   skip_if_no_local_plink()
   src <- example_local(plink = TRUE)
   ids <- c(bmi_local, "residual-rag:a")
@@ -217,54 +245,130 @@ test_that("mv_extract_exposures() on a Local Source clumps with its PLINK Refere
   got <- suppressWarnings(suppressMessages(
     mv_extract_exposures(ids, clump_r2 = 0.001, clump_kb = 10000, src = src)
   ))
+
+  # opengwasr's steps: each Analysis's clumped top hits; one variant per SNP, strongest first,
+  # clumped again as one set; then the leads every exposure has an Association for.
+  hits <- suppressMessages(opengwasr::og_tophits(
+    src,
+    ids,
+    threshold = 5e-8,
+    limit = 10000,
+    r2 = 0.001,
+    kb = 10000
+  ))
+  hits$SNP <- ifelse(is.na(hits$rsid), hits$alid, hits$rsid)
+  hits <- hits[order(hits$pval), ]
+  hits <- hits[!duplicated(hits$SNP), ]
+  leads <- suppressMessages(opengwasr::og_clump(src, hits, r2 = 0.001, kb = 10000))
+  assoc <- opengwasr::og_associations(src, unique(leads$SNP), ids)
+  assoc$SNP <- ifelse(is.na(assoc$rsid), assoc$alid, assoc$rsid)
+  in_all <- Reduce(intersect, split(assoc$SNP, assoc$id))
+  expect_gt(length(in_all), 0)
+  expect_setequal(unique(got$SNP), in_all)
   expect_setequal(unique(got$id.exposure), ids)
-  expect_gt(length(unique(got$SNP)), 0)
+  # The first exposure's effects are its own Associations; the others are harmonised to it.
+  first <- got[got$id.exposure == ids[1], ]
+  own <- assoc[assoc$id == ids[1], ]
+  own <- own[!duplicated(own$SNP), ]
+  expect_equal(first$beta.exposure, own$beta[match(first$SNP, own$SNP)])
+  other <- got[got$id.exposure == ids[2], ]
+  theirs <- assoc[assoc$id == ids[2], ]
+  expect_equal(abs(other$beta.exposure), abs(theirs$beta[match(other$SNP, theirs$SNP)]))
+
   expect_error(
     mv_extract_exposures(ids, src = example_local()),
     class = "opengwasr_ld_resource_required"
   )
 })
 
-test_that("dat_to_MRInput()'s LD matrix comes from a Local Source's PLINK Reference, complete", {
-  skip_if_no_local_plink()
-  src <- example_local(plink = TRUE)
+# Instruments of s:bmi_irn that the example PLINK Reference holds, with an outcome, as
+# dat_to_MRInput() reads them.
+local_mr_dat <- function(src) {
   x <- suppressWarnings(extract_instruments(bmi_local, src = src, clump = 0))
   x <- x[x$SNP %in% c("rs5000", "rs1004", "rs1005", "rs1006"), ]
   x$beta.outcome <- 0.1
   x$se.outcome <- 0.01
   x$outcome <- "o"
+  x
+}
+
+test_that("dat_to_MRInput()'s LD matrix is opengwasr's, from a Local Source's PLINK Reference", {
+  skip_if_no_local_plink()
+  src <- example_local(plink = TRUE)
+  x <- local_mr_dat(src)
   out <- suppressMessages(ld_for_mr_input(x, pop = NULL, bfile = NULL, plink_bin = NULL, src = src))
-  expect_false(anyNA(out$ld))
-  expect_equal(nrow(out$ld), nrow(out$x))
-  expect_equal(sub("_.*", "", rownames(out$ld)), out$x$SNP)
+  m <- unclass(suppressMessages(opengwasr::og_ld_matrix(src, x$SNP)))
+  attr(m, "og_provenance") <- NULL
+  parts <- do.call(rbind, strsplit(rownames(m), "_", fixed = TRUE))
+  at <- match(out$x$SNP, parts[, 1])
+  want <- m[at, at]
+  dimnames(want) <- list(out$x$SNP, out$x$SNP)
+  expect_equal(out$ld, want)
+  # The data are aligned to the reference's first allele, to which r refers.
+  expect_equal(out$x$effect_allele.exposure, parts[at, 2])
+})
+
+test_that("dat_to_MRInput() takes the PLINK path for a Local Source's PLINK Reference: no fill, NA kept", {
+  skip_if_no_local_plink()
+  src <- example_local(plink = TRUE)
+  x <- local_mr_dat(src)
+  real <- opengwasr::og_ld_matrix
+  asked <- NULL
+  testthat::local_mocked_bindings(
+    og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
+      asked <<- fill_below_t_far
+      m <- suppressMessages(real(src, variants, ld = ld))
+      m[1, 2] <- m[2, 1] <- NA
+      m
+    },
+    .package = "opengwasr"
+  )
+  expect_no_message(
+    out <- ld_for_mr_input(x, pop = NULL, bfile = NULL, plink_bin = NULL, src = src),
+    message = "set to 0"
+  )
+  expect_false(asked)
+  expect_equal(sum(is.na(out$ld)), 2)
 })
 
 # --- Seam 4: legacy ids ---------------------------------------------------------------------------
 
 test_that("a legacy id on a Local Source is refused by opengwasr, never translated through the API", {
-  skip_if_no_local_plink()
-  for (src in list(example_local(), example_local(plink = TRUE))) {
-    # Refused before anything about clumping is checked.
-    expect_error(
-      extract_instruments("ukb-b-19953", src = src),
-      class = "opengwasr_legacy_id_local"
-    )
-    expect_error(
-      extract_outcome_data("rs1004", "ebi-a-GCST003116", src = src),
-      class = "opengwasr_legacy_id_local"
-    )
-    expect_error(
-      mv_extract_exposures(c(bmi_local, "ukb-b-19953"), src = src),
-      class = "opengwasr_legacy_id_local"
-    )
-  }
+  skip_if_no_local()
+  src <- example_local()
+  # Refused before anything about clumping is checked.
+  expect_error(
+    extract_instruments("ukb-b-19953", src = src),
+    class = "opengwasr_legacy_id_local"
+  )
+  expect_error(
+    extract_outcome_data("rs1004", "ebi-a-GCST003116", src = src),
+    class = "opengwasr_legacy_id_local"
+  )
+  expect_error(
+    mv_extract_exposures(c(bmi_local, "ukb-b-19953"), src = src),
+    class = "opengwasr_legacy_id_local"
+  )
   # A bare number is the legacy `ieu-a-` id it always meant, which the refusal names.
-  e <- tryCatch(extract_instruments(2, src = example_local()), error = identity)
+  e <- tryCatch(extract_instruments(2, src = src), error = identity)
   expect_s3_class(e, "opengwasr_legacy_id_local")
   expect_equal(e$ids, "ieu-a-2")
   # Next to a canonical id, too: it is refused, not left out with a warning.
   expect_error(
-    extract_instruments(c(bmi_local, "ukb-b-19953"), src = example_local(), clump = 0),
+    extract_instruments(c(bmi_local, "ukb-b-19953"), src = src, clump = 0),
+    class = "opengwasr_legacy_id_local"
+  )
+})
+
+test_that("a legacy id is refused before the PLINK settings are checked", {
+  skip_if_no_local_plink()
+  src <- example_local(plink = TRUE)
+  expect_error(
+    extract_instruments("ukb-b-19953", src = src),
+    class = "opengwasr_legacy_id_local"
+  )
+  expect_error(
+    mv_extract_exposures(c(bmi_local, "ukb-b-19953"), src = src),
     class = "opengwasr_legacy_id_local"
   )
 })

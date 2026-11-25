@@ -31,8 +31,13 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
   state$calls <- list()
   note <- function(fn, args) state$calls[[length(state$calls) + 1]] <- list(fn = fn, args = args)
 
+  real_ld_resource <- opengwasr::og_ld_resource
   testthat::local_mocked_bindings(
     og_api = function(...) structure(list(), class = "fake_source"),
+    # The fake Source carries no LD resource; a real one (made before this) answers for itself.
+    og_ld_resource = function(src) {
+      if (inherits(src, c("og_api_source", "og_local_source"))) real_ld_resource(src) else NULL
+    },
     og_tophits = function(
       src,
       analyses,
@@ -258,9 +263,7 @@ api_source <- function(ld_store = NULL) {
   )
 }
 
-# The LD that opengwasr uses for a call given `src` and `ld`: the call's `ld`, else the Source's LD
-# resource, else (NULL) each Analysis's Assigned Ancestry. Asked of opengwasr's own internal
-# ld_resource(), so the tests check what opengwasr would do with what TwoSampleMR sends.
-ld_used <- function(src, ld) {
-  utils::getFromNamespace("ld_resource", "opengwasr")(src, ld)$ld
-}
+# The LD that opengwasr uses for a call given `src` and `ld` (ADR 0006): the call's `ld`, else the
+# Source's LD resource as opengwasr::og_ld_resource() reports it, else (NULL) each Analysis's
+# Assigned Ancestry.
+ld_used <- function(src, ld) ld %||% opengwasr::og_ld_resource(src)

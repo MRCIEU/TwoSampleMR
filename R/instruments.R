@@ -12,9 +12,10 @@
 #'   (`"sd"` or `"log_or"`). Estimates from [mr()] then are per SD of the exposure.
 #' * `SNP` is the rsID, or the ALID (`chromosome:position:effect allele:other allele`, on GRCh38) of a
 #'   variant that has no rsID.
-#' * Clumping runs on the OpenGWAS server, in the LD Store matching each Analysis's assigned
-#'   ancestry, and at that LD Store's own thresholds unless you set `r2` and `kb`. The LD Store used
-#'   and the thresholds applied are in `clump_ld.exposure`, `clump_ld_choice.exposure`,
+#' * Clumping uses the Source's LD resource (`opengwasr::og_api(ld_store = )`, or a Local Source's
+#'   PLINK Reference; see below), or, on a plain [opengwasr::og_api()], the LD Store matching each
+#'   Analysis's Assigned Ancestry. An LD Store clumps at its own thresholds unless you set `r2` and
+#'   `kb`. The LD used and the thresholds applied are in `clump_ld.exposure`, `clump_ld_choice.exposure`,
 #'   `clump_r2.exposure` and `clump_kb.exposure`. TwoSampleMR's old thresholds, `r2 = 0.001` within
 #'   `kb = 10000`, are refused by the LD Stores, so they are not the default.
 #' * `association_status.exposure` says whether each Association was observed in the study or
@@ -35,7 +36,7 @@
 #' @param r2 Clumping r2 cut off. The default, `NULL`, is the LD Store's own threshold (about `0.03`). Required with a PLINK Reference (a Local Source's `bfile`).
 #' @param kb Clumping distance cutoff. The default, `NULL`, is the LD Store's own window (`10000`). Required with a PLINK Reference (a Local Source's `bfile`).
 #' @param opengwas_jwt Deprecated and ignored. Credentials come from `src`: [opengwasr::og_api()] reads `OPENGWAS_JWT`.
-#' @param force_server Deprecated and ignored. Clumping always runs on the server.
+#' @param force_server Deprecated and ignored. Clumping uses the Source's LD resource, or on a plain [opengwasr::og_api()] the LD Store matching each Analysis's Assigned Ancestry.
 #' @param src A Source from opengwasr: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], which reads Store Releases you have downloaded. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
@@ -59,7 +60,8 @@ extract_instruments <- function(
   if (!missing(force_server)) {
     deprecated_argument_message(paste0(
       "`force_server` is no longer used by `extract_instruments()` and is ignored. ",
-      "Clumping always runs on the OpenGWAS server."
+      "Clumping uses the Source's LD resource, or on a plain `og_api()` the LD Store matching ",
+      "each Analysis's Assigned Ancestry."
     ))
   }
 

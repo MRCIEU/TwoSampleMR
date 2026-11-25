@@ -374,24 +374,47 @@ test_that("a mix of Analyses and own data says which ids have no Analysis", {
   expect_error(clump_data(dat), "mine", class = "twosamplemr_ld_needs_pop")
 })
 
-test_that("the PLINK path through dat_to_MRInput() is not filled, the LD Store path is", {
-  skip_without_plink()
-  local_no_credentials()
+plink_mr_dat <- function() {
   x <- plink_dat()
   x$beta.exposure <- 0.1
+  x$se.exposure <- 0.01
   x$beta.outcome <- 0.1
   x$se.outcome <- 0.01
   x$exposure <- "e"
   x$outcome <- "o"
-  out <- suppressMessages(ld_for_mr_input(
-    x,
-    pop = "EUR",
-    bfile = plink_ref_path(),
-    plink_bin = NULL,
-    src = NULL
-  ))
+  x$id.outcome <- "o"
+  x$mr_keep <- TRUE
+  x
+}
+
+test_that("PLINK LD with bfile needs no credentials: the default Source is never made", {
+  skip_without_plink()
+  local_no_credentials()
+  x <- plink_mr_dat()
+  # As users call them: `src` defaults to TwoSampleMR's Source, which needs credentials.
+  matrix_with_default_source <- function(src = twosamplemr_source()) {
+    ld_matrix(x$SNP, bfile = plink_ref_path(), src = src)
+  }
+  mr_input_with_default_source <- function(src = twosamplemr_source()) {
+    ld_for_mr_input(x, pop = NULL, bfile = plink_ref_path(), plink_bin = NULL, src = src)
+  }
+  m <- suppressMessages(matrix_with_default_source())
+  expect_equal(sub("_.*", "", rownames(m)), x$SNP)
+  out <- suppressMessages(mr_input_with_default_source())
   expect_false(anyNA(out$ld))
   expect_equal(rownames(out$ld), x$SNP)
+})
+
+test_that("dat_to_MRInput(get_correlations = TRUE, bfile =) needs no credentials", {
+  skip_without_plink()
+  skip_if_not_installed("MendelianRandomization")
+  local_no_credentials()
+  out <- suppressMessages(dat_to_MRInput(
+    plink_mr_dat(),
+    get_correlations = TRUE,
+    bfile = plink_ref_path()
+  ))
+  expect_length(out, 1)
 })
 
 test_that("the LD Store path through dat_to_MRInput() asks for fill_below_t_far and zeros the rest", {
