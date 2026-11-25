@@ -19,7 +19,7 @@ ld_matrix(
 
 \item{with_alleles}{Deprecated and ignored: the names carry the alleles.}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, is the European LD Store on the API Source, and the Source's own LD resource on a Local Source (see Details). \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else the European LD Store on the API Source (see Details). \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
 
 \item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to use instead of an LD Store. Default = \code{NULL}}
 

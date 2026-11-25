@@ -80,7 +80,7 @@ mv_extract_exposures_local(
 
 \item{clump_kb}{Clumping window in kb. The default, \code{NULL}, is the LD Store's own (or \code{10000} with \code{bfile}).}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}) or LD Store id to clump in. The default, \code{NULL}, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need \code{pop} or \code{bfile})}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}) or LD Store id to clump in. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need \code{pop} or \code{bfile})}
 
 \item{harmonise_strictness}{See action argument in \code{\link[=harmonise_data]{harmonise_data()}}. Default=\code{2}}
 

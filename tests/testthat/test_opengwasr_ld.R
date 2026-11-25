@@ -70,6 +70,63 @@ test_that("data whose ids name no Analysis are refused, asking for pop or bfile;
   expect_equal(ld$calls[[2]]$ld, "hgdp1kgp-v2-AFR-k10")
 })
 
+test_that("the API Source's own LD Store is used by ld_matrix() without pop; plain og_api() uses EUR; pop wins", {
+  afr <- api_source(ld_store = "AFR")
+  plain <- api_source()
+  ld <- local_fake_ld()
+  alids <- c("16:53767042:C:T", "2:24913997:A:T")
+
+  ld_matrix(alids, src = afr)
+  expect_null(ld$calls[[1]]$ld)
+  expect_equal(ld_used(ld$calls[[1]]$src, ld$calls[[1]]$ld), "AFR")
+
+  ld_matrix(alids, src = plain)
+  expect_equal(ld$calls[[2]]$ld, "EUR")
+  expect_equal(ld_used(ld$calls[[2]]$src, ld$calls[[2]]$ld), "EUR")
+
+  ld_matrix(alids, pop = "SAS", src = afr)
+  expect_equal(ld_used(ld$calls[[3]]$src, ld$calls[[3]]$ld), "SAS")
+})
+
+test_that("dat_to_MRInput()'s LD matrix comes from the API Source's own LD Store without pop", {
+  afr <- api_source(ld_store = "AFR")
+  local_fake_opengwasr()
+  dat <- bmi_dat()[1:3, ]
+  used <- character()
+  testthat::local_mocked_bindings(
+    og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
+      used <<- c(used, ld_used(src, ld))
+      v <- alid_of(dat$SNP)
+      m <- diag(3)
+      dimnames(m) <- list(v, v)
+      structure(m, class = c("og_ld_matrix", "matrix", "array"))
+    },
+    .package = "opengwasr"
+  )
+  suppressMessages(ld_for_mr_input(dat, pop = NULL, bfile = NULL, plink_bin = NULL, src = afr))
+  suppressMessages(ld_for_mr_input(dat, pop = "EAS", bfile = NULL, plink_bin = NULL, src = afr))
+  expect_equal(used, c("AFR", "EAS"))
+})
+
+test_that("clump_data() on own data uses the API Source's own LD Store without pop, and refuses as before without one", {
+  afr <- api_source(ld_store = "AFR")
+  plain <- api_source()
+  local_fake_opengwasr()
+  ld <- local_fake_ld()
+  dat <- bmi_dat()
+  dat$id.exposure <- "from-a-file"
+
+  clump_data(dat, src = afr)
+  expect_null(ld$calls[[1]]$ld)
+  expect_equal(ld_used(ld$calls[[1]]$src, ld$calls[[1]]$ld), "AFR")
+
+  expect_error(clump_data(dat, src = plain), class = "twosamplemr_ld_needs_pop")
+  expect_length(ld$calls, 1)
+
+  clump_data(dat, pop = "EUR", src = afr)
+  expect_equal(ld_used(ld$calls[[2]]$src, ld$calls[[2]]$ld), "EUR")
+})
+
 test_that("read_exposure_data(clump = TRUE) on a file refuses without pop", {
   local_fake_opengwasr()
   local_fake_ld()

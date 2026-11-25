@@ -24,7 +24,7 @@ clump_data(
 
 \item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}: variants with a larger p-value are left out.}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
 
 \item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to clump with locally instead of an LD Store. Default = \code{NULL}}
 
@@ -46,7 +46,7 @@ By default the LD Store that matches the Assigned Ancestry of the Analyses in \c
 0.03 within 10,000 kb). They are sent only when you set them: LD Stores refuse r2 = 0.001
 within 10,000 kb, so scripts that pass those old defaults now get opengwasr's refusal. If the Analyses
 differ in ancestry, or one is Unassigned, opengwasr refuses unless you choose the LD with \code{pop}.
-Data that do not come from OpenGWAS (whose \code{id.exposure} names no Analysis) have no Assigned Ancestry, so they are refused (error class \code{twosamplemr_ld_needs_pop}) unless you give \code{pop} or \code{bfile}: add \code{pop = "EUR"} to an old script.
+Data that do not come from OpenGWAS (whose \code{id.exposure} names no Analysis) have no Assigned Ancestry, so they are refused (error class \code{twosamplemr_ld_needs_pop}) unless you give \code{pop} or \code{bfile}, or the Source carries an LD resource of its own: add \code{pop = "EUR"} to an old script.
 
 Variants are ranked by their p-value (as a |z| score). Each variant is given an ALID
 (\code{chromosome:position:allele:allele}, GRCh38, see \code{\link[opengwasr:og_alid]{opengwasr::og_alid()}}): its \code{SNP}, if that is

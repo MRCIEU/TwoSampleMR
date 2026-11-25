@@ -18,7 +18,7 @@ dat_to_MRInput(
 
 \item{get_correlations}{Default \code{FALSE}. If \code{TRUE} then extract the LD matrix for the SNPs from an OpenGWAS LD Store with \code{\link[=ld_matrix]{ld_matrix()}}. From an LD Store, pairs below its Far Threshold are 0, and pairs it cannot measure (other chromosomes, beyond its far window) are set to 0 too, treated as independent, with a message giving how many.}
 
-\item{pop}{If \code{get_correlations} is \code{TRUE} then the ancestry (or LD Store id) of the LD Store to use. The default, \code{NULL}, is the European LD Store on the API Source, and the Source's own LD resource on a Local Source (see \code{\link[=ld_matrix]{ld_matrix()}}).}
+\item{pop}{If \code{get_correlations} is \code{TRUE} then the ancestry (or LD Store id) of the LD Store to use. The default, \code{NULL}, is the Source's own LD resource if it carries one, else the European LD Store on the API Source (see \code{\link[=ld_matrix]{ld_matrix()}}).}
 
 \item{bfile}{If \code{get_correlations} is \code{TRUE}, the prefix of a PLINK fileset to use as the LD reference instead of an LD Store. Default = \code{NULL}}
 

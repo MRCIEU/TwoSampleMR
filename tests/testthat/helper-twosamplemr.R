@@ -153,6 +153,8 @@ local_fake_ld <- function(keep = NULL, env = parent.frame()) {
     og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
       state$calls[[length(state$calls) + 1]] <- list(
         fn = "og_ld_matrix",
+        # TwoSampleMR's default Source needs credentials, which these tests don't have.
+        src = tryCatch(src, opengwasr_auth = function(e) NULL),
         variants = variants,
         ld = ld,
         fill = fill_below_t_far
@@ -244,3 +246,21 @@ example_local <- local({
     opened[[key]]
   }
 })
+
+# --- The Source's LD resource (ADR 0006) ------------------------------------------------------------
+
+# A real API Source, made with placeholder credentials: making one calls nothing. Make it before
+# local_fake_opengwasr(), which replaces og_api().
+api_source <- function(ld_store = NULL) {
+  withr::with_envvar(
+    c(OPENGWAS_URL = "https://api.opengwas.invalid", OPENGWAS_DEV_KEY = "test-key"),
+    opengwasr::og_api(ld_store = ld_store)
+  )
+}
+
+# The LD that opengwasr uses for a call given `src` and `ld`: the call's `ld`, else the Source's LD
+# resource, else (NULL) each Analysis's Assigned Ancestry. Asked of opengwasr's own internal
+# ld_resource(), so the tests check what opengwasr would do with what TwoSampleMR sends.
+ld_used <- function(src, ld) {
+  utils::getFromNamespace("ld_resource", "opengwasr")(src, ld)$ld
+}

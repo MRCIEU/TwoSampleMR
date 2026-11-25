@@ -359,6 +359,18 @@ opengwasr_metadata <- function(src, id, what, cols) {
 # was given, if any.
 is_local_source <- function(src) inherits(src, "og_local_source")
 
+# The LD resource a Source carries (ADR 0006): an LD Store name or ancestry code from
+# `og_api(ld_store = )`, a PLINK Reference from `og_local(bfile = )`, or NULL. opengwasr exports no
+# way to ask this, so it is read from the `ld` field of the Source, the one its own internal
+# ld_resource() reads; this is the only place TwoSampleMR reads it.
+source_ld_resource <- function(src) {
+  if (inherits(src, c("og_api_source", "og_local_source"))) src[["ld"]] else NULL
+}
+
+# Whether `ld = NULL` means the Source's own LD resource: it carries one, or it is a Local Source,
+# where opengwasr then refuses for want of one.
+defers_to_source_ld <- function(src) is_local_source(src) || !is.null(source_ld_resource(src))
+
 # A Source that names TwoSampleMR as its caller in the user agent.
 twosamplemr_source <- function() {
   opengwasr::og_api(caller = paste0("TwoSampleMR/", utils::packageVersion("TwoSampleMR")))
@@ -373,15 +385,17 @@ rsid_pattern <- "^rs[0-9]+$"
 # else NULL, which makes opengwasr match the Assigned Ancestry of the Analyses in the data. Data
 # whose ids name no Analysis (from a file, say) have none to match, so they are refused.
 #
-# On a Local Source, NULL is its own LD resource (ADR 0006): opengwasr clumps or reads the matrix
-# with it, or refuses (`opengwasr_ld_resource_required`) when it has none. A `pop` there names an LD
-# Store, which a Local Source never reads, and opengwasr refuses that too. `local` is given by a caller
-# that knows the default Source is not one, so that the default is made only when it is needed.
-ld_choice <- function(src, pop, bfile, plink_bin, ids, local = is_local_source(src)) {
+# A Source's own LD resource wins over all that (ADR 0006): without `pop`, a Source that carries
+# one (`og_api(ld_store = )`, `og_local(bfile = )`) is given NULL, and opengwasr uses its resource.
+# A Local Source is given NULL even with none, so that opengwasr refuses it
+# (`opengwasr_ld_resource_required`). A `pop` still wins; on a Local Source it names an LD Store,
+# which a Local Source never reads, and opengwasr refuses that too. `own_ld` is given by a caller
+# that knows the default Source carries none, so that the default is made only when it is needed.
+ld_choice <- function(src, pop, bfile, plink_bin, ids, own_ld = defers_to_source_ld(src)) {
   if (!is.null(bfile)) {
     return(opengwasr::og_plink_reference(bfile, plink_bin))
   }
-  if (is.null(pop) && local) {
+  if (is.null(pop) && own_ld) {
     return(NULL)
   }
   if (identical(pop, "legacy")) {
