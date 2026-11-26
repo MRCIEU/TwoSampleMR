@@ -223,6 +223,11 @@ test_that("clump_data() on a Local Source clumps with its PLINK Reference, as og
   expect_setequal(got$SNP, unique(leads$rsid))
   expect_equal(unique(got$clump_ld.exposure), unique(leads$clump_ld))
   expect_equal(unique(got$clump_r2.exposure), 0.001)
+  # A Local Source holds no LD Stores, so `pop` is refused, as opengwasr refuses it.
+  expect_error(
+    clump_data(dat, clump_r2 = 0.001, clump_kb = 10000, pop = "EUR", src = src),
+    class = "opengwasr_local_unsupported"
+  )
 })
 
 test_that("ld_matrix() on a Local Source reads its PLINK Reference by default; an LD Store is refused", {
@@ -315,9 +320,9 @@ test_that("dat_to_MRInput() takes the PLINK path for a Local Source's PLINK Refe
   real <- opengwasr::og_ld_matrix
   asked <- NULL
   testthat::local_mocked_bindings(
-    og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
+    og_ld_matrix = function(src, variants, fill_below_t_far = FALSE) {
       asked <<- fill_below_t_far
-      m <- suppressMessages(real(src, variants, ld = ld))
+      m <- suppressMessages(real(src, variants))
       m[1, 2] <- m[2, 1] <- NA
       m
     },

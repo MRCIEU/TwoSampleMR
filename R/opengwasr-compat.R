@@ -359,19 +359,10 @@ opengwasr_metadata <- function(src, id, what, cols) {
 # was given, if any.
 is_local_source <- function(src) inherits(src, "og_local_source")
 
-# Whether `ld = NULL` means the Source's own LD resource (ADR 0006): it carries one
-# (`opengwasr::og_ld_resource()`), or it is a Local Source, which opengwasr then refuses for want of
-# one (`opengwasr_ld_resource_required`). The class check stays because `og_ld_resource()` is NULL
-# both for a plain `og_api()`, which keeps TwoSampleMR's defaults, and for a Local Source with none.
-defers_to_source_ld <- function(src) {
-  is_local_source(src) || !is.null(opengwasr::og_ld_resource(src))
-}
-
-# Whether the LD that answers is a PLINK Reference: `bfile`, else (without `pop`) the Source's own.
-# `src` is read only when neither is given, so `bfile` never makes the default Source.
-ld_is_plink <- function(src, pop, bfile) {
-  !is.null(bfile) ||
-    (is.null(pop) && inherits(opengwasr::og_ld_resource(src), "og_plink_reference"))
+# Whether the LD Source's LD resource is a PLINK Reference (`og_local(bfile = )`), which holds
+# every pair and has no thresholds of its own.
+is_plink_source <- function(ld_src) {
+  inherits(opengwasr::og_ld_resource(ld_src), "og_plink_reference")
 }
 
 # A Source that names TwoSampleMR as its caller in the user agent.
@@ -384,33 +375,37 @@ rsid_pattern <- "^rs[0-9]+$"
 
 # --- LD -------------------------------------------------------------------------------------------
 
-# The `ld` that opengwasr is given: a PLINK Reference if `bfile` is, else the ancestry named by `pop`,
-# else NULL, which makes opengwasr match the Assigned Ancestry of the Analyses in the data. Data
-# whose ids name no Analysis (from a file, say) have none to match, so they are refused.
-#
-# A Source's own LD resource wins over all that (ADR 0006): without `pop`, a Source that carries
-# one (`og_api(ld_store = )`, `og_local(bfile = )`) is given NULL, and opengwasr uses its resource.
-# A Local Source is given NULL even with none, so that opengwasr refuses it
-# (`opengwasr_ld_resource_required`). A `pop` still wins; on a Local Source it names an LD Store,
-# which a Local Source never reads, and opengwasr refuses that too. `own_ld` is read only after
-# `bfile` and `pop`, so a call with either never makes the default Source; a caller that knows the
-# default Source carries no LD resource says so lazily.
-ld_choice <- function(src, pop, bfile, plink_bin, ids, own_ld = defers_to_source_ld(src)) {
+# The Source that answers LD for a call (ADR 0006 of opengwasr: LD is chosen on the Source, and
+# only there):
+# - `bfile`: an LD-only Local Source on that PLINK fileset, `og_local(bfile = , plink = )`. PLINK
+#   needs no API, so `src` is never read, and a call with `bfile` never makes the default Source.
+# - `pop`: `src` with that LD Store, `og_api(inherit = src, ld_store = pop)`, which keeps the user's
+#   URL and key. A Local Source holds no LD Stores: `og_local(inherit = src, ld_store = pop)`, which
+#   opengwasr refuses (`opengwasr_local_unsupported`).
+# - neither: `src` itself if it carries an LD resource (`og_api(ld_store = )`, `og_local(bfile = )`),
+#   or is a Local Source, which opengwasr refuses for want of one. A plain API Source gives the
+#   European LD Store for an LD matrix (`ids = NULL`), and for clumping is `src` itself, so that
+#   opengwasr matches the Assigned Ancestry of the Analyses `ids` name; data whose ids name no
+#   Analysis (from a file, say) have none to match, so they are refused.
+ld_source <- function(src, pop, bfile, plink_bin, ids) {
   if (!is.null(bfile)) {
-    return(opengwasr::og_plink_reference(bfile, plink_bin))
-  }
-  if (is.null(pop) && own_ld) {
-    return(NULL)
+    return(opengwasr::og_local(bfile = bfile, plink = plink_bin))
   }
   if (identical(pop, "legacy")) {
     deprecated_argument_message(paste0(
       "`pop = \"legacy\"` is not available: the old EUR panel with a different set of markers is ",
       "gone. The European LD Store is used."
     ))
-    return("EUR")
+    pop <- "EUR"
+  }
+  if (is_local_source(src)) {
+    return(if (is.null(pop)) src else opengwasr::og_local(inherit = src, ld_store = pop))
+  }
+  if (is.null(pop) && !is.null(opengwasr::og_ld_resource(src))) {
+    return(src)
   }
   if (!is.null(pop) || is.null(ids)) {
-    return(pop %||% "EUR")
+    return(opengwasr::og_api(inherit = src, ld_store = pop %||% "EUR"))
   }
   unknown <- tryCatch(
     {
@@ -420,7 +415,7 @@ ld_choice <- function(src, pop, bfile, plink_bin, ids, own_ld = defers_to_source
     opengwasr_analysis_not_found = function(e) e$ids
   )
   if (length(unknown) == 0) {
-    return(NULL)
+    return(src)
   }
   stop(structure(
     class = c("twosamplemr_ld_needs_pop", "error", "condition"),
@@ -488,26 +483,26 @@ dat_alids <- function(dat, src, type = "exposure") {
   alid
 }
 
-# `dat` clumped by opengwasr: the rows of its index variants, with the clumping provenance columns.
-# With a PLINK Reference variants are matched by rsID, so no ALID is needed and nothing is asked of
-# the API (`src = NULL`): each row gets a placeholder ALID, which only keys the row, and its `SNP` is
-# its rsID. Variants the reference lacks are dropped by opengwasr, with its count message.
-opengwasr_clump <- function(src, dat, pval_column, p1, ld, r2, kb) {
-  plink <- inherits(ld, "og_plink_reference")
-  if (plink) {
+# `dat` clumped by opengwasr with the LD Source `ld_src` (ld_source()): the rows of its index
+# variants, with the clumping provenance columns. With `bfile` (`by_rsid`), the LD-only Local Source
+# matches variants to its PLINK Reference by rsID, so no ALID is needed and nothing is asked of the
+# API: each row gets a placeholder ALID, which only keys the row, and its `SNP` is its rsID. Variants
+# the reference lacks are dropped by opengwasr, with its count message.
+opengwasr_clump <- function(ld_src, dat, pval_column, p1, r2, kb, by_rsid) {
+  if (by_rsid) {
     # A PLINK Reference has no thresholds of its own to take.
     r2 <- r2 %||% 0.001
     kb <- kb %||% 10000
   }
   p <- as.numeric(dat[[pval_column]])
   p[is.na(p)] <- 1
-  if (plink) {
+  if (by_rsid) {
     alid <- paste0("1:", seq_len(nrow(dat)), ":A:C")
   } else {
-    alid <- dat_alids(dat, src)
+    alid <- dat_alids(dat, ld_src)
   }
   usable <- !is.na(alid) & p <= p1
-  if (!plink && any(is.na(alid))) {
+  if (!by_rsid && any(is.na(alid))) {
     message(
       sum(is.na(alid)),
       " variant(s) could not be given an ALID (they need a `SNP` that is an rsID or an ALID, ",
@@ -523,12 +518,11 @@ opengwasr_clump <- function(src, dat, pval_column, p1, ld, r2, kb) {
     row = which(usable),
     stringsAsFactors = FALSE
   )
-  if (plink) {
+  if (by_rsid) {
     rsid <- as.character(dat$SNP[usable])
     d$rsid <- ifelse(grepl(rsid_pattern, rsid, ignore.case = TRUE), rsid, NA_character_)
-    src <- NULL
   }
-  out <- opengwasr::og_clump(src, d, ld = ld, r2 = r2, kb = kb)
+  out <- opengwasr::og_clump(ld_src, d, r2 = r2, kb = kb)
   index <- unique(out$row)
   clumped <- dat[index, , drop = FALSE]
   for (column in c("clump_ld", "clump_ld_choice", "clump_r2", "clump_kb")) {
@@ -537,12 +531,9 @@ opengwasr_clump <- function(src, dat, pval_column, p1, ld, r2, kb) {
   clumped
 }
 
-# The LD matrix of `snps`, from an LD Store or, with a PLINK Reference, with no Source.
-opengwasr_ld_matrix <- function(src, snps, ld, fill_below_t_far) {
-  if (inherits(ld, "og_plink_reference")) {
-    src <- NULL
-  }
-  m <- opengwasr::og_ld_matrix(src, snps, ld = ld, fill_below_t_far = fill_below_t_far)
+# The LD matrix of `snps` from the LD Source `ld_src` (ld_source()), as a plain matrix.
+opengwasr_ld_matrix <- function(ld_src, snps, fill_below_t_far) {
+  m <- opengwasr::og_ld_matrix(ld_src, snps, fill_below_t_far = fill_below_t_far)
   # A plain matrix, as before: opengwasr's provenance and class are left behind.
   m <- unclass(m)
   attr(m, "og_provenance") <- NULL

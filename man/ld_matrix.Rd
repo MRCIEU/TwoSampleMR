@@ -19,7 +19,7 @@ ld_matrix(
 
 \item{with_alleles}{Deprecated and ignored: the names carry the alleles.}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else the European LD Store on the API Source (see Details). \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use, through \code{opengwasr::og_api(inherit = src, ld_store = pop)}, which keeps your Source's URL and key. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else the European LD Store on the API Source (see Details). \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
 
 \item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to use instead of an LD Store. Default = \code{NULL}}
 
@@ -35,7 +35,8 @@ Matrix of LD r values
 \description{
 This function takes a list of SNPs and returns the matrix of LD r values (signed, and not
 squared) between every pair, read from an OpenGWAS LD Store (\code{\link[opengwasr:og_ld_matrix]{opengwasr::og_ld_matrix()}}), or
-computed by PLINK from your own reference with \code{bfile}.
+computed by PLINK from your own reference with \code{bfile} (the Source
+\code{opengwasr::og_local(bfile = bfile, plink = plink_bin)}, which needs no API and no credentials).
 }
 \details{
 The matrix is named by ALID (\code{chromosome:position:allele:allele}, GRCh38) from an LD Store, and

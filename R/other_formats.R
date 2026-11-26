@@ -361,15 +361,9 @@ name_ld_by_snp <- function(x, ld, src) {
 # own) is complete already, and is left as it is.
 ld_for_mr_input <- function(x, pop, bfile, plink_bin, src) {
   message(" - obtaining LD matrix")
-  plink <- ld_is_plink(src, pop, bfile)
-  ld <- ld_matrix(
-    unique(x$SNP),
-    pop = pop,
-    bfile = bfile,
-    plink_bin = plink_bin,
-    fill_below_t_far = !plink,
-    src = src
-  )
+  ld_src <- ld_source(src, pop, bfile, plink_bin, ids = NULL)
+  plink <- is_plink_source(ld_src)
+  ld <- opengwasr_ld_matrix(ld_src, unique(x$SNP), fill_below_t_far = !plink)
   out <- harmonise_ld_dat(x, ld, src)
   if (is.null(out)) {
     return(NULL)

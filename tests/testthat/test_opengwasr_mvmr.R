@@ -15,7 +15,6 @@ local_fake_two_exposures <- function(env = parent.frame()) {
       limit = 1000,
       observed_only = FALSE,
       clump = TRUE,
-      ld = NULL,
       r2 = NULL,
       kb = NULL,
       original_units = FALSE,

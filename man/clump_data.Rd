@@ -24,7 +24,7 @@ clump_data(
 
 \item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}: variants with a larger p-value are left out.}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use, through \code{opengwasr::og_api(inherit = src, ld_store = pop)}, which keeps your Source's URL and key. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
 
 \item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to clump with locally instead of an LD Store. Default = \code{NULL}}
 
@@ -55,8 +55,9 @@ alleles; else looked up from its rsID (see \code{\link[opengwasr:og_variants_rsi
 or that the LD Store does not hold, cannot be clumped and are left out of the result
 (opengwasr warns about the latter).
 
-With \code{bfile}, PLINK clumps on your machine using your own reference (\code{\link[opengwasr:og_plink_reference]{opengwasr::og_plink_reference()}}),
-matching variants by rsID. There the thresholds have no defaults to take, so \code{clump_r2 = 0.001} and
+With \code{bfile}, PLINK clumps on your machine using your own reference, as the Source
+\code{opengwasr::og_local(bfile = bfile, plink = plink_bin)} (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}), matching variants
+by rsID; it needs no API and no credentials. There the thresholds have no defaults to take, so \code{clump_r2 = 0.001} and
 \code{clump_kb = 10000} (TwoSampleMR's old defaults) are used unless you set them.
 
 On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) the default is the Source's own LD resource: PLINK

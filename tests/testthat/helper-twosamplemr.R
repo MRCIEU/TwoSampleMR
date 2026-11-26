@@ -31,13 +31,9 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
   state$calls <- list()
   note <- function(fn, args) state$calls[[length(state$calls) + 1]] <- list(fn = fn, args = args)
 
-  real_ld_resource <- opengwasr::og_ld_resource
   testthat::local_mocked_bindings(
-    og_api = function(...) structure(list(), class = "fake_source"),
-    # The fake Source carries no LD resource; a real one (made before this) answers for itself.
-    og_ld_resource = function(src) {
-      if (inherits(src, c("og_api_source", "og_local_source"))) real_ld_resource(src) else NULL
-    },
+    og_api = fake_og_api,
+    og_ld_resource = fake_og_ld_resource,
     og_tophits = function(
       src,
       analyses,
@@ -45,7 +41,6 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
       limit = 1000,
       observed_only = FALSE,
       clump = TRUE,
-      ld = NULL,
       r2 = NULL,
       kb = NULL,
       original_units = FALSE,
@@ -59,7 +54,6 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
           threshold = threshold,
           limit = limit,
           clump = clump,
-          ld = ld,
           r2 = r2,
           kb = kb
         )
@@ -122,6 +116,21 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
   state
 }
 
+# What local_fake_opengwasr() puts in place of og_api(): a fake Source, which records its LD Store
+# and the Source it inherits from (a real one, made before, or a fake one). As opengwasr's, an
+# inherited Source's LD Store is kept unless `ld_store` is given.
+fake_og_api <- function(..., ld_store = NULL, inherit = NULL) {
+  if (missing(ld_store) && !is.null(inherit)) {
+    ld_store <- opengwasr::og_ld_resource(inherit)
+  }
+  structure(list(ld = ld_store, inherit = inherit), class = "fake_source")
+}
+
+real_og_ld_resource <- opengwasr::og_ld_resource
+fake_og_ld_resource <- function(src) {
+  if (inherits(src, "fake_source")) src$ld else real_og_ld_resource(src)
+}
+
 calls_to <- function(state, fn) Filter(function(x) x$fn == fn, state$calls)
 
 # What og_clump() answers: the rows of `data` named in `keep` (by row of the data it is given, so
@@ -131,12 +140,11 @@ local_fake_ld <- function(keep = NULL, env = parent.frame()) {
   state <- new.env()
   state$calls <- list()
   testthat::local_mocked_bindings(
-    og_clump = function(src, data, ld = NULL, r2 = NULL, kb = NULL) {
+    og_clump = function(src, data, r2 = NULL, kb = NULL) {
       state$calls[[length(state$calls) + 1]] <- list(
         fn = "og_clump",
         src = src,
         data = data,
-        ld = ld,
         r2 = r2,
         kb = kb
       )
@@ -155,13 +163,11 @@ local_fake_ld <- function(keep = NULL, env = parent.frame()) {
       out$clump_size <- 2L
       out
     },
-    og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
+    og_ld_matrix = function(src, variants, fill_below_t_far = FALSE) {
       state$calls[[length(state$calls) + 1]] <- list(
         fn = "og_ld_matrix",
-        # TwoSampleMR's default Source needs credentials, which these tests don't have.
-        src = tryCatch(src, opengwasr_auth = function(e) NULL),
+        src = src,
         variants = variants,
-        ld = ld,
         fill = fill_below_t_far
       )
       m <- diag(length(variants))
@@ -263,7 +269,6 @@ api_source <- function(ld_store = NULL) {
   )
 }
 
-# The LD that opengwasr uses for a call given `src` and `ld` (ADR 0006): the call's `ld`, else the
-# Source's LD resource as opengwasr::og_ld_resource() reports it, else (NULL) each Analysis's
-# Assigned Ancestry.
-ld_used <- function(src, ld) ld %||% opengwasr::og_ld_resource(src)
+# The LD that opengwasr uses for a call given the Source `src` (ADR 0006): the Source's LD resource
+# as opengwasr::og_ld_resource() reports it, else (NULL) each Analysis's Assigned Ancestry.
+ld_used <- function(src) opengwasr::og_ld_resource(src)
