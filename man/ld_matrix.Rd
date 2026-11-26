@@ -19,7 +19,7 @@ ld_matrix(
 
 \item{with_alleles}{Deprecated and ignored: the names carry the alleles.}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use, through \code{opengwasr::og_api(inherit = src, ld_store = pop)}, which keeps your Source's URL and key. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else the European LD Store on the API Source (see Details). \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store on the OpenGWAS API to use. On an API Source this is \code{opengwasr::og_api(inherit = src, ld_store = pop)}, which keeps your Source's URL and key. On a Local Source it is refused (error class \code{twosamplemr_pop_local}): use \code{src = opengwasr::og_api()} for the API's LD Store, or a Local Source with a PLINK Reference, \code{opengwasr::og_local(gwas = , bfile = )}. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else the European LD Store on the API Source (see Details). \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
 
 \item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to use instead of an LD Store. Default = \code{NULL}}
 
@@ -50,8 +50,8 @@ To check which variants an LD Store holds first, use \code{\link[opengwasr:og_ld
 On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) the matrix comes from the Source's own LD resource, the
 PLINK Reference it was given as \code{bfile} (named \verb{<rsid>_<allele1>_<allele2>}, the rsIDs of ALIDs
 looked up in its Store Releases). A Local Source with no LD resource is refused by opengwasr (error
-class \code{opengwasr_ld_resource_required}), and so is a \code{pop}, as a Local Source never reads the API's
-LD Stores.
+class \code{opengwasr_ld_resource_required}). A \code{pop} is refused by TwoSampleMR (\code{twosamplemr_pop_local}),
+as it names an LD Store on the API.
 
 A variant the LD Store (or the reference) does not hold is left out of the matrix, with a warning
 (a message for a reference). An LD Store does not hold every pair: a pair it does not hold is \code{NA}

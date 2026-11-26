@@ -380,8 +380,10 @@ rsid_pattern <- "^rs[0-9]+$"
 # - `bfile`: an LD-only Local Source on that PLINK fileset, `og_local(bfile = , plink = )`. PLINK
 #   needs no API, so `src` is never read, and a call with `bfile` never makes the default Source.
 # - `pop`: `src` with that LD Store, `og_api(inherit = src, ld_store = pop)`, which keeps the user's
-#   URL and key. A Local Source holds no LD Stores: `og_local(inherit = src, ld_store = pop)`, which
-#   opengwasr refuses (`opengwasr_local_unsupported`).
+#   URL and key. `pop` names an LD Store on the OpenGWAS API, and a Local Source answers LD only from
+#   resources on this machine (its `ld_store` would be the path of a downloaded LD Store), so `pop`
+#   on a Local Source is refused here (`twosamplemr_pop_local`), naming the API Source and a PLINK
+#   Reference instead.
 # - neither: `src` itself if it carries an LD resource (`og_api(ld_store = )`, `og_local(bfile = )`),
 #   or is a Local Source, which opengwasr refuses for want of one. A plain API Source gives the
 #   European LD Store for an LD matrix (`ids = NULL`), and for clumping is `src` itself, so that
@@ -399,7 +401,10 @@ ld_source <- function(src, pop, bfile, plink_bin, ids) {
     pop <- "EUR"
   }
   if (is_local_source(src)) {
-    return(if (is.null(pop)) src else opengwasr::og_local(inherit = src, ld_store = pop))
+    if (!is.null(pop)) {
+      pop_local_refusal(pop)
+    }
+    return(src)
   }
   if (is.null(pop) && !is.null(opengwasr::og_ld_resource(src))) {
     return(src)
@@ -429,6 +434,25 @@ ld_source <- function(src, pop, bfile, plink_bin, ids) {
         "Store id from `opengwasr::og_ld_stores()`; or `bfile`, the path of your own PLINK reference."
       ),
       call = NULL
+    )
+  ))
+}
+
+# `pop` on a Local Source: it names an LD Store on the OpenGWAS API, which a Local Source never reads.
+pop_local_refusal <- function(pop) {
+  shown <- if (is.character(pop) && length(pop) == 1) pop else "<pop>"
+  stop(structure(
+    class = c("twosamplemr_pop_local", "error", "condition"),
+    list(
+      message = paste0(
+        "`pop` names an LD Store on the OpenGWAS API, but `src` is a Local Source, which answers LD ",
+        "only from resources on this machine. To clump your data with the API's LD Store, use the API ",
+        "Source: `clump_data(dat, pop = \"", shown, "\", src = opengwasr::og_api())`. Or give the ",
+        "Local Source a PLINK Reference, `opengwasr::og_local(gwas = , bfile = )`, and leave out `pop`."
+      ),
+      call = NULL,
+      pop = pop,
+      src_kind = "local"
     )
   ))
 }
@@ -484,25 +508,30 @@ dat_alids <- function(dat, src, type = "exposure") {
 }
 
 # `dat` clumped by opengwasr with the LD Source `ld_src` (ld_source()): the rows of its index
-# variants, with the clumping provenance columns. With `bfile` (`by_rsid`), the LD-only Local Source
-# matches variants to its PLINK Reference by rsID, so no ALID is needed and nothing is asked of the
-# API: each row gets a placeholder ALID, which only keys the row, and its `SNP` is its rsID. Variants
-# the reference lacks are dropped by opengwasr, with its count message.
-opengwasr_clump <- function(ld_src, dat, pval_column, p1, r2, kb, by_rsid) {
-  if (by_rsid) {
-    # A PLINK Reference has no thresholds of its own to take.
+# variants, with the clumping provenance columns.
+#
+# `from_bfile` says the LD Source was made from TwoSampleMR's own `bfile` argument (#28), an LD-only
+# Local Source. Two things follow from that, and from nothing else:
+# - variants are matched to its PLINK Reference by rsID, so no ALID is needed and nothing is asked of
+#   the API: each row gets a placeholder ALID, which only keys the row, and its `SNP` is its rsID.
+#   Variants the reference lacks are dropped by opengwasr, with its count message;
+# - `clump_r2` and `clump_kb` default to TwoSampleMR's old 0.001 and 10000, as `bfile` always did.
+# A Source's own PLINK Reference (`og_local(gwas = , bfile = )`) is matched by ALID and gets no
+# defaults: opengwasr requires `r2` and `kb` for it (ADR 0006; `opengwasr_plink_settings_required`).
+opengwasr_clump <- function(ld_src, dat, pval_column, p1, r2, kb, from_bfile) {
+  if (from_bfile) {
     r2 <- r2 %||% 0.001
     kb <- kb %||% 10000
   }
   p <- as.numeric(dat[[pval_column]])
   p[is.na(p)] <- 1
-  if (by_rsid) {
+  if (from_bfile) {
     alid <- paste0("1:", seq_len(nrow(dat)), ":A:C")
   } else {
     alid <- dat_alids(dat, ld_src)
   }
   usable <- !is.na(alid) & p <= p1
-  if (!by_rsid && any(is.na(alid))) {
+  if (!from_bfile && any(is.na(alid))) {
     message(
       sum(is.na(alid)),
       " variant(s) could not be given an ALID (they need a `SNP` that is an rsID or an ALID, ",
@@ -518,7 +547,7 @@ opengwasr_clump <- function(ld_src, dat, pval_column, p1, r2, kb, by_rsid) {
     row = which(usable),
     stringsAsFactors = FALSE
   )
-  if (by_rsid) {
+  if (from_bfile) {
     rsid <- as.character(dat$SNP[usable])
     d$rsid <- ifelse(grepl(rsid_pattern, rsid, ignore.case = TRUE), rsid, NA_character_)
   }

@@ -24,7 +24,7 @@ clump_data(
 
 \item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}: variants with a larger p-value are left out.}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use, through \code{opengwasr::og_api(inherit = src, ld_store = pop)}, which keeps your Source's URL and key. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store on the OpenGWAS API to use. On an API Source this is \code{opengwasr::og_api(inherit = src, ld_store = pop)}, which keeps your Source's URL and key. On a Local Source it is refused (error class \code{twosamplemr_pop_local}): use \code{src = opengwasr::og_api()} for the API's LD Store, or a Local Source with a PLINK Reference, \code{opengwasr::og_local(gwas = , bfile = )}. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
 
 \item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to clump with locally instead of an LD Store. Default = \code{NULL}}
 
@@ -64,8 +64,8 @@ On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) the 
 clumps with the PLINK Reference it was given as \code{bfile}, matching variants by rsID. It has no
 thresholds of its own, so \code{clump_r2} and \code{clump_kb} must be set (opengwasr refuses otherwise, with
 error class \code{opengwasr_plink_settings_required}). A Local Source with no LD resource is refused
-(\code{opengwasr_ld_resource_required}), and so is a \code{pop}, as a Local Source never reads the API's LD
-Stores; \code{bfile} here works as on the API Source.
+(\code{opengwasr_ld_resource_required}). A \code{pop} is refused by TwoSampleMR (\code{twosamplemr_pop_local}),
+as it names an LD Store on the API; \code{bfile} here works as on the API Source.
 
 Each \code{id.exposure} is clumped on its own, in the LD Store of its own ancestry, as the old OpenGWAS client did.
 To check which of your variants an LD Store holds first, use \code{\link[opengwasr:og_ld_reflookup]{opengwasr::og_ld_reflookup()}}.

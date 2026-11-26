@@ -401,6 +401,35 @@ plink_mr_dat <- function() {
   x
 }
 
+test_that("pop on a Local Source is refused by TwoSampleMR, naming the API Source and a PLINK Reference", {
+  skip_without_plink()
+  local_no_credentials()
+  src <- opengwasr::og_local(bfile = plink_ref_path())
+  dat <- plink_dat()
+  e <- tryCatch(clump_data(dat, pop = "EUR", src = src), error = identity)
+  expect_s3_class(e, "twosamplemr_pop_local")
+  expect_equal(e$pop, "EUR")
+  expect_equal(e$src_kind, "local")
+  expect_match(conditionMessage(e), "clump_data(dat, pop = \"EUR\", src = opengwasr::og_api())", fixed = TRUE)
+  expect_match(conditionMessage(e), "og_local(gwas = , bfile = )", fixed = TRUE)
+  expect_error(ld_matrix(dat$SNP, pop = "SAS", src = src), class = "twosamplemr_pop_local")
+  expect_error(
+    ld_for_mr_input(plink_mr_dat(), pop = "EUR", bfile = NULL, plink_bin = NULL, src = src),
+    class = "twosamplemr_pop_local"
+  )
+})
+
+test_that("bfile's 0.001/10000 defaults are TwoSampleMR's; a Source's own PLINK Reference gets none", {
+  skip_without_plink()
+  local_no_credentials()
+  dat <- plink_dat()
+  src <- opengwasr::og_local(bfile = plink_ref_path())
+  expect_error(clump_data(dat, src = src), class = "opengwasr_plink_settings_required")
+  out <- suppressMessages(clump_data(dat, bfile = plink_ref_path()))
+  expect_equal(out$clump_r2.exposure, 0.001)
+  expect_equal(out$clump_kb.exposure, 10000)
+})
+
 test_that("PLINK LD with bfile needs no credentials: the default Source is never made", {
   skip_without_plink()
   local_no_credentials()

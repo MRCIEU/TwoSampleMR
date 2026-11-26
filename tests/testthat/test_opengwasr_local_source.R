@@ -223,10 +223,10 @@ test_that("clump_data() on a Local Source clumps with its PLINK Reference, as og
   expect_setequal(got$SNP, unique(leads$rsid))
   expect_equal(unique(got$clump_ld.exposure), unique(leads$clump_ld))
   expect_equal(unique(got$clump_r2.exposure), 0.001)
-  # A Local Source holds no LD Stores, so `pop` is refused, as opengwasr refuses it.
+  # `pop` names an LD Store on the API, so TwoSampleMR refuses it on a Local Source.
   expect_error(
     clump_data(dat, clump_r2 = 0.001, clump_kb = 10000, pop = "EUR", src = src),
-    class = "opengwasr_local_unsupported"
+    class = "twosamplemr_pop_local"
   )
 })
 
@@ -239,7 +239,7 @@ test_that("ld_matrix() on a Local Source reads its PLINK Reference by default; a
   attr(want, "og_provenance") <- NULL
   expect_equal(got, want)
   expect_match(rownames(got), "^rs[0-9]+_[ACGT]+_[ACGT]+$")
-  expect_error(ld_matrix(snps, pop = "EUR", src = src), class = "opengwasr_local_unsupported")
+  expect_error(ld_matrix(snps, pop = "EUR", src = src), class = "twosamplemr_pop_local")
 })
 
 test_that("mv_extract_exposures() on a Local Source clumps with its PLINK Reference, as opengwasr does", {
