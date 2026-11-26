@@ -98,6 +98,8 @@ test_that("mv_extract_exposures() clumps across the exposures through og_clump()
   expect_false("1" %in% asked$data$id)
   expect_null(asked$r2)
   expect_null(asked$kb)
+  # One joint set across the exposures: og_clump() would otherwise clump each Analysis on its own.
+  expect_false(asked$by_analysis)
   expect_length(ld$calls, 1)
   expect_gt(nrow(mv), 0)
 })
@@ -107,4 +109,33 @@ test_that("mv_extract_exposures() passes its Source to the final clump", {
   src <- structure(list(), class = "fake_source")
   mv_extract_exposures(c("ukb-b-19953", "ebi-a-GCST003116"), src = src)
   expect_identical(state$ld$calls[[1]]$src, src)
+})
+
+test_that("mv_extract_exposures_local() clumps each file on its own, then across the exposures as one set", {
+  local_fake_opengwasr()
+  ld <- local_fake_ld(keep = "all")
+  # A PLINK reference (mocked): variants are matched by rsID, so no ALID is looked up.
+  testthat::local_mocked_bindings(
+    og_local = function(gwas = NULL, plink = NULL, bfile = NULL, ...) {
+      structure(list(ld = structure(list(path = bfile), class = "og_plink_reference")), class = "fake_source")
+    },
+    .package = "opengwasr"
+  )
+  load(system.file("extdata", "test_add_mvmr_local.RData", package = "TwoSampleMR"), envir = environment())
+  suppressMessages(mv_extract_exposures_local(
+    list(a1, a2),
+    snp_col = "rsid",
+    beta_col = "beta",
+    se_col = "se",
+    effect_allele_col = "ea",
+    other_allele_col = "nea",
+    pval_col = "p",
+    bfile = "/ref/EUR"
+  ))
+  clumps <- calls_to(ld, "og_clump")
+  expect_length(clumps, 3)
+  expect_true(clumps[[1]]$by_analysis)
+  expect_true(clumps[[2]]$by_analysis)
+  expect_false(clumps[[3]]$by_analysis)
+  expect_length(unique(clumps[[3]]$data$id), 2)
 })

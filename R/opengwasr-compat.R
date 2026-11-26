@@ -518,7 +518,10 @@ dat_alids <- function(dat, src, type = "exposure") {
 # - `clump_r2` and `clump_kb` default to TwoSampleMR's old 0.001 and 10000, as `bfile` always did.
 # A Source's own PLINK Reference (`og_local(gwas = , bfile = )`) is matched by ALID and gets no
 # defaults: opengwasr requires `r2` and `kb` for it (ADR 0006; `opengwasr_plink_settings_required`).
-opengwasr_clump <- function(ld_src, dat, pval_column, p1, r2, kb, from_bfile) {
+#
+# `by_analysis` is og_clump()'s: each `id.exposure` clumped on its own (TRUE), or all the rows as one
+# set (FALSE). The index rows are returned in the order of `dat`.
+opengwasr_clump <- function(ld_src, dat, pval_column, p1, r2, kb, from_bfile, by_analysis) {
   if (from_bfile) {
     r2 <- r2 %||% 0.001
     kb <- kb %||% 10000
@@ -551,9 +554,10 @@ opengwasr_clump <- function(ld_src, dat, pval_column, p1, r2, kb, from_bfile) {
     rsid <- as.character(dat$SNP[usable])
     d$rsid <- ifelse(grepl(rsid_pattern, rsid, ignore.case = TRUE), rsid, NA_character_)
   }
-  out <- opengwasr::og_clump(ld_src, d, r2 = r2, kb = kb)
-  index <- unique(out$row)
+  out <- opengwasr::og_clump(ld_src, d, r2 = r2, kb = kb, by_analysis = by_analysis)
+  index <- sort(unique(out$row))
   clumped <- dat[index, , drop = FALSE]
+  rownames(clumped) <- NULL
   for (column in c("clump_ld", "clump_ld_choice", "clump_r2", "clump_kb")) {
     clumped[[paste0(column, ".exposure")]] <- out[[column]][match(index, out$row)]
   }

@@ -62,7 +62,9 @@ clump_data <- function(
 }
 
 # `clump_data()`, each `id.exposure` on its own (as the old OpenGWAS client did), or with `joint = TRUE` all the ids
-# as one set (the clumping across exposures of multivariable MR).
+# as one set (the clumping across exposures of multivariable MR). Both are one call to og_clump():
+# its `by_analysis` clumps each Analysis (`id`, from `id.exposure`) on its own, and `by_analysis = FALSE`
+# clumps the rows as one set.
 clump_data_impl <- function(dat, clump_kb, clump_r2, clump_p1, pop, bfile, plink_bin, src, joint) {
   pval_column <- "pval.exposure"
 
@@ -86,29 +88,16 @@ clump_data_impl <- function(dat, clump_kb, clump_r2, clump_p1, pop, bfile, plink
     dat$id.exposure <- random_string(1)
   }
 
-  sets <- if (joint) {
-    list(seq_len(nrow(dat)))
-  } else {
-    unname(split(seq_len(nrow(dat)), as.character(dat$id.exposure)))
-  }
-  kept <- lapply(sets, function(rows) {
-    set <- dat[rows, , drop = FALSE]
-    set$.original_row <- rows
-    opengwasr_clump(
-      ld_source(src, pop, bfile, plink_bin, set$id.exposure),
-      set,
-      pval_column,
-      clump_p1,
-      r2 = clump_r2,
-      kb = clump_kb,
-      from_bfile = !is.null(bfile)
-    )
-  })
-  out <- dplyr::bind_rows(kept)
-  out <- out[order(out$.original_row), , drop = FALSE]
-  out$.original_row <- NULL
-  rownames(out) <- NULL
-  out
+  opengwasr_clump(
+    ld_source(src, pop, bfile, plink_bin, dat$id.exposure),
+    dat,
+    pval_column,
+    clump_p1,
+    r2 = clump_r2,
+    kb = clump_kb,
+    from_bfile = !is.null(bfile),
+    by_analysis = !joint
+  )
 }
 
 

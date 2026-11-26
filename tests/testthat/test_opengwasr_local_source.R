@@ -65,8 +65,9 @@ test_that("extract_instruments() on a Local Source clumps with its PLINK Referen
   skip_if_no_local_plink()
   src <- example_local(plink = TRUE)
   ids <- c(bmi_local, trait_a_local)
-  got <- suppressWarnings(suppressMessages(
-    extract_instruments(ids, src = src, r2 = 0.001, kb = 10000)
+  got <- suppressWarnings(expect_plink_warning(
+    suppressMessages(extract_instruments(ids, src = src, r2 = 0.001, kb = 10000)),
+    example_bfile()
   ))
   hits <- suppressMessages(opengwasr::og_tophits(
     src,
@@ -136,8 +137,9 @@ test_that("a Local Source runs the two-sample MR pipeline, on opengwasr's instru
   skip_if_no_local_plink()
   src <- example_local(plink = TRUE)
   outcome_id <- "hyb:trait_b"
-  exposure <- suppressWarnings(suppressMessages(
-    extract_instruments(bmi_local, src = src, r2 = 0.001, kb = 10000)
+  exposure <- suppressWarnings(expect_plink_warning(
+    suppressMessages(extract_instruments(bmi_local, src = src, r2 = 0.001, kb = 10000)),
+    example_bfile()
   ))
   outcome <- suppressWarnings(suppressMessages(
     extract_outcome_data(exposure$SNP, outcome_id, src = src)
@@ -214,7 +216,10 @@ test_that("clump_data() on a Local Source clumps with its PLINK Reference, as og
   skip_if_no_local_plink()
   src <- example_local(plink = TRUE)
   dat <- suppressWarnings(extract_instruments(bmi_local, src = src, clump = 0))
-  got <- suppressMessages(clump_data(dat, clump_r2 = 0.001, clump_kb = 10000, src = src))
+  got <- expect_plink_warning(
+    suppressMessages(clump_data(dat, clump_r2 = 0.001, clump_kb = 10000, src = src)),
+    example_bfile()
+  )
   hits <- opengwasr::og_tophits(src, bmi_local, threshold = 5e-8, limit = 10000, clump = FALSE)
   # The variants of `dat`: an rsID that names two variants is kept once, as format_data() keeps it.
   name <- ifelse(is.na(hits$rsid), hits$alid, hits$rsid)
@@ -234,7 +239,7 @@ test_that("ld_matrix() on a Local Source reads its PLINK Reference by default; a
   skip_if_no_local_plink()
   src <- example_local(plink = TRUE)
   snps <- c("rs5000", "rs1004", "rs1005")
-  got <- suppressMessages(ld_matrix(snps, src = src))
+  got <- expect_plink_warning(suppressMessages(ld_matrix(snps, src = src)), example_bfile())
   want <- unclass(suppressMessages(opengwasr::og_ld_matrix(src, snps)))
   attr(want, "og_provenance") <- NULL
   expect_equal(got, want)
@@ -247,12 +252,14 @@ test_that("mv_extract_exposures() on a Local Source clumps with its PLINK Refere
   src <- example_local(plink = TRUE)
   ids <- c(bmi_local, "residual-rag:a")
   expect_error(mv_extract_exposures(ids, src = src), class = "opengwasr_plink_settings_required")
-  got <- suppressWarnings(suppressMessages(
-    mv_extract_exposures(ids, clump_r2 = 0.001, clump_kb = 10000, src = src)
+  got <- suppressWarnings(expect_plink_warning(
+    suppressMessages(mv_extract_exposures(ids, clump_r2 = 0.001, clump_kb = 10000, src = src)),
+    example_bfile()
   ))
 
   # opengwasr's steps: each Analysis's clumped top hits; one variant per SNP, strongest first,
-  # clumped again as one set; then the leads every exposure has an Association for.
+  # clumped again as one set (`by_analysis = FALSE`: og_clump() would otherwise clump each Analysis
+  # on its own); then the leads every exposure has an Association for.
   hits <- suppressMessages(opengwasr::og_tophits(
     src,
     ids,
@@ -264,7 +271,7 @@ test_that("mv_extract_exposures() on a Local Source clumps with its PLINK Refere
   hits$SNP <- ifelse(is.na(hits$rsid), hits$alid, hits$rsid)
   hits <- hits[order(hits$pval), ]
   hits <- hits[!duplicated(hits$SNP), ]
-  leads <- suppressMessages(opengwasr::og_clump(src, hits, r2 = 0.001, kb = 10000))
+  leads <- suppressMessages(opengwasr::og_clump(src, hits, r2 = 0.001, kb = 10000, by_analysis = FALSE))
   assoc <- opengwasr::og_associations(src, unique(leads$SNP), ids)
   assoc$SNP <- ifelse(is.na(assoc$rsid), assoc$alid, assoc$rsid)
   in_all <- Reduce(intersect, split(assoc$SNP, assoc$id))
@@ -286,6 +293,40 @@ test_that("mv_extract_exposures() on a Local Source clumps with its PLINK Refere
   )
 })
 
+test_that("mv_extract_exposures() on a Local Source clumps the exposures as one set: og_clump(by_analysis = FALSE)", {
+  skip_if_no_local_plink()
+  src <- example_local(plink = TRUE)
+  # Two exposures whose top hits are in LD with each other: clumped as one set they keep fewer.
+  ids <- c(bmi_local, "hyb:trait_b")
+  got <- suppressWarnings(expect_plink_warning(
+    suppressMessages(mv_extract_exposures(ids, clump_r2 = 0.001, clump_kb = 10000, src = src)),
+    example_bfile()
+  ))
+
+  hits <- suppressMessages(opengwasr::og_tophits(
+    src,
+    ids,
+    threshold = 5e-8,
+    limit = 10000,
+    r2 = 0.001,
+    kb = 10000
+  ))
+  hits$SNP <- ifelse(is.na(hits$rsid), hits$alid, hits$rsid)
+  hits <- hits[order(hits$pval), ]
+  hits <- hits[!duplicated(hits$SNP), ]
+  instruments <- function(by_analysis) {
+    leads <- suppressMessages(opengwasr::og_clump(src, hits, r2 = 0.001, kb = 10000, by_analysis = by_analysis))
+    assoc <- opengwasr::og_associations(src, unique(leads$SNP), ids)
+    assoc$SNP <- ifelse(is.na(assoc$rsid), assoc$alid, assoc$rsid)
+    Reduce(intersect, split(assoc$SNP, assoc$id))
+  }
+  joint <- instruments(by_analysis = FALSE)
+  expect_setequal(unique(got$SNP), joint)
+  expect_setequal(unique(got$id.exposure), ids)
+  # Each Analysis clumped on its own (og_clump()'s default) would give more instruments.
+  expect_gt(length(instruments(by_analysis = TRUE)), length(joint))
+})
+
 # Instruments of s:bmi_irn that the example PLINK Reference holds, with an outcome, as
 # dat_to_MRInput() reads them.
 local_mr_dat <- function(src) {
@@ -301,7 +342,10 @@ test_that("dat_to_MRInput()'s LD matrix is opengwasr's, from a Local Source's PL
   skip_if_no_local_plink()
   src <- example_local(plink = TRUE)
   x <- local_mr_dat(src)
-  out <- suppressMessages(ld_for_mr_input(x, pop = NULL, bfile = NULL, plink_bin = NULL, src = src))
+  out <- expect_plink_warning(
+    suppressMessages(ld_for_mr_input(x, pop = NULL, bfile = NULL, plink_bin = NULL, src = src)),
+    example_bfile()
+  )
   m <- unclass(suppressMessages(opengwasr::og_ld_matrix(src, x$SNP)))
   attr(m, "og_provenance") <- NULL
   parts <- do.call(rbind, strsplit(rownames(m), "_", fixed = TRUE))
@@ -328,9 +372,12 @@ test_that("dat_to_MRInput() takes the PLINK path for a Local Source's PLINK Refe
     },
     .package = "opengwasr"
   )
-  expect_no_message(
-    out <- ld_for_mr_input(x, pop = NULL, bfile = NULL, plink_bin = NULL, src = src),
-    message = "set to 0"
+  expect_plink_warning(
+    expect_no_message(
+      out <- ld_for_mr_input(x, pop = NULL, bfile = NULL, plink_bin = NULL, src = src),
+      message = "set to 0"
+    ),
+    example_bfile()
   )
   expect_false(asked)
   expect_equal(sum(is.na(out$ld)), 2)

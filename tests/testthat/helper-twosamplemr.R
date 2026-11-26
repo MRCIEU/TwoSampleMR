@@ -140,13 +140,14 @@ local_fake_ld <- function(keep = NULL, env = parent.frame()) {
   state <- new.env()
   state$calls <- list()
   testthat::local_mocked_bindings(
-    og_clump = function(src, data, r2 = NULL, kb = NULL) {
+    og_clump = function(src, data, r2 = NULL, kb = NULL, by_analysis = TRUE) {
       state$calls[[length(state$calls) + 1]] <- list(
         fn = "og_clump",
         src = src,
         data = data,
         r2 = r2,
-        kb = kb
+        kb = kb,
+        by_analysis = by_analysis
       )
       rows <- if (identical(keep, "all")) {
         seq_len(nrow(data))
@@ -200,6 +201,17 @@ local_no_credentials <- function(env = parent.frame()) {
     .local_envir = env
   )
   withr::local_options(opengwasr.url = NULL, .local_envir = env)
+}
+
+# opengwasr warns that LD from a PLINK Reference is unadjusted for population structure
+# (`opengwasr_plink_unadjusted`), once per session per reference: rlang's `.frequency = "once"`, with
+# the reference's normalised path as its id. A test that runs PLINK expects that warning at its own
+# first PLINK call, after resetting rlang's record of it, so it neither depends on which tests ran
+# before nor leaks the warning into them.
+expect_plink_warning <- function(object, bfile) {
+  path <- file.path(normalizePath(dirname(bfile), winslash = "/", mustWork = FALSE), basename(bfile))
+  rlang::reset_warning_verbosity(path)
+  expect_warning(object, class = "opengwasr_plink_unadjusted")
 }
 
 # --- Local Source ---------------------------------------------------------------------------------

@@ -58,13 +58,14 @@ Suggests:
     mr.raps,
     MRInstruments,
     randomForest,
+    rlang,
     testthat,
     withr
 VignetteBuilder:
     knitr
 Remotes:
     gqi/MRMix,
-    opengwas/opengwasr@orch/2-local-source,
+    opengwas/opengwasr@a4f4f82883e80501e98940b4d939b1bf31986e9d,
     mrcieu/MRInstruments,
     MRPRESSO=rondolab/MR-PRESSO,
     qingyuanzhao/mr.raps,

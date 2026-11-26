@@ -332,7 +332,7 @@ test_that("PLINK: clump_data(bfile =) keeps the strongest variant of variants in
   local_no_credentials()
   dat <- plink_dat()
   expect_equal(nrow(dat), 3)
-  out <- suppressMessages(clump_data(dat, bfile = plink_ref_path()))
+  out <- expect_plink_warning(suppressMessages(clump_data(dat, bfile = plink_ref_path())), plink_ref_path())
   expect_equal(out$SNP, "rs1421085")
   expect_equal(out$clump_ld_choice.exposure, "user")
   expect_equal(out$clump_r2.exposure, 0.001)
@@ -342,7 +342,10 @@ test_that("PLINK: clump_data(bfile =) keeps the strongest variant of variants in
 test_that("PLINK: ld_matrix(bfile =) is named <rsid>_<a1>_<a2>", {
   skip_without_plink()
   local_no_credentials()
-  m <- suppressMessages(ld_matrix(c("rs1421085", "rs1558902"), bfile = plink_ref_path()))
+  m <- expect_plink_warning(
+    suppressMessages(ld_matrix(c("rs1421085", "rs1558902"), bfile = plink_ref_path())),
+    plink_ref_path()
+  )
   expect_equal(nrow(m), 2)
   expect_true(all(grepl("^rs[0-9]+_[ACGT]_[ACGT]$", rownames(m))))
   expect_equal(unname(diag(m)), c(1, 1))
@@ -360,10 +363,35 @@ test_that("PLINK: every variant of the reference is clumped and matched by rsID,
     stringsAsFactors = FALSE
   )
   dat$SNP[1] <- "rs0000000" # not in the reference
-  expect_message(out <- clump_data(dat, bfile = plink_ref_path()), "1")
+  expect_plink_warning(
+    expect_message(out <- clump_data(dat, bfile = plink_ref_path()), "1"),
+    plink_ref_path()
+  )
   expect_false("rs0000000" %in% out$SNP)
   expect_true(nrow(out) > 1)
   expect_true(all(out$SNP %in% bim$V2))
+})
+
+test_that("PLINK: clump_data() clumps each id.exposure on its own, as clumping each alone did", {
+  skip_without_plink()
+  local_no_credentials()
+  a <- plink_dat()
+  a$id.exposure <- "a"
+  b <- plink_dat()
+  b$id.exposure <- "b"
+  b$pval.exposure <- rev(b$pval.exposure)
+  both <- rbind(a, b)
+  out <- expect_plink_warning(suppressMessages(clump_data(both, bfile = plink_ref_path())), plink_ref_path())
+  # TwoSampleMR's old split: each id clumped in a call of its own.
+  alone <- rbind(
+    suppressMessages(clump_data(a, bfile = plink_ref_path())),
+    suppressMessages(clump_data(b, bfile = plink_ref_path()))
+  )
+  rownames(alone) <- NULL
+  expect_equal(out, alone)
+  # Each id keeps its own strongest variant (as one set, `b`'s would lose to `a`'s, in LD with it).
+  expect_equal(out$id.exposure, c("a", "b"))
+  expect_equal(out$SNP, c("rs1421085", "rs9939609"))
 })
 
 test_that("clump_data() clumps each id on its own, as before, each in its own LD Store", {
@@ -374,10 +402,14 @@ test_that("clump_data() clumps each id on its own, as before, each in its own LD
   other$id.exposure <- cad_id
   both <- rbind(dat, other)
   out <- clump_data(both)
-  expect_length(ld$calls, 2)
-  expect_setequal(vapply(ld$calls, function(x) unique(x$data$id), ""), c(bmi_id, cad_id))
+  # One call: og_clump(by_analysis = TRUE) clumps each Analysis, named by `id.exposure`, on its own,
+  # and matches each to its own LD Store.
+  expect_length(ld$calls, 1)
+  expect_true(ld$calls[[1]]$by_analysis)
+  expect_equal(ld$calls[[1]]$data$id, both$id.exposure)
   expect_equal(nrow(out), nrow(both))
   expect_equal(out$SNP, both$SNP)
+  expect_equal(out$id.exposure, both$id.exposure)
 })
 
 test_that("a mix of Analyses and own data says which ids have no Analysis", {
@@ -425,7 +457,7 @@ test_that("bfile's 0.001/10000 defaults are TwoSampleMR's; a Source's own PLINK 
   dat <- plink_dat()
   src <- opengwasr::og_local(bfile = plink_ref_path())
   expect_error(clump_data(dat, src = src), class = "opengwasr_plink_settings_required")
-  out <- suppressMessages(clump_data(dat, bfile = plink_ref_path()))
+  out <- expect_plink_warning(suppressMessages(clump_data(dat, bfile = plink_ref_path())), plink_ref_path())
   expect_equal(out$clump_r2.exposure, 0.001)
   expect_equal(out$clump_kb.exposure, 10000)
 })
@@ -441,7 +473,7 @@ test_that("PLINK LD with bfile needs no credentials: the default Source is never
   mr_input_with_default_source <- function(src = twosamplemr_source()) {
     ld_for_mr_input(x, pop = NULL, bfile = plink_ref_path(), plink_bin = NULL, src = src)
   }
-  m <- suppressMessages(matrix_with_default_source())
+  m <- expect_plink_warning(suppressMessages(matrix_with_default_source()), plink_ref_path())
   expect_equal(sub("_.*", "", rownames(m)), x$SNP)
   out <- suppressMessages(mr_input_with_default_source())
   expect_false(anyNA(out$ld))
@@ -452,11 +484,14 @@ test_that("dat_to_MRInput(get_correlations = TRUE, bfile =) needs no credentials
   skip_without_plink()
   skip_if_not_installed("MendelianRandomization")
   local_no_credentials()
-  out <- suppressMessages(dat_to_MRInput(
-    plink_mr_dat(),
-    get_correlations = TRUE,
-    bfile = plink_ref_path()
-  ))
+  out <- expect_plink_warning(
+    suppressMessages(dat_to_MRInput(
+      plink_mr_dat(),
+      get_correlations = TRUE,
+      bfile = plink_ref_path()
+    )),
+    plink_ref_path()
+  )
   expect_length(out, 1)
 })
 
