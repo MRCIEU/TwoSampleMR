@@ -24,13 +24,13 @@ clump_data(
 
 \item{clump_p1}{Clumping sig level for index SNPs, default is \code{1}: variants with a larger p-value are left out.}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. The default, \code{NULL}, matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store on the OpenGWAS API to use. On an API Source this is \code{opengwasr::og_api(inherit = src, ld_store = pop)}, which keeps your Source's URL and key. On a Local Source it is refused (error class \code{twosamplemr_pop_local}): use \code{src = opengwasr::og_api()} for the API's LD Store, or a Local Source with a PLINK Reference, \code{opengwasr::og_local(gwas = , bfile = )}. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches the Assigned Ancestry of the Analyses in \code{dat}. \code{"legacy"} is deprecated and means \code{"EUR"}.}
 
 \item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to clump with locally instead of an LD Store. Default = \code{NULL}}
 
 \item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
+\item{src}{A Source from opengwasr: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, which reads Store Releases you have downloaded. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 Data frame
@@ -46,7 +46,7 @@ By default the LD Store that matches the Assigned Ancestry of the Analyses in \c
 0.03 within 10,000 kb). They are sent only when you set them: LD Stores refuse r2 = 0.001
 within 10,000 kb, so scripts that pass those old defaults now get opengwasr's refusal. If the Analyses
 differ in ancestry, or one is Unassigned, opengwasr refuses unless you choose the LD with \code{pop}.
-Data that do not come from OpenGWAS (whose \code{id.exposure} names no Analysis) have no Assigned Ancestry, so they are refused (error class \code{twosamplemr_ld_needs_pop}) unless you give \code{pop} or \code{bfile}: add \code{pop = "EUR"} to an old script.
+Data that do not come from OpenGWAS (whose \code{id.exposure} names no Analysis) have no Assigned Ancestry, so they are refused (error class \code{twosamplemr_ld_needs_pop}) unless you give \code{pop} or \code{bfile}, or the Source carries an LD resource of its own: add \code{pop = "EUR"} to an old script.
 
 Variants are ranked by their p-value (as a |z| score). Each variant is given an ALID
 (\code{chromosome:position:allele:allele}, GRCh38, see \code{\link[opengwasr:og_alid]{opengwasr::og_alid()}}): its \code{SNP}, if that is
@@ -55,9 +55,17 @@ alleles; else looked up from its rsID (see \code{\link[opengwasr:og_variants_rsi
 or that the LD Store does not hold, cannot be clumped and are left out of the result
 (opengwasr warns about the latter).
 
-With \code{bfile}, PLINK clumps on your machine using your own reference (\code{\link[opengwasr:og_plink_reference]{opengwasr::og_plink_reference()}}),
-matching variants by rsID. There the thresholds have no defaults to take, so \code{clump_r2 = 0.001} and
+With \code{bfile}, PLINK clumps on your machine using your own reference, as the Source
+\code{opengwasr::og_local(bfile = bfile, plink = plink_bin)} (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}), matching variants
+by rsID; it needs no API and no credentials. There the thresholds have no defaults to take, so \code{clump_r2 = 0.001} and
 \code{clump_kb = 10000} (TwoSampleMR's old defaults) are used unless you set them.
+
+On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) the default is the Source's own LD resource: PLINK
+clumps with the PLINK Reference it was given as \code{bfile}, matching variants by rsID. It has no
+thresholds of its own, so \code{clump_r2} and \code{clump_kb} must be set (opengwasr refuses otherwise, with
+error class \code{opengwasr_plink_settings_required}). A Local Source with no LD resource is refused
+(\code{opengwasr_ld_resource_required}). A \code{pop} is refused by TwoSampleMR (\code{twosamplemr_pop_local}),
+as it names an LD Store on the API; \code{bfile} here works as on the API Source.
 
 Each \code{id.exposure} is clumped on its own, in the LD Store of its own ancestry, as the old OpenGWAS client did.
 To check which of your variants an LD Store holds first, use \code{\link[opengwasr:og_ld_reflookup]{opengwasr::og_ld_reflookup()}}.

@@ -334,6 +334,21 @@ You can specify various parameters for this function:
 
 By changing the `p1` parameter it is possible to obtain SNP effects for constructing polygenic risk scores. At most 10,000 variants are returned for each study.
 
+### Downloaded Store Releases
+
+If you have downloaded OpenGWAS Store Releases, the same functions read them on your own machine, without the API or a token, through an opengwasr Local Source (see `vignette("local-source", package = "opengwasr")`, which also covers the Python it needs). Make the Source once and pass it as `src`. To clump, give the Local Source an LD reference, a PLINK fileset, as `bfile`, and set `r2` and `kb`: a PLINK reference has no thresholds of its own, so without them the clumping is refused.
+
+```{r, eval=FALSE}
+src <- opengwasr::og_local(
+  c("/data/opengwas/OGS-00009", "/data/opengwas/OGS-00011"),
+  bfile = "/data/ld/EUR"
+)
+bmi_exp_dat <- extract_instruments("OGS-00009:ukb-b-19953", r2 = 0.001, kb = 10000, src = src)
+chd_out_dat <- extract_outcome_data(bmi_exp_dat$SNP, "OGS-00011:GCST003116", src = src)
+```
+
+A Local Source without `bfile` can't clump: use `clump = FALSE`, or give it one. `clump_data()`, `ld_matrix()` and `mv_extract_exposures()` use the Local Source's PLINK reference in the same way. Store Releases know studies only by their `<store_id>:<analysis_id>` IDs, so an old ID such as `ukb-b-19953` is refused on a Local Source: look it up once with `opengwasr::og_analyses(opengwasr::og_api(), "ukb-b-19953")` and use the `id` it gives.
+
 ## Clumping
 
 For standard two sample MR it is important to ensure that the instruments for the exposure are independent. `extract_instruments()` clumps for you, but you can also clump any exposure data yourself with `clump_data()`, for example data you read in from a file, or unclumped data:

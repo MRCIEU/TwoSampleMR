@@ -6,17 +6,17 @@
 #'
 #' @param dat Output from the [harmonise_data()] function.
 #' @param get_correlations Default `FALSE`. If `TRUE` then extract the LD matrix for the SNPs from an OpenGWAS LD Store with [ld_matrix()]. From an LD Store, pairs below its Far Threshold are 0, and pairs it cannot measure (other chromosomes, beyond its far window) are set to 0 too, treated as independent, with a message giving how many.
-#' @param pop If `get_correlations` is `TRUE` then the ancestry (or LD Store id) of the LD Store to use. The default is `"EUR"`.
+#' @param pop If `get_correlations` is `TRUE` then the ancestry (or LD Store id) of the LD Store on the OpenGWAS API to use. On an API Source this is `opengwasr::og_api(inherit = src, ld_store = pop)`, keeping your Source's URL and key; on a Local Source it is refused (`twosamplemr_pop_local`), so use `src = opengwasr::og_api()` or a Local Source with a PLINK Reference. The default, `NULL`, is the Source's own LD resource if it carries one, else the European LD Store on the API Source (see [ld_matrix()]).
 #' @param bfile If `get_correlations` is `TRUE`, the prefix of a PLINK fileset to use as the LD reference instead of an LD Store. Default = `NULL`
 #' @param plink_bin Path to the plink binary for `bfile`. Default = `NULL`
-#' @param src A Source from opengwasr, used with `get_correlations`. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
+#' @param src A Source from opengwasr, used with `get_correlations`: [opengwasr::og_api()], or a Local Source, [opengwasr::og_local()], whose own LD resource is then used. The default, [opengwasr::og_api()] (named as TwoSampleMR's), is made only when it is needed.
 #'
 #' @export
 #' @return List of MRInput objects for each exposure/outcome combination
 dat_to_MRInput <- function(
   dat,
   get_correlations = FALSE,
-  pop = "EUR",
+  pop = NULL,
   bfile = NULL,
   plink_bin = NULL,
   src = twosamplemr_source()
@@ -357,22 +357,18 @@ name_ld_by_snp <- function(x, ld, src) {
 
 # The LD matrix of the variants of `x` for MendelianRandomization, harmonised to `x`, or NULL if none
 # can be. From an LD Store the pairs below its Far Threshold are 0 (`fill_below_t_far`), and the
-# remaining unmeasured pairs are set to 0 too; a PLINK Reference's matrix is complete already.
+# remaining unmeasured pairs are set to 0 too; a PLINK Reference's matrix (`bfile`, or the Source's
+# own) is complete already, and is left as it is.
 ld_for_mr_input <- function(x, pop, bfile, plink_bin, src) {
   message(" - obtaining LD matrix")
-  ld <- ld_matrix(
-    unique(x$SNP),
-    pop = pop,
-    bfile = bfile,
-    plink_bin = plink_bin,
-    fill_below_t_far = is.null(bfile),
-    src = src
-  )
+  ld_src <- ld_source(src, pop, bfile, plink_bin, ids = NULL)
+  plink <- is_plink_source(ld_src)
+  ld <- opengwasr_ld_matrix(ld_src, unique(x$SNP), fill_below_t_far = !plink)
   out <- harmonise_ld_dat(x, ld, src)
   if (is.null(out)) {
     return(NULL)
   }
-  out$ld <- complete_ld(out$ld, plink = !is.null(bfile))
+  out$ld <- complete_ld(out$ld, plink = plink)
   out
 }
 

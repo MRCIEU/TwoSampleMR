@@ -7,7 +7,7 @@
 ld_matrix(
   snps,
   with_alleles = TRUE,
-  pop = "EUR",
+  pop = NULL,
   bfile = NULL,
   plink_bin = NULL,
   fill_below_t_far = FALSE,
@@ -19,7 +19,7 @@ ld_matrix(
 
 \item{with_alleles}{Deprecated and ignored: the names carry the alleles.}
 
-\item{pop}{Ancestry (\code{"EUR"} (default), \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store to use. \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"} or \code{"AMR"}) or LD Store id (see \code{opengwasr::og_ld_stores()}) of the LD Store on the OpenGWAS API to use. On an API Source this is \code{opengwasr::og_api(inherit = src, ld_store = pop)}, which keeps your Source's URL and key. On a Local Source it is refused (error class \code{twosamplemr_pop_local}): use \code{src = opengwasr::og_api()} for the API's LD Store, or a Local Source with a PLINK Reference, \code{opengwasr::og_local(gwas = , bfile = )}. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else the European LD Store on the API Source (see Details). \code{"legacy"} is deprecated and means \code{"EUR"}. Ignored with \code{bfile}.}
 
 \item{bfile}{Prefix of a PLINK fileset (\code{.bed}, \code{.bim}, \code{.fam}) to use instead of an LD Store. Default = \code{NULL}}
 
@@ -27,7 +27,7 @@ ld_matrix(
 
 \item{fill_below_t_far}{Set pairs below the LD Store's Far Threshold to 0 (default \code{FALSE}).}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
+\item{src}{A Source from opengwasr: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, which reads Store Releases you have downloaded. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 Matrix of LD r values
@@ -35,7 +35,8 @@ Matrix of LD r values
 \description{
 This function takes a list of SNPs and returns the matrix of LD r values (signed, and not
 squared) between every pair, read from an OpenGWAS LD Store (\code{\link[opengwasr:og_ld_matrix]{opengwasr::og_ld_matrix()}}), or
-computed by PLINK from your own reference with \code{bfile}.
+computed by PLINK from your own reference with \code{bfile} (the Source
+\code{opengwasr::og_local(bfile = bfile, plink = plink_bin)}, which needs no API and no credentials).
 }
 \details{
 The matrix is named by ALID (\code{chromosome:position:allele:allele}, GRCh38) from an LD Store, and
@@ -45,6 +46,12 @@ and the sign of r refers to the first allele. Either way the names carry the all
 \code{with_alleles} has no effect.
 
 To check which variants an LD Store holds first, use \code{\link[opengwasr:og_ld_reflookup]{opengwasr::og_ld_reflookup()}}.
+
+On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) the matrix comes from the Source's own LD resource, the
+PLINK Reference it was given as \code{bfile} (named \verb{<rsid>_<allele1>_<allele2>}, the rsIDs of ALIDs
+looked up in its Store Releases). A Local Source with no LD resource is refused by opengwasr (error
+class \code{opengwasr_ld_resource_required}). A \code{pop} is refused by TwoSampleMR (\code{twosamplemr_pop_local}),
+as it names an LD Store on the API.
 
 A variant the LD Store (or the reference) does not hold is left out of the matrix, with a warning
 (a message for a reference). An LD Store does not hold every pair: a pair it does not hold is \code{NA}

@@ -32,7 +32,8 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
   note <- function(fn, args) state$calls[[length(state$calls) + 1]] <- list(fn = fn, args = args)
 
   testthat::local_mocked_bindings(
-    og_api = function(...) structure(list(), class = "fake_source"),
+    og_api = fake_og_api,
+    og_ld_resource = fake_og_ld_resource,
     og_tophits = function(
       src,
       analyses,
@@ -40,7 +41,6 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
       limit = 1000,
       observed_only = FALSE,
       clump = TRUE,
-      ld = NULL,
       r2 = NULL,
       kb = NULL,
       original_units = FALSE,
@@ -54,7 +54,6 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
           threshold = threshold,
           limit = limit,
           clump = clump,
-          ld = ld,
           r2 = r2,
           kb = kb
         )
@@ -117,6 +116,21 @@ local_fake_opengwasr <- function(empty = character(), env = parent.frame()) {
   state
 }
 
+# What local_fake_opengwasr() puts in place of og_api(): a fake Source, which records its LD Store
+# and the Source it inherits from (a real one, made before, or a fake one). As opengwasr's, an
+# inherited Source's LD Store is kept unless `ld_store` is given.
+fake_og_api <- function(..., ld_store = NULL, inherit = NULL) {
+  if (missing(ld_store) && !is.null(inherit)) {
+    ld_store <- opengwasr::og_ld_resource(inherit)
+  }
+  structure(list(ld = ld_store, inherit = inherit), class = "fake_source")
+}
+
+real_og_ld_resource <- opengwasr::og_ld_resource
+fake_og_ld_resource <- function(src) {
+  if (inherits(src, "fake_source")) src$ld else real_og_ld_resource(src)
+}
+
 calls_to <- function(state, fn) Filter(function(x) x$fn == fn, state$calls)
 
 # What og_clump() answers: the rows of `data` named in `keep` (by row of the data it is given, so
@@ -126,14 +140,14 @@ local_fake_ld <- function(keep = NULL, env = parent.frame()) {
   state <- new.env()
   state$calls <- list()
   testthat::local_mocked_bindings(
-    og_clump = function(src, data, ld = NULL, r2 = NULL, kb = NULL) {
+    og_clump = function(src, data, r2 = NULL, kb = NULL, by_analysis = TRUE) {
       state$calls[[length(state$calls) + 1]] <- list(
         fn = "og_clump",
         src = src,
         data = data,
-        ld = ld,
         r2 = r2,
-        kb = kb
+        kb = kb,
+        by_analysis = by_analysis
       )
       rows <- if (identical(keep, "all")) {
         seq_len(nrow(data))
@@ -150,11 +164,11 @@ local_fake_ld <- function(keep = NULL, env = parent.frame()) {
       out$clump_size <- 2L
       out
     },
-    og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
+    og_ld_matrix = function(src, variants, fill_below_t_far = FALSE) {
       state$calls[[length(state$calls) + 1]] <- list(
         fn = "og_ld_matrix",
+        src = src,
         variants = variants,
-        ld = ld,
         fill = fill_below_t_far
       )
       m <- diag(length(variants))
@@ -188,3 +202,85 @@ local_no_credentials <- function(env = parent.frame()) {
   )
   withr::local_options(opengwasr.url = NULL, .local_envir = env)
 }
+
+# opengwasr warns that LD from a PLINK Reference is unadjusted for population structure
+# (`opengwasr_plink_unadjusted`), once per session per reference: rlang's `.frequency = "once"`, with
+# the reference's normalised path as its id. A test that runs PLINK expects that warning at its own
+# first PLINK call, after resetting rlang's record of it, so it neither depends on which tests ran
+# before nor leaks the warning into them.
+expect_plink_warning <- function(object, bfile) {
+  path <- file.path(normalizePath(dirname(bfile), winslash = "/", mustWork = FALSE), basename(bfile))
+  rlang::reset_warning_verbosity(path)
+  expect_warning(object, class = "opengwasr_plink_unadjusted")
+}
+
+# --- Local Source ---------------------------------------------------------------------------------
+
+# opengwasr's example Store Releases (one per GWAS Store: `hyb` holds two, so its `v1` is named) and
+# its synthetic PLINK Reference, whose rsIDs include some of their top hits.
+example_releases <- function() {
+  stores <- system.file("stores", package = "opengwasr")
+  c(file.path(stores, c("dense", "ragged")), file.path(stores, "hyb", "v1"))
+}
+example_bfile <- function() file.path(system.file("plink", package = "opengwasr"), "ref")
+
+# As opengwasr's own: the local tests need a Python with ogquery named by RETICULATE_PYTHON, and
+# never set Python up themselves.
+skip_if_no_local <- function() {
+  skip_on_cran()
+  skip_if_not_installed("reticulate")
+  has_local <- "og_local" %in% getNamespaceExports("opengwasr")
+  if (!has_local || !nzchar(system.file("stores", package = "opengwasr"))) {
+    skip("This opengwasr has no Local Source, or no example Store Releases.")
+  }
+  if (!nzchar(Sys.getenv("RETICULATE_PYTHON"))) {
+    skip("RETICULATE_PYTHON isn't set; local tests never set Python up themselves.")
+  }
+  if (is.null(example_local())) skip("The Python in RETICULATE_PYTHON has no ogquery.")
+  invisible()
+}
+
+skip_if_no_local_plink <- function() {
+  skip_if_no_local()
+  if (is.null(example_local(plink = TRUE))) {
+    skip("No PLINK binary found (genetics.binaRies, or plink on the PATH).")
+  }
+  invisible()
+}
+
+# A Local Source over the example Store Releases, with the example PLINK Reference as its LD resource
+# (`plink = TRUE`) or with none, opened once per test process; NULL where it can't be opened (no
+# ogquery, or no PLINK binary).
+example_local <- local({
+  opened <- list()
+  function(plink = FALSE) {
+    key <- if (plink) "plink" else "none"
+    if (!key %in% names(opened)) {
+      opened[key] <<- list(tryCatch(
+        if (plink) {
+          opengwasr::og_local(example_releases(), bfile = example_bfile())
+        } else {
+          opengwasr::og_local(example_releases())
+        },
+        opengwasr_local_unavailable = function(e) NULL,
+        opengwasr_plink_not_found = function(e) NULL
+      ))
+    }
+    opened[[key]]
+  }
+})
+
+# --- The Source's LD resource (ADR 0006) ------------------------------------------------------------
+
+# A real API Source, made with placeholder credentials: making one calls nothing. Make it before
+# local_fake_opengwasr(), which replaces og_api().
+api_source <- function(ld_store = NULL) {
+  withr::with_envvar(
+    c(OPENGWAS_URL = "https://api.opengwas.invalid", OPENGWAS_DEV_KEY = "test-key"),
+    opengwasr::og_api(ld_store = ld_store)
+  )
+}
+
+# The LD that opengwasr uses for a call given the Source `src` (ADR 0006): the Source's LD resource
+# as opengwasr::og_ld_resource() reports it, else (NULL) each Analysis's Assigned Ancestry.
+ld_used <- function(src) opengwasr::og_ld_resource(src)

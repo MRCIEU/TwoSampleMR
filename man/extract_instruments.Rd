@@ -22,15 +22,15 @@ extract_instruments(
 
 \item{clump}{Whether to clump results (\code{1}) or not (\code{0}). Default is \code{1}. (\code{TRUE} and \code{FALSE} are also allowed for backwards compatibility.) Unclumped, or clumped, you get at most 10,000 variants per Analysis (opengwasr warns if there were more).}
 
-\item{r2}{Clumping r2 cut off. The default, \code{NULL}, is the LD Store's own threshold (about \code{0.03}).}
+\item{r2}{Clumping r2 cut off. The default, \code{NULL}, is the LD Store's own threshold (about \code{0.03}). Required with a PLINK Reference (a Local Source's \code{bfile}).}
 
-\item{kb}{Clumping distance cutoff. The default, \code{NULL}, is the LD Store's own window (\code{10000}).}
+\item{kb}{Clumping distance cutoff. The default, \code{NULL}, is the LD Store's own window (\code{10000}). Required with a PLINK Reference (a Local Source's \code{bfile}).}
 
 \item{opengwas_jwt}{Deprecated and ignored. Credentials come from \code{src}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}} reads \code{OPENGWAS_JWT}.}
 
-\item{force_server}{Deprecated and ignored. Clumping always runs on the server.}
+\item{force_server}{Deprecated and ignored. Clumping uses the Source's LD resource, or on a plain \code{\link[opengwasr:og_api]{opengwasr::og_api()}} the LD Store matching each Analysis's Assigned Ancestry.}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
+\item{src}{A Source from opengwasr: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, which reads Store Releases you have downloaded. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 data frame
@@ -49,12 +49,22 @@ one Analysis, and an id that names no Analysis is an error.
 (\code{"sd"} or \code{"log_or"}). Estimates from \code{\link[=mr]{mr()}} then are per SD of the exposure.
 \item \code{SNP} is the rsID, or the ALID (\verb{chromosome:position:effect allele:other allele}, on GRCh38) of a
 variant that has no rsID.
-\item Clumping runs on the OpenGWAS server, in the LD Store matching each Analysis's assigned
-ancestry, and at that LD Store's own thresholds unless you set \code{r2} and \code{kb}. The LD Store used
-and the thresholds applied are in \code{clump_ld.exposure}, \code{clump_ld_choice.exposure},
+\item Clumping uses the Source's LD resource (\code{opengwasr::og_api(ld_store = )}, or a Local Source's
+PLINK Reference; see below), or, on a plain \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, the LD Store matching each
+Analysis's Assigned Ancestry. An LD Store clumps at its own thresholds unless you set \code{r2} and
+\code{kb}. The LD used and the thresholds applied are in \code{clump_ld.exposure}, \code{clump_ld_choice.exposure},
 \code{clump_r2.exposure} and \code{clump_kb.exposure}. TwoSampleMR's old thresholds, \code{r2 = 0.001} within
 \code{kb = 10000}, are refused by the LD Stores, so they are not the default.
 \item \code{association_status.exposure} says whether each Association was observed in the study or
 Imputed by Reference Completion.
+\item On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}), the data are read from Store Releases you have
+downloaded, and nothing calls the API. Clumping uses the Source's own LD resource: PLINK, with
+the PLINK Reference given to \code{og_local()} as \code{bfile}, matching variants by rsID. A PLINK
+Reference has no thresholds of its own, so \code{r2} and \code{kb} must be set (\verb{r2 = 0.001, kb = 10000}
+are TwoSampleMR's old ones); without them opengwasr refuses, with error class
+\code{opengwasr_plink_settings_required}. A Local Source with no LD resource can't clump (error class
+\code{opengwasr_ld_resource_required}): give it one, or use \code{clump = 0}. Store Releases hold canonical
+ids only, so a legacy id is refused (error class \code{opengwasr_legacy_id_local}): translate it once
+with \code{opengwasr::og_analyses(opengwasr::og_api(), ids)}.
 }
 }

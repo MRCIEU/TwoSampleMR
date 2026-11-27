@@ -7,7 +7,7 @@
 dat_to_MRInput(
   dat,
   get_correlations = FALSE,
-  pop = "EUR",
+  pop = NULL,
   bfile = NULL,
   plink_bin = NULL,
   src = twosamplemr_source()
@@ -18,13 +18,13 @@ dat_to_MRInput(
 
 \item{get_correlations}{Default \code{FALSE}. If \code{TRUE} then extract the LD matrix for the SNPs from an OpenGWAS LD Store with \code{\link[=ld_matrix]{ld_matrix()}}. From an LD Store, pairs below its Far Threshold are 0, and pairs it cannot measure (other chromosomes, beyond its far window) are set to 0 too, treated as independent, with a message giving how many.}
 
-\item{pop}{If \code{get_correlations} is \code{TRUE} then the ancestry (or LD Store id) of the LD Store to use. The default is \code{"EUR"}.}
+\item{pop}{If \code{get_correlations} is \code{TRUE} then the ancestry (or LD Store id) of the LD Store on the OpenGWAS API to use. On an API Source this is \code{opengwasr::og_api(inherit = src, ld_store = pop)}, keeping your Source's URL and key; on a Local Source it is refused (\code{twosamplemr_pop_local}), so use \code{src = opengwasr::og_api()} or a Local Source with a PLINK Reference. The default, \code{NULL}, is the Source's own LD resource if it carries one, else the European LD Store on the API Source (see \code{\link[=ld_matrix]{ld_matrix()}}).}
 
 \item{bfile}{If \code{get_correlations} is \code{TRUE}, the prefix of a PLINK fileset to use as the LD reference instead of an LD Store. Default = \code{NULL}}
 
 \item{plink_bin}{Path to the plink binary for \code{bfile}. Default = \code{NULL}}
 
-\item{src}{A Source from opengwasr, used with \code{get_correlations}. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
+\item{src}{A Source from opengwasr, used with \code{get_correlations}: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, whose own LD resource is then used. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 List of MRInput objects for each exposure/outcome combination

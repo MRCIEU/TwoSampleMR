@@ -80,11 +80,11 @@ mv_extract_exposures_local(
 
 \item{clump_kb}{Clumping window in kb. The default, \code{NULL}, is the LD Store's own (or \code{10000} with \code{bfile}).}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}) or LD Store id to clump in. The default, \code{NULL}, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need \code{pop} or \code{bfile})}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}) or LD Store id on the OpenGWAS API to clump in. On an API Source this is \code{opengwasr::og_api(inherit = src, ld_store = pop)}, keeping your Source's URL and key; on a Local Source it is refused (\code{twosamplemr_pop_local}), so use \code{src = opengwasr::og_api()} or a Local Source with a PLINK Reference. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need \code{pop} or \code{bfile})}
 
 \item{harmonise_strictness}{See action argument in \code{\link[=harmonise_data]{harmonise_data()}}. Default=\code{2}}
 
-\item{src}{A Source from opengwasr, used to find the LD Store of Analyses; own data need \code{pop} or \code{bfile}. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
+\item{src}{A Source from opengwasr, used to find the LD Store of Analyses; own data need \code{pop} or \code{bfile}. A Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, clumps with its own LD resource instead (see \code{\link[=clump_data]{clump_data()}}). The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, is made only when it is needed.}
 }
 \value{
 List

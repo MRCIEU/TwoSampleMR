@@ -13,7 +13,7 @@ test_that("clump_data() clumps through og_clump(), in the LD Store matched from 
 
   asked <- ld$calls[[1]]
   expect_equal(asked$fn, "og_clump")
-  expect_null(asked$ld)
+  expect_null(ld_used(asked$src))
   expect_null(asked$r2)
   expect_null(asked$kb)
   expect_equal(asked$data$alid, alid_of(dat$SNP))
@@ -51,9 +51,9 @@ test_that("pop is an ancestry for the LD Store, and 'legacy' says it is gone", {
   ld <- local_fake_ld()
   dat <- bmi_dat()
   clump_data(dat, pop = "EAS")
-  expect_equal(ld$calls[[1]]$ld, "EAS")
+  expect_equal(ld_used(ld$calls[[1]]$src), "EAS")
   expect_message(clump_data(dat, pop = "legacy"), class = "twosamplemr_deprecated_argument")
-  expect_equal(ld$calls[[2]]$ld, "EUR")
+  expect_equal(ld_used(ld$calls[[2]]$src), "EUR")
 })
 
 test_that("data whose ids name no Analysis are refused, asking for pop or bfile; pop may be an LD Store id", {
@@ -65,9 +65,78 @@ test_that("data whose ids name no Analysis are refused, asking for pop or bfile;
   expect_error(clump_data(dat), "pop")
   expect_length(ld$calls, 0)
   clump_data(dat, pop = "EUR")
-  expect_equal(ld$calls[[1]]$ld, "EUR")
+  expect_equal(ld_used(ld$calls[[1]]$src), "EUR")
   clump_data(dat, pop = "hgdp1kgp-v2-AFR-k10")
-  expect_equal(ld$calls[[2]]$ld, "hgdp1kgp-v2-AFR-k10")
+  expect_equal(ld_used(ld$calls[[2]]$src), "hgdp1kgp-v2-AFR-k10")
+})
+
+test_that("the API Source's own LD Store is used by ld_matrix() without pop; plain og_api() uses EUR; pop wins", {
+  afr <- api_source(ld_store = "AFR")
+  plain <- api_source()
+  ld <- local_fake_ld()
+  alids <- c("16:53767042:C:T", "2:24913997:A:T")
+
+  ld_matrix(alids, src = afr)
+  expect_identical(ld$calls[[1]]$src, afr)
+
+  ld_matrix(alids, src = plain)
+  expect_equal(ld_used(ld$calls[[2]]$src), "EUR")
+
+  ld_matrix(alids, pop = "SAS", src = afr)
+  expect_equal(ld_used(ld$calls[[3]]$src), "SAS")
+})
+
+test_that("pop and the European default are the user's Source with that LD Store: its URL and key are kept", {
+  withr::local_envvar(OPENGWAS_URL = "https://elsewhere.invalid", OPENGWAS_DEV_KEY = "other-key")
+  mine <- api_source()
+  ld <- local_fake_ld()
+  alids <- c("16:53767042:C:T", "2:24913997:A:T")
+  ld_matrix(alids, src = mine)
+  ld_matrix(alids, pop = "SAS", src = mine)
+  for (call in ld$calls) {
+    expect_s3_class(call$src, "og_api_source")
+    expect_equal(call$src$url, mine$url)
+    expect_equal(call$src$credentials()$key, "test-key")
+  }
+  expect_equal(vapply(ld$calls, function(x) ld_used(x$src), ""), c("EUR", "SAS"))
+})
+
+test_that("dat_to_MRInput()'s LD matrix comes from the API Source's own LD Store without pop", {
+  afr <- api_source(ld_store = "AFR")
+  local_fake_opengwasr()
+  dat <- bmi_dat()[1:3, ]
+  used <- character()
+  testthat::local_mocked_bindings(
+    og_ld_matrix = function(src, variants, fill_below_t_far = FALSE) {
+      used <<- c(used, ld_used(src))
+      v <- alid_of(dat$SNP)
+      m <- diag(3)
+      dimnames(m) <- list(v, v)
+      structure(m, class = c("og_ld_matrix", "matrix", "array"))
+    },
+    .package = "opengwasr"
+  )
+  suppressMessages(ld_for_mr_input(dat, pop = NULL, bfile = NULL, plink_bin = NULL, src = afr))
+  suppressMessages(ld_for_mr_input(dat, pop = "EAS", bfile = NULL, plink_bin = NULL, src = afr))
+  expect_equal(used, c("AFR", "EAS"))
+})
+
+test_that("clump_data() on own data uses the API Source's own LD Store without pop, and refuses as before without one", {
+  afr <- api_source(ld_store = "AFR")
+  plain <- api_source()
+  local_fake_opengwasr()
+  ld <- local_fake_ld()
+  dat <- bmi_dat()
+  dat$id.exposure <- "from-a-file"
+
+  clump_data(dat, src = afr)
+  expect_identical(ld$calls[[1]]$src, afr)
+
+  expect_error(clump_data(dat, src = plain), class = "twosamplemr_ld_needs_pop")
+  expect_length(ld$calls, 1)
+
+  clump_data(dat, pop = "EUR", src = afr)
+  expect_equal(ld_used(ld$calls[[2]]$src), "EUR")
 })
 
 test_that("read_exposure_data(clump = TRUE) on a file refuses without pop", {
@@ -129,22 +198,22 @@ test_that("an ALID as SNP is used as it is", {
   expect_equal(ld$calls[[1]]$data$alid, dat$SNP)
 })
 
-test_that("with bfile the PLINK Reference is the LD, and PLINK's thresholds are TwoSampleMR's old ones", {
+test_that("with bfile the LD Source is og_local(bfile =, plink =), and PLINK's thresholds are TwoSampleMR's old ones", {
   local_fake_opengwasr()
   ld <- local_fake_ld()
   made <- NULL
   testthat::local_mocked_bindings(
-    og_plink_reference = function(path, plink_bin = NULL) {
-      made <<- list(path = path, plink_bin = plink_bin)
-      structure(list(path = path, plink_bin = "plink"), class = "og_plink_reference")
+    og_local = function(gwas = NULL, plink = NULL, bfile = NULL, ...) {
+      made <<- list(gwas = gwas, bfile = bfile, plink = plink)
+      structure(list(ld = structure(list(path = bfile), class = "og_plink_reference")), class = "fake_source")
     },
     .package = "opengwasr"
   )
   dat <- bmi_dat()
   clump_data(dat, bfile = "/ref/EUR", plink_bin = "/bin/plink")
-  expect_equal(made, list(path = "/ref/EUR", plink_bin = "/bin/plink"))
-  expect_s3_class(ld$calls[[1]]$ld, "og_plink_reference")
-  expect_null(ld$calls[[1]]$src)
+  # An LD-only Local Source: no Store Releases, and nothing of the API Source.
+  expect_equal(made, list(gwas = NULL, bfile = "/ref/EUR", plink = "/bin/plink"))
+  expect_s3_class(ld_used(ld$calls[[1]]$src), "og_plink_reference")
   expect_equal(ld$calls[[1]]$r2, 0.001)
   expect_equal(ld$calls[[1]]$kb, 10000)
   expect_equal(ld$calls[[1]]$data$rsid, ifelse(grepl("^rs", dat$SNP), dat$SNP, NA_character_))
@@ -171,10 +240,11 @@ test_that("a refusal from opengwasr reaches the user", {
 })
 
 test_that("ld_matrix() reads an LD Store, in the European one by default, and names the matrix by ALID", {
+  local_fake_opengwasr()
   ld <- local_fake_ld()
   alids <- c("16:53767042:C:T", "2:24913997:A:T")
   m <- ld_matrix(alids)
-  expect_equal(ld$calls[[1]]$ld, "EUR")
+  expect_equal(ld_used(ld$calls[[1]]$src), "EUR")
   expect_equal(ld$calls[[1]]$variants, alids)
   expect_false(ld$calls[[1]]$fill)
   expect_equal(rownames(m), alids)
@@ -182,11 +252,12 @@ test_that("ld_matrix() reads an LD Store, in the European one by default, and na
   expect_false(inherits(m, "og_ld_matrix"))
   expect_true(is.matrix(m))
   ld_matrix(alids, pop = "SAS", fill_below_t_far = TRUE)
-  expect_equal(ld$calls[[2]]$ld, "SAS")
+  expect_equal(ld_used(ld$calls[[2]]$src), "SAS")
   expect_true(ld$calls[[2]]$fill)
 })
 
 test_that("ld_matrix() says with_alleles and 'legacy' no longer apply", {
+  local_fake_opengwasr()
   ld <- local_fake_ld()
   expect_message(
     ld_matrix("16:53767042:C:T", with_alleles = FALSE),
@@ -196,7 +267,7 @@ test_that("ld_matrix() says with_alleles and 'legacy' no longer apply", {
     ld_matrix("16:53767042:C:T", pop = "legacy"),
     class = "twosamplemr_deprecated_argument"
   )
-  expect_equal(ld$calls[[2]]$ld, "EUR")
+  expect_equal(ld_used(ld$calls[[2]]$src), "EUR")
 })
 
 test_that("harmonise_ld_dat() works on a matrix named by ALID, which it names as a PLINK matrix is", {
@@ -229,7 +300,7 @@ skip_without_plink <- function() {
   skip_if_not_installed("opengwasr")
   ok <- tryCatch(
     {
-      opengwasr::og_plink_reference(plink_ref_path())
+      opengwasr::og_local(bfile = plink_ref_path())
       TRUE
     },
     opengwasr_plink_not_found = function(e) FALSE
@@ -261,7 +332,7 @@ test_that("PLINK: clump_data(bfile =) keeps the strongest variant of variants in
   local_no_credentials()
   dat <- plink_dat()
   expect_equal(nrow(dat), 3)
-  out <- suppressMessages(clump_data(dat, bfile = plink_ref_path()))
+  out <- expect_plink_warning(suppressMessages(clump_data(dat, bfile = plink_ref_path())), plink_ref_path())
   expect_equal(out$SNP, "rs1421085")
   expect_equal(out$clump_ld_choice.exposure, "user")
   expect_equal(out$clump_r2.exposure, 0.001)
@@ -271,7 +342,10 @@ test_that("PLINK: clump_data(bfile =) keeps the strongest variant of variants in
 test_that("PLINK: ld_matrix(bfile =) is named <rsid>_<a1>_<a2>", {
   skip_without_plink()
   local_no_credentials()
-  m <- suppressMessages(ld_matrix(c("rs1421085", "rs1558902"), bfile = plink_ref_path()))
+  m <- expect_plink_warning(
+    suppressMessages(ld_matrix(c("rs1421085", "rs1558902"), bfile = plink_ref_path())),
+    plink_ref_path()
+  )
   expect_equal(nrow(m), 2)
   expect_true(all(grepl("^rs[0-9]+_[ACGT]_[ACGT]$", rownames(m))))
   expect_equal(unname(diag(m)), c(1, 1))
@@ -289,10 +363,35 @@ test_that("PLINK: every variant of the reference is clumped and matched by rsID,
     stringsAsFactors = FALSE
   )
   dat$SNP[1] <- "rs0000000" # not in the reference
-  expect_message(out <- clump_data(dat, bfile = plink_ref_path()), "1")
+  expect_plink_warning(
+    expect_message(out <- clump_data(dat, bfile = plink_ref_path()), "1"),
+    plink_ref_path()
+  )
   expect_false("rs0000000" %in% out$SNP)
   expect_true(nrow(out) > 1)
   expect_true(all(out$SNP %in% bim$V2))
+})
+
+test_that("PLINK: clump_data() clumps each id.exposure on its own, as clumping each alone did", {
+  skip_without_plink()
+  local_no_credentials()
+  a <- plink_dat()
+  a$id.exposure <- "a"
+  b <- plink_dat()
+  b$id.exposure <- "b"
+  b$pval.exposure <- rev(b$pval.exposure)
+  both <- rbind(a, b)
+  out <- expect_plink_warning(suppressMessages(clump_data(both, bfile = plink_ref_path())), plink_ref_path())
+  # TwoSampleMR's old split: each id clumped in a call of its own.
+  alone <- rbind(
+    suppressMessages(clump_data(a, bfile = plink_ref_path())),
+    suppressMessages(clump_data(b, bfile = plink_ref_path()))
+  )
+  rownames(alone) <- NULL
+  expect_equal(out, alone)
+  # Each id keeps its own strongest variant (as one set, `b`'s would lose to `a`'s, in LD with it).
+  expect_equal(out$id.exposure, c("a", "b"))
+  expect_equal(out$SNP, c("rs1421085", "rs9939609"))
 })
 
 test_that("clump_data() clumps each id on its own, as before, each in its own LD Store", {
@@ -303,10 +402,14 @@ test_that("clump_data() clumps each id on its own, as before, each in its own LD
   other$id.exposure <- cad_id
   both <- rbind(dat, other)
   out <- clump_data(both)
-  expect_length(ld$calls, 2)
-  expect_setequal(vapply(ld$calls, function(x) unique(x$data$id), ""), c(bmi_id, cad_id))
+  # One call: og_clump(by_analysis = TRUE) clumps each Analysis, named by `id.exposure`, on its own,
+  # and matches each to its own LD Store.
+  expect_length(ld$calls, 1)
+  expect_true(ld$calls[[1]]$by_analysis)
+  expect_equal(ld$calls[[1]]$data$id, both$id.exposure)
   expect_equal(nrow(out), nrow(both))
   expect_equal(out$SNP, both$SNP)
+  expect_equal(out$id.exposure, both$id.exposure)
 })
 
 test_that("a mix of Analyses and own data says which ids have no Analysis", {
@@ -317,24 +420,79 @@ test_that("a mix of Analyses and own data says which ids have no Analysis", {
   expect_error(clump_data(dat), "mine", class = "twosamplemr_ld_needs_pop")
 })
 
-test_that("the PLINK path through dat_to_MRInput() is not filled, the LD Store path is", {
-  skip_without_plink()
-  local_no_credentials()
+plink_mr_dat <- function() {
   x <- plink_dat()
   x$beta.exposure <- 0.1
+  x$se.exposure <- 0.01
   x$beta.outcome <- 0.1
   x$se.outcome <- 0.01
   x$exposure <- "e"
   x$outcome <- "o"
-  out <- suppressMessages(ld_for_mr_input(
-    x,
-    pop = "EUR",
-    bfile = plink_ref_path(),
-    plink_bin = NULL,
-    src = NULL
-  ))
+  x$id.outcome <- "o"
+  x$mr_keep <- TRUE
+  x
+}
+
+test_that("pop on a Local Source is refused by TwoSampleMR, naming the API Source and a PLINK Reference", {
+  skip_without_plink()
+  local_no_credentials()
+  src <- opengwasr::og_local(bfile = plink_ref_path())
+  dat <- plink_dat()
+  e <- tryCatch(clump_data(dat, pop = "EUR", src = src), error = identity)
+  expect_s3_class(e, "twosamplemr_pop_local")
+  expect_equal(e$pop, "EUR")
+  expect_equal(e$src_kind, "local")
+  expect_match(conditionMessage(e), "clump_data(dat, pop = \"EUR\", src = opengwasr::og_api())", fixed = TRUE)
+  expect_match(conditionMessage(e), "og_local(gwas = , bfile = )", fixed = TRUE)
+  expect_error(ld_matrix(dat$SNP, pop = "SAS", src = src), class = "twosamplemr_pop_local")
+  expect_error(
+    ld_for_mr_input(plink_mr_dat(), pop = "EUR", bfile = NULL, plink_bin = NULL, src = src),
+    class = "twosamplemr_pop_local"
+  )
+})
+
+test_that("bfile's 0.001/10000 defaults are TwoSampleMR's; a Source's own PLINK Reference gets none", {
+  skip_without_plink()
+  local_no_credentials()
+  dat <- plink_dat()
+  src <- opengwasr::og_local(bfile = plink_ref_path())
+  expect_error(clump_data(dat, src = src), class = "opengwasr_plink_settings_required")
+  out <- expect_plink_warning(suppressMessages(clump_data(dat, bfile = plink_ref_path())), plink_ref_path())
+  expect_equal(out$clump_r2.exposure, 0.001)
+  expect_equal(out$clump_kb.exposure, 10000)
+})
+
+test_that("PLINK LD with bfile needs no credentials: the default Source is never made", {
+  skip_without_plink()
+  local_no_credentials()
+  x <- plink_mr_dat()
+  # As users call them: `src` defaults to TwoSampleMR's Source, which needs credentials.
+  matrix_with_default_source <- function(src = twosamplemr_source()) {
+    ld_matrix(x$SNP, bfile = plink_ref_path(), src = src)
+  }
+  mr_input_with_default_source <- function(src = twosamplemr_source()) {
+    ld_for_mr_input(x, pop = NULL, bfile = plink_ref_path(), plink_bin = NULL, src = src)
+  }
+  m <- expect_plink_warning(suppressMessages(matrix_with_default_source()), plink_ref_path())
+  expect_equal(sub("_.*", "", rownames(m)), x$SNP)
+  out <- suppressMessages(mr_input_with_default_source())
   expect_false(anyNA(out$ld))
   expect_equal(rownames(out$ld), x$SNP)
+})
+
+test_that("dat_to_MRInput(get_correlations = TRUE, bfile =) needs no credentials", {
+  skip_without_plink()
+  skip_if_not_installed("MendelianRandomization")
+  local_no_credentials()
+  out <- expect_plink_warning(
+    suppressMessages(dat_to_MRInput(
+      plink_mr_dat(),
+      get_correlations = TRUE,
+      bfile = plink_ref_path()
+    )),
+    plink_ref_path()
+  )
+  expect_length(out, 1)
 })
 
 test_that("the LD Store path through dat_to_MRInput() asks for fill_below_t_far and zeros the rest", {
@@ -342,7 +500,7 @@ test_that("the LD Store path through dat_to_MRInput() asks for fill_below_t_far 
   dat <- bmi_dat()[1:3, ]
   seen <- NULL
   testthat::local_mocked_bindings(
-    og_ld_matrix = function(src, variants, ld = NULL, fill_below_t_far = FALSE) {
+    og_ld_matrix = function(src, variants, fill_below_t_far = FALSE) {
       seen <<- fill_below_t_far
       v <- alid_of(dat$SNP)
       m <- diag(3)

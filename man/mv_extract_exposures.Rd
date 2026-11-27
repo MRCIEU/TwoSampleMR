@@ -32,17 +32,17 @@ mv_extract_exposures(
 
 \item{find_proxies}{Deprecated and ignored: Imputed Associations replace proxies (see \code{\link[=extract_outcome_data]{extract_outcome_data()}}).}
 
-\item{force_server}{Deprecated and ignored. Clumping always runs on the server.}
+\item{force_server}{Deprecated and ignored. Clumping uses the Source's LD resource, or on a plain \code{\link[opengwasr:og_api]{opengwasr::og_api()}} the LD Store matching each Analysis's Assigned Ancestry.}
 
 \item{pval_threshold}{Instrument detection p-value threshold. Default = \code{5e-8}}
 
-\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}) or LD Store id to clump in. The default, \code{NULL}, matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need \code{pop} or \code{bfile})}
+\item{pop}{Ancestry (\code{"EUR"}, \code{"SAS"}, \code{"EAS"}, \code{"AFR"}, \code{"AMR"}) or LD Store id on the OpenGWAS API to clump in. On an API Source this is \code{opengwasr::og_api(inherit = src, ld_store = pop)}, keeping your Source's URL and key; on a Local Source it is refused (\code{twosamplemr_pop_local}), so use \code{src = opengwasr::og_api()} or a Local Source with a PLINK Reference. The default, \code{NULL}, is the Source's own LD resource if it carries one (\code{opengwasr::og_api(ld_store = )}, \code{opengwasr::og_local(bfile = )}), else matches each Analysis's Assigned Ancestry (the Analyses must agree, and data that are not from OpenGWAS need \code{pop} or \code{bfile})}
 
 \item{plink_bin}{If \code{NULL} and \code{bfile} is not \code{NULL} then will detect packaged plink binary for specific OS. Otherwise specify path to plink binary. Default = \code{NULL}}
 
-\item{bfile}{Prefix of a PLINK fileset to use for the final clumping across exposures, in place of an LD Store (the instruments of each Analysis are always clumped on the server). Default = \code{NULL}}
+\item{bfile}{Prefix of a PLINK fileset to use for the final clumping across exposures, in place of the Source's LD resource (the instruments of each Analysis are clumped with the Source's LD resource, or on a plain \code{\link[opengwasr:og_api]{opengwasr::og_api()}} in the LD Store matching its Assigned Ancestry). Default = \code{NULL}}
 
-\item{src}{A Source from opengwasr. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
+\item{src}{A Source from opengwasr: \code{\link[opengwasr:og_api]{opengwasr::og_api()}}, or a Local Source, \code{\link[opengwasr:og_local]{opengwasr::og_local()}}, which reads Store Releases you have downloaded. The default, \code{\link[opengwasr:og_api]{opengwasr::og_api()}} (named as TwoSampleMR's), is made only when it is needed.}
 }
 \value{
 data frame in \code{exposure_dat} format
@@ -53,7 +53,11 @@ Requires a list of IDs from available_outcomes. For each ID, it extracts instrum
 \details{
 The data come from opengwasr, as for \code{\link[=extract_instruments]{extract_instruments()}} and \code{\link[=extract_outcome_data]{extract_outcome_data()}}: IDs
 are Analyses (\verb{<store_id>:<analysis_id>}, or a legacy id that names one), effects of continuous
-traits are per SD, instruments are clumped on the server in the LD Store matching each
-Analysis's ancestry (at its own thresholds unless you set \code{clump_r2} and \code{clump_kb}), and
+traits are per SD, instruments are clumped with the Source's LD resource, or on a plain
+\code{\link[opengwasr:og_api]{opengwasr::og_api()}} in the LD Store matching each Analysis's Assigned Ancestry (at an LD Store's
+own thresholds unless you set \code{clump_r2} and \code{clump_kb}), and
 Imputed Associations replace proxies. The final clumping across exposures is \code{\link[=clump_data]{clump_data()}}.
+
+On a Local Source (\code{\link[opengwasr:og_local]{opengwasr::og_local()}}) both clumpings use the Source's own LD resource, as
+in \code{\link[=extract_instruments]{extract_instruments()}}: with a PLINK Reference, \code{clump_r2} and \code{clump_kb} must be set.
 }
