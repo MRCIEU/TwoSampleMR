@@ -1,3 +1,7 @@
+# TwoSampleMR v0.7.15
+
+* Fixed the fixed effects standard errors (IVW, Egger slope and Egger intercept) in `mr_rucker()` being too small when the residual standard error was below 1 (under-dispersion). They are now the closed-form fixed effects standard errors, the same as `mr_ivw_fe()`, whatever the residual standard error. When model A or C is chosen, the standard error, confidence interval and p-value of the Rucker selected estimate change in the same way. Results are unchanged when the residual standard error is 1 or more (#630)
+
 # TwoSampleMR v0.7.14
 
 (Release date 2026-11-10)
