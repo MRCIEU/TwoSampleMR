@@ -132,7 +132,7 @@ mr_rucker_internal <- function(dat, parameters = default_parameters()) {
   Q_pval_ivw <- stats::pchisq(Q_ivw, Q_df_ivw, lower.tail = FALSE)
   phi_ivw <- Q_ivw / (nsnp - 1)
 
-  se_ivw_fe <- stats::coefficients(mod_ivw)[1, 2] / max(mod_ivw$sigma, 1)
+  se_ivw_fe <- stats::coefficients(mod_ivw)[1, 2] / mod_ivw$sigma
   if (parameters$test_dist == "z") {
     pval_ivw_fe <- stats::pnorm(abs(b_ivw_fe / se_ivw_fe), lower.tail = FALSE) * 2
   } else {
@@ -170,9 +170,9 @@ mr_rucker_internal <- function(dat, parameters = default_parameters()) {
   Q_pval_egger <- stats::pchisq(Q_egger, Q_df_egger, lower.tail = FALSE)
   phi_egger <- Q_egger / (nsnp - 2)
 
-  se1_egger_fe <- stats::coefficients(mod_egger)[2, 2] / max(mod_egger$sigma, 1)
+  se1_egger_fe <- stats::coefficients(mod_egger)[2, 2] / mod_egger$sigma
   pval1_egger_fe <- stats::pt(abs(b1_egger_fe / se1_egger_fe), nsnp - 2, lower.tail = FALSE) * 2
-  se0_egger_fe <- stats::coefficients(mod_egger)[1, 2] / max(mod_egger$sigma, 1)
+  se0_egger_fe <- stats::coefficients(mod_egger)[1, 2] / mod_egger$sigma
   if (parameters$test_dist == "z") {
     pval0_egger_fe <- stats::pnorm(abs(b0_egger_fe / se0_egger_fe), lower.tail = FALSE) * 2
   } else {
